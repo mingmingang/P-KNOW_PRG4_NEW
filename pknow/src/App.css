@@ -1,0 +1,30 @@
+.buttonRightBar {
+    width: 100%;
+    padding: 10px;
+    background-color: transparent;
+    border-radius: 10px;
+    font-weight: 500;
+    border: 1px solid #0A5EA8;
+    color: black; /* Menambahkan warna teks default */
+    transition: all 0.3s ease; /* Menambahkan efek transisi */
+  }
+  
+  /* Gaya saat hover */
+  .buttonRightBar:hover {
+    background-color: #0A5EA8; /* Warna latar belakang saat hover */
+    color: white; /* Mengubah warna teks menjadi putih saat hover */
+    border-color: #0A5EA8; /* Border tetap pada warna yang sama */
+  }
+  
+
+  .primary.active {
+    background-color: #007bff; /* Warna latar belakang biru */
+    color: #ffffff; /* Warna teks putih */
+    border-color: #007bff; /* Warna border biru */
+  }
+  
+  .primary.active:hover {
+    background-color: #0056b3; /* Warna lebih gelap saat di-hover */
+    border-color: #0056b3;
+  }
+  

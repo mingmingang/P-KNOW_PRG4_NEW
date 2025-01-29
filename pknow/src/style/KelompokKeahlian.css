@@ -1,0 +1,141 @@
+/* Container utama untuk komponen Kelompok Keahlian */
+.kelompokKeahlian {
+    display: flex;
+}
+
+.kelompok-keahlian-container {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 5px;
+    justify-content: space-between;
+}
+
+.kelompok-keahlian-item {
+    flex: 1 1 0%;
+    margin-bottom: 20px;
+}
+
+
+/* Kotak background putih utama */
+.bg-white-kk {
+    margin-left: 20px;
+    border-radius: 14px;
+    background: #FFF;
+    box-shadow: 0px 0px 20px 0px rgba(10, 95, 168, 0.20);
+    width: 380px;
+    min-height: 500px;
+    margin-top: 5px;
+    margin-bottom: 28px;
+}
+
+/* Judul dan dropdown di bagian atas */
+.title-kelompok-keahlian {
+    display: flex;
+    justify-content: space-between;
+}
+
+/* Gambar cover utama */
+.bg-white-kk .cover-daftar-kk {
+    width: 380px;
+    height: 200px;
+    object-fit: cover;
+    border-top-left-radius: 14px;
+    border-top-right-radius: 14px;
+}
+
+/* Judul */
+.bg-white-kk h3 {
+    color: var(--ASTRAtech, #0A5EA8);
+    font-size: 25px;
+    padding-left: 20px;
+    margin-bottom: 15px;
+    font-weight: bold;
+    width: 300px;
+}
+
+/* Teks umum */
+.bg-white-kk p {
+    font-family: 'Poppins';
+    color: black;
+    margin: 0 20px;
+    margin-bottom: 12px;
+}
+
+/* Deskripsi dalam teks paragraf */
+.bg-white-kk .deskripsi {
+    color: rgb(128, 128, 128);
+    text-align: justify;
+    font-size: 15px;
+    max-height: 90px;
+    height: 100%;
+}
+
+/* Bagian status terbuka */
+.status-open {
+    display: flex;
+    justify-content: space-between;
+    margin: 0 20px;
+}
+
+.status-open img {
+    width: 15px;
+}
+
+.status-open p {
+    margin-top: 15px;
+    font-size: 15px;
+    margin-left: 5px;
+}
+
+.status-open button {
+    border-radius: 5px;
+    background: var(--Button, #0E6EFE);
+    color: white;
+    border: none;
+    padding: 10px 25px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+/* Bagian pemilik (prodi dan userProdi) */
+.pemilik {
+    margin-left: 20px;
+}
+
+.pemilik p {
+    font-size: 16px;
+    font-family: 'Poppins SemiBold';
+}
+
+.prodi, .userProdi {
+    display: flex;
+}
+
+/* Dropdown menu styling */
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    z-index: 1000;
+    background-color: #ffffff;
+    border: none;
+    border-radius: 10px;
+    min-width: 10rem;
+    box-shadow: 0 4px 8px rgba(41, 117, 217, 0.346);
+    color: #0A5EA8;
+}
+
+/* Hover efek untuk item dalam dropdown */
+.dropdown-item:hover {
+    background-color: #f0f0f0;
+}
+
+/* Menampilkan dropdown ketika aktif */
+.show {
+    display: block;
+}
+
+.open:hover {
+    background-color: #3b89fd;
+}

@@ -1,0 +1,51 @@
+@import "slick-carousel/slick/slick.css";
+@import "slick-carousel/slick/slick-theme.css";
+
+:root {
+  --primary-color: rgb(10,94,168);
+  --secondary-color: rgba(8,84,159,1);
+}
+
+.navigasi-layout-page {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+  padding: 10px 80px;
+}
+
+.title-kk {
+  font-size: 25px;
+  font-weight: 550;
+  color: var(--primary-color);
+}
+
+.text-primary{
+  color: #0A5EA8;
+}
+main{background-color: white;}
+
+.left-feature {
+  display: flex;
+}
+
+.status {
+  margin-right: 20px;
+}
+
+
+.status tbody {
+  display: flex;
+  margin-top: 15px;
+}
+
+.status tr td p {
+  margin-left: 5px;
+  margin-right: 5px;
+  font-size: 14px;
+}
+
+.status tr td i {
+  display: flex;
+  margin-top: -14px;
+  font-size: 15px;
+}

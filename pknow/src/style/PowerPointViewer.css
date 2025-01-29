@@ -1,0 +1,48 @@
+.word-viewer-container {
+    width: 100%;
+    height: 1000px; /* Atur tinggi sesuai kebutuhan */
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    overflow: hidden; /* Agar konten tidak melampaui container */
+  }
+  
+  .toolbar {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    background-color: #0A5EA8;
+    border-bottom: 1px solid #ccc;
+  }
+  
+  .toolbar-button {
+    background-color: white;
+    border: none;
+    color: #0A5EA8;
+    padding: 8px 12px;
+    margin-right: 5px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s;
+  }
+  
+  .toolbar-button:hover {
+    background-color: #0C5DDC;
+  }
+  
+  .download-button {
+    text-decoration: none;
+  }
+  
+  .word-viewer {
+    flex: 1; /* Mengisi sisa ruang di container */
+    padding: 20px;
+    overflow: auto; /* Menambahkan scroll jika konten melebihi area */
+    background-color: white;
+  }
+  

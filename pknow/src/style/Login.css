@@ -1,0 +1,283 @@
+:root {
+    --primary-color: rgb(10,94,168);
+    --secondary-color: rgba(8,84,159,1);
+}
+
+.login-background {
+    background-image: url('../assets/backgroundTMS.png');
+    width: 100%; 
+    height: 100vh; 
+    margin-left: 0;
+    flex-shrink: 0;
+    background-size: cover;
+    background-color: white;
+    background-position: center; 
+}
+
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  height: 100vh;
+}
+
+/* Style the form box */
+.login-box {
+    background-color: #ffffff;
+    border-radius: 10px;
+    padding: 40px 30px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    width: 500px;
+    margin-bottom: 180px;
+
+}
+
+/* Style the title */
+.login-title {
+    font-size: 32px;
+    font-weight: bold;
+    color: #3366ff;
+    margin-bottom: 20px;
+}
+
+/* Style the input fields */
+.login-input {
+    width: 100%;
+    padding: 10px;
+    margin-top: 20px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    font-size: 14px;
+}
+
+/* Style the submit button */
+.login-button {
+    width: 98%;
+    padding: 10px;
+    background-color: #3366ff;
+    border: none;
+    border-radius: 12px;
+    color: #ffffff;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+/* Add some hover effect to the button */
+.login-button:hover {
+    background-color: #2851a3;
+}
+
+.error-text {
+    font-size: 12px;
+    margin-top: 5px;
+    display: flex;
+    margin-bottom: -10px;
+  }
+  
+.login-box img {
+    margin-bottom: 10px;
+}
+
+.modal-login {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    padding-top: 15px;
+    align-items: top;
+    z-index: 1000;
+}
+
+.content-modal {
+    width: 500px;
+    background-color: white;
+    border-radius: 15px;
+    overflow-y: auto; /* Enable scrolling if content overflows */
+    padding: 10px;
+}
+
+
+.modal-title {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    margin-left: 20px;
+    margin-top: 10px;
+}
+
+.modal-content-role input[type="radio"] {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #007BFF;
+    border-radius: 50%;
+    position: relative;
+    margin-right: 5px;
+    margin-left: 25px;
+    cursor: pointer;
+}
+
+.tutup {
+    flex-direction: row-reverse;
+    display: flex;
+}
+
+.tutup button {
+    background-color: #2851a3;
+    color: white;
+    font-weight: 600;
+    padding: 9px 25px;
+    border: none;
+    border-radius: 10px;
+    margin-right: 10px;
+}
+
+.modal-content-role .close-button {
+    font-weight: 600;
+    margin-right: 18px;
+    padding: 8px 25px;
+    font-size: 15px;
+    cursor: pointer;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 10px;
+}
+
+.role-selection, .other-roles {
+    justify-content: space-between;
+    display: flex;
+    font-size: 18px;
+    margin: 10px 18px;
+}
+
+.role-selection a, .other-roles a {
+    text-decoration: none;
+    color: black;
+}
+
+.modal-content hr {
+    border: none;
+    border-top: 1px solid grey;
+    width: 100%;
+    opacity: 0.5;
+}
+
+
+
+/* Modal.css */
+
+/* Modal Styles */
+.custom-modal {
+    position: fixed; /* Position the modal relative to the viewport */
+    margin-top: 145px; /* Position it in the center vertically */
+    left: 50%; /* Position it in the center horizontally */
+    transform: translate(-50%, -50%); /* Offset by half of its width/height to perfectly center it */
+    width: 80%; /* Adjust the width as needed (you can set it to 100% or any other value) */
+    max-width: 600px; /* Optional: to set a maximum width */
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    padding: 0;
+    background-color: #ffffff;
+    z-index: 1000; /* Ensure the modal is above other content */
+}
+  /* Add a background overlay for the modal */
+  .custom-modal::backdrop {
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+  
+  /* Modal Header */
+  .custom-modal-header {
+    font-size: 1.25rem;
+    font-weight: 500;
+    padding: 16px;
+    background-color: #ffffff;
+    border-bottom: 1px solid #e0e0e0;
+    text-align: top;
+  }
+  
+  /* Divider line */
+  .custom-divider {
+    margin: 0;
+    border: 0;
+    height: 1px;
+    background-color: #e0e0e0;
+  }
+  
+  /* Modal Body */
+  .custom-modal-body {
+    padding: 20px;
+    color: #333;
+    font-size: 1rem;
+    line-height: 1.5;
+    text-align: left;
+    max-height: 60vh; /* Limit height */
+    overflow-y: auto; /* Enable scrolling if content overflows */
+  }
+  
+  /* Modal Footer */
+  .custom-modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    padding: 16px;
+    gap: 10px;
+    background-color: #ffffff;
+    border-top: 1px solid #e0e0e0;
+  }
+
+/* Login.css */
+
+/* Styling untuk container CAPTCHA */
+/* Login.css */
+
+/* Styling untuk container CAPTCHA */
+.captcha-container {
+  align-items: flex-start;
+}
+
+/* Styling untuk angka CAPTCHA */
+.captcha-number {
+  font-weight: bold;
+  letter-spacing: 5px;
+  background-color: #0A5EA8;
+  border-radius: 5px;
+  display: inline-block;
+  user-select: none;
+}
+
+/* Styling untuk tombol refresh CAPTCHA */
+.captcha-container button {
+  padding: 5px 10px;
+  border: none;
+  background-color: #0A5EA8;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+/* Styling untuk pesan error */
+.error-message {
+  font-size: 14px;
+  color: red;
+  margin-top: 5px;
+}
+
+
+  
+  /* Fade-in animation */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  

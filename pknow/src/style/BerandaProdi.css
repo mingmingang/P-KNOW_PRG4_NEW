@@ -1,0 +1,91 @@
+.slider-container{
+  width: 100%;
+}
+
+.slick-arrow.slick-next {
+  display: none !important;
+}
+
+.slick-dots {
+  display: flex !important;
+  justify-content: center;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.slick-dots li {
+  margin: 0 5px;
+}
+
+.slick-dots li button {
+  border: none;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.5);
+  transition: background 0.3s ease, transform 0.3s ease;
+}
+
+.slick-dots li.slick-active button {
+  background: white;
+  transform: scale(1.2);
+}
+
+
+.slide {
+  position: relative;
+  color: #fff;
+}
+
+.action-button {
+  margin-top: 2rem; /* Changed to rem */
+  border: none;
+  background-color: white;
+  width: 70%; /* Changed to percentage for responsiveness */
+  max-width: 280px; /* Added max-width */
+  height: 60px;
+  border-radius: 35px;
+  color: var(--primary-color);
+  font-size: 1.25rem; /* Use rem for scalability */
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.action-button:hover {
+  background-color: var(--primary-color);
+  color: white;
+  transition-duration: 0.5s; /* Shortened duration */
+  transform: translateY(-3px); /* Adjusted for a more noticeable effect */
+  z-index: inherit;
+}
+
+.content-wrapper {
+  display: flex;
+  height: 90vh;
+  width: 100%;
+  padding-top: 100px;
+  background-size: cover;
+}
+
+.text-content {
+  margin-top: 150px;
+  margin-left: 90px;
+  width: 800px;
+
+}
+
+.mascot{
+  width: 100px;
+  display: flex;
+}
+
+.text-content h1 {
+  font-size: 60px;
+  font-weight: 600;
+}
+
+.text-content p {
+  width: 600px;
+  text-align: justify;
+}

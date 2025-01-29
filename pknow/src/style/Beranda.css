@@ -1,0 +1,172 @@
+:root {
+    --primary-color: rgb(10,94,168);
+    --secondary-color: rgba(8,84,159,1);
+}
+
+/* Beranda Utama CSS */
+.sec1 {
+    background-image: url('../assets/bgBeranda.png');
+    display: flex;
+    width: 100%;
+    padding-right: 5%; /* Changed to percentage for responsiveness */
+    height: 100vh;
+    background-size: cover;
+    background-color: var(--primary-color);
+}
+
+.sec3 {
+    padding-top: 40px;
+    padding-left: 80px;
+    padding-right: 80px;
+    width: 100%; /* Changed to percentage for responsiveness */
+    height: 60vh;
+    background-size: cover;
+    background-color: white;
+}
+
+.sec4 {
+    background-image: url('../assets/bgBeranda.png');
+    width: 100%; /* Changed to percentage for responsiveness */
+    height: 100vh;
+    background-size: cover;
+    background-color: var(--secondary-color);
+}
+
+.sec5 {
+    display: flex;
+    width: 100%; /* Changed to percentage for responsiveness */
+    height: 60vh;
+    background-size: cover;
+    background-color: white;
+}
+
+
+.sec6 {
+    width: 100%; /* Changed to percentage for responsiveness */
+    height: 60vh;
+    margin-top: 100px;
+    background-size: cover;
+    background-color: var(--secondary-color);
+}
+
+.comment {
+    background-color: white;
+    padding: 20px;
+    border-radius: 20px;
+    width: 30%;
+    text-align: justify;
+    margin-right: 50px;
+}
+
+
+.ucapan {
+    padding-top: 24vh; /* Changed to viewport height */
+    width: 50%;
+    padding-left: 8%; /* Changed to percentage for responsiveness */
+}
+
+.ucapan h3 {
+    color: #FFF;
+    font-size: 1.8rem; /* Use rem for scalability */
+    margin-bottom: 0;
+}
+
+.ucapan h1 {
+    font-weight: bold;
+    color: #FFF;
+    font-size: 3rem;
+    margin-top: 0;
+    margin-bottom: 1rem; /* Changed to rem */
+    line-height: 1.5; /* Adjusted for better readability */
+    max-width: 1000px; /* Added max-width */
+}
+
+.ucapan p {
+    color: #FFF;
+    font-size: 1.25rem; /* Use rem for scalability */
+    line-height: 1.5;
+    text-align: justify;
+    margin-bottom: 1rem; /* Changed to rem */
+    max-width: 600px; /* Added max-width */
+}
+
+.ucapan button {
+    margin-top: 2rem; /* Changed to rem */
+    border: none;
+    background-color: white;
+    width: 70%; /* Changed to percentage for responsiveness */
+    max-width: 280px; /* Added max-width */
+    height: 60px;
+    border-radius: 35px;
+    color: var(--primary-color);
+    font-size: 1.25rem; /* Use rem for scalability */
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.ucapan button:hover {
+    background-color: var(--primary-color);
+    color: white;
+    transition-duration: 0.5s; /* Shortened duration */
+    transform: translateY(-3px); /* Adjusted for a more noticeable effect */
+    z-index: inherit;
+}
+
+.imgDatang {
+    padding-top: 40vh; /* Changed to viewport height */
+    display: flex;
+    width: 27%;
+    height: 100%;
+}
+
+.ceweVR, .cowoTop {
+    width: 100%;
+    margin-right: 0; /* Reset margin */
+}
+
+/* Media Queries for additional responsiveness */
+@media (max-width: 768px) {
+    .ucapan {
+        width: 90%; /* Full width on smaller screens */
+        padding-left: 0;
+    }
+
+    .ucapan h1 {
+        font-size: 3rem; /* Responsive font size */
+    }
+
+    .ucapan p {
+        font-size: 1rem; /* Responsive font size */
+    }
+
+    .ucapan button {
+        width: 100%; /* Full width for buttons on smaller screens */
+    }
+
+    .imgDatang {
+        width: 80%; /* Adjust image container width */
+        margin-left: 0; /* Centering */
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+/* Beranda Prodi CSS */
+
+
+
+
+
+
+
+
+/* Beranda Mahasiswa CSS */
