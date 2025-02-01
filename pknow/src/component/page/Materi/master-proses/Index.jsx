@@ -287,6 +287,7 @@ export default function MasterProsesIndex({ onChangePage }) {
           API_LINK + "Materi/GetDataMateriByKategori",
           currentFilter
         );
+        console.log("keetee", data);
         if (data === "ERROR") {
           setIsError(true);
           setSearchResults([]);
@@ -560,6 +561,7 @@ export default function MasterProsesIndex({ onChangePage }) {
                 onDelete={onChangePage}
                 isNonEdit={false}
                 onReviewJawaban={onChangePage}
+                onBacaMateri={onChangePage}
               />
             )}
 

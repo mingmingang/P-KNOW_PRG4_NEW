@@ -8,7 +8,7 @@ import Input from "./Input";
 import Cookies from "js-cookie";
 import { decryptId } from "../util/Encryptor";
 import Alert from "./Alert";
-import { decode } from "html-entities";
+import { decode } from 'he';
 
 
 function CardPustaka({
@@ -43,6 +43,8 @@ function CardPustaka({
     onStatus(book, status);
   };
 
+  console.log("pustaka", pustakas)
+
 
   return (
     <>
@@ -59,7 +61,7 @@ function CardPustaka({
                   fontWeight: "bold",
                 }}
               >
-                ↓ Pustaka Saya
+                ↓ Milik Saya
               </div>
            
               <div className="row mt-0 gx-4" style={{
@@ -102,7 +104,7 @@ function CardPustaka({
         <div className="row">
             <div className="d-flex justify-content-between align-items-center mt-4">
               <h3 className="text-xl font-bold text-blue-600" style={{ fontSize: "20px", width:"100%" }}>
-                {book.Judul}
+                {decode(book.Judul)}
               </h3>
             </div>
         </div>
@@ -181,7 +183,7 @@ function CardPustaka({
                   </div>
                 </div>
                 <div className="d-flex ">
-                <p className="mb-0 text-secondary mb-4" style={{marginRight:"80px"}}><i
+                <p className="mb-0 text-secondary mb-4" style={{marginRight:"100px"}}><i
                   className="fas fa-circle"
                   icon="circle"
                   style={{
@@ -197,8 +199,8 @@ function CardPustaka({
                 />{book.Status === "Tidak Aktif" 
                   ? "Tidak Aktif" 
                   : uploader === book.Uploader 
-                  ? "Pusaka Saya" 
-                  : "Aktif / Publik"
+                  ? "Milik Saya" 
+                  : "Pustaka Bersama"
                 }</p>
   
               {uploader === book.Uploader && (
@@ -211,7 +213,7 @@ function CardPustaka({
                     onClick={() => onEdit("edit", book)}
                   />
                   <Icon
-                    name="delete"
+                    name="trash"
                     type="Bold"
                     style={{color:"red"}}
                     title="Hapus pustaka"
@@ -271,7 +273,6 @@ function CardPustaka({
         )}
       </div>
 
-      
      <div
                 className="card-keterangan"
                 style={{
@@ -285,7 +286,7 @@ function CardPustaka({
                   fontWeight: "bold",
                 }}
               >
-                ↓ Aktif / Pustaka Lain
+                ↓ Pustaka Bersama
               </div>
               <div className="row mt-0 gx-4" style={{
             maxWidth: "100%",
@@ -332,7 +333,7 @@ function CardPustaka({
         <div className="row">
             <div className="d-flex justify-content-between align-items-center mt-4">
               <h3 className="text-xl font-bold text-blue-600" style={{ fontSize: "20px", width:"100%" }}>
-                {book.Judul}
+                {decode(book.Judul)}
               </h3>
             </div>
         </div>
@@ -413,7 +414,7 @@ function CardPustaka({
                 </div>
                 <div className="d-flex ">
 
-                <p className="mb-0 text-secondary" style={{marginRight:"80px"}}><i
+                <p className="mb-0 text-secondary" style={{marginRight:"40px"}}><i
                   className="fas fa-circle"
                   icon="circle"
                   style={{
@@ -429,8 +430,8 @@ function CardPustaka({
                 />{book.Status === "Tidak Aktif" 
                   ? "Tidak Aktif" 
                   : uploader === book.Uploader 
-                  ? "Pusaka Saya" 
-                  : "Aktif / Publik"
+                  ? "Milik Saya" 
+                  : "Pustaka Bersama"
                 }</p>
 
               {/* {uploader === book.Uploader && (

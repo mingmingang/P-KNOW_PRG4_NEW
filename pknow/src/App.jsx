@@ -69,7 +69,6 @@ export default function App() {
       name: userInfo.nama,
       role: userInfo.peran,
       lastLogin: currentDateTime,
-      photo:profile
     };
 
     // console.log("listRoute before RouterProvider:", listRoute);

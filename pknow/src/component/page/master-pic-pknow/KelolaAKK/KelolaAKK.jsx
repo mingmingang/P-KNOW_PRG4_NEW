@@ -234,6 +234,7 @@ export default function KelolaAKK({ onChangePage }) {
                   onChangePage={onChangePage}
                   onChangeStatus={handleSetStatus}
                   showMenu={false}
+                  link="add"
                 />
               </div>
             ))}

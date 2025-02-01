@@ -15,6 +15,7 @@ import Cookies from "js-cookie";
 import { decryptId } from "../../util/Encryptor";
 import SweetAlert from "../../util/SweetAlert";
 import Paging from "../../part/Paging";
+import { decode } from "he";
 
 
 const inisialisasiData = [
@@ -152,7 +153,8 @@ export default function DaftarPustaka({ onChangePage }) {
           API_LINK + "Pustaka/GetDataPustaka",
           currentFilter
         );
-        console.log("pustakaa", data);
+      
+        console.log("dataa", data);
         if (data === "ERROR" || data.length === 0) {
           setCurrentData([]);
           setIsEmpty(true);
@@ -170,7 +172,7 @@ export default function DaftarPustaka({ onChangePage }) {
               config: { footer: value.Status },
               data: {
                 id: value.Key,
-                judul: value["Kelompok Keahlian"],
+                judul: decode(value["Kelompok Keahlian"]),
                 kk: {
                   key: value["ID KK"] || "N/A",
                   nama: value["Kelompok Keahlian"],
@@ -181,6 +183,7 @@ export default function DaftarPustaka({ onChangePage }) {
                 gambar: value.Gambar,
                 Keterangan: value.Keterangan,
                 File: value.File,
+                Nama: value.Nama
               },
             }))
           );
@@ -279,7 +282,7 @@ export default function DaftarPustaka({ onChangePage }) {
   return (
     <>
      <div className="backSearch">
-          <h1>Daftar Pustaka</h1>
+          <h1>Knowledge Database</h1>
           <p>
             ASTRAtech memiliki banyak program studi, di dalam program studi
             terdapat kelompok keahlian yang biasa disebut dengan Kelompok
@@ -299,7 +302,7 @@ export default function DaftarPustaka({ onChangePage }) {
               <Input
                 ref={searchQuery}
                 forInput="pencarianPustaka"
-                placeholder="Cari Daftar Pustaka"
+                placeholder="Cari Knowledge Database"
                 style={{
                   border: "none",
                   width: "680px",
@@ -324,7 +327,7 @@ export default function DaftarPustaka({ onChangePage }) {
       <div className="d-flex flex-column">
         <div className="flex-fill">
         <div className="navigasi-layout-page">
-          <p className="title-kk">Daftar Pustaka</p>
+          <p className="title-kk">Knowledge Database</p>
           <div className="left-feature">
             <div className="status">
               <table>
@@ -337,7 +340,7 @@ export default function DaftarPustaka({ onChangePage }) {
                       ></i>
                     </td>
                     <td>
-                      <p>Pustaka Saya</p>
+                      <p>Milik Saya</p>
                     </td>
                   </tr>
                   <tr>
@@ -348,7 +351,7 @@ export default function DaftarPustaka({ onChangePage }) {
                       ></i>
                     </td>
                     <td>
-                      <p>Aktif/Publik</p>
+                      <p>Pustaka Bersama</p>
                     </td>
                   </tr>
                   <tr>

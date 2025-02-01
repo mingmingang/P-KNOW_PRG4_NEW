@@ -63,6 +63,10 @@ export default function PengerjaanTest({
     keterangan: "",
   });
 
+  console.log("daya a", quizType,
+  materiId,
+  quizId,
+  durasi);
   const [formDataRef2, setFormData2] = useState([]);
   console.log("id tr quiz di test", AppContext_test.dataIdTrQuiz);
   useEffect(() => {}, [quizType, materiId]);
@@ -642,6 +646,7 @@ export default function PengerjaanTest({
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true);
+      console.log("quiiii", quizId)
       try {
         const response = await axios.post(API_LINK + "Quiz/GetDataQuestion", {
           idQuiz: quizId,

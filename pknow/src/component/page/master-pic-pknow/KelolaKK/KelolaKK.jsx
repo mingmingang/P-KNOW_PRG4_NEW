@@ -102,18 +102,11 @@ export default function KelolaKK({ onChangePage }) {
     sort: "[Nama Kelompok Keahlian] asc",
     status: "Draft",
   });
+  const [activeFilterStatus, setActiveFilterStatus] = useState(""); // Default filter status
   
   const searchQuery = useRef();
   const searchFilterSort = useRef();
   const searchFilterStatus = useRef();
-
-  function handleSetCurrentPage(newCurrentPage) {
-    setIsLoading(true);
-    setCurrentFilter((prevFilter) => ({
-      ...prevFilter,
-      page: newCurrentPage,
-    }));
-  }
 
   function handleSetCurrentPageAktif(newCurrentPage) {
     setIsLoading(true);
@@ -146,36 +139,46 @@ export default function KelolaKK({ onChangePage }) {
       page: newCurrentPage,
     }));
   }
-
   function handleSearch() {
     setIsLoading(true);
+    const newQuery = searchQuery.current.value;
+    const newSort = searchFilterSort.current.value;
+    const newStatus = searchFilterStatus.current.value;
+  
+    // Perbarui activeFilterStatus
+    setActiveFilterStatus(newStatus);
+  
+    // Perbarui semua filter dengan nilai baru
     setCurrentFilterDraft((prevFilter) => ({
       ...prevFilter,
       page: 1,
-      query: searchQuery.current.value,
-      sort: searchFilterSort.current.value,
-      status: searchFilterStatus.current.value,
+      query: newQuery,
+      sort: newSort,
+      status: newStatus === "" ? "Draft" : newStatus,
     }));
+
     setCurrentFilterAktif((prevFilter) => ({
       ...prevFilter,
       page: 1,
-      query: searchQuery.current.value,
-      sort: searchFilterSort.current.value,
-      status: searchFilterStatus.current.value,
+      query: newQuery,
+      sort: newSort,
+      status: newStatus === "" ? "Aktif" : newStatus,
     }));
+    
     setCurrentFilterNonAktif((prevFilter) => ({
       ...prevFilter,
       page: 1,
-      query: searchQuery.current.value,
-      sort: searchFilterSort.current.value,
-      status: searchFilterStatus.current.value,
+      query: newQuery,
+      sort: newSort,
+      status: newStatus === "" ? "Tidak Aktif" : newStatus,
     }));
+
     setCurrentFilterMenunggu((prevFilter) => ({
       ...prevFilter,
       page: 1,
-      query: searchQuery.current.value,
-      sort: searchFilterSort.current.value,
-      status: searchFilterStatus.current.value,
+      query: newQuery,
+      sort: newSort,
+      status: newStatus === "" ? "Menunggu" : newStatus,
     }));
   }
 
@@ -371,10 +374,6 @@ export default function KelolaKK({ onChangePage }) {
 
   function handleSetStatus(data, status) {
     let keyProdi = data.prodi.key;
-    console.log("keyProdi", keyProdi)
-    console.log("pic id", data.pic.key);
-    console.log("prodi", data.prodi.key)
-    console.log("data kk", data);
     setIsError(false);
     let message;
     if (data.status === "Draft" && !data.pic.key)
@@ -398,7 +397,6 @@ export default function KelolaKK({ onChangePage }) {
           else {
             let messageResponse;
             if (status === "Menunggu") {
-              console.log("tesssss")
               UseFetch(API_LINK + "Utilities/createNotifikasi", {
                 p1 : 'SENTTOPRODI',
                 p2 : 'ID12346',
@@ -415,7 +413,6 @@ export default function KelolaKK({ onChangePage }) {
                 p13 : 'ROL02',
                 p14:  keyProdi,
               }).then((data) => {
-                console.log("notidikasi",data)
                 if (data === "ERROR" || data.length === 0) setIsError(true);
                 else{
                   messageResponse =
@@ -440,12 +437,22 @@ export default function KelolaKK({ onChangePage }) {
   }
 
   useEffect(() => {
-    getListKKAktif();
-    getListKKNonAktif();
-    getListKKMenunggu();
-    getListKKDraft();
-  }, [currentFilterAktif, currentFilterNonAktif, currentFilterMenunggu, currentFilterDraft]);
-  
+    if (activeFilterStatus === "Aktif") {
+      getListKKAktif();
+    } else if (activeFilterStatus === "Menunggu") {
+      getListKKMenunggu();
+    } else if (activeFilterStatus === "Draft") {
+      getListKKDraft();
+    } else if (activeFilterStatus === "Tidak Aktif") {
+      getListKKNonAktif();
+    }
+    else {
+      getListKKAktif();
+      getListKKMenunggu();
+      getListKKDraft();
+      getListKKNonAktif();
+    }
+  }, [activeFilterStatus, currentFilterAktif, currentFilterMenunggu, currentFilterDraft, currentFilterNonAktif]);
 
   async function handleDelete(id) {
     setIsError(false);
@@ -530,7 +537,7 @@ export default function KelolaKK({ onChangePage }) {
                     <td>
                       <i
                         className="fas fa-circle"
-                        style={{ color: "#b0b0b0" }}
+                        style={{ color: "orange" }}
                       ></i>
                     </td>
                     <td>
@@ -543,6 +550,14 @@ export default function KelolaKK({ onChangePage }) {
                     </td>
                     <td>
                       <p>Tidak Aktif</p>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <i className="fas fa-circle" style={{ color: "gray" }}></i>
+                    </td>
+                    <td>
+                      <p>Draft</p>
                     </td>
                   </tr>
                 </tbody>
@@ -566,7 +581,7 @@ export default function KelolaKK({ onChangePage }) {
                     label="Status"
                     type="none"
                     arrData={dataFilterStatus}
-                    defaultValue="Aktif"
+                    defaultValue="Semua"
                   />
                 </Filter>
               </div>
@@ -591,13 +606,110 @@ export default function KelolaKK({ onChangePage }) {
             />
           ) : (
             <>
+            {activeFilterStatus === "" && (
+              <>
               <div
+                className="card-keterangan"
+                style={{
+                  background: "#A7AAAC",
+                  borderRadius: "5px",
+                  padding: "10px 20px",
+                  width: "50%",
+                  marginLeft: "20px",
+                  marginBottom: "20px",
+                  color: "white",
+                  fontWeight: "bold",
+                }}
+              >
+                ↓ Data Draft / Belum dikirimkan ke Prodi / Belum dipublikasi
+              </div>
+              <div className="row mt-0 gx-4">
+              {currentDataDraft.length === 0 && (
+                <div className="" style={{margin:"5px 20px"}}>
+                <Alert type="warning" message="Tidak ada data!" />
+                </div>
+              )}
+              {console.log("length", currentDataDraft.length)}
+                  {currentDataDraft
+                  .filter((value) => value.config.footer === "Draft")
+                  .map((value) => (
+                    <div className="col-md-4 mb-4" key={value.data.id}>
+                      <CardKK
+                        key={value.data.id}
+                        config={value.config}
+                        data={value.data}
+                        onChangePage={onChangePage}
+                        onDelete={handleDelete}
+                        onChangeStatus={handleSetStatus}
+                      />
+                    </div>
+                  ))}
+                  </div>
+                   <div className="mb-4 d-flex justify-content-center">
+            <div className="d-flex flex-column ">
+              <Paging
+                pageSize={PAGE_SIZE}
+                pageCurrent={currentFilterDraft.page}
+                totalData={currentDataDraft[0]?.Count || 0}
+                navigation={handleSetCurrentPageDraft}
+              />
+            </div>
+          </div> 
+
+              <div
+                className="card-keterangan"
+                style={{
+                  background: "orange",
+                  borderRadius: "5px",
+                  padding: "10px 20px",
+                  width: "50%",
+                  marginLeft: "20px",
+                  marginBottom: "20px",
+                  color: "white",
+                  fontWeight: "bold",
+                }}
+              >
+                ↓ Menunggu PIC dari Prodi
+              </div>
+
+              <div className="row mt-0 gx-4">
+              {currentDataMenunggu.length === 0 && (
+                <div className="" style={{margin:"5px 20px"}}>
+                <Alert type="warning" message="Tidak ada data!" />
+                </div>
+              )}
+              {currentDataMenunggu
+                  .filter((value) => value.config.footer === "Menunggu")
+                  .map((value) => (
+                    <div className="col-md-4 mb-4" key={value.data.id}>
+                      <CardKK
+                        key={value.data.id}
+                        config={value.config}
+                        data={value.data}
+                        onChangePage={onChangePage}
+                        onChangeStatus={handleSetStatus}
+                      />
+                    </div>
+                  ))}
+                  </div>
+            <div className="mb-4 d-flex justify-content-center">
+            <div className="d-flex flex-column ">
+              <Paging
+                pageSize={PAGE_SIZE}
+                pageCurrent={currentFilterMenunggu.page}
+                totalData={currentDataMenunggu[0]?.Count || 0}
+                navigation={handleSetCurrentPageMenunggu}
+              />
+            </div>
+          </div>
+                
+          <div
                 className="card-keterangan"
                 style={{
                   background: "#61A2DC",
                   borderRadius: "5px",
                   padding: "10px 20px",
-                  width: "40%",
+                  width: "50%",
                   marginLeft: "20px",
                   marginBottom: "20px",
                   color: "white",
@@ -645,60 +757,18 @@ export default function KelolaKK({ onChangePage }) {
               />
             </div>
           </div>
+          </>
+          )}
 
-              <div
+{activeFilterStatus === "Draft" && (
+  <>
+    <div
                 className="card-keterangan"
                 style={{
                   background: "#A7AAAC",
                   borderRadius: "5px",
                   padding: "10px 20px",
-                  width: "40%",
-                  marginLeft: "20px",
-                  marginBottom: "20px",
-                  color: "white",
-                  fontWeight: "bold",
-                }}
-              >
-                ↓ Menunggu PIC dari Prodi
-              </div>
-
-              <div className="row mt-0 gx-4">
-              {currentDataMenunggu.length === 0 && (
-                <div className="" style={{margin:"5px 20px"}}>
-                <Alert type="warning" message="Tidak ada data!" />
-                </div>
-              )}
-              {currentDataMenunggu
-                  .filter((value) => value.config.footer === "Menunggu")
-                  .map((value) => (
-                    <div className="col-md-4 mb-4" key={value.data.id}>
-                      <CardKK
-                        key={value.data.id}
-                        config={value.config}
-                        data={value.data}
-                        onChangePage={onChangePage}
-                        onChangeStatus={handleSetStatus}
-                      />
-                    </div>
-                  ))}
-                  </div>
-            <div className="mb-4 d-flex justify-content-center">
-            <div className="d-flex flex-column ">
-              <Paging
-                pageSize={PAGE_SIZE}
-                pageCurrent={currentFilterMenunggu.page}
-                totalData={currentDataMenunggu[0]?.Count || 0}
-                navigation={handleSetCurrentPageMenunggu}
-              />
-            </div>
-          </div>
-                  <div
-                className="card-keterangan"
-                style={{
-                  background: "#A7AAAC",
-                  borderRadius: "5px",
-                  padding: "10px 20px",
-                  width: "60%",
+                  width: "50%",
                   marginLeft: "20px",
                   marginBottom: "20px",
                   color: "white",
@@ -738,15 +808,128 @@ export default function KelolaKK({ onChangePage }) {
               />
             </div>
           </div> 
-                
+  </>
+)}
 
+{activeFilterStatus === "Menunggu" && (
+  <>
+   <div
+                className="card-keterangan"
+                style={{
+                  background: "orange",
+                  borderRadius: "5px",
+                  padding: "10px 20px",
+                  width: "50%",
+                  marginLeft: "20px",
+                  marginBottom: "20px",
+                  color: "white",
+                  fontWeight: "bold",
+                }}
+              >
+                ↓ Menunggu PIC dari Prodi
+              </div>
+
+              <div className="row mt-0 gx-4">
+              {currentDataMenunggu.length === 0 && (
+                <div className="" style={{margin:"5px 20px"}}>
+                <Alert type="warning" message="Tidak ada data!" />
+                </div>
+              )}
+              {currentDataMenunggu
+                  .filter((value) => value.config.footer === "Menunggu")
+                  .map((value) => (
+                    <div className="col-md-4 mb-4" key={value.data.id}>
+                      <CardKK
+                        key={value.data.id}
+                        config={value.config}
+                        data={value.data}
+                        onChangePage={onChangePage}
+                        onChangeStatus={handleSetStatus}
+                      />
+                    </div>
+                  ))}
+                  </div>
+            <div className="mb-4 d-flex justify-content-center">
+            <div className="d-flex flex-column ">
+              <Paging
+                pageSize={PAGE_SIZE}
+                pageCurrent={currentFilterMenunggu.page}
+                totalData={currentDataMenunggu[0]?.Count || 0}
+                navigation={handleSetCurrentPageMenunggu}
+              />
+            </div>
+          </div>
+  </>
+)}
+
+{activeFilterStatus === "Aktif" && (
+  <>
+      <div
+                className="card-keterangan"
+                style={{
+                  background: "#61A2DC",
+                  borderRadius: "5px",
+                  padding: "10px 20px",
+                  width: "50%",
+                  marginLeft: "20px",
+                  marginBottom: "20px",
+                  color: "white",
+                  fontWeight: "bold",
+                }}
+              >
+                ↓ Data Aktif / Sudah Dipublikasikan
+              </div>
+              <div className="row mt-0 gx-4">
+              {currentDataAktif.length === 0 && (
+                <div className="" style={{margin:"5px 20px"}}>
+                <Alert type="warning" message="Tidak ada data!" />
+                </div>
+              )}
+                {currentDataAktif
+                  .filter(
+                    (value) =>
+                      value.config.footer !== "Draft" &&
+                      value.config.footer !== "Menunggu" && value.config.footer !== "Tidak Aktif"
+                  )
+
+                  .map((value) => (
+                    <>
+                    <div className="col-md-4 mb-4" key={value.data.id}>
+                      <CardKK
+                        key={value.data.id}
+                        title="Data Scientist"
+                        colorCircle="#61A2DC"
+                        config={value.config}
+                        data={value.data}
+                        onChangePage={onChangePage}
+                        onChangeStatus={handleSetStatus}
+                      />
+                    </div>
+                    </>
+                  ))}
+              </div>
+              <div className="mb-4 d-flex justify-content-center">
+            <div className="d-flex flex-column ">
+              <Paging
+                pageSize={PAGE_SIZE}
+                pageCurrent={currentFilterAktif.page}
+                totalData={currentDataAktif[0]?.Count || 0}
+                navigation={handleSetCurrentPageAktif}
+              />
+            </div>
+          </div>
+  </>
+)}
+
+        {activeFilterStatus === "Tidak Aktif" && (
+          <>
           <div
                 className="card-keterangan"
                 style={{
                   background: "red",
                   borderRadius: "5px",
                   padding: "10px 20px",
-                  width: "40%",
+                  width: "50%",
                   marginLeft: "20px",
                   marginBottom: "20px",
                   color: "white",
@@ -790,20 +973,10 @@ export default function KelolaKK({ onChangePage }) {
               />
             </div>
           </div>
-
+          </>
+          )}
             </>
           )}
-           {/* <div className="mb-4 d-flex justify-content-center">
-            <div className="d-flex flex-column ">
-              <Paging
-                pageSize={PAGE_SIZE}
-                pageCurrent={currentFilter.page}
-                totalData={currentData[0]?.Count || 0}
-                navigation={handleSetCurrentPage}
-              />
-            </div>
-          </div>
-           */}
         </div>
        
       </main>

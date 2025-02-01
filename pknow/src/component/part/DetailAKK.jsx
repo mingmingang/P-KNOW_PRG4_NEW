@@ -351,7 +351,7 @@ export default function DetailAKK({
               </p>
             </div>
             <p className="about" style={{fontSize:"22px"}}>Tentang Kelompok Keahlian</p>
-            <p className="deskripsi" style={{fontSize:"20px", width:"500px"}}>{withID.desc}</p>
+            <p className="deskripsi" style={{fontSize:"17px", width:"500px"}}>{withID.desc}</p>
             <div className="userProdi">
               <FontAwesomeIcon
                 icon={faUser}

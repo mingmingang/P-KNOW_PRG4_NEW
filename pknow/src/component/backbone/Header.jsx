@@ -38,6 +38,15 @@ export default function Header({
     "LJ Create": "fas fa-book-open",
   };
 
+  const getInitials = (name) => {
+    if (!name) return "";
+    const parts = name.split(" ");
+    return parts
+      .map((part) => part[0]?.toUpperCase())
+      .join("")
+      .slice(0, 2); // Ambil maksimal 2 karakter
+  };
+
   const handleConfirmYes = () => {
     window.location.replace("/logout"); // Redirect to login page
     setShowConfirmation(false); // Hide the confirmation dialog
@@ -84,6 +93,12 @@ export default function Header({
     fetchData();
   }, []);
 
+  const toggleMenu = () => {
+    setIsMenuVisible(!isMenuVisible);
+  };
+
+  const [isMenuVisible, setIsMenuVisible] = useState(false);
+
   return (
     <div>
       <nav>
@@ -100,6 +115,11 @@ export default function Header({
         {showMenu && (
           <div className="menu-profile-container">
             <div className="menu">
+                            {/* Hamburger Menu */}
+                            <div className="hamburger-menu" onClick={toggleMenu}>
+                <i className="fas fa-bars"></i>
+              </div>
+
               <ul className="menu-center">
                 {listMenu.map((menu) => {
                   if (menu.isHidden) return null;
@@ -117,12 +137,9 @@ export default function Header({
                           {menu.icon && <i className={menu.icon}></i>}
                           <span>{menu.head}</span>
                           {/* Render a down-chevron icon if the menu is not "Beranda" */}
-                          {menu.head !== "Beranda" && (
-                            <i
-                              className="fas fa-chevron-down"
-                              aria-hidden="true"
-                            ></i>
-                          )}
+                          {menu.head !== "Beranda" && menu.head !== "Knowledge Database" && (
+                              <i className="fas fa-chevron-down" aria-hidden="true"></i>
+                            )} 
                         </div>
                       </a>
 
@@ -161,11 +178,13 @@ export default function Header({
         <div className="profile">
           {/* Conditionally render user info if showUserInfo is true */}
           {showUserInfo && (
+            <>
             <div className="pengguna">
               <h3>{userProfile.name}</h3>
               <h4>{userProfile.role}</h4>
               <p>Terakhir Masuk: {userProfile.lastLogin}</p>
             </div>
+              </>
           )}
 
           <div
@@ -173,12 +192,31 @@ export default function Header({
             onMouseEnter={() => setProfileDropdownVisible(true)} // Show dropdown on hover
             onMouseLeave={() => setProfileDropdownVisible(false)} // Hide dropdown when hover ends
           >
-            {userProfile.photo ? (
-              <img src={userProfile.photo} alt="Profile" />
-            ) : (
-              <p></p>
+          {showUserInfo && (
+            <>
+         {userProfile.photo ? (
+                <img src={userProfile.photo} alt="Profile" />
+              ) : (
+                <div
+                  style={{
+                    width: "60px",
+                    height: "60px",
+                    borderRadius: "50%",
+                    backgroundColor: "#e0e7ff",
+                    color: "#1a73e8",
+                    fontWeight: "bold",
+                    fontSize: "24px",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    margin: "0 auto 10px",
+                  }}
+                >
+                  {getInitials(userProfile.name)}
+                </div>
+              )}
+            </>
             )}
-
             {isProfileDropdownVisible && (
               <ul className="profile-dropdown">
                 <li>

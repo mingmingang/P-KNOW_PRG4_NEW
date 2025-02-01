@@ -375,9 +375,9 @@ export default function ProgramIndex({ onChangePage }) {
           status: status,
         })
           .then((data) => {
+            console.log("value", data)
             if (data === "ERROR" || data.length === 0) setIsError(true);
             else if (data[0].hasil === "ERROR PROGRAM DRAFT") {
-              console.log(data);
               setIsError({
                 error: true,
                 message:
@@ -503,7 +503,7 @@ export default function ProgramIndex({ onChangePage }) {
                           </div>
                         </div>
                         
-                        <p className="lh-sm mt-4">{currentData.Deskripsi}</p>
+                        <p className=" mt-4" style={{textAlign:"justify"}}>{currentData.Deskripsi}</p>
                         <h5 className="py-2"  style={{color:"#0A5EA8"}}>
                           Daftar Program dalam Kelompok Keahlian{" "}
                           <strong>

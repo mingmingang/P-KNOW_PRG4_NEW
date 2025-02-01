@@ -163,13 +163,8 @@ export default function SubKKIndex({ onChangePage }) {
     };
   }, []);
 
-  // useEffect(() => {
-  //   getKKAndPrograms();
-  // }, []);
-
   return (
     <>
-      {/* {isLoading && <Loading />} */}
       <Search
         title="Kelola Materi"
         description="Program ini terdiri dari berbagai kategori yang dirancang untuk mempermudah pengelompokan materi sesuai dengan topik atau tema tertentu. Setiap kategori memiliki sejumlah materi yang dapat Anda kelola secara fleksibel, mulai dari menambah, mengedit, hingga menghapus materi sesuai kebutuhan."

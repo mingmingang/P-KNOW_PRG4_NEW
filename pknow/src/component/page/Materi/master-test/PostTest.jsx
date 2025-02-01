@@ -66,10 +66,11 @@ export default function MasterTestPreTest({
             onChangePage(
               "pengerjaantest",
               "Posttest",
-              materiId,
+              currentData.materiId,
               currentData.quizId,
               currentData.timer,
-              AppContext_test.dataIdTrQuiz
+              AppContext_test.dataIdTrQuiz,
+              currentData.timer
             );
           } else {
             setIsError((prevError) => ({

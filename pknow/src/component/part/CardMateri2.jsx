@@ -44,7 +44,8 @@ function CardMateri({
     AppContext_test.materiId = book.Key;
     AppContext_master.materiId = book.Key;
     AppContext_test.refreshPage += 1;
-    onBacaMateri("pengenalan", true, AppContext_master.materiId, true);
+    console.log("materiii nihh", AppContext_master.materiId)
+    onBacaMateri("pengenalan", true, book.Key, true);
   };
 
   const handleReviewJawaban = (book) => {
@@ -82,7 +83,8 @@ function CardMateri({
                   <div>
                     <h3
                       className="text-xl font-bold text-blue-600 mt-3"
-                      style={{ fontSize: "20px", textAlign: "justify" }}
+                      style={{ fontSize: "20px", textAlign: "justify", cursor:"pointer" }}
+                      onClick={() => handleBacaMateri(book)}
                     >
                       {book.Judul}
                     </h3>
@@ -123,7 +125,7 @@ function CardMateri({
                           color: "black",
                         }}
                       />
-                      {book.Uploader} •{" "}
+                      {book.Nama} •{" "}
                       {book.Creadate
                         ? new Intl.DateTimeFormat("id-ID", {
                             day: "numeric",
@@ -235,7 +237,7 @@ function CardMateri({
                       <button
                         className="btn btn-sm"
                         style={{ color: "red" }}
-                        title="Review Jawaban"
+                        title="Hapus Materi"
                         onClick={() => handleDeleteMateri(book)}
                       >
                         <i
@@ -243,11 +245,12 @@ function CardMateri({
                           style={{ fontSize: "20px" }}
                         ></i>
                       </button>
+                      
                     </>
                   ) : (
                     <div className="">
                       <button
-                        className="btn btn-outline-primary mt-4 ml-2"
+                        className="btn btn-outline-primary mt-2 ml-2"
                         type="button"
                         onClick={() => handleBacaMateri(book)}
                       >

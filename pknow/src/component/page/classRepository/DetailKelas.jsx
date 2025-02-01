@@ -167,7 +167,7 @@ export default function DetailKelas({ withID, onChangePage }) {
     const doc = new jsPDF('landscape');
     
     // Set up the certificate layout
-    doc.setFont('poppins', 'normal');
+    doc.setFont('poppins', 'bold');
     doc.setFontSize(28);
     doc.text('Certificate of Completion', 105, 40, null, null, 'center');
 

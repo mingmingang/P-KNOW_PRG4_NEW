@@ -115,12 +115,12 @@ footer {
 /* iPhone and Small Mobile Screens */
 @media (max-width: 480px) {
     footer {
-        padding: 20px 0;
+        padding: 30px;
         text-align: left;
     }
 
     .footer-container {
-        padding: 0 1em;
+        padding: 0 20px;
     }
 
     .footer-section {

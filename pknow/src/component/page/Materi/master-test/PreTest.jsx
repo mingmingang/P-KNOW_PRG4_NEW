@@ -37,6 +37,10 @@ export default function MasterTestPreTest({
   const [sectionData, setSectionData] = useState([]);
   const [error, setError] = useState(null);
 
+  console.log("materi", 
+    materiId,
+    )
+
   function onStartTest() {
     try {
       axios
@@ -50,14 +54,16 @@ export default function MasterTestPreTest({
           const data = response.data;
           if (data[0].hasil === "OK") {
             updateProgres();
+            console.log("dataa quiz", currentData)
             AppContext_test.dataIdTrQuiz = data[0].tempIDAlt;
             onChangePage(
               "pengerjaantest",
               "Pretest",
-              materiId,
+              currentData.materiId,
               currentData.quizId,
               currentData.timer,
-              AppContext_test.dataIdTrQuiz
+              AppContext_test.dataIdTrQuiz,
+              currentData.timer
             );
           } else {
             setIsError((prevError) => ({
@@ -416,59 +422,6 @@ export default function MasterTestPreTest({
                 />
               </div>
               <hr style={{ marginRight: "20px" }} />
-              {/* <div className="table-container">
-      <h3>Riwayat</h3>
-      {error ? (
-        <p>{error}</p>
-      ) : (
-        <table className="dynamic-table mb-4">
-        <thead>
-          <tr>
-            <th>No</th> 
-            <th>Tanggal Quiz</th>
-            <th>Nilai</th>
-            <th>Keterangan</th>
-           
-          </tr>
-        </thead>
-        <tbody>
-  {dataDetailQuiz.length > 0 ? (
-    dataDetailQuiz.map((item, index) => (
-      <tr
-        key={index}
-        style={{
-          backgroundColor: item.Nilai < 75 ? "#f44336" : "#4CAF50", // Merah atau Hijau
-          color: "white", // Warna teks selalu putih
-        }}
-      >
-        <td>{index + 1}</td>
-        <td>
-          {new Intl.DateTimeFormat("id-ID", {
-            day: "numeric",
-            month: "long",
-            year: "numeric",
-            hour: "2-digit",
-            minute: "2-digit",
-            hour12: false,
-          }).format(new Date(item["Tanggal Quiz"]))}
-        </td>
-        <td>{item.Nilai}</td>
-        <td>{item.Keterangan}</td>
-      </tr>
-    ))
-  ) : (
-    <tr>
-      <td colSpan="5" style={{ textAlign: "center" }}>
-        Tidak ada data riwayat.
-      </td>
-    </tr>
-  )}
-</tbody>
-
-      </table>
-      
-      )}
-    </div> */}
 
               <div className="">
                 <div className="mb-4">

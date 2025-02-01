@@ -14,8 +14,8 @@
 /* Header navigation bar */
 nav {
     display: flex;
-    align-items: center;
     justify-content: space-between;
+    align-items: center;
     padding: 0 5%;
     background-color: white;
     position: fixed;
@@ -125,9 +125,6 @@ nav {
     display: block; /* Show dropdown on hover */
 }
 
-
-
-
 /* Profile section styling */
 .profile {
     display: flex;
@@ -143,7 +140,6 @@ nav {
     text-align: right;
     font-size: 1em;
     color: var(--primary-color);
-
 }
 
 .pengguna h4 {
@@ -169,7 +165,6 @@ nav {
     margin-top: -10px;
 }
 
-
 .profile-dropdown {
     position: absolute;
     background: white; 
@@ -193,18 +188,77 @@ nav {
 }
 
 /* Responsive design */
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
+    /* Menu Styling for Tablets and Below */
     .menu-center {
-        gap: 10px;
+        gap: 20px;
+    }
+
+    .menu-center li {
         font-size: 0.9em;
     }
-    .profile .pengguna h3,
-    .profile .pengguna h4,
-    .profile .pengguna p {
-        font-size: 0.8em;
+
+    .fotoprofil img {
+        width: 50px;
+        height: 50px;
     }
+
+    .logo img {
+        width: 150px;
+    }
+
+    .menu-profile-container {
+        flex-direction: column;
+    }
+}
+
+/* For Mobile */
+@media (max-width: 768px) {
+    .menu-center {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+    }
+
+    .menu-center li {
+        font-size: 1em;
+    }
+
+    .profile {
+        margin-top: 10px;
+    }
+
     .fotoprofil img {
         width: 40px;
         height: 40px;
     }
+
+    .hamburger-menu {
+        display: block; /* Show hamburger menu on mobile */
+      }
+
+      
+    /* Implement hamburger menu for mobile view */
+    .hamburger-menu {
+        display: block;
+        cursor: pointer;
+        color: black;
+    }
+
+    .menu-center {
+        display: none;
+    }
+
+    .hamburger-menu.active + .menu-center {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+}
+
+/* Add hamburger menu icon */
+.hamburger-menu {
+    display: none;
+    font-size: 24px;
+    cursor: pointer;
 }

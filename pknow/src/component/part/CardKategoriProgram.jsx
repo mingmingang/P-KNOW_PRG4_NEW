@@ -1,6 +1,9 @@
-import React, { forwardRef } from "react";
+import React, { forwardRef, useState } from "react";
 import Icon from "./Icon";
 import Input from "./Input";
+import AppContext_master from "../page/Materi/master-proses/MasterContext.jsx";
+import AppContext_test from "../page/Materi/master-test/TestContext.jsx";
+const MAX_DESCRIPTION_LENGTH = 100;
 
 const CardKategoriProgram = ({
   data,
@@ -11,6 +14,10 @@ const CardKategoriProgram = ({
 }) => {
   const handleStatusChange = (data, status) => {
     onChangeStatus(data, status);
+  };
+  const [expandDeskripsi, setExpandDeskripsi] = useState(false);
+  const handleExpandDescription = () => {
+    setExpandDeskripsi(!expandDeskripsi);
   };
 
   const handleDeleteClick = (data) => {
@@ -33,6 +40,7 @@ const CardKategoriProgram = ({
         ) : (
           ""
         )}
+        {console.log("dataa deskripsi", data)}
         <div className="card-body">
           <div className="d-flex justify-content-between">
             <h6 className="card-title">
@@ -51,9 +59,44 @@ const CardKategoriProgram = ({
           </div>
           <div className="d-flex mt-2">
             <div className="me-2 bg-primary ps-1"></div>
-            <p className="card-subtitle" style={{ textAlign: "justify" }}>
-              {data.Deskripsi}
-            </p>
+             <div className="description-text">
+                  <p
+                    className="mb-0"
+                    style={{
+                      WebkitLineClamp: 2,
+                      WebkitBoxOrient: "vertical",
+                      maxHeight: expandDeskripsi ? "none" : "75px",
+                      overflow: "hidden",
+                      textAlign:"justify"
+                    }}
+                  >
+                   {data.Deskripsi && data.Deskripsi.length > MAX_DESCRIPTION_LENGTH && !expandDeskripsi ? (
+                      <>
+                        {data.Deskripsi.slice(0, MAX_DESCRIPTION_LENGTH) + " ..."}
+                        <a
+                          className="btn btn-link text-decoration-none p-0"
+                          onClick={handleExpandDescription}
+                          style={{ fontSize: "12px", textAlign:"justify" }}
+                        >
+                          Baca Selengkapnya <Icon name={"caret-down"} />
+                        </a>
+                      </>
+                    ) : (
+                      <>
+                        {data.Deskripsi}
+                        {expandDeskripsi && (
+                          <a
+                            className="btn btn-link text-decoration-none p-0"
+                            onClick={handleExpandDescription}
+                            style={{ fontSize: "12px", textAlign:"justify" }}
+                          >
+                            Tutup <Icon name={"caret-up"} />
+                          </a>
+                        )}
+                      </>
+                    )}
+                  </p>
+                </div>
           </div>
           {data.Status === "Draft" ? (
             <div className="d-flex justify-content-end mt-3">
@@ -80,7 +123,11 @@ const CardKategoriProgram = ({
               />
             </div>
           ) : (
-            <div className="d-flex justify-content-end mt-3">
+            <div className="d-flex justify-content-end">
+              <div className="d-flex justify-content-end">
+              <button onClick={() => onChangePage("materi", AppContext_test.KategoriIdByKK = data.Key, AppContext_master.KategoriIdByKK = data.Key, data={data})} style={{border:"none", background:"#0E6EFE", padding:"5px 10px", color:"white", marginTop:"10px", borderRadius:"10px"}}>Lihat Materi</button>
+              </div>
+              <div className="mt-3">
               <Icon
                 name="edit"
                 type="Bold"
@@ -88,6 +135,7 @@ const CardKategoriProgram = ({
                 title="Ubah data"
                 onClick={() => onChangePage("editKategori", data)}
               />
+              </div>
               {/* <Icon
                 name="check"
                 type="Bold"
@@ -95,7 +143,7 @@ const CardKategoriProgram = ({
                 title="Sudah di Publikasi"
               /> */}
               <div
-                class="form-check form-switch py-0 ms-2"
+                class="form-check form-switch py-0 ms-2 mt-3"
                 style={{ width: "fit-content" }}
               >
                 <Input

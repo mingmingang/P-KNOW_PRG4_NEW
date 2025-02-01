@@ -10,7 +10,7 @@ import ReactPlayer from "react-player";
 import WordViewer from "./DocumentViewer";
 import ExcelViewer from "./ExcelViewer";
 import axios from "axios";
-import { decode } from "html-entities";
+import { decode } from "he";
 
 
 
@@ -108,7 +108,7 @@ export default function DetailDaftarPustaka({ onChangePage, withID }) {
         >
           <img src={backPage} alt="Back" className="back" />
         </button>
-        <h1 className="title">Daftar Pustaka</h1>
+        <h1 className="title">Knowledge Database</h1>
       </div>
       <div className="daftar-pustaka-content">
         <div className="pustaka-layout" style={{ display: "flex" }}>
@@ -128,7 +128,7 @@ export default function DetailDaftarPustaka({ onChangePage, withID }) {
           <div className="detail-daftar-pustaka">
             <div className="detail-informasi-daftar-pustaka">
               <h3>Judul</h3>
-              <p>{fileData.judul}</p>
+              <p>{decode(fileData.judul)}</p>
             </div>
             <div className="detail-informasi-daftar-pustaka">
               <h3>Deskripsi</h3>

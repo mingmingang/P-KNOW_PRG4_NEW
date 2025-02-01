@@ -389,7 +389,6 @@ export default function MasterMateriReviewJawaban({
       idTransaksi: transaksiId,
       value: value,
     };
-    console.log("detaill", detail)
     setFormDataReview([...formDataReview, detail]);
 
     setCurrentData(
