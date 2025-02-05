@@ -58,3 +58,8 @@
     border-radius: 15px;
     box-shadow: 0px 0px 20px 0px rgba(10, 95, 168, 0.20);
   }
+
+  /* CSS untuk menyembunyikan scrollbar */
+.scroll-container::-webkit-scrollbar {
+  display: none; /* Sembunyikan scrollbar */
+}

@@ -388,15 +388,21 @@ export default function MasterTestPreTest({
                     <div className="mt-2"></div>
                   </div>
                   <h2
-                    className="mb-4 primary mt-4"
+                    className="mb-0 primary mt-4"
                     style={{ color: "#002B6C", fontWeight: "600" }}
                   >
                     {currentData.quizDeskripsi}
-                    <h6 className="mt-2" style={{ fontWeight: "400" }}>
+                  
+                  </h2>
+                  <br />
+                    <h6 className="mb-0" style={{ color: "#002B6C" }}>
+                      Dari {currentData.NamaKK} - {currentData.Prodi}
+                    </h6>
+                    <br />
+                    <h6 className="mb-2" style={{ color: "#002B6C", marginTop:"-10px" }}>
                       Oleh {currentData.Nama} -{" "}
                       {formatDate(currentData.createdDate)}
                     </h6>
-                  </h2>
                   <p
                     className="mb-3"
                     style={{ textAlign: "justify", width: "98%" }}

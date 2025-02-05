@@ -49,3 +49,17 @@ main{background-color: white;}
   margin-top: -14px;
   font-size: 15px;
 }
+
+.total-score-container {
+  position: fixed;
+  top: 90vh; /* Sesuaikan jarak dari atas */
+  right: 20px; /* Sesuaikan jarak dari kanan */
+  background-color: #0A5EA8;
+  color: white;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  z-index: 1000; /* Pastikan elemen ini di atas elemen lain */
+  font-weight: 600;
+}

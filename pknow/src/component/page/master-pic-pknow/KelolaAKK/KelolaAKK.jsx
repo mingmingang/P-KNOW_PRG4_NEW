@@ -11,6 +11,7 @@ import Loading from "../../../part/Loading";
 import Paging from "../../../part/Paging";
 import Input from "../../../part/Input";
 import "../../../../style/Search.css";
+import { data } from "jquery";
 
 const dataFilterSort = [
   { Value: "[Nama Kelompok Keahlian] asc", Text: "Nama Kelompok Keahlian [↑]" },
@@ -146,6 +147,8 @@ export default function KelolaAKK({ onChangePage }) {
     });
   }
 
+  const [activeTab, setActiveTab] = useState("Semua");
+
   return (
     <div className="app-container">
       <main>
@@ -193,6 +196,43 @@ export default function KelolaAKK({ onChangePage }) {
             </div>
           </div>
         </div>
+        <div style={{ display: "flex", gap: "15px", marginBottom: "20px", marginLeft: "80px",  overflowX: "auto", whiteSpace: "nowrap", width:"100%", maxWidth:"1270px"  }}  className="scroll-container">
+  {[
+    "Semua",
+    "Pembuatan Peralatan dan Perkakas Produksi",
+    "Teknik Produksi dan Proses Manufaktur",
+    "Manajemen Informatika",
+    "Mesin Otomotif",
+    "Mekatronika",
+    "Teknologi Konstruksi Bangunan Gedung",
+    "Teknologi Rekayasa Pemeliharaan Alat Berat",
+    "Teknologi Rekayasa Logistik",
+    "Teknologi Rekayasa Perangkat Lunak"
+  ].map((tab) => (
+    <div key={tab}>
+      <button
+        onClick={() => setActiveTab(tab)}
+        style={{
+          padding: "10px 20px",
+          borderRadius: "5px",
+          backgroundColor: activeTab === tab ? "#0A5EA8" : "#E9ECEF",
+          color: activeTab === tab ? "#fff" : "#333",
+          border: "none",
+          cursor: "pointer",
+          minWidth: tab === "Semua" ? "200px" : "400px",
+          maxWidth: activeTab === "Semua" ? "200px" : "600px",  // Set min width for consistency
+          height: "40px", // Set height for consistency
+          display: "flex",
+          justifyContent: "center", // Center text horizontally
+          alignItems: "center", // Center text vertically
+        }}
+      >
+        {tab}
+      </button>
+    </div>
+  ))}
+</div>
+          {console.log("current data", currentData)}
       <div className="container">
       <div
                 className="card-keterangan"
@@ -218,6 +258,7 @@ export default function KelolaAKK({ onChangePage }) {
           {currentData
             .filter(
               (value) =>
+                (activeTab === "Semua" || value.Prodi === activeTab) &&
                 value.config.footer !== "Draft" &&
                 value.config.footer !== "Menunggu" &&
                 value.config.footer !== "Tidak Aktif"
@@ -240,9 +281,19 @@ export default function KelolaAKK({ onChangePage }) {
             ))}
           </div>
         )}
+        {currentData
+  .filter(
+    (value) =>
+      (activeTab === "Semua" || value.Prodi === activeTab) &&
+      value.config.footer !== "Draft" &&
+      value.config.footer !== "Menunggu" &&
+      value.config.footer !== "Tidak Aktif"
+  ).length === 0 && (
+    <div className="ml-3">
+      <Alert type="warning" message="Tidak ada data yang cocok dengan pilihan Anda!" />
+    </div>
+  )}
      <div className="mb-4 d-flex justify-content-center">
-      
-      
               <Paging
                 pageSize={PAGE_SIZE}
                 pageCurrent={currentFilter.page}

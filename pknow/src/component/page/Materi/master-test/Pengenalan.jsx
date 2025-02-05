@@ -208,6 +208,7 @@ export default function MasterTestIndex({
                   }}
                   className="overflow-y-auto"
                 >
+                  {console.log("dataaa", currentData)}
                   <div className="align-items-center mb-3">
                     <h1 style={{ color: "#002B6C" }} className="mb-0">
                       {" "}
@@ -215,6 +216,10 @@ export default function MasterTestIndex({
                     </h1>
                     <br />
                     <h6 className="mb-0" style={{ color: "#002B6C" }}>
+                      Dari {currentData[0].NamaKK} - {currentData[0].Prodi}
+                    </h6>
+                    <br />
+                    <h6 className="mb-0" style={{ color: "#002B6C", marginTop:"-10px" }}>
                       Oleh {currentData[0].Nama} -{" "}
                       {formatDate(currentData[0].Creadate)}
                     </h6>

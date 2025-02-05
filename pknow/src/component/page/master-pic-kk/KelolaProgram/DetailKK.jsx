@@ -42,7 +42,7 @@ export default function KKDetailProgram({ onChangePage, withID }) {
 
   const handleConfirmYes = () => {
     setShowConfirmation(false); 
-    onChangePage("index");
+    window.location.reload();
   };
 
 

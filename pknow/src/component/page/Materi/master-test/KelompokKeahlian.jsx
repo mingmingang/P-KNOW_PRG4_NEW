@@ -211,6 +211,7 @@ export default function KK({ onChangePage }) {
    
   }, [currentFilterAktif]);
   
+  const [activeTab, setActiveTab] = useState("Semua");
 
   return (
     <div className="app-container">
@@ -276,6 +277,43 @@ export default function KK({ onChangePage }) {
             </div>
           </div>
         </div>
+
+        <div style={{ display: "flex", gap: "15px", marginBottom: "20px", marginLeft: "80px",  overflowX: "auto", whiteSpace: "nowrap", width:"100%", maxWidth:"1270px"  }}  className="scroll-container">
+  {[
+    "Semua",
+    "Pembuatan Peralatan dan Perkakas Produksi",
+    "Teknik Produksi dan Proses Manufaktur",
+    "Manajemen Informatika",
+    "Mesin Otomotif",
+    "Mekatronika",
+    "Teknologi Konstruksi Bangunan Gedung",
+    "Teknologi Rekayasa Pemeliharaan Alat Berat",
+    "Teknologi Rekayasa Logistik",
+    "Teknologi Rekayasa Perangkat Lunak"
+  ].map((tab) => (
+    <div key={tab}>
+      <button
+        onClick={() => setActiveTab(tab)}
+        style={{
+          padding: "10px 20px",
+          borderRadius: "5px",
+          backgroundColor: activeTab === tab ? "#0A5EA8" : "#E9ECEF",
+          color: activeTab === tab ? "#fff" : "#333",
+          border: "none",
+          cursor: "pointer",
+          minWidth: tab === "Semua" ? "200px" : "400px",
+          maxWidth: activeTab === "Semua" ? "200px" : "600px",  // Set min width for consistency
+          height: "40px", // Set height for consistency
+          display: "flex",
+          justifyContent: "center", // Center text horizontally
+          alignItems: "center", // Center text vertically
+        }}
+      >
+        {tab}
+      </button>
+    </div>
+  ))}
+</div>
         
         <div className="container">
           {isEmpty ? (
@@ -294,6 +332,7 @@ export default function KK({ onChangePage }) {
                 {currentDataAktif
                   .filter(
                     (value) =>
+                      (activeTab === "Semua" || value.Prodi === activeTab) &&
                       value.config.footer !== "Draft" &&
                       value.config.footer !== "Menunggu" && value.config.footer !== "Tidak Aktif"
                   )
@@ -317,6 +356,18 @@ export default function KK({ onChangePage }) {
                     </>
                   ))}
               </div>
+              {currentData
+  .filter(
+    (value) =>
+      (activeTab === "Semua" || value.Prodi === activeTab) &&
+      value.config.footer !== "Draft" &&
+      value.config.footer !== "Menunggu" &&
+      value.config.footer !== "Tidak Aktif"
+  ).length === 0 && (
+    <div className="ml-3">
+      <Alert type="warning" message="Tidak ada data yang cocok dengan pilihan Anda!" />
+    </div>
+  )}
               <div className="mb-4 d-flex justify-content-center">
             <div className="d-flex flex-column ">
               <Paging

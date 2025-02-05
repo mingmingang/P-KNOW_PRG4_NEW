@@ -289,6 +289,8 @@ export default function MasterPostTestEdit({ onChangePage, withID }) {
     }
   }
 
+  
+
   //INI SAHAR
   // Call the combined function when the component mounts
   useEffect(() => {
@@ -1683,6 +1685,9 @@ export default function MasterPostTestEdit({ onChangePage, withID }) {
                     />
                   ) : null}
                 </div>
+                <div className="total-score-container">
+          Total Skor: {validateTotalPoints()}
+        </div>
               </div>
             ) : (
               <>

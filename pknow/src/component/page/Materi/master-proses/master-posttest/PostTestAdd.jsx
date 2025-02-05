@@ -1943,6 +1943,9 @@ export default function MasterPostTestAdd({ onChangePage }) {
           </div>
         </div>
       </form>
+      <div className="total-score-container">
+          Total Skor: {validateTotalPoints()}
+        </div>
       {showConfirmation && (
         <Konfirmasi
           title={isBackAction ? "Konfirmasi Kembali" : "Konfirmasi Simpan"}

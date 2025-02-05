@@ -22,6 +22,7 @@ import { decryptId } from "../../../../util/Encryptor";
 import { Stepper, Step, StepLabel, Box, colors } from "@mui/material";
 import BackPage from "../../../../../assets/backPage.png";
 import Konfirmasi from "../../../../part/Konfirmasi";
+import "../../../../../index.css";
 
 const steps = [
   "Pengenalan",
@@ -1698,6 +1699,9 @@ export default function MasterPreTestEdit({ onChangePage, withID }) {
                     </div>
                   ) : null}
                 </div>
+                <div className="total-score-container">
+          Total Skor: {validateTotalPoints()}
+        </div>
               </div>
             ) : (
               <>
@@ -1758,6 +1762,7 @@ export default function MasterPreTestEdit({ onChangePage, withID }) {
             )}
           </div>
         </div>
+       
 
         {showConfirmation && (
           <Konfirmasi

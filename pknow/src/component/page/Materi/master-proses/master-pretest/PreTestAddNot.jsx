@@ -679,7 +679,26 @@ export default function MasterPreTestAdd({ onChangePage }) {
   const handleReset = () => {
     setActiveStep(0);
   };
+  
+  const validateTotalPoints = () => {
+    const totalPoints = formContent.reduce((total, question) => {
+      if (["Essay", "Praktikum"].includes(question.type)) {
+        return total + parseInt(question.point || 0, 10);
+      } else if (question.type === "Pilgan") {
+        return (
+          total +
+          question.options.reduce(
+            (optTotal, opt) => optTotal + parseInt(opt.point || 0, 10),
+            0
+          )
+        );
+      }
+      return total;
+    }, 0);
 
+    return totalPoints;
+  };
+  
   if (isLoading) return <Loading />;
 
   return (
@@ -1093,6 +1112,9 @@ export default function MasterPreTestAdd({ onChangePage }) {
               </div>
             ))}
           </div>
+        </div>
+        <div className="total-score-container">
+          Total Skor: {validateTotalPoints()}
         </div>
         <div className="float my-4 mx-1">
           {/* <Button

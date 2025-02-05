@@ -253,31 +253,6 @@ export default function MasterPreTestAdd({ onChangePage }) {
     }
   };
 
-  // const handleDeleteOption = (questionIndex, optionIndex) => {
-  //   const optionValue = formContent[questionIndex].options[optionIndex].value;
-
-  //   setFormContent((prevFormContent) => {
-  //     const updatedFormContent = [...prevFormContent];
-  //     updatedFormContent[questionIndex].options.splice(optionIndex, 1);
-  //     return updatedFormContent;
-  //   });
-
-  //   setSelectedOptions((prevSelected) => {
-  //     const updatedSelected = [...prevSelected];
-
-  //     if (formContent[questionIndex].jenis === "Tunggal") {
-  //       if (updatedSelected[questionIndex] === optionValue) {
-  //         updatedSelected[questionIndex] = "";
-  //       }
-  //     } else if (formContent[questionIndex].jenis === "Jamak") {
-  //       updatedSelected[questionIndex] = updatedSelected[questionIndex].filter(
-  //         (v) => v !== optionValue
-  //       );
-  //     }
-
-  //     return updatedSelected;
-  //   });
-  // };
 
   const handleDeleteOption = (questionIndex, optionIndex) => {
     const updatedFormContent = [...formContent];
@@ -1029,6 +1004,25 @@ export default function MasterPreTestAdd({ onChangePage }) {
       .filter(Boolean);
 
     setFormContent((prevQuestions) => [...prevQuestions, ...questions]);
+  };
+
+  const validateTotalPoints = () => {
+    const totalPoints = formContent.reduce((total, question) => {
+      if (["Essay", "Praktikum"].includes(question.type)) {
+        return total + parseInt(question.point || 0, 10);
+      } else if (question.type === "Pilgan") {
+        return (
+          total +
+          question.options.reduce(
+            (optTotal, opt) => optTotal + parseInt(opt.point || 0, 10),
+            0
+          )
+        );
+      }
+      return total;
+    }, 0);
+
+    return totalPoints;
   };
 
   const handleFileChange = async (e, index) => {
@@ -1888,6 +1882,11 @@ export default function MasterPreTestAdd({ onChangePage }) {
           </div>
         </div>
       </form>
+
+      <div className="total-score-container">
+          Total Skor: {validateTotalPoints()}
+        </div>
+        
       {showConfirmation && (
         <Konfirmasi
           title={isBackAction ? "Konfirmasi Kembali" : "Konfirmasi Simpan"}

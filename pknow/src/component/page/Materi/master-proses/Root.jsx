@@ -43,6 +43,8 @@ import MasterTestPostTest from "../master-test/PostTest";
 import MasterTestPreTest from "../master-test/PreTest";
 import MasterTestPengerjaanTest from "../master-test/Test";
 
+import KKDetailProgram from "../../master-pic-kk/KelolaProgram/DetailKK";
+
 //
 import "../../../../style/Materi.css";
 
@@ -253,6 +255,14 @@ export default function MasterProses() {
         );
       case "kk":
         return <PilihKelompokKeahlian onChangePage={handleSetPageMode} />;
+
+        case "detailPublish":
+          return (
+            <KKDetailProgram
+              onChangePage={handleSetPageMode}
+              withID={dataID}
+            />
+          );
     }
   }
 
@@ -272,10 +282,12 @@ export default function MasterProses() {
     setMateriId(key);
     setIsOpen(isOpen);
     setQuizType(quizType);
+    setDataID(dataReady);
   }
 
   function handleSetPageMode(newPageMode, quizType = "", key = "", quizKey = "", durasi = "") {
     setPageMode(newPageMode);
+    setDataID(quizType);
     setQuizType(quizType);
     setMateriId(key);
     setQuizId(quizKey);

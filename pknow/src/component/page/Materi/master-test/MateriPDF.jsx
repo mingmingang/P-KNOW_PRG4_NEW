@@ -86,7 +86,7 @@ export default function MasterTestIndex({ onChangePage,materiId }) {
           }
         );
         if (response.data.length !== 0) {
-          const { File_pdf, Judul, Nama, Creadate } = response.data[0];
+          const { File_pdf, Judul, Nama, Creadate, NamaKK, Prodi } = response.data[0];
 
           // Validasi File_pdf dan Judul
           if (!File_pdf || !Judul) {
@@ -104,7 +104,9 @@ export default function MasterTestIndex({ onChangePage,materiId }) {
             uploader: Nama || "Tidak ada uploader",
             creadate: Creadate || "Tanggal tidak tersedia",
             formattedFileName, // Tambahkan nama file yang diformat
-            fileExtension: ext, // Tambahkan ekstensi file
+            fileExtension: ext,
+            namaKK: NamaKK,
+            prodi : Prodi // Tambahkan ekstensi file
           });
 
           setFileExtension(ext);
@@ -258,6 +260,11 @@ return (
           <>
           <div style={{  marginTop:"100px", marginBottom:"80px" }}>
            <h1 style={{ fontWeight: 600, color: "#002B6C" }} className="ml-4">Materi {fileData.judul}</h1>
+           <br />
+                    <h6 className="mb-0 ml-4" style={{ color: "#002B6C" }}>
+                      Dari {fileData.namaKK} - {fileData.prodi}
+                    </h6>
+                    <br />
                         <h6 style={{ color: "#002B6C" }} className="ml-4">
                             Oleh {fileData.uploader} - {formatDate(fileData.creadate)}
                         </h6>

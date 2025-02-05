@@ -883,6 +883,26 @@ export default function MasterPostTestEditNot({ onChangePage, withID }) {
     onChangePage(content);
 };
 
+const validateTotalPoints = () => {
+  const totalPoints = formContent.reduce((total, question) => {
+    if (["Essay", "Praktikum"].includes(question.type)) {
+      return total + parseInt(question.point || 0, 10);
+    } else if (question.type === "Pilgan") {
+      return (
+        total +
+        question.options.reduce(
+          (optTotal, opt) => optTotal + parseInt(opt.point || 0, 10),
+          0
+        )
+      );
+    }
+    return total;
+  }, 0);
+
+  return totalPoints;
+};
+
+
   return (
     <>
       <style>
@@ -1416,6 +1436,9 @@ export default function MasterPostTestEditNot({ onChangePage, withID }) {
           </div>
         </div>
       </form>
+      <div className="total-score-container">
+          Total Skor: {validateTotalPoints()}
+        </div>
       {showConfirmation && (
         <Konfirmasi
           title={isBackAction ? "Konfirmasi Kembali" : "Konfirmasi Simpan"}
