@@ -120,9 +120,21 @@ function CardKelompokKeahlian({
     footerStatus = (
       <div>
       <Button
-        iconName="info" // Cocok untuk "Detail Kelas"
+        iconName="info"
         classType={`${config.className} py-2 mt-3`}
         label="Detail Kelas"
+        onClick={() => onChangePage("detail", data)}
+        style={{ border: "none" }}
+      />
+    </div>
+    );
+  } else if(link == "dapus"){
+    footerStatus = (
+      <div>
+      <Button
+        iconName="info"
+        classType={`${config.className} py-2 mt-3`}
+        label="Detail Keahlian"
         onClick={() => onChangePage("detail", data)}
         style={{ border: "none" }}
       />

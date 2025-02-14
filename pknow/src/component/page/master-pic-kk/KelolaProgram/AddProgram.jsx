@@ -111,8 +111,6 @@ export default function ProgramAdd({ onChangePage, withID }) {
           formDataRef.current
         );
   
-        console.log("program", formDataRef.current);
-  
         if (data === "ERROR") {
           setIsError((prevError) => {
             return {

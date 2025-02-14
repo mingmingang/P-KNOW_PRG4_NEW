@@ -102,7 +102,6 @@ export default function MasterPostTestDetail({ onChangePage, withID }) {
             const { data } = await axios.post(API_LINK + 'Quiz/GetDataQuestion', {
                 id: AppContext_test.DetailMateri?.Key, status: 'Aktif', Tipe: 'Posttest'
             });
-            console.log(data);
             if (data === "ERROR") {
                 throw new Error("Terjadi kesalahan: Gagal mengambil data quiz.");
             } else if (data.length === 0) {

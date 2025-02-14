@@ -115,7 +115,6 @@ export default function MasterSharingEdit({ onChangePage }) {
         formDataRef.current.mat_id = materialId;
         AppContext_test.sharingExpertPDF = data[0].ExpertFile;
         AppContext_test.sharingExpertVideo = data[0].ExpertVideo;
-        console.log("data sharing",  AppContext_test.sharingExpertPDF)
         return { secId, materialId};
       } else {
         console.error('Failed to fetch data, status:', response.status);

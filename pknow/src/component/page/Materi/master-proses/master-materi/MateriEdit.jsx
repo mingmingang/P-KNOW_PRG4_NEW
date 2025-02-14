@@ -248,9 +248,7 @@ export default function MastermateriEdit({ onChangePage}) {
         }
         axios.post(API_LINK + "Materi/UpdateSaveDataMateri", formDataRef.current)
           .then(response => {
-            console.log(formDataRef.current)
             const data = response.data;
-            console.log(data)
             if (data[0].hasil === "OK") {
               SweetAlert("Sukses", "Data Materi berhasil disimpan", "success");
               AppContext_master.formSavedMateriFile = true;

@@ -74,25 +74,23 @@ export default function PengajuanKelompokKeahlian({ onChangePage }) {
   }
 
   async function pencaharian() {
-    setIsLoading(true); // Set loading state
+    setIsLoading(true); 
     try {
       const data = await UseFetch(API_LINK + "PengajuanKK/GetAnggotaKK", {
         ...currentFilter,
-        query: searchQuery.current.value, // Pastikan query dikirim
+        query: searchQuery.current.value,
       });
 
       if (data && data.length > 0) {
-        setListKK(data); // Perbarui data jika ditemukan
-        console.log("Data ditemukan:", data);
+        setListKK(data); 
       } else {
-        setListKK([]); // Kosongkan jika tidak ada hasil
-        console.log("Data tidak ditemukan.");
+        setListKK([]);
       }
     } catch (error) {
       console.error("Error during search:", error);
-      setListKK([]); // Kosongkan jika terjadi error
+      setListKK([]); 
     } finally {
-      setIsLoading(false); // Set loading state selesai
+      setIsLoading(false); 
     }
   }
 
@@ -135,7 +133,6 @@ export default function PengajuanKelompokKeahlian({ onChangePage }) {
             ...prevFilter,
             kry_id: data[0].kry_id,
           }));
-          console.log("id kry",data[0].kry_id)
           break;
         }
       }
@@ -197,7 +194,6 @@ export default function PengajuanKelompokKeahlian({ onChangePage }) {
       while (true) {
         let data = await UseFetch(API_LINK + "PengajuanKK/GetAnggotaKK", currentFilter);
   
-        console.log("dataaa", data);
         if (data === "ERROR") {
           throw new Error("Terjadi kesalahan: Gagal mengambil daftar prodi.");
         } else if (data.length === 0) {
@@ -227,8 +223,6 @@ export default function PengajuanKelompokKeahlian({ onChangePage }) {
             return value;
           });
 
-          console.log("data final", finalData)
-  
           setListKK(finalData);
           break;
         }
@@ -248,7 +242,6 @@ export default function PengajuanKelompokKeahlian({ onChangePage }) {
   }, [currentFilter]);
 
   const getDataAktif = (data) => {
-    console.log("data aktif", data)
     return data.find((value) => value.Status === "Aktif");
   };
 
@@ -283,8 +276,6 @@ export default function PengajuanKelompokKeahlian({ onChangePage }) {
         sort: "[ID Lampiran] ASC",
         akk_id: dataAktif.Key,
       });
-
-      console.log("tes", data);
 
       if (data === "ERROR") {
         throw new Error("Terjadi kesalahan: Gagal mengambil Detail Lampiran.");
@@ -330,7 +321,6 @@ export default function PengajuanKelompokKeahlian({ onChangePage }) {
   };
 
   useEffect(() => {
-    console.log(dataAktif);
     if (dataAktif) getLampiran();
   }, [dataAktif]);
 
@@ -555,7 +545,6 @@ export default function PengajuanKelompokKeahlian({ onChangePage }) {
                   <div className="card" style={{ margin: "20px 65px" }}>
                     <div className="card-body p-3">
                       <div className="row mt-0 gx-4">
-                        {console.log("das", listKK)}
                         {listKK
                           ?.filter((value) => {
                             return (
@@ -656,7 +645,7 @@ export default function PengajuanKelompokKeahlian({ onChangePage }) {
                         >
                           ↓ Kelompok Keahlian Lainnya
                         </div>
-                        {console.log("adsa", listKK)}
+
                         {listKK.filter(
                           (value) =>
                             value.Status != "Menunggu Acc" &&
@@ -682,7 +671,6 @@ export default function PengajuanKelompokKeahlian({ onChangePage }) {
                                   data={value}
                                   onChangePage={onChangePage}
                                 />
-                                {console.log("dataa", value)}
                               </>
                             ))}
                         </div>

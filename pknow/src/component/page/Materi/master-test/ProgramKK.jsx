@@ -19,7 +19,6 @@ export default function ProgramKK({ onChangePage, withID }) {
   let activeUser = "";
   const cookie = Cookies.get("activeUser");
   if (cookie) activeUser = JSON.parse(decryptId(cookie)).username;
-  console.log("iddd", withID);
   const cardRefs = useRef([]);
   const [activeCard, setActiveCard] = useState(null);
   const [isError, setIsError] = useState({ error: false, message: "" });
@@ -37,7 +36,6 @@ export default function ProgramKK({ onChangePage, withID }) {
     status: "",
   });
 
-  console.log("lohh", withID);
   const [userData, setUserData] = useState({
     Role: "",
     Nama: "",
@@ -101,12 +99,10 @@ export default function ProgramKK({ onChangePage, withID }) {
         let data = await UseFetch(API_LINK + "Program/GetProgramByKK", {
           id: withID.id,
         });
-        console.log("dataa", data);
         if (data === "ERROR") {
           throw new Error("Terjadi kesalahan: Gagal mengambil data Program.");
         } else {
           setCurrentData(data);
-          console.log(JSON.stringify(data));
           setIsLoading(false);
           break;
         }
@@ -131,8 +127,6 @@ export default function ProgramKK({ onChangePage, withID }) {
             kkeID: filter,
           }
         );
-
-        console.log("data kategori:", data);
 
         if (data === "ERROR") {
           throw new Error(
@@ -232,7 +226,6 @@ export default function ProgramKK({ onChangePage, withID }) {
           .then((data) => {
             if (data === "ERROR" || data.length === 0) setIsError(true);
             else if (data[0].hasil === "ERROR KATEGORI AKTIF") {
-              console.log(data);
               setIsError({
                 error: true,
                 message:
@@ -334,8 +327,6 @@ export default function ProgramKK({ onChangePage, withID }) {
        
                 <div className="d-flex flex-column">
                   <div className="flex-fill">
-                    {console.log("dataaa", currentData)}
-
                     {/* Conditional rendering for alert message */}
                     {currentData.filter(
                       (value) =>

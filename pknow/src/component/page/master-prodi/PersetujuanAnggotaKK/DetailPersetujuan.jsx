@@ -104,58 +104,7 @@ export default function DetailPersetujuan({ onChangePage, withID }) {
         p2: "[ID Lampiran] ASC",
         p3: idAKK,
       });
-      console.log(idAKK);
-
-      // if (data === "ERROR") {
-      //   throw new Error("Terjadi kesalahan: Gagal mengambil Detail Lampiran.");
-      // } else {
-      //   setListNamaFile(data);
-      //   const formattedData = data.map((item) => ({
-      //     ...item,
-      //   }));
-      //   // console.log("for: " + JSON.stringify(formattedData));
-      //   const promises = formattedData.map((value) => {
-      //     const filePromises = [];
-
-      //     if (value["Lampiran"]) {
-      //       const filePromise = fetch(
-      //         API_LINK +
-      //         `Utilities/Upload/DownloadFile?namaFile=${encodeURIComponent(
-      //           value["Lampiran"]
-      //         )}`
-      //       )
-      //         .then((response) => response.blob())
-      //         .then((blob) => {
-      //           const url = URL.createObjectURL(blob);
-      //           value.Lampiran = url;
-      //           return value;
-      //         })
-      //         .catch((error) => {
-      //           console.error("Error fetching file:", error);
-      //           return value;
-      //         });
-      //       filePromises.push(filePromise);
-      //     }
-
-      //     return Promise.all(filePromises).then((results) => {
-      //       const updatedValue = results.reduce(
-      //         (acc, curr) => ({ ...acc, ...curr }),
-      //         value
-      //       );
-      //       return updatedValue;
-      //     });
-      //   });
-
-      //   Promise.all(promises)
-      //     .then((updatedData) => {
-      //       console.log("Updated data with blobs:", updatedData);
-      //       setDetail(updatedData);
-      //     })
-      //     .catch((error) => {
-      //       console.error("Error updating currentData:", error);
-      //     });
-      // }
-
+    
       if (data === "ERROR") {
         throw new Error("Terjadi kesalahan: Gagal mengambil Detail Lampiran.");
       } else if (data.length === 0) {

@@ -113,8 +113,6 @@ export default function MastermateriAdd({ onChangePage }) {
     createdBy: string(),
   });
 
-  console.log("id materrr", AppContext_master.dataIDMateri);
-
   // const handleGambarChange = () => handleFileChange(gambarInputRef, "jpg,png", 5);
   const handlePdfChange = () =>
     handleFileChange(fileInputRef, "pdf,docx,xlsx,pptx", 10);
@@ -166,7 +164,6 @@ export default function MastermateriAdd({ onChangePage }) {
       userSchema,
       setErrors
     );
-    console.log(validationErrors);
 
     if (Object.values(validationErrors).every((error) => !error)) {
       setIsFormSubmitted(true);
@@ -175,7 +172,6 @@ export default function MastermateriAdd({ onChangePage }) {
         return { ...prevError, error: false };
       });
       setErrors({});
-      console.log(formDataRef.current);
 
       const uploadPromises = [];
 
@@ -369,16 +365,13 @@ export default function MastermateriAdd({ onChangePage }) {
   const initialSteps = ["Pengenalan", "Materi", "Forum"];
   const additionalSteps = ["Sharing Expert", "Pre-Test", "Post-Test"];
 
-  const handleStepChanges = (index) => {
-    console.log("Step aktif:", index);
-  };
 
   const handleStepAdded = (stepName) => {
-    console.log("Step ditambahkan:", stepName);
+    //console.log("Step ditambahkan:", stepName);
   };
 
   const handleStepRemoved = (stepName) => {
-    console.log("Step dihapus:", stepName);
+    //console.log("Step dihapus:", stepName);
   };
 
   const handleStepChange = (stepContent) => {

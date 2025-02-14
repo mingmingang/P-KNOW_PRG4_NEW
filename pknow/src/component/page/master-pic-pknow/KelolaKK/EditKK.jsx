@@ -202,8 +202,6 @@ export default function KKEdit({ onChangePage, withID }) {
       setErrors
     );
 
-    console.log(validationErrors);
-
     if (Object.values(validationErrors).every((error) => !error)) {
       setIsLoading(true);
       setIsError((prevError) => ({ ...prevError, error: false }));

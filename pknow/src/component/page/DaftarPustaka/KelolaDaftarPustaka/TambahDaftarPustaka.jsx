@@ -76,6 +76,7 @@ export default function MasterDaftarPustakaAdd({ onChangePage, withID }) {
       pus_kata_kunci: "",
       pus_gambar: "",
       pus_status: "Aktif",
+      kke_id:""
     };
     setFilePreview(false);
     setErrors({});
@@ -221,10 +222,7 @@ export default function MasterDaftarPustakaAdd({ onChangePage, withID }) {
         return { ...prevError, error: false };
       });
       setErrors({});
-      console.log("gambar ref", fileGambarRef.current.files.length);
       const uploadPromises = [];
-
-      console.log("reffff", fileGambarRef.current);
 
       if (fileGambarRef.current.files.length > 0) {
         uploadPromises.push(
@@ -280,8 +278,8 @@ export default function MasterDaftarPustakaAdd({ onChangePage, withID }) {
   const getListKK = async () => {
     try {
       while (true) {
-        let data = await UseFetch(API_LINK + "KK/GetDataKK", {
-          page: 1,
+        let data = await UseFetch(API_LINK + "KK/GetDataKKAll", {
+          page: "",
           query: "",
           sort: "[Nama Kelompok Keahlian] asc",
           status: "Aktif",

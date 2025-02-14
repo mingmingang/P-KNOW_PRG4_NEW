@@ -103,7 +103,6 @@ export default function PublikasiKelas({ withID, onChangePage }) {
   };
 
   const getListKategoriProgram = async (filter) => {
-    console.log("data program", withID);
     try {
       while (true) {
         let data = await UseFetch(
@@ -115,8 +114,6 @@ export default function PublikasiKelas({ withID, onChangePage }) {
             status: "Aktif",
           }
         );
-
-        console.log("data kategori:", data);
 
         if (data === "ERROR") {
           throw new Error(
@@ -147,8 +144,6 @@ export default function PublikasiKelas({ withID, onChangePage }) {
     try {
       let data = await UseFetch(API_LINK + "Program/GetMetodePembayaran", {});
 
-      console.log("data metode:", data);
-
       if (!data || data.length === 0) {
         throw new Error("Data kosong atau tidak tersedia.");
       } else {
@@ -168,8 +163,6 @@ export default function PublikasiKelas({ withID, onChangePage }) {
       let data = await UseFetch(API_LINK + "Program/GetKategoriMetode", {
         id: formDataRef.current.metode_pembayaran,
       });
-
-      console.log("data metode:", data);
 
       if (!data || data.length === 0) {
         throw new Error("Data kosong atau tidak tersedia.");
@@ -202,7 +195,6 @@ export default function PublikasiKelas({ withID, onChangePage }) {
   }, []);
 
   const getDataMateriKategori = async (index) => {
-    console.log("Mendapatkan data materi untuk kategori:", index);
     const kategoriKey = index;
     try {
       while (true) {
@@ -214,8 +206,6 @@ export default function PublikasiKelas({ withID, onChangePage }) {
           order: "asc",
           kategori: kategoriKey,
         });
-
-        console.log("data materi:", data);
 
         if (data === "ERROR") {
           throw new Error(
@@ -313,15 +303,6 @@ export default function PublikasiKelas({ withID, onChangePage }) {
             prg_periode : formDataRef.current.periode
           }
         );
-        console.log("dataa publikasi",  {
-          prg_id : withID.id,
-          prg_level : formDataRef.current.level_kelas,
-          prg_tipe : formDataRef.current.tipe_kelas,
-          prg_pembayaran: isGratis ? "" : formDataRef.current.metode_pembayaran,
-          prg_harga: isGratis ? "0" : formDataRef.current.harga_kelas,
-          prg_periode : formDataRef.current.periode
-        })
-        console.log("return data", data)
 
         if (data === "ERROR") {
           throw new Error("Terjadi kesalahan: Gagal menyimpan data.");
@@ -554,8 +535,6 @@ export default function PublikasiKelas({ withID, onChangePage }) {
                 </div>
               </div>
 
-              {console.log("berbayar", isBerbayar)}
-
               {isBerbayar && (
                 <>
                   <div className="row">
@@ -722,7 +701,6 @@ export default function PublikasiKelas({ withID, onChangePage }) {
             Materi Kelas
           </h3>
 
-          {console.log("kategori", listKategoriProgram.length)}
           {listKategoriProgram.length > 0 ? (
             listKategoriProgram.map((kategori, index) => (
               <div

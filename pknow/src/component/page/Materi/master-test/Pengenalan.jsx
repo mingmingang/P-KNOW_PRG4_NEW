@@ -34,10 +34,6 @@ export default function MasterTestIndex({
 
   AppContext_test.refreshPage = "pengenalan";
 
-  console.log("data materi id", 
-    CheckDataReady,
-    materiId)
-
   const decodeHTML = (input) => {
     const doc = new DOMParser().parseFromString(input, "text/html");
     return doc.documentElement.textContent;
@@ -208,7 +204,6 @@ export default function MasterTestIndex({
                   }}
                   className="overflow-y-auto"
                 >
-                  {console.log("dataaa", currentData)}
                   <div className="align-items-center mb-3">
                     <h1 style={{ color: "#002B6C" }} className="mb-0">
                       {" "}

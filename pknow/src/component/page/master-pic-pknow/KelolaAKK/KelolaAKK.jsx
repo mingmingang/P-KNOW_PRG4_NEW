@@ -53,7 +53,6 @@ export default function KelolaAKK({ onChangePage }) {
   }
 
   function handleSearch() {
-    console.log(searchQuery.current.value);
     setCurrentFilter((prevFilter) => ({
       ...prevFilter,
       page: 1,
@@ -232,7 +231,6 @@ export default function KelolaAKK({ onChangePage }) {
     </div>
   ))}
 </div>
-          {console.log("current data", currentData)}
       <div className="container">
       <div
                 className="card-keterangan"

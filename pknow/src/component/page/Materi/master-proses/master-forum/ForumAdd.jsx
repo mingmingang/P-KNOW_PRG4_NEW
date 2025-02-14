@@ -52,7 +52,6 @@ export default function MasterForumAdd({ onChangePage }) {
     secType: "",
   });
   const handleGoBack = () => {
-    console.log(AppContext_test.activeUser);
     setIsBackAction(true);
     setShowConfirmation(true);
   };
@@ -100,10 +99,8 @@ export default function MasterForumAdd({ onChangePage }) {
   const storedSteps = sessionStorage.getItem("steps");
   const steps = storedSteps ? JSON.parse(storedSteps) : initialSteps;
 
-  //console.log("langkah forum", steps);
 
   const handleAdd = async (e) => {
-    console.log("tess");
     e.preventDefault();
 
     const validationErrors = await validateAllInputs(
@@ -128,7 +125,6 @@ export default function MasterForumAdd({ onChangePage }) {
     }
 
     try {
-      console.log("Data yang dikirim ke backend:", formData);
       const response = await UseFetch(
         API_LINK + "Forum/SaveDataForum",
         formData
@@ -153,7 +149,6 @@ export default function MasterForumAdd({ onChangePage }) {
           AppContext_test.formSavedForum = true;
           setResetStepper((prev) => !prev + 1);
           if (steps.length > 3) {
-            console.log("step keempat", stepPage[3]);
             onChangePage(
               steps[3],
               AppContext_master.MateriForm,

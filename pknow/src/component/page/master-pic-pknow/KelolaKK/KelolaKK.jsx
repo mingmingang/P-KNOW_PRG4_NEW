@@ -118,7 +118,6 @@ export default function KelolaKK({ onChangePage }) {
 
   function handleSetCurrentPageMenunggu(newCurrentPage) {
     setIsLoading(true);
-    console.log(newCurrentPage);
     setCurrentFilterMenunggu((prevFilter) => ({
       ...prevFilter,
       page: newCurrentPage,
@@ -139,6 +138,8 @@ export default function KelolaKK({ onChangePage }) {
       page: newCurrentPage,
     }));
   }
+
+  
   function handleSearch() {
     setIsLoading(true);
     const newQuery = searchQuery.current.value;
@@ -629,7 +630,6 @@ export default function KelolaKK({ onChangePage }) {
                 <Alert type="warning" message="Tidak ada data!" />
                 </div>
               )}
-              {console.log("length", currentDataDraft.length)}
                   {currentDataDraft
                   .filter((value) => value.config.footer === "Draft")
                   .map((value) => (

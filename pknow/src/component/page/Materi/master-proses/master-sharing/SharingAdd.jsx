@@ -42,9 +42,6 @@ export default function MasterSharingAdd({ onChangePage }) {
     secType: "",
   });
 
-  console.log("timingg", AppContext_master.dataTimerPostTest);
-
- 
   const storedSteps = sessionStorage.getItem("steps");
   const steps = storedSteps ? JSON.parse(storedSteps) : initialSteps;
 
@@ -62,7 +59,6 @@ export default function MasterSharingAdd({ onChangePage }) {
   });
 
   const handleGoBack = () => {
-    console.log(AppContext_master.dataIdSection);
     setIsBackAction(true);
     setShowConfirmation(true);
   };
@@ -203,10 +199,6 @@ export default function MasterSharingAdd({ onChangePage }) {
           UseFetch(API_LINK + "Section/CreateSection", formDataRef.current)
             .then((data) => {
               AppContext_master.dataIdSectionSharing = data[0].newID;
-              console.log("section", data);
-              console.log("id section", AppContext_master.dataIdSectionSharing);
-              console.log("kirim sharing", formDataRef.current);
-              console.log("step count", stepCount.length);
               if (data === "ERROR") {
                 setIsError({
                   error: true,
@@ -300,10 +292,6 @@ export default function MasterSharingAdd({ onChangePage }) {
             karyawan: activeUser,
           })
             .then((data) => {
-              console.log("response", data);
-              console.log("id section", AppContext_master.dataIdSectionSharing);
-              console.log("kirim sharing", formDataRef.current);
-              console.log("step count", stepCount.length);
               if (data === "ERROR") {
                 setIsError({
                   error: true,
@@ -499,11 +487,11 @@ export default function MasterSharingAdd({ onChangePage }) {
   const additionalSteps = ["Sharing Expert", "Pre-Test", "Post-Test"];
 
   const handleStepAdded = (stepName) => {
-    console.log("Step ditambahkan:", stepName);
+    //console.log("Step ditambahkan:", stepName);
   };
 
   const handleStepRemoved = (stepName) => {
-    console.log("Step dihapus:", stepName);
+    //console.log("Step dihapus:", stepName);
   };
 
   const handleStepChange = (stepContent) => {

@@ -39,9 +39,7 @@ export default function Login() {
   const [showModal, setShowModal] = useState(false);
   const [captchaValue, setCaptchaValue] = useState(null);
   const [captchaImage, setCaptchaImage] = useState(""); // Captcha URL
-  // const [captchaQuestion, setCaptchaQuestion] = useState("");
-  // const [captchaAnswer, setCaptchaAnswer] = useState(null);
-  // const [userCaptchaInput, setUserCaptchaInput] = useState("");
+
   const loadCaptcha = () => {
     setCaptchaImage(API_LINK + `Utilities/GetCaptcha?rand=${Math.random()}`);
   };
@@ -54,12 +52,7 @@ export default function Login() {
   const [userCaptchaInput, setUserCaptchaInput] = useState("");
 
   const generateCaptcha = () => {
-    // const num1 = Math.floor(Math.random() * 10) + 1; // Angka 1-10
-    // const num2 = Math.floor(Math.random() * 10) + 1; // Angka 1-10
-    // setCaptchaQuestion(`Berapa hasil dari ${num1} + ${num2}?`);
-    // setCaptchaAnswer(num1 + num2);
-
-    const randomNumber = Math.floor(1000 + Math.random() * 9000); // Angka 1000-9999
+    const randomNumber = Math.floor(1000 + Math.random() * 9000); 
     setCaptchaNumber(randomNumber.toString());
   };
 
@@ -150,7 +143,6 @@ export default function Login() {
           credentials: "include", // Pastikan session cookie dikirim
         });
         const data = await response.json();
-        console.log("hasil login", data);
         if (data === "ERROR") {
           throw new Error("Terjadi kesalahan: Gagal melakukan autentikasi.");
         } else if (data.error === "Captcha tidak valid.") {
@@ -180,7 +172,6 @@ export default function Login() {
   };
 
   async function handleLoginWithRole(role, nama, peran, prodi) {
-    console.log("prodii nihh", prodi)
     try {
       const ipAddress = await fetch("https://api.ipify.org/?format=json")
         .then((response) => response.json())
@@ -213,12 +204,11 @@ export default function Login() {
         prodi : prodi,
         lastLogin: null,
       };
-      console.log("pengguna", userInfo);
 
       let user = encryptId(JSON.stringify(userInfo));
 
       Cookies.set("activeUser", user, { expires: 1 });
-
+      console.log("userr", userInfo.peran);
       if (
         userInfo.peran === "PIC P-KNOW" ||
         userInfo.peran === "PIC Kelompok Keahlian" ||

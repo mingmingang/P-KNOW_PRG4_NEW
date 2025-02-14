@@ -55,11 +55,7 @@ export default function PengerjaanTest({
   };
 
   const idTrq = quizId;
-
-  console.log("idd", quizId)
-
   AppContext_test.quizType = quizType;
-  console.log("tipe", AppContext_test.quizType);
   const selectNextQuestion = () => {
     if (selectedQuestion < totalQuestion) {
       setSelectedQuestion(selectedQuestion + 1);
@@ -102,10 +98,8 @@ export default function PengerjaanTest({
   }, []);
 
   const getSubmittedAnswer = (itemId) => {
-    console.log("iteemmm", answerUser)
     for (let i = 0; i < answerUser.length; i++) {
       if (answerUser[i].que_id === itemId) {
-        console.log("jawabann", answerUser[i].ans_jawaban_pengguna);
         return answerUser[i] ? answerUser[i].ans_jawaban_pengguna : "";
       }
     }
@@ -122,25 +116,14 @@ export default function PengerjaanTest({
             idQuiz: AppContext_test.IdQuiz,
           }
         );
-        console.log("response", questionResponse.data);
-        // Fetch user answers data
+   
         const answerResponse = await axios.post(
           API_LINK + "Quiz/GetDataAnswer",
           {
             IdTrq: idTrq,
           }
         );
-        console.log("id trq", quizId)
-        console.log("id quiz",AppContext_test.IdQuiz)
-        console.log("question", questionResponse.data)
-        console.log("answer", answerResponse.data);
-        console.log(
-          "ddd",
-          materiId,
-          activeUser,
-          AppContext_test.quizType,
-          quizId
-        );
+    
 
         const penggunaJawaban = answerResponse.data.map(item => ({
           ans_id: item.ans_id,
@@ -152,86 +135,14 @@ export default function PengerjaanTest({
           ans_tipe : item.que_tipe
         }));
 
-        // const jawabanPenggunaStr = answerResponse.data[0].JawabanPengguna;
 
-        // const jawabanPengguna = jawabanPenggunaStr
-        //     .slice(1, -1)
-        //     .split('], [')
-        //     .map(item => item.replace(/[\[\]]/g, '').split(','));
-        // const filteredTransaksi = jawabanPengguna.filter(transaksi =>
-        //       transaksi.length === 2
-        //     );
-
-        // const essayOnly = jawabanPengguna.filter(transaksi =>
-        //       transaksi.length === 3
-        //     );
-
-        // const currentRespondent = currentData[currentRespondentIndex];
-        // const jawabanPenggunaEssayStr = answerResponse.data[0].JawabanPengguna;
-
-        // const jawabanPenggunaEssay = jawabanPenggunaEssayStr
-        //     .slice(1, -1)
-        //     .split('], [')
-        //     .map(item => item.replace(/[\[\]]/g, '').split(','));
-
-        // const processedJawaban = jawabanPengguna.map((item) => {
-        //   if (item[0] === "essay") {
-        //     return [item[0], item[1], item.slice(2).join(" ")];
-        //   }
-        //   return item;
-        // });
-
-        // const validJawabanPengguna = processedJawaban.filter(
-        //   (item) => item.length === 3
-        // );
-
-        // // Map the filtered array to the desired format
-        // const formattedAnswers = validJawabanPengguna.map((item) => ({
-        //   idSoal: item[1],
-        //   namaFile: item[2],
-        // }));
-
-        // setAnswerUser(formattedAnswers);
-        console.log("jawaban penggggunaa",penggunaJawaban)
         setAnswerUser(penggunaJawaban);
 
         if (
           questionResponse.data &&
           Array.isArray(questionResponse.data)
-          // filteredTransaksi &&
-          // Array.isArray(filteredTransaksi)
         ) {
           const questionMap = new Map();
-          // let resultJawabanPengguna = [];
-
-          // answerResponse.data.map((answer) => {
-          //   resultJawabanPengguna = answer.JawabanPengguna;
-          // });
-
-          // // const parsedArray = JSON.parse(resultJawabanPengguna);
-
-          // const jawabanPengguna = {
-          //   value: [],
-          //   soal: [],
-          //   file: [],
-          // };
-
-          // Melakukan iterasi pada array dan memisahkan nilai dan soal
-          // for (let i = 0; i < filteredTransaksi.length; i++) {
-          //   const value = filteredTransaksi[i][0]
-          //     ? filteredTransaksi[i][0].trim()
-          //     : "0";
-          //   const soal = filteredTransaksi[i][1]
-          //     ? filteredTransaksi[i][1].trim()
-          //     : "0";
-          //   const file = filteredTransaksi[i][2]
-          //     ? filteredTransaksi[i][2].trim()
-          //     : "0";
-
-          //   jawabanPengguna.value.push(parseInt(value, 10));
-          //   jawabanPengguna.soal.push(parseInt(soal, 10));
-          //   jawabanPengguna.file.push(parseInt(file, 10));
-          // }
 
           const transformedData = questionResponse.data
             .map((item) => {
@@ -285,7 +196,6 @@ export default function PengerjaanTest({
                       id: Key,
                       opsi: TipePilihan
                     }));
-                    console.log("optionnnnn", options);
                   return {
                     type: "pilgan",
                     question: Soal,
@@ -312,8 +222,6 @@ export default function PengerjaanTest({
             .filter((item) => item !== null);
           setTotalQuestion(transformedData.length);
           setQuestionNumbers(transformedData.length);
-          console.log("data question", transformedData);
-          console.log("jawaban pengguna soal", transformedData[0].jawabanPengguna_soal.ans_jawaban_pengguna);
           setCurrentData(transformedData);
           updateAnswerStatus(transformedData, penggunaJawaban);
         } else {
@@ -353,7 +261,6 @@ export default function PengerjaanTest({
 
   const downloadFile = async (namaFile) => {
     try {
-      console.log("Nama file:", namaFile);
       const response = await axios.get(
         `${API_LINK}Upload/GetFile/${encodeURIComponent(namaFile)}`,
         {
@@ -384,7 +291,6 @@ export default function PengerjaanTest({
         break;
       }
     }
-    console.log("dataaa saata inin", currentData);
     return i;
     
   };
@@ -409,20 +315,11 @@ export default function PengerjaanTest({
           style={{ marginLeft: "4vw" }}
         >
           <div className="mb-3 d-flex flex-wrap" style={{ overflowX: "auto" }}>
-            {console.log("data bbek", currentData)}
             {currentData.map((item, index) => {
-              // const matchedAnswer = formattedAnswers.find(answer => answer.idSoal === " " + item.Key);
               if (index + 1 !== selectedQuestion) return null;
-              // const totalPoints =
-              // item.type === "Pilgan" && item.jawabanPengguna_soal?.ans_nilai
-              //   ? parseFloat(item.jawabanPengguna_soal.ans_nilai) || 0
-              //   : item.type === "Essay" || item.type === "Praktikum"
-              //   ? parseFloat(item.point || 0)
-              //   : 0;
               const totalPoints = Array.isArray(item.jawabanPengguna_soal)
               ? item.jawabanPengguna_soal.reduce((sum, answer) => sum + (parseFloat(answer.ans_nilai) || 0), 0)
               : parseFloat(item.jawabanPengguna_soal?.ans_nilai || 0);
-                // console.log("total", totalPoints)
               return (
                 <div
                   key={index}
@@ -554,7 +451,6 @@ export default function PengerjaanTest({
                     />
                   ) : (
                     <div className="d-flex flex-column">
-                      {console.log("data item", item)}
                     {item.options.map((option, optionIndex) => {
                       if(option.opsi === "Tunggal"){
                         const isSelected = item.jawabanPengguna_soal.some(

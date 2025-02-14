@@ -56,14 +56,14 @@ export default function MasterSharingDetailNot({ onChangePage }) {
   };
   const fileInputRef = useRef(null);
   const vidioInputRef = useRef(null);
-  console.log(AppContext_test.DetailMateri)
+
   // AppContext_test.ForumForm
   const formDataRef = useRef({
     mat_id: AppContext_test.DetailMateri?.Key || "",
     mat_sharing_expert_pdf: AppContext_test.DetailMateri?.Sharing_pdf||"",
     mat_sharing_expert_video: AppContext_test.DetailMateri?.Sharing_video||"",
   });
-  // console.log("Materi Form di sahring", AppContext_test.MateriForm)
+
   const userSchema = object({
     mat_id: string().required("ID Materi tidak boleh kosong"),
     mat_sharing_expert_pdf: string(),
@@ -154,7 +154,6 @@ export default function MasterSharingDetailNot({ onChangePage }) {
 
         Promise.all(uploadPromises)
             .then(() => {
-                console.log("Form Data:", formDataRef.current);
                 return UseFetch(
                     API_LINK + "SharingExperts/SaveDataSharing",
                     formDataRef.current
@@ -289,8 +288,6 @@ export default function MasterSharingDetailNot({ onChangePage }) {
 
                 return Promise.all(promises)
                     .then((updatedData) => {
-                        console.log("Updated data with blobs:", updatedData);
-
                         if (AppContext_test.DetailMateri) {
                             const updatedDetailMateri = updatedData[0];
                             AppContext_test.DetailMateri.Sharing_pdf_url = updatedDetailMateri.Sharing_pdf_url || null;

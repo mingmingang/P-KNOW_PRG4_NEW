@@ -61,8 +61,6 @@ export default function DetailKelas({ withID, onChangePage }) {
           }
         );
 
-        console.log("data kategori:", data);
-
         if (data === "ERROR") {
           throw new Error(
             "Terjadi kesalahan: Gagal mengambil daftar kategori program."
@@ -97,7 +95,6 @@ export default function DetailKelas({ withID, onChangePage }) {
   }, []);
 
   const getDataMateriKategori = async (index) => {
-    console.log("Mendapatkan data materi untuk kategori:", index);
     const kategoriKey = index;
     try {
       while (true) {
@@ -109,9 +106,6 @@ export default function DetailKelas({ withID, onChangePage }) {
           order: "asc",
           kategori: kategoriKey,
         });
-  
-        console.log("data materi:", data);
-  
         if (data === "ERROR") {
           throw new Error(
             "Terjadi kesalahan: Gagal mengambil daftar kategori program."
@@ -164,7 +158,6 @@ export default function DetailKelas({ withID, onChangePage }) {
     AppContext_test.materiId = book.Key;
     AppContext_master.materiId = book.Key;
     AppContext_test.refreshPage += 1;
-    console.log("materiii nihh", book.Key)
     onChangePage("pengenalan", true, book.Key, true);
   };
 

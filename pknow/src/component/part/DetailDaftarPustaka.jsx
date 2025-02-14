@@ -24,7 +24,6 @@ export default function DetailDaftarPustaka({ onChangePage, withID }) {
   const [fileExtension, setFileExtension] = useState("");
 
   const handleGoBack = () => {
-    console.log("materii", `${API_LINK}Upload/GetFile/${fileData.file}` )
     setIsBackAction(true);
     setShowConfirmation(true);
   };

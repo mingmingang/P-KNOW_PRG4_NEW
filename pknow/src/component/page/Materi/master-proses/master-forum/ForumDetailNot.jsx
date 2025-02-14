@@ -101,7 +101,6 @@ export default function MasterForumAddNot({ onChangePage }) {
     }
 
     try {
-      console.log("Data yang dikirim ke backend:", formData);
       const response = await axios.post(API_LINK + "Forum/SaveDataForum", formData);
 
       if (response === "ERROR") {

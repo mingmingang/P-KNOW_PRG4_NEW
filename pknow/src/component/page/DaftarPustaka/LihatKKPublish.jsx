@@ -1,16 +1,16 @@
 import { useState, useEffect } from "react";
-import Button from "../../../part/Button";
-import DropDown from "../../../part/Dropdown";
-import Input from "../../../part/Input";
-import Loading from "../../../part/Loading";
-import Alert from "../../../part/Alert";
-import Filter from "../../../part/Filter";
-import Icon from "../../../part/Icon";
-import { API_LINK } from "../../../util/Constants";
-import UseFetch from "../../../util/UseFetch";
-import NoImage from "../../../../assets/NoImage.png";
-import BackPage from "../../../../assets/backPage.png";
-import Konfirmasi from "../../../part/Konfirmasi";
+import Button from "../../part/Button";
+import DropDown from "../../part/Dropdown";
+import Input from "../../part/Input";
+import Loading from "../../part/Loading";
+import Alert from "../../part/Alert";
+import Filter from "../../part/Filter";
+import Icon from "../../part/Icon";
+import { API_LINK } from "../../util/Constants";
+import UseFetch from "../../util/UseFetch";
+import NoImage from "../../../assets/NoImage.png";
+import BackPage from "../../../assets/backPage.png";
+import Konfirmasi from "../../part/Konfirmasi";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faGraduationCap,
@@ -20,7 +20,7 @@ import {
   faClock,
   faUsers,
 } from "@fortawesome/free-solid-svg-icons";
-import maskotPknow from "../../../../assets/pknowmaskot.png";
+import maskotPknow from "../../../assets/pknowmaskot.png";
 import { decode } from "html-entities";
 
 export default function KKDetailPublish({ onChangePage, withID }) {
@@ -39,7 +39,7 @@ export default function KKDetailPublish({ onChangePage, withID }) {
 
   const handleConfirmYes = () => {
     setShowConfirmation(false);
-    onChangePage("index");
+    onChangePage("kk");
   };
 
 

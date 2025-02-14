@@ -75,8 +75,6 @@ export default function NotifikasiIndex() {
           }
         );
     
-        console.log("set read", response.data);
-    
         // Validasi response data
         if (response.data && response.data.length !== 0) {
           window.location.reload();
@@ -134,8 +132,6 @@ export default function NotifikasiIndex() {
           application: APPLICATION_ID,
           notId: notificationKey,
         });
-        console.log("key", notificationKey); // Debug log
-        console.log("data", currentData);
         if (data === "ERROR" || data.length === 0) {
           setIsError(true);
         } else {
@@ -165,7 +161,6 @@ export default function NotifikasiIndex() {
           currentFilter
         );
 
-        console.log("ayamm", data)
         if (data === "ERROR") {
           setIsError(true);
         } else if (data.length === 0) {

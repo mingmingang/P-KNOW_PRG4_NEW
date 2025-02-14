@@ -57,8 +57,6 @@ export default function Pengenalan({ onChangePage }) {
   const [showConfirmation, setShowConfirmation] = useState(false);
   const fileGambarRef = useRef(null);
 
-  console.log("data pretest", AppContext_master.dataPretest);
-
   const handleGoBack = () => {
     setIsBackAction(true);
     setShowConfirmation(true);
@@ -369,11 +367,11 @@ export default function Pengenalan({ onChangePage }) {
   const handleStepChanges = (index) => {};
 
   const handleStepAdded = (stepName) => {
-    console.log("Step ditambahkan:", stepName);
+   // console.log("Step ditambahkan:", stepName);
   };
 
   const handleStepRemoved = (stepName) => {
-    console.log("Step dihapus:", stepName);
+    //console.log("Step dihapus:", stepName);
   };
 
   return (

@@ -47,7 +47,6 @@ export default function DetailKelas({ withID, onChangePage }) {
 
 
   const getListKategoriProgram = async (filter) => {
-    console.log("data program", withID);
     try {
       while (true) {
         let data = await UseFetch(
@@ -59,8 +58,6 @@ export default function DetailKelas({ withID, onChangePage }) {
             status: "Aktif",
           }
         );
-
-        console.log("data kategori:", data);
 
         if (data === "ERROR") {
           throw new Error(
@@ -96,7 +93,6 @@ export default function DetailKelas({ withID, onChangePage }) {
   }, []);
 
   const getDataMateriKategori = async (index) => {
-    console.log("Mendapatkan data materi untuk kategori:", index);
     const kategoriKey = index;
     try {
       while (true) {
@@ -108,9 +104,7 @@ export default function DetailKelas({ withID, onChangePage }) {
           order: "asc",
           kategori: kategoriKey,
         });
-  
-        console.log("data materi:", data);
-  
+
         if (data === "ERROR") {
           throw new Error(
             "Terjadi kesalahan: Gagal mengambil daftar kategori program."
@@ -286,7 +280,6 @@ export default function DetailKelas({ withID, onChangePage }) {
       <div className="" style={{ margin: "40px 100px" }}>
         <h3 className="mb-4"style={{ fontWeight: "500", color: "#0A5EA8" }}>Materi Kelas</h3>
 
-{console.log("kategori", listKategoriProgram.length)}
 {listKategoriProgram.length > 0 ? (
   listKategoriProgram.map((kategori, index) => (
     <div

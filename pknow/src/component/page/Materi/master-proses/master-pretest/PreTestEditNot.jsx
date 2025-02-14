@@ -111,7 +111,6 @@ export default function MasterPreTestEditNot({ onChangePage, withID }) {
   const [showConfirmation, setShowConfirmation] = useState(false);
   const Materi = AppContext_master.MateriForm;
 
-  console.log("data materi", AppContext_master.MateriForm)
   const handleGoBack = () => {
     setIsBackAction(true);
     setShowConfirmation(true);
@@ -296,7 +295,6 @@ export default function MasterPreTestEditNot({ onChangePage, withID }) {
       );
 
       if (response.status === 200 && response.data) {
-        console.log("Response data:", response.data); // Debugging log
         return response.data; // Pastikan ini berisi newFileName
       } else {
         throw new Error("Upload file gagal.");
@@ -338,9 +336,6 @@ export default function MasterPreTestEditNot({ onChangePage, withID }) {
     try {
       // Upload file ke server menggunakan fungsi uploadFile
       const uploadResponse = await uploadFile(file);
-      console.log("Upload Response:", uploadResponse);
-
-      // Pastikan menggunakan nama properti yang benar dari respons server
       if (!uploadResponse || !uploadResponse.Hasil) {
         throw new Error("Respon server tidak valid.");
       }
@@ -358,9 +353,6 @@ export default function MasterPreTestEditNot({ onChangePage, withID }) {
       console.error("Error uploading file:", error);
     }
   };
-
-
-  console.log("data materi", AppContext_test.activeUser)
 
   const [dataSection, setDataSection] = useState({
     materiId: Materi.Key,
@@ -441,9 +433,7 @@ export default function MasterPreTestEditNot({ onChangePage, withID }) {
             const sectionId = sectionData[0].newID;
 
             AppContext_master.dataIdSectionPretest = sectionId;
-            console.log("id section:", sectionId);
             formData.timer = convertTimeToSeconds(timer);
-            console.log("Timer setelah konversi:", formData.timer);
 
             const quizResponse = await axios.post(API_LINK + "Quiz/SaveDataQuiz", {
                 materiId: Materi.Key,
@@ -488,8 +478,6 @@ export default function MasterPreTestEditNot({ onChangePage, withID }) {
                     try {
                       const uploadResult = await uploadFile(question.selectedFile);
                       formQuestion.gambar = uploadResult.Hasil;
-        
-                      console.log("Gam", formQuestion.gambar);
                     } catch (uploadError) {
                       console.error("Gagal mengunggah gambar:", uploadError);
                       Swal.fire({
@@ -513,7 +501,6 @@ export default function MasterPreTestEditNot({ onChangePage, withID }) {
                     API_LINK + "Question/SaveDataQuestion",
                     formQuestion
                   );
-                  console.log("pertanyaan", formQuestion);
                   if (questionResponse.data.length === 0) {
                     Swal.fire({
                       title: "Gagal!",
@@ -540,7 +527,6 @@ export default function MasterPreTestEditNot({ onChangePage, withID }) {
                         API_LINK + "Choice/SaveDataChoice",
                         answerData
                       );
-                      console.log("jawaban", answerData);
                     } catch (error) {
                       console.error("Gagal menyimpan jawaban Essay:", error);
                       Swal.fire({
@@ -566,7 +552,6 @@ export default function MasterPreTestEditNot({ onChangePage, withID }) {
                           API_LINK + "Choice/SaveDataChoice",
                           answerData
                         );
-                        console.log("jawaban", answerData);
                       } catch (error) {
                         console.error(
                           "Gagal menyimpan jawaban multiple choice:",

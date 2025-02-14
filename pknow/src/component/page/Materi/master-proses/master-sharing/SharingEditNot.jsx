@@ -97,7 +97,6 @@ export default function MasterSharingEditNot({ onChangePage }) {
   const previewFile = async (namaFile) => {
     try {
       namaFile = namaFile.trim();
-      console.log(namaFile);
       const response = await axios.get(
         `${API_LINK}Upload/GetFile/${namaFile}`,
         {
@@ -181,9 +180,6 @@ export default function MasterSharingEditNot({ onChangePage }) {
       // Send initial request to create a section
       const response = await axios.post(API_LINK + "Section/CreateSection", dataSection);
       const data = response.data;
-  
-      console.log("data section", dataSection);
-  
       if (data[0]?.hasil !== "OK") {
         setIsError({
           error: true,
@@ -193,9 +189,6 @@ export default function MasterSharingEditNot({ onChangePage }) {
       }
   
       const idSection = data[0].newID;
-      console.log("data section new", data[0]);
-      console.log("id section", idSection);
-  
       AppContext_master.formSavedMateri = true;
   
       const isPdfEmpty = !fileInputRef.current?.files.length;
@@ -250,8 +243,6 @@ export default function MasterSharingEditNot({ onChangePage }) {
             p3: formDataRef.current.mat_sharing_expert_video,
             p4: activeUser,
           });
-  
-          console.log(formDataRef.current.mat_sharing_expert_pdf, idSection, activeUser);
   
           if (finalResponse.status === 200) {
             SweetAlert("Berhasil", "Data Sharing Expert berhasil diubah!", "success");

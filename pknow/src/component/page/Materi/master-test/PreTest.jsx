@@ -37,10 +37,6 @@ export default function MasterTestPreTest({
   const [sectionData, setSectionData] = useState([]);
   const [error, setError] = useState(null);
 
-  console.log("materi", 
-    materiId,
-    )
-
   function onStartTest() {
     try {
       axios
@@ -54,7 +50,6 @@ export default function MasterTestPreTest({
           const data = response.data;
           if (data[0].hasil === "OK") {
             updateProgres();
-            console.log("dataa quiz", currentData)
             AppContext_test.dataIdTrQuiz = data[0].tempIDAlt;
             onChangePage(
               "pengerjaantest",
@@ -107,7 +102,6 @@ export default function MasterTestPreTest({
             tipe: 'Pre-Test'
           }
         );
-        console.log("respon progres", response.status);
         if (response.status === 200) {
           success = true;
         }
@@ -146,7 +140,6 @@ export default function MasterTestPreTest({
         setIsLoading(true);
         try {
           const data = await fetchDataWithRetry_pretest();
-          console.log("data pretess", data);
           if (isMounted) {
             if (data != "") {
               if (Array.isArray(data)) {
@@ -279,7 +272,6 @@ export default function MasterTestPreTest({
             }
           );
           if (quizResponse.data && quizResponse.data.length > 0) {
-            console.log("[retests", quizResponse.data[0]);
             AppContext_test.IdQuiz = quizResponse.data[0].quizId;
             setCurrentData(quizResponse.data[0]); // Hanya set data pertama
             return quizResponse.data[0];

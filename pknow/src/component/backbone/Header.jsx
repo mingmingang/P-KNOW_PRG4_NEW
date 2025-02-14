@@ -44,11 +44,11 @@ export default function Header({
     return parts
       .map((part) => part[0]?.toUpperCase())
       .join("")
-      .slice(0, 2); // Ambil maksimal 2 karakter
+      .slice(0, 2); 
   };
 
   const handleConfirmYes = () => {
-    window.location.replace("/logout"); // Redirect to login page
+    window.location.replace("/logout"); 
     setShowConfirmation(false); // Hide the confirmation dialog
   };
 
@@ -197,21 +197,19 @@ export default function Header({
          {userProfile.photo ? (
                 <img src={userProfile.photo} alt="Profile" />
               ) : (
-                <div
-                  style={{
-                    width: "60px",
-                    height: "60px",
-                    borderRadius: "50%",
-                    backgroundColor: "#e0e7ff",
-                    color: "#1a73e8",
-                    fontWeight: "bold",
-                    fontSize: "24px",
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    margin: "0 auto 10px",
-                  }}
-                >
+                <div className="menu-profil-img" style={{
+                  width: "60px",
+    height: "60px",
+    borderRadius: "50%",
+    backgroundColor: "#e0e7ff",
+    color: "#1a73e8",
+    fontWeight: "bold",
+    fontSize: "24px",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    margin: "0 auto 10px"
+                }}>
                   {getInitials(userProfile.name)}
                 </div>
               )}
@@ -228,13 +226,8 @@ export default function Header({
                     <span style={{ color: "#0A5EA8" }}>
                       Notifikasi{" "}
                       <span
-                        style={{
-                          background: "red",
-                          borderRadius: "50%",
-                          paddingLeft: "5px",
-                          paddingRight: "5px",
-                          color: "white",
-                        }}
+                      className="notif"
+
                       >
                         {countNotifikasi}
                       </span>

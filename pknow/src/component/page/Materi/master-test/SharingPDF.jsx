@@ -80,7 +80,6 @@ export default function MasterTestSharingPDF({ onChangePage, CheckDataReady, mat
                     sec_status: "Aktif"
                 });
                 if (response.data.length !== 0) {
-                    console.log("data sec", response.data);
                     return response.data;
                 }
             } catch (error) {
@@ -128,9 +127,6 @@ export default function MasterTestSharingPDF({ onChangePage, CheckDataReady, mat
             setCurrentData(sections[0]);
             setFileData({ file: fileFromResponse });
             setFileExtension(fileFromResponse.split(".").pop().toLowerCase());
-  
-            // Log untuk memastikan MaterialTitle ada
-            console.log("Material Title:", materialTitle);
           } else {
             console.warn("No sections found for the specified criteria.");
             setCurrentData(null); // Set state to null if no data found
@@ -148,7 +144,6 @@ export default function MasterTestSharingPDF({ onChangePage, CheckDataReady, mat
     
     // Logging perubahan state
     useEffect(() => {
-        console.log("CurrentData telah diatur:", currentData);
     }, [currentData]);
 
     const formatDate = (timestamp) => {

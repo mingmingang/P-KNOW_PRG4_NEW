@@ -2,9 +2,8 @@ import { ROOT_LINK, API_LINK, APPLICATION_ID } from "./Constants";
 import UseFetch from "./UseFetch";
 
 const CreateMenu = async (role, prodi) => {
-  console.log("prodii", prodi)
   try {
-    
+    console.log("menu ayam");
     const data = await UseFetch(API_LINK + "Utilities/GetListMenu", {
       username: "",
       role: role,
@@ -12,7 +11,7 @@ const CreateMenu = async (role, prodi) => {
       prodi : prodi
     });
 
-    // console.log("list menu", data)
+    console.log("menu hhe");
 
     let lastHeadkey = "";
     const transformedMenu = [
@@ -24,6 +23,8 @@ const CreateMenu = async (role, prodi) => {
         isHidden: true,
       },
     ];
+    
+    
 
     // console.log("menu",data)
 
@@ -52,7 +53,8 @@ const CreateMenu = async (role, prodi) => {
       }
     });    
     return transformedMenu;
-  } catch {
+  } catch (error) {
+    console.error("Error occurred while fetching the menu:", error);
     return [];
   }
 };

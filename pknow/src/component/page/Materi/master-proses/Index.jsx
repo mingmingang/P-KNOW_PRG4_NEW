@@ -116,7 +116,6 @@ export default function MasterProsesIndex({ onChangePage }) {
 
 
   function handleDelete(id) {
-    console.log("id delete", id);
     setIsError(false);
 
     SweetAlert(
@@ -130,7 +129,6 @@ export default function MasterProsesIndex({ onChangePage }) {
           mat_id: id,
         })
           .then((data) => {
-            console.log(data);
             if (data === null) SweetAlert(
               "Gagal",
               "Materi ini berelasi dengan data yang lain",
@@ -287,7 +285,6 @@ export default function MasterProsesIndex({ onChangePage }) {
           API_LINK + "Materi/GetDataMateriByKategori",
           currentFilter
         );
-        console.log("keetee", data);
         if (data === "ERROR") {
           setIsError(true);
           setSearchResults([]);

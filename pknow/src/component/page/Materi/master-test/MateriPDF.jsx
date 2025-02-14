@@ -59,10 +59,6 @@ export default function MasterTestIndex({ onChangePage,materiId }) {
     sort: "[Kode Test] asc",
     status: "Aktif",
   });
-
-  // console.log(materiId)
-  
-  
   const formUpdate = useRef({
     materiId: AppContext_test.materiId,
     karyawanId: AppContext_test.activeUser,
@@ -110,10 +106,6 @@ export default function MasterTestIndex({ onChangePage,materiId }) {
           });
 
           setFileExtension(ext);
-          console.log("Judul Materi:", Judul);
-          console.log("File PDF:", File_pdf);
-          console.log("Formatted File Name:", formattedFileName);
-          console.log("File Extension:", ext);
 
           return; // Keluar dari fungsi setelah selesai
         }
@@ -175,15 +167,11 @@ useEffect(() => {
     };
     fetchData();
 }, [AppContext_test.materiId]);
-
-  console.log("coba",currentData)
-
   if (AppContext_test.progresMateri == "materi_video") {
     formUpdate.current.statusMateri_Video = "Done";
   } else {
     formUpdate.current.statusSharingExpert_Video = "Done";
   }
-  console.log("tes materi", AppContext_test.materiId);
 
 async function updateProgres() {
   let success = false;
@@ -200,7 +188,6 @@ async function updateProgres() {
           tipe: 'Materi'
         }
       );
-      console.log("respon progres", response.status);
       if (response.status === 200) {
         success = true;
       }

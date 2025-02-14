@@ -22,7 +22,6 @@ import {
 
 
 export default function KKDetailPublish({ onChangePage, withID }) {
-  console.log(withID);
   const [errors, setErrors] = useState({});
   const [isError, setIsError] = useState({ error: false, message: "" });
   const [isLoading, setIsLoading] = useState(false);
@@ -37,7 +36,6 @@ export default function KKDetailPublish({ onChangePage, withID }) {
   });
 
   const getListAnggota = async () => {
-    console.log("heree");
     setIsError({ error: false, message: "" });
     setIsLoading(true);
 
@@ -75,8 +73,6 @@ export default function KKDetailPublish({ onChangePage, withID }) {
       }));
     }
   };
-
-  console.log("with id", withID);
 
   const getListProgram = async () => {
     setIsError({ error: false, message: "" });
@@ -136,7 +132,6 @@ export default function KKDetailPublish({ onChangePage, withID }) {
             })
           );
 
-          console.log(updatedListProgram);
           setListProgram(updatedListProgram);
           setIsLoading(false);
           break;

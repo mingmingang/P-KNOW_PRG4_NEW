@@ -9,7 +9,7 @@ export default function BerandaPengguna({
   marginLeft,
 }) {
   const handleKnowledgeDatabase = () => {
-    window.location.replace("/daftar_pustaka"); // Redirect to login page
+    window.location.replace("/daftar_pustaka"); 
 }
   return (
     <div>

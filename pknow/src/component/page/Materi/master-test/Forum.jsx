@@ -105,7 +105,6 @@ export default function Forum({ onChangePage, isOpen }) {
       isiBalasan: item.IsiDetailForum,
     };
     setReplyMessage(`Membalas: ${item.IsiDetailForum}`); 
-    console.log("isi forum", item.IsiDetailForum)
     setShowReplyInput(true); 
   };
   const handleReplySub = (item) => {
@@ -173,14 +172,8 @@ export default function Forum({ onChangePage, isOpen }) {
         API_LINK + "Forum/SaveTransaksiForum",
         formDataRef.current
       );
-
-      console.log("kiriman",formDataRef.current);
-      console.log(response.data)
-      console.log("showReplyInput:", showReplyInput);
-
       const updatedForumData = await fetchDataWithRetry();
       setCurrentData(updatedForumData); 
-      console.log("data update",updatedForumData)
       formDataRef.current.isiDetailForum = "";
       handleCancelReply()
       } catch (error) {
@@ -244,10 +237,7 @@ export default function Forum({ onChangePage, isOpen }) {
           const response = await axios.post(API_LINK + "Forum/GetDataForum", {
             materiId: AppContext_test.materiId,
           });
-          console.log(response.data)
           if (response.data.length != 0) {
-            console.log("matId", AppContext_test.materiId)
-            console.log("ayam",response.data);
             setCurrentData(response.data)
             return response.data;
           }

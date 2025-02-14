@@ -45,9 +45,6 @@ export default function SubKKIndex({ onChangePage }) {
             API_LINK + "Program/GetProgramByKK",
             { kk: kk.Key }
           );
-
-          console.log("dataa programamm", programData)
-
           if (programData === "ERROR") {
             throw new Error("Terjadi kesalahan: Gagal mengambil data Program.");
           }

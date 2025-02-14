@@ -63,12 +63,7 @@ export default function PengerjaanTest({
     keterangan: "",
   });
 
-  console.log("daya a", quizType,
-  materiId,
-  quizId,
-  durasi);
   const [formDataRef2, setFormData2] = useState([]);
-  console.log("id tr quiz di test", AppContext_test.dataIdTrQuiz);
   useEffect(() => {}, [quizType, materiId]);
 
   const formUpdate = useRef({
@@ -155,9 +150,7 @@ export default function PengerjaanTest({
     currentIndex,
     id_question
   ) => {
-    console.log("data event", event);
     const file = event.target.files[0];
-    console.log("data file", file);
 
     if (file) {
       const fileExtension = file.name.split(".").pop().toLowerCase();
@@ -222,12 +215,10 @@ export default function PengerjaanTest({
     let countBenar = 0;
     let totalPoint = 0;
     const totalNilai = answers.reduce((accumulator, currentValue) => {
-      console.log("value", currentValue.nilaiSelected);
       const nilaiSelected = parseFloat(currentValue.nilaiSelected) || 0;
       if (nilaiSelected !== 0) {
         countBenar += 1;
         totalPoint += currentValue.nilaiSelected;
-        console.log("totalPoin", countBenar);
       }
       return accumulator + nilaiSelected;
     }, 0);
@@ -240,11 +231,7 @@ export default function PengerjaanTest({
     } else {
       formDataRef.current.status = "Not Reviewed";
     }
-    // formDataRef.current.nilai = totalNilai;
-    // formDataRef.current.answers = submittedAnswers;
-    // formDataRef.current.jumlahBenar = countBenar;
 
-    console.log("semua jawaban", submittedAnswers[0]);
     let responseSave = false;
     let maxRetries = 10;
     let retryCount = 0;
@@ -258,8 +245,6 @@ export default function PengerjaanTest({
       ans_created_by: item[5],
       ans_tipe: item[6]
     }));
-
-    console.log("submitt answer", submittedAnswersFormatted);
 
     while (!responseSave) {
       try {
@@ -285,7 +270,6 @@ export default function PengerjaanTest({
             console.error("Error:", error);
           }
           for (let i = 0; i < submittedAnswersFormatted.length; i++) {
-            console.log("Data ke-", i, ":", submittedAnswersFormatted[i]);
             try {
               const response = await axios.post(
                 API_LINK + "Quiz/SaveDataAnswer",
@@ -326,7 +310,7 @@ export default function PengerjaanTest({
         p14: createdBy,
       }
     );
-    console.log("not", notifResponse);
+
 
     if (notifResponse === "ERROR") {
       SweetAlert(
@@ -393,15 +377,6 @@ export default function PengerjaanTest({
     file,
     id_question
   ) => {
-    console.log(
-      "tes answer",
-      urutan,
-      idSoal,
-      nilaiSelected,
-      index,
-      file,
-      id_question
-    );
     setSelectedOption(answer);
 
     const updatedAnswers = [...answers];
@@ -417,11 +392,8 @@ export default function PengerjaanTest({
       );
       uploadPromises.push(
         UploadFile(file.target).then((data) => {
-          console.log("data file", data);
-          console.log("data praktikum", nilaiSelected);
           if (nilaiSelected != "essay") {
             if (existingAnswerNonPilgan !== -1) {
-              console.log("ayamm");
               updatedAnswers[existingAnswerNonPilgan] = {
                 urutan,
                 id_question,
@@ -438,7 +410,6 @@ export default function PengerjaanTest({
                 "Praktikum"
               ];
             } else {
-              console.log("bebek");
               updatedAnswers.push({
                 urutan,
                 id_question,
@@ -457,7 +428,6 @@ export default function PengerjaanTest({
             }
           } else {
             if (existingAnswerNonPilgan !== -1) {
-              console.log("kodok");
               updatedAnswers[existingAnswerNonPilgan] = {
                 nilaiSelected,
                 id_question,
@@ -472,17 +442,7 @@ export default function PengerjaanTest({
                 activeUser,
                 "Essay",
               ];
-              console.log(
-                "submit answerr",
-                urutan,
-                id_question,
-                file,
-                "0",
-                AppContext_test.dataIdTrQuiz,
-                activeUser
-              );
             } else {
-              console.log("cabee");
               updatedAnswers.push({ nilaiSelected, id_question, answer });
               submitAnswer.push([
                 urutan,
@@ -576,17 +536,7 @@ export default function PengerjaanTest({
             activeUser,
             "Pilgan"
           ];
-          console.log(
-            "tesstimoni",
-            urutan,
-            idSoal,
-            answer,
-            nilaiSelected,
-            AppContext_test.dataIdTrQuiz,
-            activeUser,
-          );
         } else {
-          console.log("bebbeee");
           updatedAnswers.push({ urutan, idSoal, answer, nilaiSelected });
           submitAnswer.push([
             urutan,
@@ -597,26 +547,10 @@ export default function PengerjaanTest({
             activeUser,
             "Pilgan"
           ]);
-          console.log(
-            "haloo",
-            urutan,
-            idSoal,
-            answer,
-            nilaiSelected,
-            AppContext_test.dataIdTrQuiz,
-            activeUser
-          );
         }
       }
     }
 
-    // if (existingAnswerIndex !== -1) {
-    //   updatedAnswers[existingAnswerIndex] = {urutan,idSoal,answer,nilaiSelected};
-    //   submitAnswer[existingAnswerIndex] = [urutan,idSoal,answer,nilaiSelected,AppContext_test.dataIdTrQuiz, activeUser];
-    // } else {
-    //   updatedAnswers.push({urutan,idSoal,answer,nilaiSelected});
-    //   submitAnswer.push ([urutan,idSoal,answer,nilaiSelected,AppContext_test.dataIdTrQuiz,activeUser]) ;
-    // }
 
     idSoal = index;
     setAnswers(updatedAnswers);
@@ -646,13 +580,10 @@ export default function PengerjaanTest({
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true);
-      console.log("quiiii", quizId)
       try {
         const response = await axios.post(API_LINK + "Quiz/GetDataQuestion", {
           idQuiz: quizId,
         });
-        console.log("idQuiz", response.data);
-        console.log("question", response);
         const checkIsDone = await axios.post(
           API_LINK + "Quiz/GetDataResultQuiz",
           {
@@ -692,7 +623,7 @@ export default function PengerjaanTest({
 
                 if (Gambar) {
                   const gambarPromise = API_LINK + `Upload/GetFile/${Gambar}`;
-                  console.log("gambar", gambarPromise);
+
                   question.gambar = gambarPromise;
                   filePromises.push(gambarPromise);
                 }
@@ -718,7 +649,6 @@ export default function PengerjaanTest({
             .filter((item) => item !== null);
 
           await Promise.all(filePromises);
-          console.log("data transformed", transformedData)
 
           setCurrentData(transformedData);
           setQuestionNumbers(transformedData.length);
@@ -766,7 +696,6 @@ export default function PengerjaanTest({
       >
         <div className=" p-3 d-flex ">
           <div className="mb-3 d-flex" style={{ overflowX: "auto" }}>
-            {console.log("data", currentData)}
             {currentData.map((item, index) => {
               const key = `${item.question}_${index}`;
               if (index + 1 !== selectedQuestion) return null;
@@ -948,7 +877,6 @@ export default function PengerjaanTest({
                             className="mt-4 mb-2"
                             style={{ display: "flex", alignItems: "center" }}
                           >
-                            {console.log("item", item.options)}
                             {item.options[0].cho_tipe === "Tunggal" ? (
                               // Tampilkan Radio Button untuk Tunggal
                               <>

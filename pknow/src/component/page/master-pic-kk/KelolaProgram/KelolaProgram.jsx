@@ -105,7 +105,6 @@ export default function ProgramIndex({ onChangePage }) {
             ...prevFilter,
             KKid: data[0].Key,
           }));
-          console.log(JSON.stringify(data));
           setIsLoading(false);
           break;
         }
@@ -118,7 +117,6 @@ export default function ProgramIndex({ onChangePage }) {
   };
 
   const getListProgram = async (filter) => {
-    console.log("data filter",filter);
     setIsError({ error: false, message: "" });
     setIsLoading(true);
 
@@ -199,8 +197,6 @@ export default function ProgramIndex({ onChangePage }) {
           }
         );
 
-        console.log("data kategori:",data)
-
         if (data === "ERROR") {
           throw new Error(
             "Terjadi kesalahan: Gagal mengambil daftar kategori program."
@@ -237,8 +233,6 @@ export default function ProgramIndex({ onChangePage }) {
     if (currentFilter.KKid) {
       getListProgram(currentFilter);
       getListAnggota(currentFilter.KKid);
-      console.log(JSON.stringify("CURR: "+JSON.stringify(currentData)));
-
     }
   }, [currentFilter]);
 
@@ -308,7 +302,6 @@ export default function ProgramIndex({ onChangePage }) {
           .then((data) => {
             if (data === "ERROR" || data.length === 0) setIsError(true);
             else if (data[0].hasil === "ERROR KATEGORI AKTIF") {
-              console.log(data);
               setIsError({
                 error: true,
                 message:
@@ -375,7 +368,6 @@ export default function ProgramIndex({ onChangePage }) {
           status: status,
         })
           .then((data) => {
-            console.log("value", data)
             if (data === "ERROR" || data.length === 0) setIsError(true);
             else if (data[0].hasil === "ERROR PROGRAM DRAFT") {
               setIsError({
@@ -384,7 +376,6 @@ export default function ProgramIndex({ onChangePage }) {
                   "Terjadi kesalahan: Gagal publikasi Kategori karena Program masih berstatus Draft.",
               });
             } else if (data[0].hasil === "ERROR PROGRAM TIDAK AKTIF") {
-              console.log(data);
               setIsError({
                 error: true,
                 message:
@@ -510,7 +501,6 @@ export default function ProgramIndex({ onChangePage }) {
                             {currentData["Nama Kelompok Keahlian"]}
                           </strong>
                         </h5>
-                        {console.log("list program", listProgram)}
                         {listProgram[0]?.Message ? (
                           <Alert
                             type="warning"

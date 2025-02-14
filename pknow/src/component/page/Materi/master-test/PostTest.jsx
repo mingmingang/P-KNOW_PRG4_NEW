@@ -40,7 +40,6 @@ export default function MasterTestPreTest({
 
   function handleDetailAction(action, key) {
     if (action === "detail") {
-      console.log("dsa", key)
       onChangePage("detailtest", "Posttest", AppContext_test.IdQuiz, key);
       AppContext_test.QuizType = "Posttest";
     }
@@ -48,8 +47,6 @@ export default function MasterTestPreTest({
   
 
   function onStartTest() {
-    console.log("id quiiizz", currentData.quizId);
-    console.log("durasi", currentData.timer);
     try {
       axios
         .post(API_LINK + "Quiz/SaveTransaksiQuiz", {
@@ -60,7 +57,6 @@ export default function MasterTestPreTest({
         })
         .then((response) => {
           const data = response.data;
-          console.log("data trQuiz", data[0]);
           if (data[0].hasil === "OK") {
             AppContext_test.dataIdTrQuiz = data[0].tempIDAlt;
             onChangePage(
@@ -122,7 +118,6 @@ export default function MasterTestPreTest({
         try {
           const data = await fetchDataWithRetry_posttest();
           if (isMounted) {
-            console.log("hasill", data)
             if (data != "") {
               if (Array.isArray(data)) {
                 if (data.length != 0) {
@@ -234,7 +229,6 @@ export default function MasterTestPreTest({
           );
 
           if (response.data.length !== 0) {
-            console.log("section post test", response.data);
             idSection = response.data[0].SectionId;
             return response.data;
           }
@@ -261,7 +255,6 @@ export default function MasterTestPreTest({
           if (quizResponse.data && quizResponse.data.length > 0) {
             AppContext_test.IdQuiz = quizResponse.data[0].quizId;
             setCurrentData(quizResponse.data[0]); // Hanya set data pertama
-            console.log("data quiz", quizResponse.data[0]); // Debugging
             return quizResponse.data[0];
           }
         } catch (error) {

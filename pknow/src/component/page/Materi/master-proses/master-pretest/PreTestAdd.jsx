@@ -69,7 +69,6 @@ export default function MasterPreTestAdd({ onChangePage }) {
       );
 
       if (response.status === 200 && response.data) {
-        console.log("Response data:", response.data); // Debugging log
         return response.data; // Pastikan ini berisi newFileName
       } else {
         throw new Error("Upload file gagal.");
@@ -373,11 +372,8 @@ export default function MasterPreTestAdd({ onChangePage }) {
         if (sectionData[0]?.hasil === "OK") {
           const sectionId = sectionData[0].newID;
           AppContext_master.dataIdSectionPretest = sectionId;
-          console.log("id section:", sectionId);
           formData.timer = convertTimeToSeconds(timer);
           formData.sec_id = sectionId;
-          // Step 2: Save Data Quiz
-          console.log("Timer setelah konversi:", formData.timer);
           AppContext_master.dataTimerQuizPreTest = formData.timer;
 
           // Step 2: Save Data Quiz
@@ -396,9 +392,6 @@ export default function MasterPreTestAdd({ onChangePage }) {
               type: "Pre-Test",
             }
           );
-
-          console.log("data quiz", formData);
-
           if (quizResponse.data.length === 0) {
             Swal.fire({
               title: "Gagal!",
@@ -429,8 +422,6 @@ export default function MasterPreTestAdd({ onChangePage }) {
               try {
                 const uploadResult = await uploadFile(question.selectedFile);
                 formQuestion.gambar = uploadResult.Hasil;
-  
-                console.log("Gam", formQuestion.gambar);
               } catch (uploadError) {
                 console.error("Gagal mengunggah gambar:", uploadError);
                 Swal.fire({
@@ -454,7 +445,6 @@ export default function MasterPreTestAdd({ onChangePage }) {
                 API_LINK + "Question/SaveDataQuestion",
                 formQuestion
               );
-              console.log("pertanyaan", formQuestion);
               if (questionResponse.data.length === 0) {
                 Swal.fire({
                   title: "Gagal!",
@@ -483,7 +473,6 @@ export default function MasterPreTestAdd({ onChangePage }) {
                     API_LINK + "Choice/SaveDataChoice",
                     answerData
                   );
-                  console.log("jawaban", answerData);
                 } catch (error) {
                   console.error("Gagal menyimpan jawaban Essay:", error);
                   Swal.fire({
@@ -513,7 +502,6 @@ export default function MasterPreTestAdd({ onChangePage }) {
                       API_LINK + "Choice/SaveDataChoice",
                       answerData
                     );
-                    console.log("jawaban", answerData);
                   } catch (error) {
                     console.error(
                       "Gagal menyimpan jawaban multiple choice:",
@@ -545,11 +533,6 @@ export default function MasterPreTestAdd({ onChangePage }) {
             icon: "success",
             confirmButtonText: "OK",
           }).then(() => {
-            console.log("daraaa", formData);
-            // setFormContent([]);
-            // setSelectedOptions([]);
-            // setErrors({});
-            // setIsButtonDisabled(true);
             if (steps.length == 4) {
               window.location.reload();
             } else if (steps.length === 5 && pretest === 3) {
@@ -629,7 +612,6 @@ export default function MasterPreTestAdd({ onChangePage }) {
     } else {
       formData.timer = convertTimeToSeconds(timer);
       AppContext_master.dataTimerQuizPreTest = formData.timer;
-      console.log("timer", formData.timer);
       const quizPayload = {
         quizId: formData.quizId,
         materiId: formData.materiId,
@@ -643,16 +625,12 @@ export default function MasterPreTestAdd({ onChangePage }) {
         modifby: activeUser,
       };
 
-      console.log("payload", quizPayload);
-      console.log("data quiz", AppContext_master.dataQuizPretest);
-
       try {
         const quizResponse = await axios.post(
           API_LINK + "Quiz/UpdateDataQuiz",
           quizPayload
         );
-        
-        console.log("Respons dari API UpdateDataQuiz:", quizResponse.data);
+
         if (!quizResponse.data.length) {
           Swal.fire({
             title: "Error!",
@@ -669,8 +647,6 @@ export default function MasterPreTestAdd({ onChangePage }) {
           API_LINK + "Question/DeleteQuestionByIdQuiz",
           { p1: quizId }
         );
-
-        console.log("Respons dari API DeleteQuestion:", deleteQuestion.data);
 
         for (const question of formContent) {
           const formQuestion = {
@@ -689,8 +665,6 @@ export default function MasterPreTestAdd({ onChangePage }) {
               try {
                 const uploadResult = await uploadFile(question.selectedFile);
                 formQuestion.gambar = uploadResult.Hasil;
-  
-                console.log("Gam", formQuestion.gambar);
               } catch (uploadError) {
                 console.error("Gagal mengunggah gambar:", uploadError);
                 Swal.fire({
@@ -714,7 +688,6 @@ export default function MasterPreTestAdd({ onChangePage }) {
               API_LINK + "Question/SaveDataQuestion",
               formQuestion
             );
-            console.log("pertanyaan", formQuestion);
             if (questionResponse.data.length === 0) {
               Swal.fire({
                 title: "Gagal!",
@@ -743,7 +716,6 @@ export default function MasterPreTestAdd({ onChangePage }) {
                   API_LINK + "Choice/SaveDataChoice",
                   answerData
                 );
-                console.log("jawaban", answerData);
               } catch (error) {
                 console.error("Gagal menyimpan jawaban Essay:", error);
                 Swal.fire({
@@ -769,7 +741,7 @@ export default function MasterPreTestAdd({ onChangePage }) {
                     API_LINK + "Choice/SaveDataChoice",
                     answerData
                   );
-                  console.log("jawaban", answerData);
+
                 } catch (error) {
                   console.error(
                     "Gagal menyimpan jawaban multiple choice:",
@@ -1055,7 +1027,6 @@ export default function MasterPreTestAdd({ onChangePage }) {
     try {
       // Upload file ke server menggunakan fungsi uploadFile
       const uploadResponse = await uploadFile(file);
-      console.log("Upload Response:", uploadResponse);
 
       // Pastikan menggunakan nama properti yang benar dari respons server
       if (!uploadResponse || !uploadResponse.Hasil) {
@@ -1204,11 +1175,11 @@ export default function MasterPreTestAdd({ onChangePage }) {
   const additionalSteps = ["Sharing Expert", "Pre-Test", "Post-Test"];
 
   const handleStepAdded = (stepName) => {
-    console.log("Step ditambahkan:", stepName);
+    //console.log("Step ditambahkan:", stepName);
   };
 
   const handleStepRemoved = (stepName) => {
-    console.log("Step dihapus:", stepName);
+    //console.log("Step dihapus:", stepName);
   };
 
   const handleStepChange = (stepContent) => {
@@ -1886,7 +1857,6 @@ export default function MasterPreTestAdd({ onChangePage }) {
       <div className="total-score-container">
           Total Skor: {validateTotalPoints()}
         </div>
-        
       {showConfirmation && (
         <Konfirmasi
           title={isBackAction ? "Konfirmasi Kembali" : "Konfirmasi Simpan"}

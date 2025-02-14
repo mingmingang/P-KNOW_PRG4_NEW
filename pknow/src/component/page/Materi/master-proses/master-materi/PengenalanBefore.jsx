@@ -79,9 +79,6 @@ export default function PengenalanBefore({ onChangePage }) {
 
   const Materi = AppContext_master.MateriForm;
 
-  console.log("materiii", Materi);
-  console.log("test id", AppContext_master.dataIDMateri);
-
   const kategori = AppContext_master.KategoriIdByKK;
 
   const formDataRef = useRef({
@@ -195,8 +192,6 @@ export default function PengenalanBefore({ onChangePage }) {
   const handleAdd = async (e) => {
     e.preventDefault();
 
-    console.log("dataa  kirimm", formDataRef);
-
     const validationErrors = await validateAllInputs(
       formDataRef.current,
       userSchema,
@@ -223,11 +218,8 @@ export default function PengenalanBefore({ onChangePage }) {
         axios
           .post(API_LINK + "Materi/UpdateDataMateri", formDataRef.current)
           .then((response) => {
-            console.log(formDataRef.current);
             const data = response.data;
-            console.log(data);
             if (data[0].hasil === "OK") {
-              // SweetAlert("Sukses", "Pengenalan Materi berhasil disimpan", "success");
               setIsFormDisabled(false);
               AppContext_master.formSavedMateri = false;
               onChangePage(
@@ -360,15 +352,15 @@ export default function PengenalanBefore({ onChangePage }) {
   const additionalSteps = ["Sharing Expert", "Pre-Test", "Post-Test"];
 
   const handleStepChanges = (index) => {
-    console.log("Step aktif:", index);
+    //console.log("Step aktif:", index);
   };
 
   const handleStepAdded = (stepName) => {
-    console.log("Step ditambahkan:", stepName);
+    //console.log("Step ditambahkan:", stepName);
   };
 
   const handleStepRemoved = (stepName) => {
-    console.log("Step dihapus:", stepName);
+    //console.log("Step dihapus:", stepName);
   };
 
   return (

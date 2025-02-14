@@ -1,20 +1,20 @@
 import { useEffect, useRef, useState } from "react";
-import { PAGE_SIZE, API_LINK } from "../../../util/Constants";
-import SweetAlert from "../../../util/SweetAlert";
-import UseFetch from "../../../util/UseFetch";
-import "../../../../style/Beranda.css";
-import Button2 from "../../../part/Button copy";
-import "../../../../../src/index.css";
-import ButtonPro from "../../../part/Button copy";
-import CardKK from "../../../part/CardKelompokKeahlian";
-import Alert from "../../../part/Alert";
-import Paging from "../../../part/Paging";
-import Input from "../../../part/Input";
-import Filter from "../../../part/Filter";
-import DropDown from "../../../part/Dropdown";
-import "../../../../style/Search.css";
+import { PAGE_SIZE, API_LINK } from "../../util/Constants";
+import SweetAlert from "../../util/SweetAlert";
+import UseFetch from "../../util/UseFetch";
+import "../../../style/Beranda.css";
+import Button2 from "../../part/Button copy";
+import "../../../../src/index.css";
+import ButtonPro from "../../part/Button copy";
+import CardKK from "../../part/CardKelompokKeahlian";
+import Alert from "../../part/Alert";
+import Paging from "../../part/Paging";
+import Input from "../../part/Input";
+import Filter from "../../part/Filter";
+import DropDown from "../../part/Dropdown";
+import "../../../style/Search.css";
 import Cookies from "js-cookie";
-import { decryptId } from "../../../util/Encryptor";
+import { decryptId } from "../../util/Encryptor";
 
 const dataFilterSort = [
   { Value: "[Nama Kelompok Keahlian] asc", Text: "Nama Kelompok Keahlian [↑]" },
@@ -343,14 +343,14 @@ export default function KK({ onChangePage }) {
                         onChangePage={onChangePage}
                         onChangeStatus={handleSetStatus}
                         showMenu={false}
-                        ketButton="Lihat Program"
-                        link="program"
+                        ketButton="Lihat Knowledge"
+                        link="dapus"
                       />
                     </div>
                     </>
                   ))}
               </div>
-              {currentDataAktif
+              {currentData
   .filter(
     (value) =>
       (activeTab === "Semua" || value.Prodi === activeTab) &&
@@ -375,17 +375,6 @@ export default function KK({ onChangePage }) {
 
             </>
           )}
-           {/* <div className="mb-4 d-flex justify-content-center">
-            <div className="d-flex flex-column ">
-              <Paging
-                pageSize={PAGE_SIZE}
-                pageCurrent={currentFilter.page}
-                totalData={currentData[0]?.Count || 0}
-                navigation={handleSetCurrentPage}
-              />
-            </div>
-          </div>
-           */}
         </div>
        
       </main>

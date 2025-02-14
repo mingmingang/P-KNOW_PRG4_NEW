@@ -138,7 +138,6 @@ export default function TambahKK({ onChangePage }) {
     try {
       while (true) {
         let data = await UseFetch(API_LINK + "KK/GetListProdi", {});
-        console.log("data prodi", data);
         if (data === "ERROR") {
           throw new Error("Terjadi kesalahan: Gagal mengambil daftar prodi.");
         } else if (data.length === 0) {
@@ -163,7 +162,7 @@ export default function TambahKK({ onChangePage }) {
       let data = await UseFetch(API_LINK + "KK/GetListKaryawan", {
         idProdi: formDataRef.current.programStudi,
       });
-      console.log("karyawan", data);
+
       if (data === "ERROR") {
         throw new Error("Terjadi kesalahan: Gagal mengambil daftar karyawan.");
       } else {
@@ -218,8 +217,7 @@ export default function TambahKK({ onChangePage }) {
           API_LINK + "KK/CreateKK",
           formDataRef.current
         );
-        console.log("isian form",formDataRef.current);
-
+        
         if (data === "ERROR") {
           throw new Error("Terjadi kesalahan: Gagal menyimpan data program.");
         } else {

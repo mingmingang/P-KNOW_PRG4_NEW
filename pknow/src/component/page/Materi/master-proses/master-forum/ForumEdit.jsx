@@ -190,7 +190,6 @@ export default function MasterForumEdit({ onChangePage }) {
         p3: formData.forumIsi,
         p4: activeUser,
       });
-      console.log("FormData being sent:", Materi.current.mat_id,formData,AppContext_test.displayName,);
       if (response.status === 200) {
         SweetAlert("Berhasil", "Data forum berhasil diubah!", "success");
       } else {
@@ -331,7 +330,6 @@ export default function MasterForumEdit({ onChangePage }) {
             label="Berikutnya"
             onClick={() => onChangePage("sharingEdit", AppContext_test.ForumForm = formData, AppContext_master.MateriForm, AppContext_master.count += 1)}
           />
-          {console.log("formdata", formData)}
           </div>
         </div>
         </div>

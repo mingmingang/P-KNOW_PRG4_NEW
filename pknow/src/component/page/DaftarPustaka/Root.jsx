@@ -3,6 +3,8 @@ import MasterDaftarPustakaIndex from "./Index";
 import MasterTambahDaftarPustaka from "./KelolaDaftarPustaka/TambahDaftarPustaka";
 import MasterLihatDaftarPustaka from "./KelolaDaftarPustaka/LihatDaftarPustaka";
 import MasterEditDaftarPustaka from "./KelolaDaftarPustaka/EditDaftarPustaka";
+import MasterKelompokKeahlian from "./KelompokKeahlian"
+import MasterDetail from "./LihatKKPublish";
 
 export default function MasterDaftarPustaka() {
   const [pageMode, setPageMode] = useState("index");
@@ -12,6 +14,10 @@ function getPageMode() {
     switch (pageMode) {
       case "index":
         return <MasterDaftarPustakaIndex onChangePage={handleSetPageMode} />;
+      case "dapus":
+          return <MasterDaftarPustakaIndex onChangePage={handleSetPageMode} withID={dataID}  />;
+      case "kk":
+        return <MasterKelompokKeahlian onChangePage={handleSetPageMode} />;
       case "add":
         return <MasterTambahDaftarPustaka onChangePage={handleSetPageMode} withID={dataID}/>;
       case "detail":
@@ -21,6 +27,13 @@ function getPageMode() {
             withID={dataID}
           />
         );
+        // case "detail":
+        //   return (
+        //     <MasterDetail
+        //       onChangePage={handleSetPageMode} 
+        //       withID={dataID}
+        //     />
+        //   );
       case "edit":
         return (
           <MasterEditDaftarPustaka

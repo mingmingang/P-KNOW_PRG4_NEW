@@ -99,7 +99,6 @@ export default function MasterForumEditNot({ onChangePage }) {
     }
 
     try {
-      console.log("Data yang dikirim ke backend:", formData);
       const response = await UseFetch(API_LINK + "Forum/SaveDataForum", formData);
 
       if (response === "ERROR") {

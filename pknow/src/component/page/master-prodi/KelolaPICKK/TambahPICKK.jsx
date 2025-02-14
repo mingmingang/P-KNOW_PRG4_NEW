@@ -190,9 +190,6 @@ export default function TambahPIC({ onChangePage, withID }) {
     }
   }, [formDataRef.current.programStudi]);
 
-  console.log("id kry", formDataRef.current.personInCharge);
-
-
   const handleAdd = async (e) => {
     e.preventDefault();
 
@@ -202,7 +199,6 @@ export default function TambahPIC({ onChangePage, withID }) {
       setErrors
     );
 
-    console.log(validationErrors);
 
     if (Object.values(validationErrors).every((error) => !error)) {
       setIsError((prevError) => ({ ...prevError, error: false }));
@@ -224,7 +220,6 @@ export default function TambahPIC({ onChangePage, withID }) {
           pic: formDataRef.current.personInCharge,
         });
 
-        console.log("status", statusData);
 
         if (statusData === "ERROR" || statusData.length === 0) {
           setIsError((prevError) => ({
@@ -272,7 +267,6 @@ export default function TambahPIC({ onChangePage, withID }) {
                 p12: activeUser,
                 p13: 'ROL01', // User pembuat notifikasi
               }).then((data) => {
-                console.log("notifikasi", data);
                 if (data === "ERROR" || data.length === 0) setIsError(true);
                 else {
                   SweetAlert(

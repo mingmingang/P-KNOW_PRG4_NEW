@@ -100,8 +100,7 @@ function getStepContent(stepIndex) {
     const doc = new DOMParser().parseFromString(htmlContent, 'text/html');
     return doc.body.textContent || "";
   };
-  
-  console.log("materi", AppContext_test.DetailMateriEdit )
+
   const cleanedPengenalan = stripHTMLTags(Materi.Pengenalan);
   const formDataRef = useRef({
     mat_id:Materi.Key,
@@ -148,7 +147,6 @@ function getStepContent(stepIndex) {
   };
 
   const handleInputChange = async (e) => {
-    // console.log("DADA: " + formDataRef.current.kat_id + formDataRef.current.mat_kat);
     const { name, value } = e.target;
     const validationError = await validateInput(name, value, userSchema);
     formDataRef.current[name] = value;
@@ -201,8 +199,6 @@ useEffect(() => {
           idKK: item.idKK,
           namaKK: item.namaKK
         }));
-
-        // console.log("Mapped data: ", mappedData);
         setListKategori(mappedData);
         return;
       } catch (error) {

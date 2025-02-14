@@ -5,7 +5,6 @@ import { decryptId } from "./component/util/Encryptor";
 import { BASE_ROUTE, ROOT_LINK } from "./component/util/Constants";
 import CreateMenu from "./component/util/CreateMenu";
 import CreateRoute from "./component/util/CreateRoute.jsx";
-import profile from "./assets/avatar-pknow.png";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { Worker, Viewer } from '@react-pdf-viewer/core';
@@ -15,7 +14,7 @@ import Logout from "./component/page/logout/Index";
 import Header from "./component/backbone/Header";
 import NotFound from "./component/page/not-found/Index.jsx";
 import Footer from "./component/backbone/Footer.jsx";
-import 'select2/dist/css/select2.min.css';  // Import Select2 CSS
+import 'select2/dist/css/select2.min.css'; 
 import 'select2/dist/js/select2.min.js';   
 
 export default function App() {
@@ -23,14 +22,16 @@ export default function App() {
   const [listRoute, setListRoute] = useState([]);
   const isLogoutPage = window.location.pathname.includes("logout");
   const cookie = Cookies.get("activeUser");
+  console.log("tess", cookie)
   if (isLogoutPage) return <Logout />;
   else if (!cookie) return <Login />;
   else {
     const userInfo = JSON.parse(decryptId(cookie));
-
+    console.log("dataku",userInfo.role, userInfo.prodi)
     useEffect(() => {
       const getMenu = async () => {
         const menu = await CreateMenu(userInfo.role, userInfo.prodi);
+        console.log("data menuu", menu)
         const route = CreateRoute.filter((routeItem) => {
           const pathExistsInMenu = menu.some((menuItem) => {
             if (menuItem.link.replace(ROOT_LINK, "") === routeItem.path) {
@@ -47,7 +48,8 @@ export default function App() {
 
           return pathExistsInMenu;
         });
-
+        
+        console.log("rute", route)
         route.push({
           path: "/*",
           element: <NotFound />,
@@ -56,6 +58,8 @@ export default function App() {
         setListMenu(menu);
         setListRoute(route);
       };
+
+      
 
       getMenu();
     }, []);
@@ -70,8 +74,6 @@ export default function App() {
       role: userInfo.peran,
       lastLogin: currentDateTime,
     };
-
-    // console.log("listRoute before RouterProvider:", listRoute);
     
     return (
       <>

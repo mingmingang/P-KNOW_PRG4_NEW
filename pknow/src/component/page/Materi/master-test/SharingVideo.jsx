@@ -78,7 +78,6 @@ export default function MasterTestSharingVideo({ onChangePage, CheckDataReady, m
                     sec_status: "Aktif"
                 });
                 if (response.data.length !== 0) {
-                    console.log("data sec", response.data);
                     return response.data;
                 }
             } catch (error) {
@@ -102,7 +101,6 @@ export default function MasterTestSharingVideo({ onChangePage, CheckDataReady, m
                     setCurrentData(sections[0]);
                     setFileData({ file: fileFromResponse });
                     setFileExtension(fileFromResponse.split('.').pop().toLowerCase());
-                    console.log("File URL:", fileFromResponse);
                 } else {
                     console.error("No sections found.");
                 }
@@ -116,7 +114,6 @@ export default function MasterTestSharingVideo({ onChangePage, CheckDataReady, m
     }, [AppContext_test.materiId]);
 
     useEffect(() => {
-        console.log("CurrentData telah diatur:", currentData);
     }, [currentData]);
 
     const formatDate = (timestamp) => {

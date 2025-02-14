@@ -156,8 +156,6 @@ export default function KKDetailPublish({ onChangePage, withID }) {
               }
             })
           );
-
-          console.log(updatedListProgram);
           setListProgram(updatedListProgram);
           setIsLoading(false);
           break;

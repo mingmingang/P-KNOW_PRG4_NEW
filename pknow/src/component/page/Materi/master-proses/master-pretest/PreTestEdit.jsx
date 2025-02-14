@@ -187,14 +187,10 @@ export default function MasterPreTestEdit({ onChangePage, withID }) {
   /* ----- Handle Function Start ---- */
 
   const Materi = AppContext_master.DetailMateriEdit;
-  console.log("dataa", Materi)
 
   const hasTest = Materi.Pretest !== null && Materi.Pretest !== "";
 
   useEffect(() => {
-    console.log("Materi:", Materi);
-    console.log("Materi.Pretest:", Materi?.Pretest);
-    console.log("hasTest:", hasTest);
   }, [Materi, hasTest]);
 
   const handleJenisTypeChange = (e, questionIndex) => {
@@ -268,9 +264,6 @@ export default function MasterPreTestEdit({ onChangePage, withID }) {
       }
 
       const sectionId = sectionData[0].SectionId;
-
-      console.log("Section ID:", sectionId);
-
       // Fetch quiz data using sectionId
       const quizResponse = await axios.post(
         API_LINK + "Quiz/GetDataQuizByIdSection",
@@ -300,7 +293,6 @@ export default function MasterPreTestEdit({ onChangePage, withID }) {
       );
       
       setFormData(convertedData);
-      console.log("Quiz Data:", convertedData);
     } catch (error) {
       console.error("Error:", error.message);
       setIsError((prevError) => ({
@@ -326,8 +318,6 @@ export default function MasterPreTestEdit({ onChangePage, withID }) {
         const { data } = await axios.post(API_LINK + "Quiz/GetDataQuestion", {
           quiId: formData.quizId,
         });
-        console.log("id qui", formData.quizId);
-        console.log("Data mentah dari API:", data);
 
         if (data === "ERROR") {
           throw new Error("Terjadi kesalahan: Gagal mengambil data quiz.");
@@ -366,10 +356,6 @@ export default function MasterPreTestEdit({ onChangePage, withID }) {
                     ? question.JawabanBenar || ""
                     : null,
               };
-              console.log(
-                "Data yang diproses ke formContent:",
-                formattedQuestions[question.Key]
-              );
 
               if (question.TipeSoal === "Pilgan" && question.JawabanId) {
                 formattedQuestions[question.Key].options.push({
@@ -382,8 +368,6 @@ export default function MasterPreTestEdit({ onChangePage, withID }) {
                 });
               }
             }
-
-            console.log("formContent initial state:", formContent);
 
             // Jika ada gambar, fetch gambar
             if (question.Gambar) {
@@ -424,7 +408,6 @@ export default function MasterPreTestEdit({ onChangePage, withID }) {
           await Promise.all(filePromises);
           const formattedQuestionsArray = Object.values(formattedQuestions);
           setFormContent(formattedQuestionsArray);
-          console.log("question", formattedQuestionsArray);
           setIsLoading(false);
           break;
         }
@@ -561,8 +544,6 @@ export default function MasterPreTestEdit({ onChangePage, withID }) {
         p1: questionId, // ID soal
         p2: newType, // Tipe baru
       });
-
-      console.log("Tipe quest", response.data);
     } catch (error) {
       console.error("Gagal memperbarui tipe soal:", error.message);
       Swal.fire("Error", "Gagal memperbarui tipe soal.", "error");
@@ -727,7 +708,6 @@ export default function MasterPreTestEdit({ onChangePage, withID }) {
       const response = await axios.post(API_LINK + "Choice/DeleteChoice", {
         p1: choiceId,
       });
-      console.log("Choice Deletion Response:", response.data);
     } catch (error) {
       console.error("Error deleting choice:", error);
     }
@@ -794,7 +774,6 @@ export default function MasterPreTestEdit({ onChangePage, withID }) {
       );
 
       if (response.status === 200 && response.data) {
-        console.log("Response data:", response.data); // Debugging log
         return response.data; // Pastikan ini berisi `newFileName`
       } else {
         throw new Error("Upload file gagal.");
@@ -849,9 +828,6 @@ export default function MasterPreTestEdit({ onChangePage, withID }) {
         gambar: fileName, // Nama file baru dari server
         previewUrl: URL.createObjectURL(file), // URL untuk preview
       };
-      console.log("File yang diunggah:", file);
-      console.log("Nama file dari server:", fileName);
-      console.log("Index pertanyaan:", index);
 
       setFormContent(updatedFormContent);
     } catch (error) {
@@ -937,8 +913,6 @@ export default function MasterPreTestEdit({ onChangePage, withID }) {
         quizPayload
       );
 
-      console.log("Respons dari API UpdateDataQuiz:", quizResponse.data);
-
       if (!quizResponse.data.length) {
         Swal.fire({
           title: "Error!",
@@ -991,9 +965,6 @@ export default function MasterPreTestEdit({ onChangePage, withID }) {
             p6: activeUser, // Created By
             p7: question.point || 0, // Poin
           };
-
-          console.log("Payload Create Question:", payload);
-
           // Panggil API Create
           const response = await axios.post(
             API_LINK + "Question/SaveDataQuestion",
@@ -1015,9 +986,6 @@ export default function MasterPreTestEdit({ onChangePage, withID }) {
             p7: activeUser, // Modified By
             p8: question.point || 0, // Poin
           };
-
-          console.log("Payload Update Question:", payload);
-
           // Panggil API Update
           await axios.post(API_LINK + "Question/UpdateDataQuestion", payload);
         }
@@ -1037,9 +1005,6 @@ export default function MasterPreTestEdit({ onChangePage, withID }) {
                 p5: activeUser, // Created By
                 p6: question.jenis === "Tunggal" ? "Tunggal" : "Jamak", // Jenis Opsi
               };
-
-              console.log("Payload Create Option:", optionPayload);
-
               // Panggil API Create Opsi
               const optionResponse = await axios.post(
                 API_LINK + "Choice/SaveDataChoice",
@@ -1057,8 +1022,6 @@ export default function MasterPreTestEdit({ onChangePage, withID }) {
                 quemodifby: activeUser, // Modified By
                 cho_tipe: question.jenis === "Tunggal" ? "Tunggal" : "Jamak", // Jenis Opsi
               };
-
-              console.log("Payload Update Option:", optionPayload);
 
               // Panggil API Update Opsi
               await axios.post(

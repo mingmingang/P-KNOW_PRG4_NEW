@@ -52,7 +52,6 @@ export default function MasterForumBefore({ onChangePage }) {
   });
 
   const handleGoBack = () => {
-    console.log(AppContext_test.activeUser);
     setIsBackAction(true);
     setShowConfirmation(true);
   };
@@ -103,7 +102,6 @@ export default function MasterForumBefore({ onChangePage }) {
   //console.log("langkah forum", steps);
 
   const handleAdd = async (e) => {
-    console.log("tess");
     e.preventDefault();
 
     const validationErrors = await validateAllInputs(
@@ -128,7 +126,6 @@ export default function MasterForumBefore({ onChangePage }) {
     }
 
     try {
-      console.log("Data yang dikirim ke backend:", formData);
       const response = await UseFetch(
         API_LINK + "Forum/EditDataForum",
         formData
@@ -151,7 +148,6 @@ export default function MasterForumBefore({ onChangePage }) {
           setResetStepper((prev) => !prev + 1);
           AppContext_test.formSavedForum = true;
           setResetStepper((prev) => !prev + 1);
-          console.log("step keempat", stepPage[3]);
           onChangePage(
             steps[3],
             (AppContext_test.ForumForm = formData),

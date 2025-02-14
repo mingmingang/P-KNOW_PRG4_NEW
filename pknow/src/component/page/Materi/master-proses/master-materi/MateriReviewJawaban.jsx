@@ -42,20 +42,18 @@ export default function MasterMateriReviewJawaban({
   const fetchDataQuiz = async () => {
     setIsLoading(true);
     setIsError(false);
-    console.log("tesss")
     try {
       const response = await axios.post(API_LINK + "Quiz/GetDataQuizByIdMateri", {
         materiId: AppContext_test.materiId,
       });
-      console.log("responsesss", response.data)
+
       if (response.data.length === 0) {
         setDataQuiz([]);
       } else {
-        console.log("yuhuuu", response.data)
+
         setDataQuiz(response.data);
         if (response.data.length === 1) {
           setSelectedQuizType(response.data[0].quizTipe);
-          console.log("quis tipe", response.data[0].quizTipe)
         }
       }
     } catch (error) {
@@ -65,7 +63,6 @@ export default function MasterMateriReviewJawaban({
       setIsLoading(false);
     }
   };
-  console.log("data materiii", AppContext_master.MateriForm);
 
   useEffect(() => {
     let isMounted = true;
@@ -74,7 +71,6 @@ export default function MasterMateriReviewJawaban({
       setIsLoading(true);
       try {
         const data = await fetchDataWithRetry();
-        console.log("dataa", data);
         if (isMounted) {
           if (data && Array.isArray(data)) {
             if (!data || data.length === 0) {
@@ -117,7 +113,6 @@ export default function MasterMateriReviewJawaban({
               });
 
               setCurrentData(Object.values(groupAnswer));
-              console.log("data group", groupAnswer);
               setBadges(
                 Array(data.length)
                   .fill(null)
@@ -157,7 +152,6 @@ export default function MasterMateriReviewJawaban({
 
   const fetchDataWithRetry = async (retries = 1, delay = 1000) => {
     for (let i = 0; i < retries; i++) {
-      console.log("dataaa selectedd", selectedQuizType)
       try {
         setIsLoading(true);
         const response = await axios.post(API_LINK + "Quiz/GetDataTransaksiReview", {
@@ -175,8 +169,6 @@ export default function MasterMateriReviewJawaban({
               transaksi.trq_status === "Not Reviewed" &&
               (transaksi.que_tipe === "Essay" || transaksi.que_tipe === "Praktikum")
           );
-  
-          console.log("hasil tr", filteredTransaksi);
           return filteredTransaksi;
         }
       } catch (error) {
@@ -196,7 +188,7 @@ export default function MasterMateriReviewJawaban({
         const response = await axios.post(API_LINK + "Quiz/GetDataQuestion", {
           quizId: questionType,
         });
-        console.log("pertanyaan", response.data);
+
         if (response.data.length !== 0) {
           const filteredQuestions = response.data.filter(
             (question) =>
@@ -229,12 +221,12 @@ export default function MasterMateriReviewJawaban({
           questionType: questionType,
           idKaryawan: karyawanId,
         });
-        console.log("result quiz", response.data);
+
         if (response.data.length !== 0) {
           const filteredAnswer = response.data.filter(
             (answer) => answer.Status === "Not Reviewed"
           );
-          console.log("filterr", filteredAnswer);
+
           setIsLoading(false);
           setCurrentAnswers(filteredAnswer);
         }
@@ -290,8 +282,7 @@ export default function MasterMateriReviewJawaban({
     );
   };
   useEffect(() => {
-    console.log("badges: ", badges);
-    console.log("review status: ", reviewStatus);
+
   }, [badges, reviewStatus]);
 
 
@@ -323,16 +314,6 @@ export default function MasterMateriReviewJawaban({
           "Review jawaban telah berhasil disimpan!",
           "success"
         );
-        console.log("kirim",{
-          p1: idTransaksi,
-          p2: idSoal,
-          p3: isCorrect.toString(),
-          p4: materiId,
-          p5: idKaryawan,
-          p6: idQuiz,
-          p7: activeUser,
-          p8: value,
-        })
       }
       setIsLoading(false);
       onChangePage("index");
@@ -369,11 +350,6 @@ export default function MasterMateriReviewJawaban({
   ) => {
     const updatedRespondent = { ...currentData[currentRespondentIndex] };
     const updatedReviewStatus = [...reviewStatus];
-    // updatedReviewStatus[currentRespondentIndex][idSoal] = isCorrect;
-    // setReviewStatus(updatedReviewStatus);
-    // const updatedBadges = [...badges ];
-    // updatedBadges[currentRespondentIndex][idSoal] = isCorrect ? 'success' : 'danger';
-    // setBadges(updatedBadges);
     updatedReviewStatus[currentRespondentIndex][idSoal] = isCorrect;
     setReviewStatus(updatedReviewStatus);
     const updatedBadges = [...badges];
@@ -423,26 +399,6 @@ export default function MasterMateriReviewJawaban({
     updatedBadges[currentRespondentIndex][idSoal] = "";
     setBadges(updatedBadges);
   };
-
-  // setBadges(
-  //   currentData.map(() => {
-  //     const initialBadges = {};
-  //     currentQuestions.forEach((question) => {
-  //       initialBadges[question.Key] = undefined; // Belum Dinilai
-  //     });
-  //     return initialBadges;
-  //   })
-  // );
-
-  // setReviewStatus(
-  //   currentData.map(() => {
-  //     const initialStatus = {};
-  //     currentQuestions.forEach((question) => {
-  //       initialStatus[question.Key] = null; // Belum Dinilai
-  //     });
-  //     return initialStatus;
-  //   })
-  // );
 
   if (isLoading) {
     return <Loading />;
@@ -573,94 +529,10 @@ export default function MasterMateriReviewJawaban({
     );
   }
 
-
-  // if (dataQuiz.length === 0) {
-  //   return (
-  //     <>
-  //     <div className="">
-  //       <Search
-  //         title="Review Quiz Materi"
-  //         description="Tenaga Pendidik dapat memeriksa jawaban dari peserta yang telah mengerjakan Pre-Test dan Post-Test yang tersedia didalam materi."
-  //         placeholder="Cari Kelompok Keahlian"
-  //         showInput={false}
-  //       />
-  //     </div>
-  //     <div
-  //       className="flex-fill mb-0 mt-3"
-  //       style={{ marginRight: "100px", marginLeft: "100px" }}
-  //     >
-  //       <Alert
-  //         type="warning"
-  //         message="Belum ada quiz yang tersedia"
-  //       />
-  //       <div className="float my-4 mx-1">
-  //         <LocalButton
-  //           classType="outline-secondary me-2 px-4 py-2"
-  //           label="Kembali"
-  //           onClick={() => onChangePage("index")}
-  //         />
-  //       </div>
-  //     </div>
-  //   </>
-  //   );
-  // }
-
-  // if (currentData.length === 0) {
-  //   return (
-  //     <>
-  //       <div className="">
-  //         <Search
-  //           title="Review Quiz Materi"
-  //           description="Tenaga Pendidik dapat memeriksa jawaban dari peserta yang telah mengerjakan Pre-Test dan Post-Test yang tersedia didalam materi."
-  //           placeholder="Cari Kelompok Keahlian"
-  //           showInput={false}
-  //         />
-  //       </div>
-  //       <div
-  //         className="flex-fill mb-0 mt-3"
-  //         style={{ marginRight: "100px", marginLeft: "100px" }}
-  //       >
-  //         <Alert
-  //           type="warning"
-  //           message="Belum terdapat peserta yang mengerjakan test"
-  //         />
-  //         <div className="float my-4 mx-1">
-  //           <LocalButton
-  //             classType="outline-secondary me-2 px-4 py-2"
-  //             label="Kembali"
-  //             onClick={() => onChangePage("index")}
-  //           />
-  //         </div>
-  //       </div>
-  //     </>
-  //   );
-  // }
-
   const currentRespondent = currentData[currentRespondentIndex];
-  //   const jawabanPenggunaStr = currentRespondent.ans_jawaban_pengguna;
-  //   console.log("penguna jawaban", currentRespondent.ans_jawaban_pengguna)
-
-  //   const jawabanPengguna = jawabanPenggunaStr
-  //       .slice(1, -1)
-  //       .split('], [')
-  //       .map(item => item.replace(/[\[\]]/g, '').split(','));
-  //   const processedJawaban = jawabanPengguna.map(item => {
-  //     if (item[0] === "essay") {
-  //         return [item[0], item[1], item.slice(2).join(' ')];
-  //     }
-  //     return item;
-  // });
-
-  //   const validJawabanPengguna = processedJawaban.filter(item => item.length === 3);
-
-  //   const formattedAnswers = validJawabanPengguna.map(item => ({
-  //     idSoal: item[1],
-  //     namaFile: item[2]
-  //   }));
 
   const downloadFile = async (namaFile) => {
     try {
-      console.log("Nama file:", namaFile);
       const response = await axios.get(
         `${API_LINK}Upload/GetFile/${encodeURIComponent(namaFile)}`,
         {
@@ -700,10 +572,6 @@ export default function MasterMateriReviewJawaban({
   const matchedAnswer = (question, currentRespondent) => {
     if (!currentData || !currentRespondent) return null;
 
-    console.log("Current Respondent:", currentRespondent);
-  console.log("Question:", question);
-
-  // Cari jawaban yang cocok di dalam array `answer` milik `currentRespondent`
   const answer = currentRespondent.answer.find(
     (ans) =>
       ans.que_id === question.Key && // ID soal cocok
@@ -727,7 +595,6 @@ export default function MasterMateriReviewJawaban({
         <div className="">
         </div>
         <div className="" style={{marginBottom:"0px", marginRight:"70px", marginTop:"25px"}}>
-        {console.log("dataa curr", currentData.length)}
         {dataQuiz.length > 1 && (
           <>
             <div className="d-flex">
@@ -818,20 +685,9 @@ export default function MasterMateriReviewJawaban({
           </Card.Header>
           <Card.Body>
             {currentQuestions.map((question, questionIndex) => {
-              // const currentRespondent = currentData[currentRespondentIndex];
-              // console.log("data", currentRespondent);
-              // const answer = matchedAnswer(question);
-              // const matchedAnswer =
-              //   currentRespondent?.answer?.[questionIndex]
-              //     ?.ans_jawaban_pengguna;
-              // console.log("answerrr", currentRespondent);
-
               const currentRespondent = currentData[currentRespondentIndex];
-              console.log("data responden saat ini:", currentRespondent);
-            
               const answer = matchedAnswer(question, currentRespondent);
-              console.log("Jawaban yang cocok:", answer);
-
+             
               return (
                 <Card key={question.Key} className="mb-4">
                   <Card.Header className="">

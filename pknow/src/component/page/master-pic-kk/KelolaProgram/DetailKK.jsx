@@ -15,7 +15,6 @@ import pknowMaskot from "../../../../assets/pknowmaskot.png";
 import { decode } from "html-entities";
 
 export default function KKDetailProgram({ onChangePage, withID }) {
-  console.log("SDA", JSON.stringify(withID));
   const [errors, setErrors] = useState({});
   const [isError, setIsError] = useState({ error: false, message: "" });
   const [isLoading, setIsLoading] = useState(false);
@@ -51,7 +50,6 @@ export default function KKDetailProgram({ onChangePage, withID }) {
   };
 
   const getListAnggota = async () => {
-    console.log("heree");
     setIsError({ error: false, message: "" });
     setIsLoading(true);
 
@@ -74,7 +72,6 @@ export default function KKDetailProgram({ onChangePage, withID }) {
         } else if (data.length === 0) {
           await new Promise((resolve) => setTimeout(resolve, 2000));
         } else {
-          console.log("AGT: " + JSON.stringify(data));
           setListAnggota(data);
           setIsLoading(false);
           break;
@@ -148,7 +145,6 @@ export default function KKDetailProgram({ onChangePage, withID }) {
             })
           );
 
-          console.log("data program",updatedListProgram);
           setListProgram(updatedListProgram);
           setIsLoading(false);
           break;

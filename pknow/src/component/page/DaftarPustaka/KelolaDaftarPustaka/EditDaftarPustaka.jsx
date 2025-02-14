@@ -85,11 +85,11 @@ export default function MasterDaftarPustakaEdit({ onChangePage, withID }) {
     formDataRef.current = {
       pus_id: withID.Key,
       pus_judul: withID.Judul,
-      kke_id: withID.kke_id,
-      pus_file: withID.File,
+      kke_id: withID["ID KK"],
+      pus_file: '',
       pus_keterangan: withID.Keterangan,
       pus_kata_kunci: withID["Kata Kunci"],
-      pus_gambar: withID.Gambar,
+      pus_gambar: '',
       pus_status: "Aktif",
     };
     setFilePreview(false);
@@ -103,9 +103,6 @@ export default function MasterDaftarPustakaEdit({ onChangePage, withID }) {
   };
 
   const handleInputChange = async (e) => {
-    console.log(
-      "DADA: " + formDataRef.current.kke_id + formDataRef.current.pus_KK
-    );
     const { name, value } = e.target;
     const validationError = await validateInput(name, value, userSchema);
     formDataRef.current[name] = value;
@@ -172,7 +169,6 @@ export default function MasterDaftarPustakaEdit({ onChangePage, withID }) {
   };
 
   useEffect(() => {
-    console.log(fileExtension);
     if (fileExtension === "mp4") {
       AppContext_test.urlMateri = withID.File;
     } else {
@@ -199,8 +195,8 @@ export default function MasterDaftarPustakaEdit({ onChangePage, withID }) {
     const fetchDataKK = async () => {
       setIsError((prevError) => ({ ...prevError, error: false }));
       try {
-        const data = await UseFetch(API_LINK + "KK/GetDataKK", {
-          page: 1,
+        const data = await UseFetch(API_LINK + "KK/GetDataKKAll", {
+          page: "",
           query: "",
           sort: "[Nama Kelompok Keahlian] asc",
           status: "Aktif",
@@ -251,44 +247,10 @@ export default function MasterDaftarPustakaEdit({ onChangePage, withID }) {
         return { ...prevError, error: false };
       });
       setErrors({});
-      console.log("reff",fileDocumentRef )
+    
       const uploadPromises = [];
 
-      console.log("dsaf", formDataRef.current["pus_gambar"])
-
-    //  if (fileDocumentRef.current && fileDocumentRef.current.files) {
-    //   if (fileDocumentRef.current.files.length > 0) {
-    //     uploadPromises.push(
-    //       UploadFile(fileDocumentRef).then(
-    //         (data) => (formDataRef.current["pus_file"] = data.Hasil)
-    //       )
-    //     );
-    //   } else {
-    //     console.log("Tidak ada file pustaka yang diunggah.");
-    //     formDataRef.current["pus_file"] = "";
-    //   }
-    // } else {
-    //   console.error("Referensi fileDocumentRef tidak valid atau tidak tersedia.");
-    //   formDataRef.current["pus_file"] = "";
-    // }
-
-    // if (fileGambarRef.current && fileGambarRef.current.files) {
-    //   if (fileGambarRef.current.files.length > 0) {
-    //     uploadPromises.push(
-    //       UploadFile(fileGambarRef).then(
-    //         (data) => (formDataRef.current["pus_gambar"] = data.Hasil)
-    //       )
-    //     );
-    //   } else {
-    //     console.log("Tidak ada file gambar yang diunggah.");
-    //     formDataRef.current["pus_gambar"] = "";
-    //   }
-    // } else {
-    //   console.error("Referensi fileGambarRef tidak valid atau tidak tersedia.");
-    //   formDataRef.current["pus_gambar"] = "";
-    // }
-
-
+   
     if (fileDocumentRef.current.files.length > 0) {
       uploadPromises.push(
         UploadFile(fileDocumentRef.current).then(
@@ -296,7 +258,6 @@ export default function MasterDaftarPustakaEdit({ onChangePage, withID }) {
         )
       );
     }else {
-          console.log("Tidak ada file pustaka yang diunggah.");
           formDataRef.current["pus_file"] = "";
         }
 
@@ -306,18 +267,11 @@ export default function MasterDaftarPustakaEdit({ onChangePage, withID }) {
           (data) => (formDataRef.current["pus_gambar"] = data.Hasil)
         )
       );
-    } else {     console.log("Tidak ada file pustaka yang diunggah.");
+    } else {    
     formDataRef.current["pus_gambar"] = "";
   }
 
-      
-
-      // console.log(fileInputRef.current);
-      console.log("FORM: "+JSON.stringify(formDataRef.current));
-
       Promise.all(uploadPromises).then(() => {
-        console.log("gambar"+formDataRef.current.pus_gambar);
-        console.log("file"+formDataRef.current.pus_file);
         UseFetch(API_LINK + "Pustaka/UpdateDataPustaka", formDataRef.current)
           .then((data) => {
             if (data === "ERROR") {

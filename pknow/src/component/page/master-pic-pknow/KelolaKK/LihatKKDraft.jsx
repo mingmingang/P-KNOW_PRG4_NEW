@@ -57,7 +57,6 @@ export default function KKDetailDraft({ onChangePage, withID }) {
   });
 
   const getListAnggota = async () => {
-    console.log("heree");
     setIsError({ error: false, message: "" });
     setIsLoading(true);
 
@@ -154,7 +153,6 @@ export default function KKDetailDraft({ onChangePage, withID }) {
             })
           );
 
-          console.log(updatedListProgram);
           setListProgram(updatedListProgram);
           setIsLoading(false);
           break;

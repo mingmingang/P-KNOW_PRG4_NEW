@@ -21,10 +21,18 @@ export default function ClassRepositoryIndex({ onChangePage }) {
   const [isError, setIsError] = useState({ error: false, message: "" });
   const [isLoading, setIsLoading] = useState(true);
   const [currentData, setCurrentData] = useState(null);
+  const [currentDataPublikasi, setCurrentDataPublikasi] = useState(null);
   const [listProgram, setListProgram] = useState([]);
   const [listAnggota, setListAnggota] = useState([]);
   const [listKategoriProgram, setListKategoriProgram] = useState([]);
   const [currentFilter, setCurrentFilter] = useState({
+    page: 1,
+    query: "",
+    sort: "[Nama Program] desc",
+    status: "",
+  });
+
+  const [currentFilterPublikasi, setCurrentFilterPublikasi] = useState({
     page: 1,
     query: "",
     sort: "[Nama Program] desc",
@@ -80,14 +88,13 @@ export default function ClassRepositoryIndex({ onChangePage }) {
           API_LINK + "Program/GetProgramAll",
           currentFilter
         );
-        console.log("dataa", data);
+        console.log("belum publis", data)
         if (data === "ERROR") {
           throw new Error("Terjadi kesalahan: Gagal mengambil data Program.");
         } else if (data.length === 0) {
           await new Promise((resolve) => setTimeout(resolve, 2000));
         } else {
           setCurrentData(data);
-          console.log(JSON.stringify(data));
           setIsLoading(false);
           break;
         }
@@ -98,6 +105,34 @@ export default function ClassRepositoryIndex({ onChangePage }) {
       setIsError({ error: true, message: e.message });
     }
   };
+
+
+  const getProgramPublikasi = async () => {
+    setIsError({ error: false, message: "" });
+    setIsLoading(true);
+    try {
+      while (true) {
+        let data = await UseFetch(
+          API_LINK + "Program/GetDataProgramTerpublikasi",
+          currentFilterPublikasi
+        );
+        if (data === "ERROR") {
+          throw new Error("Terjadi kesalahan: Gagal mengambil data Program.");
+        } else if (data.length === 0) {
+          await new Promise((resolve) => setTimeout(resolve, 2000));
+        } else {
+          setCurrentDataPublikasi(data);
+          setIsLoading(false);
+          break;
+        }
+      }
+    } catch (e) {
+      setIsLoading(false);
+      console.log(e.message);
+      setIsError({ error: true, message: e.message });
+    }
+  };
+
 
   const getListKategoriProgram = async (filter) => {
     try {
@@ -112,8 +147,6 @@ export default function ClassRepositoryIndex({ onChangePage }) {
             kkeID: filter,
           }
         );
-
-        console.log("data kategori:", data);
 
         if (data === "ERROR") {
           throw new Error(
@@ -142,10 +175,12 @@ export default function ClassRepositoryIndex({ onChangePage }) {
   useEffect(() => {
     const fetchData = async () => {
       await getKK();
+      await getProgramPublikasi();
     };
+  
 
     fetchData();
-  }, []);
+  }, [currentFilter, currentFilterPublikasi]);
 
   function handleSetCurrentPage(newCurrentPage) {
     setIsLoading(true);
@@ -157,40 +192,48 @@ export default function ClassRepositoryIndex({ onChangePage }) {
     });
   }
 
-  // DELETE PERMANEN DATA PROGRAM
-  function handleDelete(id) {
-    setIsError(false);
-
-    SweetAlert(
-      "Konfirmasi Hapus",
-      "Anda yakin ingin <b>menghapus permanen</b> data ini?",
-      "warning",
-      "Hapus"
-    ).then((confirm) => {
-      if (confirm) {
-        setIsLoading(true);
-        UseFetch(API_LINK + "Program/DeleteProgram", {
-          idProgram: id,
-        })
-          .then((data) => {
-            if (data === "ERROR" || data.length === 0) setIsError(true);
-            else if (data[0].hasil === "GAGAL") {
-              setIsError({
-                error: true,
-                message:
-                  "Terjadi kesalahan: Gagal menghapus program karena sudah terdapat Draft Kategori.",
-              });
-            } else {
-              SweetAlert("Sukses", "Data berhasil dihapus.", "success");
-              handleSetCurrentPage(currentFilter.page);
-            }
-          })
-          .then(() => setIsLoading(false));
-      }
+  function handleSetCurrentPagePublikasi(newCurrentPage) {
+    setIsLoading(true);
+    setCurrentFilterPublikasi((prevFilter) => {
+      return {
+        ...prevFilter,
+        page: newCurrentPage,
+      };
     });
   }
 
-  // MENGUBAH STATUS PROGRAM
+    function handleDelete(id) {
+      setIsError(false);
+
+      SweetAlert(
+        "Konfirmasi Hapus",
+        "Anda yakin ingin <b>menghapus permanen</b> data ini?",
+        "warning",
+        "Hapus"
+      ).then((confirm) => {
+        if (confirm) {
+          setIsLoading(true);
+          UseFetch(API_LINK + "Program/DeleteProgram", {
+            idProgram: id,
+          })
+            .then((data) => {
+              if (data === "ERROR" || data.length === 0) setIsError(true);
+              else if (data[0].hasil === "GAGAL") {
+                setIsError({
+                  error: true,
+                  message:
+                    "Terjadi kesalahan: Gagal menghapus program karena sudah terdapat Draft Kategori.",
+                });
+              } else {
+                SweetAlert("Sukses", "Data berhasil dihapus.", "success");
+                handleSetCurrentPage(currentFilter.page);
+              }
+            })
+            .then(() => setIsLoading(false));
+        }
+      });
+    }
+
   function handleSetStatus(data, status) {
     setIsError(false);
 
@@ -213,7 +256,6 @@ export default function ClassRepositoryIndex({ onChangePage }) {
           .then((data) => {
             if (data === "ERROR" || data.length === 0) setIsError(true);
             else if (data[0].hasil === "ERROR KATEGORI AKTIF") {
-              console.log(data);
               setIsError({
                 error: true,
                 message:
@@ -308,12 +350,10 @@ export default function ClassRepositoryIndex({ onChangePage }) {
               </div>
                 <div className="d-flex flex-column">
                   <div className="flex-fill">
-                    {console.log("dataaa", currentData)}
                     <div className="row" style={{ margin: "10px 50px" }}>
                       {currentData
                         .filter((value) => value.Status === "Aktif" && value.Publikasi != "Terpublikasi" ) // Filter hanya data dengan status Aktif
                         .map((value, index) => {
-                          console.log("yuhu", value); // Log nilai value yang diproses
                           return (
                             <div key={index} className="col-12 col-md-4 mb-4">
                               <CardClassTraining
@@ -371,10 +411,9 @@ export default function ClassRepositoryIndex({ onChangePage }) {
                 <div className="d-flex flex-column">
                   <div className="flex-fill">
                     <div className="row" style={{ margin: "10px 50px" }}>
-                      {currentData
+                      {currentDataPublikasi
                         .filter((value) => value.Status === "Aktif" && value.Publikasi == "Terpublikasi") // Filter hanya data dengan status Aktif
                         .map((value, index) => {
-                          console.log("yuhu", value); // Log nilai value yang diproses
                           return (
                             <div key={index} className="col-12 col-md-4 mb-4">
                               <CardClassTraining
@@ -406,9 +445,9 @@ export default function ClassRepositoryIndex({ onChangePage }) {
                 >
                   <Paging
                     pageSize={PAGE_SIZE}
-                    pageCurrent={currentFilter.page}
-                    totalData={currentData[0]?.Count || 0}
-                    navigation={handleSetCurrentPage}
+                    pageCurrent={currentFilterPublikasi.page}
+                    totalData={currentDataPublikasi[0]?.Count || 0}
+                    navigation={handleSetCurrentPagePublikasi}
                   />
                 </div>
               </div>

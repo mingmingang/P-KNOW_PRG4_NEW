@@ -10,15 +10,11 @@ export default function MasterSharingDetail({ onChangePage }) {
   const [isError, setIsError] = useState({ error: false, message: "" });
   const [isLoading, setIsLoading] = useState(true); 
   const [pdfHeight, setPdfHeight] = useState("500px");
-  // console.log('di detail ',AppContext_test.DetailMateri)
 
-  // console.log('detail vidio: '+ Materi.Sharing_video)
   const Materi = AppContext_test.DetailMateri;
 
   const hasVideo = Materi.Sharing_video_url;
   const hasPDF = Materi.Sharing_pdf_url;
-  // console.log('vidio : '+ hasPDF)
-  // console.log('pdf : '+ hasPDF)
   useEffect(() => {
     setTimeout(() => setIsLoading(false), 1000);
   }, []);

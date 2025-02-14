@@ -250,10 +250,8 @@ export default function MasterPreTestAdd({ onChangePage }) {
             if (question.selectedFile) {
               try {
                 const uploadResult = await uploadFile(question.selectedFile);
-                console.log("Image Upload Response:", JSON.stringify(uploadResult.newFileName));
                 formQuestion.gambar = uploadResult.newFileName;
               } catch (uploadError) {
-                console.error('Gagal mengunggah gambar:', uploadError);
                 alert('Gagal mengunggah gambar untuk pertanyaan: ' + question.text);
                 return;
               }
@@ -267,7 +265,6 @@ export default function MasterPreTestAdd({ onChangePage }) {
     
           try {
             const questionResponse = await axios.post(API_LINK + 'Questions/SaveDataQuestion', formQuestion);
-            console.log('Pertanyaan berhasil disimpan:', questionResponse.data);
     
             if (questionResponse.data.length === 0) {
               Swal.fire({
@@ -292,7 +289,6 @@ export default function MasterPreTestAdd({ onChangePage }) {
     
               try {
                 const answerResponse = await axios.post(API_LINK + 'Choices/SaveDataChoice', answerData);
-                console.log('Jawaban Essay berhasil disimpan:', answerResponse.data);
               } catch (error) {
                 console.error('Gagal menyimpan jawaban Essay:', error);
                 Swal.fire({
@@ -311,13 +307,8 @@ export default function MasterPreTestAdd({ onChangePage }) {
                   nilaiChoice: option.point || 0,
                   quecreatedby: AppContext_test.DisplayName,
                 };
-    
-                console.log("hasil multiple choice")
-                console.log(answerData);
-    
                 try {
                   const answerResponse = await axios.post(API_LINK + 'Choices/SaveDataChoice', answerData);
-                  console.log('Jawaban multiple choice berhasil disimpan:', answerResponse.data);
                 } catch (error) {
                   console.error('Gagal menyimpan jawaban multiple choice:', error);
                   Swal.fire({
@@ -443,7 +434,6 @@ export default function MasterPreTestAdd({ onChangePage }) {
   };
 
   setFormContent(updatedFormContent);
-  console.log(updatedFormContent)
 };
 
   const handleDuplicateQuestion = (index) => {
@@ -608,16 +598,12 @@ export default function MasterPreTestAdd({ onChangePage }) {
   const handleTimerChange = (e) => {
     const { value } = e.target;
     setTimer(value);
-    console.log(convertTimeToSeconds(timer))
 
   };
 
   const handleOptionPointChange = (e, questionIndex, optionIndex) => {
     const { value } = e.target;
-    
-    console.log("point changes")
-    console.log(value);
-    // Clone the formContent state
+
     const updatedFormContent = [...formContent];
 
     // Update the specific option's point value
@@ -642,7 +628,6 @@ export default function MasterPreTestAdd({ onChangePage }) {
     }));
   };
     const convertTimeToSeconds = () => {
-        console.log(hours, minutes)
         return parseInt(hours) * 3600 + parseInt(minutes) * 60;
     };
     

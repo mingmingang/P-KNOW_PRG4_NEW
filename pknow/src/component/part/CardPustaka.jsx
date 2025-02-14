@@ -19,6 +19,7 @@ function CardPustaka({
   onEdit = () => {},
   onDetail = () => {},
   MAX_DESCRIPTION_LENGTH = 100,
+  pustakaSaya
 }) {
   let activeUser = "";
   const cookie = Cookies.get("activeUser");
@@ -47,6 +48,8 @@ function CardPustaka({
 
 
   return (
+    <>
+    {pustakaSaya === "ya" ? (
     <>
      <div
                 className="card-keterangan"
@@ -272,6 +275,9 @@ function CardPustaka({
           })
         )}
       </div>
+      </>
+      ) : (
+        <>
 
      <div
                 className="card-keterangan"
@@ -495,6 +501,8 @@ function CardPustaka({
           })
         )}
       </div>
+      </>
+      )}
     </>
   );
 }

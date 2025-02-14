@@ -3,7 +3,6 @@
     --secondary-color: rgba(8,84,159,1);
 }
 
-/* Beranda Utama CSS */
 .sec1 {
     background-image: url('../assets/bgBeranda.png');
     display: flex;
@@ -30,6 +29,7 @@
     height: 100vh;
     background-size: cover;
     background-color: var(--secondary-color);
+    min-height: "100vh" 
 }
 
 .sec5 {
@@ -124,6 +124,40 @@
     margin-right: 0; /* Reset margin */
 }
 
+.sec4 p {
+    margin: 10px 200px;
+    font-size: 14px;
+}
+
+.sec5 button{
+   padding: 15px; 
+   border: none;
+}
+
+.sec5 p {
+    text-align: justify;
+    width: 70%;
+    margin-top: 20px;
+    color: #717375;
+}
+
+.sec5 h3 {
+    width: 80%;
+}
+
+.sec5 h4{
+    margin-top: 20px; 
+    font-size: 18px;
+}
+.perusahaan {
+    margin-top: 60px;
+    margin-left: 40px;
+}
+
+.company{
+    display: flex;
+}
+
 /* Media Queries for additional responsiveness */
 @media (max-width: 768px) {
     .ucapan {
@@ -147,26 +181,147 @@
         width: 80%; /* Adjust image container width */
         margin-left: 0; /* Centering */
     }
+
+    .sec6{
+        height: 900px;
+    }
+    .sec6 h4 {
+        font-size: 20px;  /* Reduce font size on smaller screens */
+        padding-top: 40px; 
+        margin: 10px 30px; /* Adjust padding for better spacing */
+      }
+    
+      .sec6 p {
+        font-size: 12px;  /* Maintain smaller font size */
+        padding-left: 10px;
+        padding-right: 10px;
+      }
+    
+      .d-flex {
+        justify-content: center;
+        gap: 15px;
+      }
+
+      .comment {
+        width: 370px; /* Adjust card width on smaller screens */
+        padding: 15px; 
+        margin-left: 20px;
+        margin-top: 20px;/* Reduce padding on smaller screens */
+      }
+    
+      .d-flex img {
+        width: 35px;
+        height: 35px; /* Even smaller image */
+      }
+
+    
+      .comment p {
+        font-size: 12px;
+      }
+    
+      .isi {
+        font-size: 12px; /* Smaller text for comments */
+      }
+      .imgDatang{
+        display: none;
+      }
+      .ucapan h3{
+        text-align: center;
+      }
+      .ucapan h1{
+        text-align: center;
+        font-size: 34px;
+        font-weight: 600;
+        margin-top: 20px ;
+      }
+      .ucapan{
+        margin-left: 30px;
+      }
+      .ucapan button{
+        margin-left: 30px;
+      }
+
+      .sec1 p{
+        line-height: 30px;
+      }
+
+      .sec4 p  {
+        margin: 10px 10px;
+        font-size: 16px;
+        line-height: 30px;
+      }
+
+      .sec4 img{
+        width: 380px;
+        margin-top: 48px;
+      }
+
+      .sec4 {
+        min-height: 90vh;
+        height: 90vh;
+      }
+
+      .sec5 .logoAstratech{
+        display: none;
+      }
+
+      .sec5 .d-flex{
+
+      }
+      .sec5 h4{
+        margin-top: 20px; 
+        font-size: 16px;
+        width: 400px;
+        text-align: center;
+        margin-left: -15px;
+    }
+    .sec5 img {
+        width: 360px;
+    }
+
+      .sec5 h3{
+        text-align: center;
+        margin-left: -20px;
+        font-size: 18px;
+        max-width: 400px;
+        width: 100%;
+      }
+
+      .sec5 h4{
+        font-size: 14px;
+      }
+
+      .sec5 p{
+        text-align: center;
+        margin-left: 5px;
+        font-size: 16px;
+        width: 350px;
+        font-weight: 500;
+      }
+
+      .sec5 .perusahaan{
+        margin-top: 20px;
+        margin-left: 25px;
+      }
+
+      .company{
+        display: block;
+      }
+
+      .sec5 button{
+        display: flex;
+        justify-content: center;
+        margin-left: 100px;
+        margin-top: 40px;
+     }
+
+     .sec5{
+        max-height: 400px;
+     }
+
+     .sec6 div{
+        display: none;
+     }
 }
 
 
-
-
-
-
-
-
-
-
-
-
-/* Beranda Prodi CSS */
-
-
-
-
-
-
-
-
-/* Beranda Mahasiswa CSS */

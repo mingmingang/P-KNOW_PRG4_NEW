@@ -74,7 +74,6 @@ export default function MasterTestIndex({ onChangePage, materiId }) {
                     API_LINK + "Materi/GetDataMateriById",
                     { id: AppContext_test.materiId }
                 );
-                console.log("data materi", data);
                 if (data.length !== 0) {
                     setCurrentData({
                         ...data[0],
@@ -98,8 +97,6 @@ export default function MasterTestIndex({ onChangePage, materiId }) {
     fetchData();
 }, [AppContext_test.refreshPage, currentFilter]);
 
-  console.log("coba",currentData)
-
   const formatDate = (dateString) => {
     if (!dateString) return "Tanggal tidak tersedia";
     const options = { year: 'numeric', month: 'long', day: 'numeric' };
@@ -111,7 +108,6 @@ export default function MasterTestIndex({ onChangePage, materiId }) {
   } else {
     formUpdate.current.statusSharingExpert_Video = "Done";
   }
-  console.log("tes materi", AppContext_test.materiId);
 
  async function saveProgress() {
     let success = false;
@@ -124,10 +120,7 @@ export default function MasterTestIndex({ onChangePage, materiId }) {
         
         if (response.data != 0){
           success = true;
-          console.log(response.data)
           AppContext_test.refreshPage += retryCount;
-          console.log(AppContext_test.refreshPage, "DS")
-          console.log('ds') 
         }
       } catch (error) {
         console.error("Failed to save progress:", error);
@@ -154,7 +147,6 @@ export default function MasterTestIndex({ onChangePage, materiId }) {
             tipe: 'Materi'
           }
         );
-        console.log("respon progres", response.status);
         if (response.status === 200) {
           success = true;
         }

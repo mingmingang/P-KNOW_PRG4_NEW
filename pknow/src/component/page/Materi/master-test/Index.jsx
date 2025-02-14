@@ -187,11 +187,9 @@ export default function MasterProsesIndex({ onChangePage, withID, isOpen }) {
       setIsLoading(true);
       for (let i = 0; i < retries; i++) {
         try {
-          console.log("Fetching data with filters:", currentFilter); // Debug
           const data = await UseFetch(API_LINK + "Materi/GetDataMateri", {
             ...currentFilter,
           });
-          console.log("Data fetched:", data);
           if (data.length != 0) {
             setCurrentData(inisialisasiData);
             const formattedData = data.map((value) => ({

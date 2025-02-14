@@ -235,59 +235,9 @@ export default function PengajuanAdd({ onChangePage, withID }) {
         if (confirm) {
           setIsLoading(true);
 
-        //   const uploadPromises = [];
-        //   formDataRef.current.lampirans = [];
-        //   console.log(formDataRef.current);
-
-        //     lampiranRefs.current.forEach((ref, index) => {
-        //         if (ref && ref.current && ref.current.files.length > 0) {
-        //           const file = ref.current.files[0];
-        //           console.log(`Memulai upload file ${index + 1}:`, file.name);
-              
-        //           uploadPromises.push(
-        //             uploadFile(ref.current)
-        //               .then((data) => {
-        //                 // Cek apakah respons memiliki properti "Hasil"
-        //                 if (data && data.Hasil) {
-        //                   formDataRef.current.lampirans.push({
-        //                     pus_file: data.Hasil, // Gunakan properti "Hasil"
-        //                   });
-
-        //                   console.log(`File ${index + 1} berhasil diupload:`, data.Hasil);
-        //                 }else {
-        //                     console.error(`Upload file ${index + 1} gagal:`, data);
-        //                     throw new Error("File upload failed");
-        //                 }
-        //               })
-        //               .catch((error) => {
-        //                 console.error(`Error saat mengupload file ${index + 1}:`, error);
-        //                 throw error;
-        //               })
-        //           );
-        //         } else {
-        //           console.warn(`Lampiran ${index + 1} tidak ditemukan atau kosong.`);
-        //         }
-        //       });
-
         const uploadPromises = [];
         formDataRef.current.lampirans = [];
 
-        // lampiranRefs.current.forEach((ref) => {
-        //   if (ref && ref.current && ref.current.files.length > 0) {
-        //     uploadPromises.push(
-        //       uploadFile(ref.current).then((data) => {
-        //         if (data !== "ERROR" && data.Hasil) {
-        //           console.log("hasil", data.Hasil)
-        //           formDataRef.current.lampirans.push({
-        //             pus_file: data.Hasil,
-        //           });
-        //         } else {
-        //           throw new Error("File upload failed");
-        //         }
-        //       })
-        //     );
-        //   }
-        // });
 
         lampiranRefs.current.forEach((ref, index) => {
           if (ref && ref.current && ref.current.files.length > 0) {
@@ -307,28 +257,10 @@ export default function PengajuanAdd({ onChangePage, withID }) {
           }
         });
 
-        // lampiranRefs.current.forEach((ref) => {
-        //     if (ref && ref.current && ref.current.files.length > 0) {
-        //       uploadPromises.push(
-        //         uploadFile(ref.current).then((data) => {
-        //           if (data !== "ERROR" && data.Hasil) {
-        //             // Assuming 'data.Hasil' is the filename of the uploaded file
-        //             const fileName = data.Hasil;
-          
-        //             // If you want to store only the filename and not the entire object:
-        //             formDataRef.current.lampirans.push(fileName); // Push only the filename
-        //           } else {
-        //             throw new Error("File upload failed");
-        //           }
-        //         })
-        //       );
-        //     }
-        //   });
           
           try {
             await Promise.all(uploadPromises);
 
-            console.log("Data lampiran:", JSON.stringify(formDataRef.current.lampirans, null, 2));
             const response = await UseFetch(
               API_LINK + "PengajuanKK/SaveAnggotaKK",
               {
@@ -339,15 +271,7 @@ export default function PengajuanAdd({ onChangePage, withID }) {
               lampirans: JSON.stringify(formDataRef.current.lampirans, null, 2),
               }
             );
-            console.log("response", {
-              kke_id: withID["ID KK"],
-              kry_id: userData.kry_id,
-              status: "Menunggu Acc",
-              creaby: activeUser,
-              lampirans: JSON.stringify(formDataRef.current.lampirans, null, 2),
-              })
-
-              console.log("responn", response)
+          
             if (response === "ERROR") {
               setIsError({
                 error: true,

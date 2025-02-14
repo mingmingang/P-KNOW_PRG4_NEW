@@ -103,12 +103,6 @@ export default function RiwayatPengajuan({onChangePage}) {
       kry_id: currentFilter.kry_id, // Pastikan kry_id digunakan
     }));
   
-    console.log("Updated Filter for Search:", {
-      page: 1,
-      query: searchQuery.current?.value || "",
-      sort: searchFilterSort.current?.value || "[Nama Kelompok Keahlian] asc",
-      kry_id: currentFilter.kry_id,
-    });
   }
   
   
@@ -137,12 +131,6 @@ export default function RiwayatPengajuan({onChangePage}) {
             kry_id: user.kry_id,
           }));
   
-          console.log("User Data:", user); // Verifikasi data user
-          console.log("Updated Filter:", {
-            ...currentFilter,
-            kry_id: user.kry_id,
-          });
-  
           setIsLoading(false);
           break;
         }
@@ -168,7 +156,6 @@ export default function RiwayatPengajuan({onChangePage}) {
     setIsLoading(true);
 
     if (currentFilter.kry_id === "") return;
-    console.log("yuhuu",currentFilter);
 
     try {
       while (true) {
@@ -176,8 +163,6 @@ export default function RiwayatPengajuan({onChangePage}) {
           API_LINK + "PengajuanKK/GetRiwayat",
           currentFilter
         );
-        console.log("current filter", currentFilter)
-        console.log("data riwayat", data)
 
         if (data === "ERROR") {
           throw new Error("Terjadi kesalahan: Gagal mengambil daftar prodi.");

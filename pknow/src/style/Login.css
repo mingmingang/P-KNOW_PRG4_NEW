@@ -291,9 +291,19 @@
       margin-bottom: 300px;
       margin-top: 100px;
     }
+    .custom-modal{
+      margin-top: 150px;
+    }
   
     .custom-modal .custom-modal-header {
       font-size: 18px;
+    }
+
+    .custom-modal-body button {
+      font-size: 14px;
+    }
+    .custom-modal-header {
+    font-size: 12px;
     }
     .login-button {
       width: 100%;
