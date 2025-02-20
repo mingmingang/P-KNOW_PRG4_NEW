@@ -30,6 +30,7 @@ export default function Prodi() {
     window.location.replace("/daftar_pustaka"); // Redirect to login page
   };
 
+  
   const slidesData = [
     {
       title: "Program Studi Teknik Produksi Dan Proses Manufaktur",
@@ -169,7 +170,7 @@ export default function Prodi() {
               >
                 <div className="text-content">
                   <h1>{slide.title}</h1>
-                  <p style={{width:"700px"}}>{slide.subtitle}</p>
+                  <p>{slide.subtitle}</p>
                   <button
                     className="action-button"
                     onClick={handleKnowledgeDatabase}
@@ -186,84 +187,56 @@ export default function Prodi() {
         </Slider>
       </div>
 
-      <section className="sec4">
-        <h4
-          style={{
-            textAlign: "center",
-            color: "white",
-            paddingTop: "60px",
-            fontWeight: "bold",
-          }}
-        >
-          Penasaran dengan kampus ASTRAtech?
-        </h4>
-        <p
-          style={{
-            textAlign: "center",
-            color: "white",
-            fontSize: "14px",
-            margin: "10px 200px",
-          }}
-          className="mt-4"
-        >
-          ASTRAtech adalah value chain industri untuk penyediaan SDM unggul
-          sekaligus kontribusi sosial mencerdaskan Bangsa. ASTRAtech memiliki
-          banyak program studi yang memenuhi kebutuhan industri untuk melatih
-          peserta didik dalam lingkungan kerja.
-        </p>
-        <div style={{ textAlign: "center" }}>
-          <button
-            style={{
-              border: "none",
-              padding: "15px",
-              borderRadius: "10px",
-              backgroundColor: "white",
-              color: "#0A5EA8",
-              fontWeight: "600",
-            }}
-          >
-            Tentang ASTRAtech
-          </button>
-        </div>
-        <div
-          className="mb-0"
-          style={{ textAlign: "center", marginTop: "110px" }}
-        >
-          <img src={iconAstra} alt="Icon ASTRA" />
-        </div>
-      </section>
+      <section className="sec4" style={{ 
+  display: "flex", 
+  flexDirection: "column", 
+  justifyContent: "space-between", 
+}}>
+  <h4 style={{ textAlign: "center", color: "white", paddingTop: "60px", fontWeight: "bold" }}>
+    Penasaran dengan kampus ASTRAtech?
+  </h4>
+  <p style={{ textAlign: "center", color: "white" }} className="mt-4">
+    ASTRAtech adalah value chain industri untuk penyediaan SDM unggul sekaligus kontribusi
+    sosial mencerdaskan Bangsa. ASTRAtech memiliki banyak program studi yang memenuhi
+    kebutuhan industri untuk melatih peserta didik dalam lingkungan kerja.
+  </p>
+  <div style={{ textAlign: "center" }}>
+    <button
+      style={{
+        border: "none",
+        padding: "15px",
+        borderRadius: "10px",
+        backgroundColor: "white",
+        color: "#0A5EA8",
+        fontWeight: "600",
+      }}
+    >
+      Tentang ASTRAtech
+    </button>
+  </div>
+  <div style={{ textAlign: "center", marginTop: "auto" }}>
+    <img src={iconAstra} alt="Icon ASTRA" />
+  </div>
+</section>
 
       <section className="sec5">
-        <div className="d-flex">
-          <div
-            className="perusahaan"
-            style={{ marginTop: "60px", marginLeft: "40px" }}
-          >
-            <h3 style={{ color: "#0A5EA8", width: "80%", fontWeight: "700" }}>
-              P-KNOW telah bekerja sama dengan Perusahaan ASTRA yang tersebar
-              diseluruh Indonesia
+        <div className="company">
+          <div className="perusahaan">
+            <h3 style={{ color: "#0A5EA8",  fontWeight: "700" }}>
+              P-KNOW telah bekerja sama dengan Perusahaan ASTRA yang tersebar diseluruh Indonesia
             </h3>
-            <p
-              style={{
-                textAlign: "justify",
-                width: "70%",
-                marginTop: "20px",
-                color: "#717375",
-              }}
-            >
-              P-KNOW adalah platform pendidikan teknologi yang diciptakan oleh
-              kampus ASTRAtech untuk menyediakan konten pembelajaran
-              keterampilan digital dengan metode “blended-learning”.
+            <p>
+              P-KNOW adalah platform pendidikan teknologi yang diciptakan oleh kampus ASTRAtech
+              untuk menyediakan konten pembelajaran keterampilan digital dengan metode
+              “blended-learning”.
             </p>
-            <h4 style={{ marginTop: "20px", fontSize: "18px" }}>
+            <h4>
               Partner Perusahaan yang Bekerja Sama dengan ASTRAtech
             </h4>
-            <img src={perusahaan} alt="Perusahaan ASTRA" />
+            <img  src={perusahaan} alt="Perusahaan ASTRA" />
             <div className="mt-3">
               <button
                 style={{
-                  border: "none",
-                  padding: "15px",
                   borderRadius: "10px",
                   backgroundColor: "#0A5EA8",
                   color: "white",
@@ -273,39 +246,38 @@ export default function Prodi() {
               </button>
             </div>
           </div>
-          <div
-            className="logoAstratech"
-            style={{ marginTop: "90px", marginRight: "100px" }}
-          >
+          <div className="logoAstratech" style={{ marginTop: "90px", marginRight: "100px" }}>
             <img src={logo} alt="Logo ASTRAtech" width="300px" />
           </div>
         </div>
       </section>
 
-      <section className="sec6">
-        <h4
-          style={{
-            textAlign: "center",
-            color: "white",
-            paddingTop: "60px",
-            fontWeight: "bold",
-          }}
-        >
+
+     {/* <section className="" style={{backgroundColor:"white"}}>
+        <div className="">
+      <h4 style={{ textAlign: "center", color: "#0A5EA8", paddingTop: "60px", fontWeight: "bold" }}>
+          Mentor dan Tenaga Pendidik P-KNOW
+        </h4>
+        </div>
+        <Slider />
+      </section> */}
+
+
+      {/* <section className="sec6">
+        <h4 style={{ textAlign: "center", color: "white", paddingTop: "60px", fontWeight: "bold" }}>
           Apa Tanggapan P-Knowers Tentang P-KNOW System?
         </h4>
-        <p
-          style={{ textAlign: "center", color: "white", fontSize: "14px" }}
-          className="mt-4"
-        >
-          Manfaat dan kegunaan yang dirasakan oleh para P-Knowers ketika
-          menggunakan P-KNOW System. Ayo menjadi salah satunya!
+        <p style={{ textAlign: "center", color: "white", fontSize: "14px" }} className="mt-4">
+          Manfaat dan kegunaan yang dirasakan oleh para P-Knowers ketika menggunakan P-KNOW System.
+          Ayo menjadi salah satunya!
         </p>
         <div className="d-flex ml-4 mt-4">
           {comments.map((comment, index) => (
             <CommentCard key={index} {...comment} />
           ))}
         </div>
-      </section>
+      </section> */}
+  
     </>
   );
 }

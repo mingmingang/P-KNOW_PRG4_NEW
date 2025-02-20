@@ -1,6 +1,4 @@
-.daftarPustaka {
-    display: flex;
-}
+
 .bg-white-dp {
     margin-left: 60px ;
     border-radius: 14px;
@@ -157,4 +155,30 @@
 
 .back-title-daftar-pustaka .back{
     margin-right: 20px;
+}
+
+.pustaka-layout{
+    display: flex;
+}
+
+.cover {
+    border-radius: 20px;
+                width: 500px;
+                height: 200px;
+                objectFit: cover;
+}
+
+
+@media (max-width: 768px) {
+    .cover {
+        border-radius: 20px;
+        width: 280px;
+        height: 200px;
+        object-fit: cover;
+    }
+
+    .pustaka-layout{
+        display: block;
+    }
+    
 }

@@ -19,6 +19,7 @@ import {
   faClock,
   faUsers,
 } from "@fortawesome/free-solid-svg-icons";
+import { decode } from "he";
 
 
 export default function KKDetailPublish({ onChangePage, withID }) {
@@ -180,7 +181,7 @@ export default function KKDetailPublish({ onChangePage, withID }) {
                               marginBottom: "20px",
                             }}
                           />
-              <h3 className="mb-3 fw-semibold">{formData.nama}</h3>
+              <h3 className="mb-3 fw-semibold">{decode(formData.nama)}</h3>
               <h6 className="card-subtitle mt-1 mb-3">
               <FontAwesomeIcon icon={faUser} className="icon-style mr-2" />
                 {withID.PIC}
@@ -202,7 +203,7 @@ export default function KKDetailPublish({ onChangePage, withID }) {
               </div>
               <hr className="mb-0" style={{ opacity: "0.2" }} />
               <p className="py-3" style={{ textAlign: "justify" }}>
-                {formData.deskripsi}
+                {decode(formData.deskripsi)}
               </p>
             </div>
             <div className="col-lg-5">
@@ -260,7 +261,7 @@ export default function KKDetailPublish({ onChangePage, withID }) {
           </div>
           <h5 className="text-primary pt-2">
             Daftar Program dalam Kelompok Keahlian{" "}
-            <strong>{formData.nama}</strong>
+            <strong>{decode(formData.nama)}</strong>
           </h5>
           {listProgram.length > 0 ? (
             listProgram[0].Message ? (
@@ -275,7 +276,7 @@ export default function KKDetailPublish({ onChangePage, withID }) {
                     <p className="fw-medium mb-0" style={{ width: "20%" }}>
                       {index + 1}
                       {". "}
-                      {data["Nama Program"]}
+                      {decode(data["Nama Program"])}
                     </p>
                     <p
                       className="mb-0 pe-3"
@@ -283,7 +284,7 @@ export default function KKDetailPublish({ onChangePage, withID }) {
                         width: "80%",
                       }}
                     >
-                      {data.Deskripsi}
+                      {decode(data.Deskripsi)}
                     </p>
                   </div>
                   <div className="p-3 pt-0">
@@ -302,7 +303,7 @@ export default function KKDetailPublish({ onChangePage, withID }) {
                                   {"-"}
                                   {indexKat + 1}
                                   {". "}
-                                  {kat["Nama Kategori"]}
+                                  {decode(kat["Nama Kategori"])}
                                 </h6>
                               </div>
                               <div className="d-flex mt-2">
@@ -311,7 +312,7 @@ export default function KKDetailPublish({ onChangePage, withID }) {
                                   className="card-subtitle"
                                   style={{ textAlign: "justify" }}
                                 >
-                                  {kat.Deskripsi}
+                                  {decode(kat.Deskripsi)}
                                 </p>
                               </div>
                             </div>

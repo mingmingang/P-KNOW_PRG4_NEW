@@ -73,6 +73,7 @@ export default function KelolaKK({ onChangePage }) {
     query: "",
     sort: "[Nama Kelompok Keahlian] asc",
     status: "",
+     prodi : ""
   });
   const [currentDataAktif, setCurrentDataAktif] = useState(inisialisasiData);
   const [currentFilterAktif, setCurrentFilterAktif] = useState({
@@ -80,6 +81,7 @@ export default function KelolaKK({ onChangePage }) {
     query: "",
     sort: "[Nama Kelompok Keahlian] asc",
     status: "Aktif",
+     prodi : ""
   });
   const [currentDataMenunggu, setCurrentDataMenunggu] = useState(inisialisasiData);
   const [currentFilterMenunggu, setCurrentFilterMenunggu] = useState({
@@ -87,6 +89,7 @@ export default function KelolaKK({ onChangePage }) {
     query: "",
     sort: "[Nama Kelompok Keahlian] asc",
     status: "Menunggu",
+     prodi : ""
   });
   const [currentDataNonAktif, setCurrentDataNonAktif] = useState(inisialisasiData);
   const [currentFilterNonAktif, setCurrentFilterNonAktif] = useState({
@@ -94,6 +97,7 @@ export default function KelolaKK({ onChangePage }) {
     query: "",
     sort: "[Nama Kelompok Keahlian] asc",
     status: "Tidak Aktif",
+     prodi : ""
   });
   const [currentDataDraft, setCurrentDataDraft] = useState(inisialisasiData);
   const [currentFilterDraft, setCurrentFilterDraft] = useState({
@@ -101,6 +105,7 @@ export default function KelolaKK({ onChangePage }) {
     query: "",
     sort: "[Nama Kelompok Keahlian] asc",
     status: "Draft",
+    prodi : ""
   });
   const [activeFilterStatus, setActiveFilterStatus] = useState(""); // Default filter status
   
@@ -156,6 +161,7 @@ export default function KelolaKK({ onChangePage }) {
       query: newQuery,
       sort: newSort,
       status: newStatus === "" ? "Draft" : newStatus,
+      prodi : ""
     }));
 
     setCurrentFilterAktif((prevFilter) => ({
@@ -164,6 +170,7 @@ export default function KelolaKK({ onChangePage }) {
       query: newQuery,
       sort: newSort,
       status: newStatus === "" ? "Aktif" : newStatus,
+      prodi : ""
     }));
     
     setCurrentFilterNonAktif((prevFilter) => ({
@@ -172,6 +179,7 @@ export default function KelolaKK({ onChangePage }) {
       query: newQuery,
       sort: newSort,
       status: newStatus === "" ? "Tidak Aktif" : newStatus,
+      prodi : ""
     }));
 
     setCurrentFilterMenunggu((prevFilter) => ({
@@ -180,6 +188,7 @@ export default function KelolaKK({ onChangePage }) {
       query: newQuery,
       sort: newSort,
       status: newStatus === "" ? "Menunggu" : newStatus,
+      prodi : ""
     }));
   }
 
@@ -486,9 +495,8 @@ export default function KelolaKK({ onChangePage }) {
           </p>
           <div className="input-wrapper">
             <div
-              className=""
+              className="cari"
               style={{
-                width: "700px",
                 display: "flex",
                 backgroundColor: "white",
                 borderRadius: "20px",
@@ -501,7 +509,6 @@ export default function KelolaKK({ onChangePage }) {
                 placeholder="Cari"
                 style={{
                   border: "none",
-                  width: "680px",
                   height: "40px",
                   borderRadius: "20px",
                 }}
@@ -517,6 +524,7 @@ export default function KelolaKK({ onChangePage }) {
           </div>
         </div>
 
+        <div className="container">
         <div className="navigasi-layout-page">
           <p className="title-kk">Kelompok Keahlian</p>
           <div className="left-feature">
@@ -598,7 +606,8 @@ export default function KelolaKK({ onChangePage }) {
             </div>
           </div>
         </div>
-        
+        </div>
+
         <div className="container">
           {isEmpty ? (
             <Alert
@@ -615,8 +624,6 @@ export default function KelolaKK({ onChangePage }) {
                   background: "#A7AAAC",
                   borderRadius: "5px",
                   padding: "10px 20px",
-                  width: "50%",
-                  marginLeft: "20px",
                   marginBottom: "20px",
                   color: "white",
                   fontWeight: "bold",
@@ -626,7 +633,7 @@ export default function KelolaKK({ onChangePage }) {
               </div>
               <div className="row mt-0 gx-4">
               {currentDataDraft.length === 0 && (
-                <div className="" style={{margin:"5px 20px"}}>
+                <div className="" style={{margin:"5px 0px"}}>
                 <Alert type="warning" message="Tidak ada data!" />
                 </div>
               )}
@@ -662,8 +669,6 @@ export default function KelolaKK({ onChangePage }) {
                   background: "orange",
                   borderRadius: "5px",
                   padding: "10px 20px",
-                  width: "50%",
-                  marginLeft: "20px",
                   marginBottom: "20px",
                   color: "white",
                   fontWeight: "bold",
@@ -674,7 +679,7 @@ export default function KelolaKK({ onChangePage }) {
 
               <div className="row mt-0 gx-4">
               {currentDataMenunggu.length === 0 && (
-                <div className="" style={{margin:"5px 20px"}}>
+                <div className="" style={{margin:"5px 0px"}}>
                 <Alert type="warning" message="Tidak ada data!" />
                 </div>
               )}
@@ -709,8 +714,6 @@ export default function KelolaKK({ onChangePage }) {
                   background: "#61A2DC",
                   borderRadius: "5px",
                   padding: "10px 20px",
-                  width: "50%",
-                  marginLeft: "20px",
                   marginBottom: "20px",
                   color: "white",
                   fontWeight: "bold",
@@ -720,7 +723,7 @@ export default function KelolaKK({ onChangePage }) {
               </div>
               <div className="row mt-0 gx-4">
               {currentDataAktif.length === 0 && (
-                <div className="" style={{margin:"5px 20px"}}>
+                <div className="" style={{margin:"5px 0px"}}>
                 <Alert type="warning" message="Tidak ada data!" />
                 </div>
               )}
@@ -768,8 +771,6 @@ export default function KelolaKK({ onChangePage }) {
                   background: "#A7AAAC",
                   borderRadius: "5px",
                   padding: "10px 20px",
-                  width: "50%",
-                  marginLeft: "20px",
                   marginBottom: "20px",
                   color: "white",
                   fontWeight: "bold",
@@ -779,7 +780,7 @@ export default function KelolaKK({ onChangePage }) {
               </div>
               <div className="row mt-0 gx-4">
               {currentDataDraft.length === 0 && (
-                <div className="" style={{margin:"5px 20px"}}>
+                <div className="" style={{margin:"5px 0px"}}>
                 <Alert type="warning" message="Tidak ada data!" />
                 </div>
               )}
@@ -819,8 +820,6 @@ export default function KelolaKK({ onChangePage }) {
                   background: "orange",
                   borderRadius: "5px",
                   padding: "10px 20px",
-                  width: "50%",
-                  marginLeft: "20px",
                   marginBottom: "20px",
                   color: "white",
                   fontWeight: "bold",
@@ -831,7 +830,7 @@ export default function KelolaKK({ onChangePage }) {
 
               <div className="row mt-0 gx-4">
               {currentDataMenunggu.length === 0 && (
-                <div className="" style={{margin:"5px 20px"}}>
+                <div className="" style={{margin:"5px 0px"}}>
                 <Alert type="warning" message="Tidak ada data!" />
                 </div>
               )}
@@ -870,8 +869,6 @@ export default function KelolaKK({ onChangePage }) {
                   background: "#61A2DC",
                   borderRadius: "5px",
                   padding: "10px 20px",
-                  width: "50%",
-                  marginLeft: "20px",
                   marginBottom: "20px",
                   color: "white",
                   fontWeight: "bold",
@@ -881,7 +878,7 @@ export default function KelolaKK({ onChangePage }) {
               </div>
               <div className="row mt-0 gx-4">
               {currentDataAktif.length === 0 && (
-                <div className="" style={{margin:"5px 20px"}}>
+                <div className="" style={{margin:"5px 0px"}}>
                 <Alert type="warning" message="Tidak ada data!" />
                 </div>
               )}
@@ -929,8 +926,6 @@ export default function KelolaKK({ onChangePage }) {
                   background: "red",
                   borderRadius: "5px",
                   padding: "10px 20px",
-                  width: "50%",
-                  marginLeft: "20px",
                   marginBottom: "20px",
                   color: "white",
                   fontWeight: "bold",
@@ -940,7 +935,7 @@ export default function KelolaKK({ onChangePage }) {
               </div>
               <div className="row mt-0 gx-4">
               {currentDataNonAktif.length === 0 && (
-                <div className="" style={{margin:"5px 20px"}}>
+                <div className="" style={{margin:"5px 0px"}}>
                 <Alert type="warning" message="Tidak ada data!" />
                 </div>
               )}

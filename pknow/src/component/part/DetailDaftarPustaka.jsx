@@ -99,7 +99,8 @@ export default function DetailDaftarPustaka({ onChangePage, withID }) {
     };
 
   return (
-    <div className="dapus-container">
+    
+    <div className="container" style={{marginTop:"100px"}}>
       <div className="back-title-daftar-pustaka">
         <button
           onClick={handleGoBack}
@@ -110,17 +111,12 @@ export default function DetailDaftarPustaka({ onChangePage, withID }) {
         <h1 className="title">Knowledge Database</h1>
       </div>
       <div className="daftar-pustaka-content">
-        <div className="pustaka-layout" style={{ display: "flex" }}>
+        <div className="pustaka-layout">
           <div className="daftar-pustaka-title-layout">
             <img
               src={`${API_LINK}Upload/GetFile/${fileData.gambar}`}
               alt="Daftar Pustaka"
-              style={{
-                borderRadius: "20px",
-                width: "500px",
-                height: "200px",
-                objectFit: "cover",
-              }}
+              className="cover"
             />
           </div>
 

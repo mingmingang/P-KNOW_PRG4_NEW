@@ -8,8 +8,6 @@ export default function MasterKelolaPIC() {
   const [pageMode, setPageMode] = useState("index");
   const [dataID, setDataID] = useState();
 
- // MasterPICPKNOW component
-// In MasterPICPKNOW component
 function getPageMode() {
     switch (pageMode) {
       case "index":
@@ -21,9 +19,7 @@ function getPageMode() {
             <MasterLihatKK onChangePage={handleSetPageMode} withID={dataID} />
           );
           case "edit":
-            // Gunakan SweetAlert secara asinkron, tampilkan pesan alert
             SweetAlert("Error", "Maaf, anda tidak memiliki akses!", "warning");
-            // Kembalikan halaman ke "index" atau halaman lain sesuai kebutuhan
             setPageMode("index");
             return null;
     }

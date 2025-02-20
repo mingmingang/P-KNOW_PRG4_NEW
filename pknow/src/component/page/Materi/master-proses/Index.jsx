@@ -464,6 +464,7 @@ export default function MasterProsesIndex({ onChangePage }) {
                 />
               </div>
             )}
+            
              <div className="backSearch">
           <h1>{listKategori.find((item) => item.value === AppContext_test.KategoriIdByKK)?.label || ""}</h1>
           <p>
@@ -502,7 +503,7 @@ export default function MasterProsesIndex({ onChangePage }) {
           </div>
         </div>  
 
-
+                <div className="container">
         <div className="navigasi-layout-page">
           <p className="title-kk" style={{fontSize:"20px"}}> <button style={{backgroundColor:"transparent", border:"none", marginRight:"10px"}} onClick={handleGoBack}><img src={BackPage} width="50px" alt="" /></button>Kelola Materi / Program / Kategori <span style={{fontWeight:"bold"}}>{listKategori.find((item) => item.value === AppContext_test.KategoriIdByKK)?.label || ""}</span></p>
           <div className="left-feature">
@@ -540,6 +541,7 @@ export default function MasterProsesIndex({ onChangePage }) {
               </div>
             </div>
           </div>
+        </div>
         </div>
             <div className="mt-1">
             {isEmpty ? (

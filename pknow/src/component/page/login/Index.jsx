@@ -91,26 +91,6 @@ export default function Login() {
   // Login button click handler
   const handleLoginClick = async (e) => {
     e.preventDefault();
-
-    // Validasi CAPTCHA
-    // if (!captchaValue) {
-    //   setIsError({ error: true, message: "Harap selesaikan CAPTCHA!" });
-    //   return;
-    // }
-
-    // if (parseInt(userCaptchaInput, 10) !== captchaAnswer) {
-    //   setIsError({ error: true, message: "Jawaban CAPTCHA salah!" });
-    //   generateCaptcha(); // Generate CAPTCHA baru setelah kesalahan
-    //   setUserCaptchaInput(""); // Reset input CAPTCHA
-    //   return;
-    // }
-
-    // if (userCaptchaInput.trim() !== captchaNumber) {
-    //   setIsError({ error: true, message: "Jawaban CAPTCHA salah!" });
-    //   generateCaptcha(); // Generate CAPTCHA baru setelah kesalahan
-    //   setUserCaptchaInput(""); // Reset input CAPTCHA
-    //   return;
-    // }
     if (userCaptchaInput.trim() === "") {
       setIsError({ error: true, message: "Harap masukkan CAPTCHA!" });
       return;
@@ -214,13 +194,13 @@ export default function Login() {
         userInfo.peran === "PIC Kelompok Keahlian" ||
         userInfo.peran === "Tenaga Pendidik"
       ) {
-        window.location.href = ROOT_LINK + "/" + "beranda_utama";
+        window.location.href = ROOT_LINK + "beranda_utama";
       } else if (userInfo.peran === "Program Studi") {
-        window.location.href = ROOT_LINK + "/" + "beranda_prodi";
+        window.location.href = ROOT_LINK + "beranda_prodi";
       } else if (userInfo.peran === "Tenaga Kependidikan") {
-        window.location.href = ROOT_LINK + "/" + "beranda_tenaga_kependidikan";
+        window.location.href = ROOT_LINK +  "beranda_tenaga_kependidikan";
       } else if (userInfo.peran === "Mahasiswa") {
-        window.location.href = ROOT_LINK + "/" + "beranda_mahasiswa";
+        window.location.href = ROOT_LINK + "beranda_mahasiswa";
       }
     } catch (error) {
       window.scrollTo(0, 0);
@@ -289,112 +269,6 @@ export default function Login() {
                     style={{ marginTop: "20px" }}
                   />
 
-                  {/* Menambahkan ReCAPTCHA */}
-                  {/* <div className="" style={{ marginTop: "20px", width:"100%", textAlign:"center", display:"flex", marginLeft:"135px"}}>
-                    <ReCAPTCHA
-                      sitekey={RECAPTCHA_SITE_KEY}
-                      onChange={handleCaptchaChange}
-                      theme="light" // atau "dark"
-                      size="normal" // atau "compact"
-                      style={{width:"100%"}}
-                    />
-                    {isError.error && isError.message === "Harap selesaikan CAPTCHA!" && (
-                      <p className="error-message" style={{ color: "red", marginTop: "5px" }}>
-                        Harap selesaikan CAPTCHA!
-                      </p>
-                    )}
-                  </div> */}
-
-                  {/* <div className="captcha-container" style={{ marginTop: "20px" }}>
-                    <label htmlFor="captcha" style={{ marginBottom: "5px", display: "block" }}>
-                      {captchaQuestion}
-                    </label>
-                    <input
-                      type="text"
-                      id="captcha"
-                      name="captcha"
-                      placeholder="Masukkan jawaban"
-                      value={userCaptchaInput}
-                      onChange={(e) => setUserCaptchaInput(e.target.value)}
-                      required
-                      style={{
-                        width: "100%",
-                        padding: "10px",
-                        borderRadius: "5px",
-                        border: "1px solid #ccc",
-                      }}
-                    />
-                    {isError.error && isError.message === "Jawaban CAPTCHA salah!" && (
-                      <p className="error-message" style={{ color: "red", marginTop: "5px" }}>
-                        Jawaban CAPTCHA salah! Silakan coba lagi.
-                      </p>
-                    )}
-                  </div> */}
-
-                  {/* 
-                  <div className="captcha-container" style={{ marginTop: "20px", display:"flex", justifyContent:"space-between" }}>
-                      <div
-                        className="captcha-number"
-                        style={{
-                          fontSize: "20px",
-                          fontWeight: "bold",
-                          letterSpacing: "5px",
-                          backgroundColor: "#0A5EA8",
-                          color:"white",
-                          padding: "7px",
-                          width:"150px",
-                          borderRadius: "5px",
-                          display: "inline-block",
-                          userSelect: "none",
-                        }}
-                      >
-                        {captchaNumber}
-                      </div>
-                      <div className="d-flex">
-                      <div className="">
-                      <input
-                        type="number"
-                        id="captcha"
-                        name="captcha"
-                        placeholder="Masukkan Captcha"
-                        value={userCaptchaInput}
-                        onChange={(e) => setUserCaptchaInput(e.target.value)}
-                        required
-                        style={{
-                          width: "100%",
-                          padding: "10px",
-                          borderRadius: "5px 0px 0px 5px",
-                          border: "1px solid #ccc",
-                          height:"44px"
-                        }}
-                      />
-                      {isError.error && isError.message === "Jawaban CAPTCHA salah!" && (
-                        // <p className="error-message" style={{ color: "red", marginTop: "5px" }}>
-                        //   Jawaban CAPTCHA salah! Silakan coba lagi.
-                        // </p>
-                      <div className=""></div>
-                      )}
-                      </div>
-                      <div className="">
-                      <button
-                        type="button"
-                        onClick={generateCaptcha}
-                        style={{
-                          padding: "10px",
-                          width:"50px",
-                          border: "none",
-                          backgroundColor: "#0A5EA8",
-                          borderRadius: "0px 5px 5px 0px",
-                          cursor: "pointer",
-                          color:"white"
-                        }}
-                      >
-                        <FontAwesomeIcon icon={faSyncAlt} />
-                      </button>
-                      </div>
-                      </div>
-                    </div> */}
-
                   <div className="mt-4">
                     <p style={{ textAlign: "left" }}>
                       Captcha <span style={{ color: "red" }}>*</span>
@@ -449,8 +323,6 @@ export default function Login() {
                       </div>
                     </div>
                   </div>
-
-                  {/* {isError.error && <p style={{ color: "red" }}>{isError.message}</p>} */}
 
                   <button
                     className="login-button"

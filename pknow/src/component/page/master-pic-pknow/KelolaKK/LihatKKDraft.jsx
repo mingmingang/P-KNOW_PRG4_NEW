@@ -20,6 +20,7 @@ import {
   faClock,
   faUsers,
 } from "@fortawesome/free-solid-svg-icons";
+import { decode } from "he";
 
 export default function KKDetailDraft({ onChangePage, withID }) {
   const [errors, setErrors] = useState({});
@@ -223,7 +224,7 @@ export default function KKDetailDraft({ onChangePage, withID }) {
                 className="mb-3 fw-semibold"
                 style={{ fontSize: "30px", color: "#0A5EA8", fontWeight:"bold" }}
               >
-                {formData.nama}
+                {decode(formData.nama)}
               </h3>
               <h5 className="fw-semibold">
                 <FontAwesomeIcon
@@ -240,7 +241,7 @@ export default function KKDetailDraft({ onChangePage, withID }) {
                 className="py-2"
                 style={{ textAlign: "justify", width: "500px" }}
               >
-                {formData.deskripsi}
+                {decode(formData.deskripsi)}
               </p>
               <div className="">
                 <i className="fas fa-user"></i>

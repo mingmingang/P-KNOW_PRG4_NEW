@@ -442,13 +442,13 @@ function CardKelompokKeahlian({
           src={`${API_LINK}Upload/GetFile/${data.gambar}`}
           width="300"
         />
-        <div className="row">
+        <div className="">
           <div className="d-flex justify-content-between align-items-center mt-4">
             <h3
               className="text-xl font-bold text-blue-600"
-              style={{ fontSize: "18px", textAlign: "justify" }}
+              style={{ fontSize: "16px", textAlign: "justify", lineHeight:"30px"  }}
             >
-              {data.title}
+             {data.title ? decode(data.title) : "Default Title"}
             </h3>
           </div>
         </div>

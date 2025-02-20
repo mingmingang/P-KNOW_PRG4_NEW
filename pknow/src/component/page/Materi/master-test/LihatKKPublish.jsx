@@ -21,7 +21,7 @@ import {
   faUsers,
 } from "@fortawesome/free-solid-svg-icons";
 import maskotPknow from "../../../../assets/pknowmaskot.png";
-import { decode } from "html-entities";
+import { decode } from "he";
 
 export default function KKDetailPublish({ onChangePage, withID }) {
   const [errors, setErrors] = useState({});
@@ -206,14 +206,14 @@ export default function KKDetailPublish({ onChangePage, withID }) {
         <div className="card-body">
           <div className="row pt-2">
             <div className="col-lg-7 px-4">
-              <h3 className="mb-3 fw-semibold" style={{ fontSize: "50px", color: "#0A5EA8" }}>{formData.nama}</h3>
+              <h3 className="mb-3 fw-semibold" style={{ fontSize: "50px", color: "#0A5EA8" }}>{decode(formData.nama)}</h3>
               <h5 className="fw-semibold">
                 <FontAwesomeIcon icon={faGraduationCap} className="icon-style" style={{ marginRight: "10px" }} />
                 {formData.programStudi}
               </h5>
               <h4 className="fw-semibold" style={{ marginTop: "30px" }}>Tentang Kelompok Keahlian</h4>
               <p className="py-2" style={{ textAlign: "justify", width: "550px" }}>
-                {formData.deskripsi}
+                {decode(formData.deskripsi)}
               </p>
               <div className="">
                 <i className="fas fa-user"></i>
@@ -240,7 +240,7 @@ export default function KKDetailPublish({ onChangePage, withID }) {
             <div className="mt-3">
               <h5 className="pt-2">
                 Daftar Anggota Kelompok Keahlian{" "}
-                <strong style={{color:"#0A5EA8"}}>{formData.nama}</strong>
+                <strong style={{color:"#0A5EA8"}}>{decode(formData.nama)}</strong>
               </h5>
               {listAnggota.length > 0 ? (
                 listAnggota[0].Message ? (
@@ -298,7 +298,7 @@ export default function KKDetailPublish({ onChangePage, withID }) {
           </div>
           <h5 className="pt-2">
             Daftar Program dalam Kelompok Keahlian{" "}
-            <strong style={{color:"#0A5EA8"}}>{formData.nama}</strong>
+            <strong style={{color:"#0A5EA8"}}>{decode(formData.nama)}</strong>
           </h5>
           {listProgram.length > 0 ? (
             listProgram[0].Message ? (
@@ -316,7 +316,7 @@ export default function KKDetailPublish({ onChangePage, withID }) {
                     <p className="fw-medium mb-0" style={{ width: "20%" }}>
                       {index + 1}
                       {". "}
-                      {data["Nama Program"]}
+                      {decode(data["Nama Program"])}
                     </p>
                     <p
                       className="mb-0 pe-3"
@@ -343,7 +343,7 @@ export default function KKDetailPublish({ onChangePage, withID }) {
                                   {"-"}
                                   {indexKat + 1}
                                   {". "}
-                                  {kat["Nama Kategori"]}
+                                  {decode(kat["Nama Kategori"])}
                                 </h6>
                                 <div>
                                   <Icon

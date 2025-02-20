@@ -7,7 +7,7 @@ import "../../style/PDF_Viewer.css";
 import Loading from "./Loading";
 import { API_LINK } from "../util/Constants";
 
-export default function PDF_Viewer({ pdfFileName, width = "1080px", height="1050px"}) {
+export default function PDF_Viewer({ pdfFileName, width = "auto", height="auto"}) {
   const [isLoading, setIsLoading] = useState(false);
   const [pdfUrl, setPdfUrl] = useState(null);
   const defaultLayoutPluginInstance = defaultLayoutPlugin();
@@ -22,7 +22,7 @@ export default function PDF_Viewer({ pdfFileName, width = "1080px", height="1050
   }, [pdfFileName]);
 
   return (
-    <div className="d-flex flex-column" style={{margin:'auto 30px', marginBottom:'50px', borderRadius:'80px'}}>
+    <div className="d-flex flex-column">
       <div className="flex-fill">
         {isLoading && <Loading />} {/* Show loading state if needed */}
       </div>

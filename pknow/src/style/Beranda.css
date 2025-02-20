@@ -1,327 +1,347 @@
 :root {
-    --primary-color: rgb(10,94,168);
-    --secondary-color: rgba(8,84,159,1);
+  --primary-color: rgb(10,94,168);
+  --secondary-color: rgba(8,84,159,1);
 }
 
 .sec1 {
-    background-image: url('../assets/bgBeranda.png');
-    display: flex;
-    width: 100%;
-    padding-right: 5%; /* Changed to percentage for responsiveness */
-    height: 100vh;
-    background-size: cover;
-    background-color: var(--primary-color);
+  background-image: url('../assets/bgBeranda.png');
+  display: flex;
+  width: 100%;
+  padding-right: 5%; /* Changed to percentage for responsiveness */
+  height: 100vh;
+  background-size: cover;
+  background-color: var(--primary-color);
 }
 
 .sec3 {
-    padding-top: 40px;
-    padding-left: 80px;
-    padding-right: 80px;
-    width: 100%; /* Changed to percentage for responsiveness */
-    height: 60vh;
-    background-size: cover;
-    background-color: white;
+  padding-top: 40px;
+  padding-left: 80px;
+  padding-right: 80px;
+  width: 100%; /* Changed to percentage for responsiveness */
+  height: 60vh;
+  background-size: cover;
+  background-color: white;
 }
 
 .sec4 {
-    background-image: url('../assets/bgBeranda.png');
-    width: 100%; /* Changed to percentage for responsiveness */
-    height: 100vh;
-    background-size: cover;
-    background-color: var(--secondary-color);
-    min-height: "100vh" 
+background-image: url('../assets/bgBeranda.png');
+width: 100%;
+height: 100vh;
+background-size: cover;
+background-color: var(--secondary-color);
+display: flex;
+flex-direction: column; /* Menjaga konten dalam kolom */
+justify-content: space-between; /* Membuat konten tersebar merata */
 }
 
+
+
 .sec5 {
-    display: flex;
-    width: 100%; /* Changed to percentage for responsiveness */
-    height: 60vh;
-    background-size: cover;
-    background-color: white;
+  display: flex;
+  width: 100%; /* Changed to percentage for responsiveness */
+  height: 60vh;
+  background-size: cover;
+  background-color: white;
 }
 
 
 .sec6 {
-    width: 100%; /* Changed to percentage for responsiveness */
-    height: 60vh;
-    margin-top: 100px;
-    background-size: cover;
-    background-color: var(--secondary-color);
+  width: 100%; /* Changed to percentage for responsiveness */
+  height: 60vh;
+  margin-top: 100px;
+  background-size: cover;
+  background-color: var(--secondary-color);
 }
 
 .comment {
-    background-color: white;
-    padding: 20px;
-    border-radius: 20px;
-    width: 30%;
-    text-align: justify;
-    margin-right: 50px;
+  background-color: white;
+  padding: 20px;
+  border-radius: 20px;
+  width: 30%;
+  text-align: justify;
+  margin-right: 50px;
 }
 
 
 .ucapan {
-    padding-top: 24vh; /* Changed to viewport height */
-    width: 50%;
-    padding-left: 8%; /* Changed to percentage for responsiveness */
+  padding-top: 24vh; /* Changed to viewport height */
+  width: 50%;
+  padding-left: 8%; /* Changed to percentage for responsiveness */
 }
 
 .ucapan h3 {
-    color: #FFF;
-    font-size: 1.8rem; /* Use rem for scalability */
-    margin-bottom: 0;
+  color: #FFF;
+  font-size: 1.8rem; /* Use rem for scalability */
+  margin-bottom: 0;
 }
 
 .ucapan h1 {
-    font-weight: bold;
-    color: #FFF;
-    font-size: 3rem;
-    margin-top: 0;
-    margin-bottom: 1rem; /* Changed to rem */
-    line-height: 1.5; /* Adjusted for better readability */
-    max-width: 1000px; /* Added max-width */
+  font-weight: bold;
+  color: #FFF;
+  font-size: 3rem;
+  margin-top: 0;
+  margin-bottom: 1rem; /* Changed to rem */
+  line-height: 1.5; /* Adjusted for better readability */
+  max-width: 1000px; /* Added max-width */
 }
 
 .ucapan p {
-    color: #FFF;
-    font-size: 1.25rem; /* Use rem for scalability */
-    line-height: 1.5;
-    text-align: justify;
-    margin-bottom: 1rem; /* Changed to rem */
-    max-width: 600px; /* Added max-width */
+  color: #FFF;
+  font-size: 1.25rem; /* Use rem for scalability */
+  line-height: 1.5;
+  text-align: justify;
+  margin-bottom: 1rem; /* Changed to rem */
+  max-width: 600px; /* Added max-width */
 }
 
 .ucapan button {
-    margin-top: 2rem; /* Changed to rem */
-    border: none;
-    background-color: white;
-    width: 70%; /* Changed to percentage for responsiveness */
-    max-width: 280px; /* Added max-width */
-    height: 60px;
-    border-radius: 35px;
-    color: var(--primary-color);
-    font-size: 1.25rem; /* Use rem for scalability */
-    font-weight: 600;
-    cursor: pointer;
+  margin-top: 2rem; /* Changed to rem */
+  border: none;
+  background-color: white;
+  width: 70%; /* Changed to percentage for responsiveness */
+  max-width: 280px; /* Added max-width */
+  height: 60px;
+  border-radius: 35px;
+  color: var(--primary-color);
+  font-size: 1.25rem; /* Use rem for scalability */
+  font-weight: 600;
+  cursor: pointer;
 }
 
 .ucapan button:hover {
-    background-color: var(--primary-color);
-    color: white;
-    transition-duration: 0.5s; /* Shortened duration */
-    transform: translateY(-3px); /* Adjusted for a more noticeable effect */
-    z-index: inherit;
+  background-color: var(--primary-color);
+  color: white;
+  transition-duration: 0.5s; /* Shortened duration */
+  transform: translateY(-3px); /* Adjusted for a more noticeable effect */
+  z-index: inherit;
 }
 
 .imgDatang {
-    padding-top: 40vh; /* Changed to viewport height */
-    display: flex;
-    width: 27%;
-    height: 100%;
+  padding-top: 40vh; /* Changed to viewport height */
+  display: flex;
+  width: 27%;
+  height: 100%;
 }
 
 .ceweVR, .cowoTop {
-    width: 100%;
-    margin-right: 0; /* Reset margin */
+  width: 100%;
+  margin-right: 0; /* Reset margin */
 }
 
 .sec4 p {
-    margin: 10px 200px;
-    font-size: 14px;
+  margin: 10px 200px;
+  font-size: 14px;
 }
 
 .sec5 button{
-   padding: 15px; 
-   border: none;
+ padding: 15px; 
+ border: none;
 }
 
 .sec5 p {
-    text-align: justify;
-    width: 70%;
-    margin-top: 20px;
-    color: #717375;
+  text-align: justify;
+  width: 70%;
+  margin-top: 20px;
+  color: #717375;
 }
 
 .sec5 h3 {
-    width: 80%;
+  width: 80%;
 }
 
 .sec5 h4{
-    margin-top: 20px; 
-    font-size: 18px;
+  margin-top: 20px; 
 }
 .perusahaan {
-    margin-top: 60px;
-    margin-left: 40px;
+  margin-top: 60px;
+  margin-left: 40px;
 }
 
 .company{
-    display: flex;
+  display: flex;
 }
+
+.imgDatang {
+  padding-top: 40vh; /* Changed to viewport height */
+  display: flex;
+  width: 30%;
+  height: 100%;
+  margin-left: -100px;
+}
+
+.sec4 button:hover {
+  background-color: var(--primary-color);
+  color: white;
+  transition-duration: 0.5s; /* Shortened duration */
+  transform: translateY(-3px); /* Adjusted for a more noticeable effect */
+  z-index: inherit;
+}
+
 
 /* Media Queries for additional responsiveness */
 @media (max-width: 768px) {
-    .ucapan {
-        width: 90%; /* Full width on smaller screens */
-        padding-left: 0;
+  .ucapan {
+      width: 90%; /* Full width on smaller screens */
+      padding-left: 0;
+  }
+
+  .ucapan h1 {
+      font-size: 3rem; /* Responsive font size */
+  }
+
+  .ucapan p {
+      font-size: 14px; /* Responsive font size */
+  }
+
+  .ucapan button {
+      width: 100%; /* Full width for buttons on smaller screens */
+  }
+
+  .imgDatang {
+      width: 80%; /* Adjust image container width */
+      margin-left: 0; /* Centering */
+  }
+
+  .sec6{
+      height: 900px;
+  }
+  .sec6 h4 {
+      font-size: 20px;  /* Reduce font size on smaller screens */
+      padding-top: 40px; 
+      margin: 10px 30px; /* Adjust padding for better spacing */
+    }
+  
+    .sec6 p {
+      font-size: 12px;  /* Maintain smaller font size */
+      padding-left: 10px;
+      padding-right: 10px;
+    }
+  
+    .d-flex {
+      justify-content: center;
+      gap: 15px;
     }
 
-    .ucapan h1 {
-        font-size: 3rem; /* Responsive font size */
+    .comment {
+      width: 370px; /* Adjust card width on smaller screens */
+      padding: 15px; 
+      margin-left: 20px;
+      margin-top: 20px;/* Reduce padding on smaller screens */
+    }
+  
+    .d-flex img {
+      width: 35px;
+      height: 35px; /* Even smaller image */
     }
 
-    .ucapan p {
-        font-size: 1rem; /* Responsive font size */
+  
+    .comment p {
+      font-size: 12px;
+    }
+  
+    .isi {
+      font-size: 12px; /* Smaller text for comments */
+    }
+    .imgDatang{
+      display: none;
+    }
+    .ucapan h3{
+      text-align: center;
+    }
+    .ucapan h1{
+      text-align: center;
+      font-size: 30px;
+      font-weight: 600;
+      margin-top: 20px ;
+    }
+    .ucapan{
+      margin-left: 30px;
+    }
+    .ucapan button{
+      margin-left: 30px;
     }
 
-    .ucapan button {
-        width: 100%; /* Full width for buttons on smaller screens */
+    .sec1 p{
+      line-height: 30px;
     }
 
-    .imgDatang {
-        width: 80%; /* Adjust image container width */
-        margin-left: 0; /* Centering */
+    .sec4 p  {
+      margin: 10px 10px;
+      font-size: 13px;
+      line-height: 25px;
     }
 
-    .sec6{
-        height: 900px;
-    }
-    .sec6 h4 {
-        font-size: 20px;  /* Reduce font size on smaller screens */
-        padding-top: 40px; 
-        margin: 10px 30px; /* Adjust padding for better spacing */
-      }
-    
-      .sec6 p {
-        font-size: 12px;  /* Maintain smaller font size */
-        padding-left: 10px;
-        padding-right: 10px;
-      }
-    
-      .d-flex {
-        justify-content: center;
-        gap: 15px;
-      }
-
-      .comment {
-        width: 370px; /* Adjust card width on smaller screens */
-        padding: 15px; 
-        margin-left: 20px;
-        margin-top: 20px;/* Reduce padding on smaller screens */
-      }
-    
-      .d-flex img {
-        width: 35px;
-        height: 35px; /* Even smaller image */
-      }
-
-    
-      .comment p {
-        font-size: 12px;
-      }
-    
-      .isi {
-        font-size: 12px; /* Smaller text for comments */
-      }
-      .imgDatang{
-        display: none;
-      }
-      .ucapan h3{
-        text-align: center;
-      }
-      .ucapan h1{
-        text-align: center;
-        font-size: 34px;
-        font-weight: 600;
-        margin-top: 20px ;
-      }
-      .ucapan{
-        margin-left: 30px;
-      }
-      .ucapan button{
-        margin-left: 30px;
-      }
-
-      .sec1 p{
-        line-height: 30px;
-      }
-
-      .sec4 p  {
-        margin: 10px 10px;
-        font-size: 16px;
-        line-height: 30px;
-      }
-
-      .sec4 img{
-        width: 380px;
-        margin-top: 48px;
-      }
-
-      .sec4 {
-        min-height: 90vh;
-        height: 90vh;
-      }
-
-      .sec5 .logoAstratech{
-        display: none;
-      }
-
-      .sec5 .d-flex{
-
-      }
-      .sec5 h4{
-        margin-top: 20px; 
-        font-size: 16px;
-        width: 400px;
-        text-align: center;
-        margin-left: -15px;
-    }
-    .sec5 img {
-        width: 360px;
+    .sec4 img{
+      width: 270px;
+      margin-top: 30px;
     }
 
-      .sec5 h3{
-        text-align: center;
-        margin-left: -20px;
+    .sec4 {
+      min-height: 90vh;
+      height: 90vh;
+    }
+
+    .sec5 .logoAstratech{
+      display: none;
+    }
+
+    .sec5 .d-flex{
+
+    }
+    .sec5 h4{
+      margin-top: 20px;
+      font-size: 16px;
+      text-align: center;
+      margin-left: -40px;
+  }
+  .sec5 img {
+    width: 360px;
+    margin-left: -20px;
+  }
+
+    .sec5 h3{
+      text-align: center;
+        margin-left: -10px;
         font-size: 18px;
         max-width: 400px;
         width: 100%;
-      }
+    }
 
-      .sec5 h4{
-        font-size: 14px;
-      }
+    .sec5 h4{
+      font-size: 14px;
+    }
 
-      .sec5 p{
-        text-align: center;
-        margin-left: 5px;
-        font-size: 16px;
-        width: 350px;
-        font-weight: 500;
-      }
+    .sec5 p{
+      text-align: center;
+      margin-left: 5px;
+      font-size: 14px;
+      width: 320px;
+      font-weight: 500;
+    }
 
-      .sec5 .perusahaan{
-        margin-top: 20px;
-        margin-left: 25px;
-      }
+    .sec5 .perusahaan{
+      margin-top: 20px;
+      margin-left: 25px;
+    }
 
-      .company{
-        display: block;
-      }
+    .company{
+      display: block;
+    }
 
-      .sec5 button{
-        display: flex;
-        justify-content: center;
-        margin-left: 100px;
-        margin-top: 40px;
-     }
+    .sec5 button{
+      display: flex;
+      justify-content: center;
+      margin-left: 70px;
+      margin-top: 40px;
+   }
 
-     .sec5{
-        max-height: 400px;
-     }
+   .sec5{
+      max-height: 400px;
+   }
 
-     .sec6 div{
-        display: none;
-     }
+   .sec6 div{
+      display: none;
+   }
 }
 
 

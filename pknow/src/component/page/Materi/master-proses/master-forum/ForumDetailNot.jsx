@@ -214,7 +214,7 @@ export default function MasterForumAddNot({ onChangePage }) {
                     id="forumIsi"
                     value={formData.forumIsi}
                     onEditorChange={(content) => handleInputChange({ target: { name: 'forumIsi', value: content } })}
-                    apiKey='ci4fa00c13rk9erot37prff8jjekb93mdcwji9rtr2envzvi'
+                    apiKey='81ujooza2p3616vb7rdvc0lxphx68fe82f2aqj6qkmbvn6l4'
                     init={{
                       height: 300,
                       menubar: false,

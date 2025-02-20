@@ -15,7 +15,7 @@ import "swiper/css/autoplay";
 import { Autoplay } from "swiper/modules";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
-import "../../style/Slider.css"; // Tambahkan styling sesuai kebutuhan
+import "../../style/Slider.css";
 
 const sliderData = [
   { name: "Adila Ilma", role: "UX Designer", company: "CrescentRating", img: sample },
@@ -156,7 +156,7 @@ export default function BerandaUtama() {
   </div>
 </section>
 
-      <section className="sec5">
+      <section className="sec5 mb-4">
         <div className="company">
           <div className="perusahaan">
             <h3 style={{ color: "#0A5EA8",  fontWeight: "700" }}>
@@ -188,7 +188,7 @@ export default function BerandaUtama() {
           </div>
         </div>
       </section>
-      <section className="" style={{backgroundColor:"white"}}>
+      {/* <section className="" style={{backgroundColor:"white"}}>
         <div className="">
       <h4 style={{ textAlign: "center", color: "#0A5EA8", paddingTop: "60px", fontWeight: "bold" }}>
           Mentor dan Tenaga Pendidik P-KNOW
@@ -210,7 +210,7 @@ export default function BerandaUtama() {
             <CommentCard key={index} {...comment} />
           ))}
         </div>
-      </section>
+      </section> */}
     </div>
   );
 }

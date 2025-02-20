@@ -284,7 +284,7 @@ export default function MasterForumBefore({ onChangePage }) {
                         target: { name: "forumIsi", value: content },
                       })
                     }
-                    apiKey="444kasui9s3azxih6ix4chynoxmhw6y1urkpmfhufvrbernz"
+                    apiKey="81ujooza2p3616vb7rdvc0lxphx68fe82f2aqj6qkmbvn6l4"
                     init={{
                       height: 300,
                       menubar: false,

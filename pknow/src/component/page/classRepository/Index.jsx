@@ -55,8 +55,6 @@ export default function ClassRepositoryIndex({ onChangePage }) {
 
         if (data === "ERROR") {
           throw new Error("Terjadi kesalahan: Gagal mengambil daftar prodi.");
-        } else if (data.length === 0) {
-          await new Promise((resolve) => setTimeout(resolve, 2000));
         } else {
           setUserData(data[0]);
           setCurrentFilter((prevFilter) => ({
@@ -91,9 +89,7 @@ export default function ClassRepositoryIndex({ onChangePage }) {
         console.log("belum publis", data)
         if (data === "ERROR") {
           throw new Error("Terjadi kesalahan: Gagal mengambil data Program.");
-        } else if (data.length === 0) {
-          await new Promise((resolve) => setTimeout(resolve, 2000));
-        } else {
+        }  else {
           setCurrentData(data);
           setIsLoading(false);
           break;
@@ -118,9 +114,8 @@ export default function ClassRepositoryIndex({ onChangePage }) {
         );
         if (data === "ERROR") {
           throw new Error("Terjadi kesalahan: Gagal mengambil data Program.");
-        } else if (data.length === 0) {
-          await new Promise((resolve) => setTimeout(resolve, 2000));
-        } else {
+        }
+        else {
           setCurrentDataPublikasi(data);
           setIsLoading(false);
           break;
@@ -155,8 +150,6 @@ export default function ClassRepositoryIndex({ onChangePage }) {
         } else if (data === "data kosong") {
           setListKategoriProgram([]);
           break;
-        } else if (data.length === 0) {
-          await new Promise((resolve) => setTimeout(resolve, 2000));
         } else {
           setListKategoriProgram(data);
           break;
@@ -325,13 +318,6 @@ export default function ClassRepositoryIndex({ onChangePage }) {
             </div>
           </div> */}
               </div>
-              {/* {isEmpty ? (
-        <div className="" style={{ margin: "10px 70px" }}>
-          <Alert
-            type="warning mt-3"
-            message="Tidak ada data! Silahkan cari pustaka diatas.."
-          />
-        </div> */}
               <>
               <div
                 className="card-keterangan"
@@ -348,9 +334,15 @@ export default function ClassRepositoryIndex({ onChangePage }) {
               >
                 ↓ Belum Dipublikasikan
               </div>
+              {console.log("data belum", currentData)}
                 <div className="d-flex flex-column">
                   <div className="flex-fill">
                     <div className="row" style={{ margin: "10px 50px" }}>
+                    {currentData[0]?.Message === "data kosong" && (
+                        <div className="" style={{ margin: "5px 20px" }}>
+                          <Alert type="warning" message="Tidak ada data!" />
+                        </div>
+                      )}
                       {currentData
                         .filter((value) => value.Status === "Aktif" && value.Publikasi != "Terpublikasi" ) // Filter hanya data dengan status Aktif
                         .map((value, index) => {
@@ -411,6 +403,11 @@ export default function ClassRepositoryIndex({ onChangePage }) {
                 <div className="d-flex flex-column">
                   <div className="flex-fill">
                     <div className="row" style={{ margin: "10px 50px" }}>
+                    {currentDataPublikasi[0]?.Message === "data kosong" && (
+                        <div className="" style={{ margin: "5px 20px" }}>
+                          <Alert type="warning" message="Tidak ada data!" />
+                        </div>
+                      )}
                       {currentDataPublikasi
                         .filter((value) => value.Status === "Aktif" && value.Publikasi == "Terpublikasi") // Filter hanya data dengan status Aktif
                         .map((value, index) => {
@@ -451,8 +448,6 @@ export default function ClassRepositoryIndex({ onChangePage }) {
                   />
                 </div>
               </div>
-
-              
             </div>
           </div>
         )}

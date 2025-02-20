@@ -3,7 +3,7 @@ import UseFetch from "./UseFetch";
 
 const CreateMenu = async (role, prodi) => {
   try {
-    console.log("menu ayam");
+
     const data = await UseFetch(API_LINK + "Utilities/GetListMenu", {
       username: "",
       role: role,
@@ -11,22 +11,16 @@ const CreateMenu = async (role, prodi) => {
       prodi : prodi
     });
 
-    console.log("menu hhe");
-
     let lastHeadkey = "";
     const transformedMenu = [
       {
         head: "Notifikasi",
         headkey: "notifikasi",
-        link: ROOT_LINK + "/notifications",
+        link: ROOT_LINK + "notifications",
         sub: [],
         isHidden: true,
       },
     ];
-    
-    
-
-    // console.log("menu",data)
 
     data.forEach((item) => {
       if (item.parent === null || item.link === "#") {
@@ -34,7 +28,7 @@ const CreateMenu = async (role, prodi) => {
         transformedMenu.push({
           head: item.nama,
           headkey: lastHeadkey,
-          link: item.link === "#" ? item.link : ROOT_LINK + "/" + item.link,
+          link: item.link === "#" ? item.link : ROOT_LINK +  item.link,
           sub: [],
         });
       } else {
@@ -47,7 +41,7 @@ const CreateMenu = async (role, prodi) => {
             link:
               item.link === "lj_create"
                 ? "https://www.ljcreatelms.com/"
-                : ROOT_LINK + "/" + item.link,
+                : ROOT_LINK +  item.link,
           });
         }
       }

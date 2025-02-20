@@ -17,6 +17,7 @@ import { validateAllInputs, validateInput } from "../../../util/ValidateForm";
 import NoImage from "../../../../assets/NoImage.png";
 import Konfirmasi from "../../../part/Konfirmasi";
 import AppContext_test from "../../master-test/TestContext";
+import { decode } from "he";
 
 const listKataKunci = [
   { Value: "Alat", Text: "Kat Kunci 1" },
@@ -61,10 +62,10 @@ export default function MasterDaftarPustakaEdit({ onChangePage, withID }) {
 
   const formDataRef = useRef({
     pus_id: withID.Key,
-    pus_judul: withID.Judul,
+    pus_judul: decode(withID.Judul),
     kke_id: withID.kke_id,
     pus_file: '',
-    pus_keterangan: withID.Keterangan,
+    pus_keterangan: decode(withID.Keterangan),
     pus_kata_kunci: withID["Kata Kunci"],
     pus_gambar: '',
     pus_status: "Aktif",
@@ -84,10 +85,10 @@ export default function MasterDaftarPustakaEdit({ onChangePage, withID }) {
   const resetForm = () => {
     formDataRef.current = {
       pus_id: withID.Key,
-      pus_judul: withID.Judul,
+      pus_judul: decode(withID.Judul),
       kke_id: withID["ID KK"],
       pus_file: '',
-      pus_keterangan: withID.Keterangan,
+      pus_keterangan: decode(withID.Keterangan),
       pus_kata_kunci: withID["Kata Kunci"],
       pus_gambar: '',
       pus_status: "Aktif",
@@ -208,13 +209,13 @@ export default function MasterDaftarPustakaEdit({ onChangePage, withID }) {
           // Mengubah data menjadi format yang diinginkan
           const formattedData = data.map((item) => ({
             Value: item["Key"],
-            Text: item["Nama Kelompok Keahlian"],
+            Text: decode(item["Nama Kelompok Keahlian"]),
           }));
           setListKK(formattedData);
 
           // Mencocokkan dengan nama Kelompok Keahlian dari withID
           const matchingItem = formattedData.find(
-            (item) => item.Text === withID["Kelompok Keahlian"]
+            (item) => item.Value === withID["ID KK"]
           );
           if (matchingItem) {
             formDataRef.current.kke_id = matchingItem.Value;

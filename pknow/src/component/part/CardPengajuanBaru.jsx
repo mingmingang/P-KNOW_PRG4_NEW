@@ -13,25 +13,10 @@ import {
   faClock,
   faUsers,
 } from "@fortawesome/free-solid-svg-icons";
+import { decode } from "he";
 
 function CardPengajuanBaru({ data, onChangePage, isShow }) {
   const [showAllText, setShowAllText] = useState(isShow);
-  //   const sortDataByStatus = (data) => {
-  //     const statusOrder = {
-  //       Aktif: 1,
-  //       "Menunggu Acc": 2,
-  //       None: 3,
-  //       Ditolak: 4,
-  //       Dibatalkan: 5,
-  //       Kosong: 6,
-  //     };
-
-  //     return data.sort((a, b) => {
-  //       return statusOrder[a.Status] - statusOrder[b.Status];
-  //     });
-  //   };
-
-  //   const sortedData = sortDataByStatus(data);
 
   const handleToggleText = () => {
     setShowAllText(!showAllText);
@@ -140,7 +125,8 @@ function CardPengajuanBaru({ data, onChangePage, isShow }) {
               //       : "#6C757D",
               // }}
             >
-              {data["Nama Kelompok Keahlian"]}
+                {data["Nama Kelompok Keahlian"] ? decode(data["Nama Kelompok Keahlian"]) : "Default Title"}
+            
             </h5>
             <div className="">
               <div className="" style={{marginLeft:"-20px"}}>{status}</div>
@@ -164,7 +150,8 @@ function CardPengajuanBaru({ data, onChangePage, isShow }) {
                   margin:"0px"
                 }}
               >
-                {data.Deskripsi}
+                  {data.Deskripsi ? decode(data.Deskripsi) : "Default Desc"}
+               
               </p>
               <div className="d-flex justify-content-between align-items-center" style={{marginTop:"30px", marginBottom:"20px"}}>
                 <a

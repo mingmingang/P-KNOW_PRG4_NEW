@@ -234,6 +234,7 @@ export default function RiwayatPengajuan({onChangePage}) {
           </div>
         </div>
                  <>
+                 <div className="container">
       <div className="d-flex flex-column">
       <div className="navigasi-layout-page">
           <p className="title-kk">Kelompok Keahlian</p>
@@ -277,6 +278,7 @@ export default function RiwayatPengajuan({onChangePage}) {
                   />
 
                 </Filter>
+              </div>
               </div>
               </div>
               </div>

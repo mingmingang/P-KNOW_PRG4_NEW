@@ -14,6 +14,7 @@ import UploadFile from "../../../util/UploadFile";
 import NoImage from "../../../../assets/NoImage.png";
 import BackPage from "../../../../assets/backPage.png";
 import Konfirmasi from "../../../part/Konfirmasi";
+import { decode } from "he";
 
 export default function MasterDaftarPustakaAdd({ onChangePage, withID }) {
   const [errors, setErrors] = useState({});
@@ -62,7 +63,6 @@ export default function MasterDaftarPustakaAdd({ onChangePage, withID }) {
     pus_kata_kunci: string().required("Isi Kata Kunci Terlebih Dahulu"),
     pus_keterangan: string()
       .required("Isi Keterangan Terlebih Dahulu")
-      .max(200, "Maksimal 200 Karakter")
       .min(100, "Minimum 100 Karakter"),
     pus_gambar: string(),
     pus_status: string(),
@@ -107,7 +107,6 @@ export default function MasterDaftarPustakaAdd({ onChangePage, withID }) {
 
       formDataRef.current[name] = value;
 
-      // Mengembalikan posisi cursor setelah update
       setTimeout(() => {
         if (deskripsiRef.current) {
           deskripsiRef.current.setSelectionRange(
@@ -297,7 +296,7 @@ export default function MasterDaftarPustakaAdd({ onChangePage, withID }) {
         } else {
           const formattedData = data.map((item) => ({
             Value: item["Key"],
-            Text: item["Nama Kelompok Keahlian"],
+            Text: decode(item["Nama Kelompok Keahlian"]),
           }));
           setListKK(formattedData);
           setIsLoading(false);

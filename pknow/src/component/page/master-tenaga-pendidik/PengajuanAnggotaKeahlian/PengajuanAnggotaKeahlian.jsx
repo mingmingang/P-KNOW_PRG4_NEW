@@ -23,6 +23,7 @@ import {
   faClock,
   faUsers,
 } from "@fortawesome/free-solid-svg-icons";
+import { decode } from "he";
 
 const inisialisasiData = [
   {
@@ -368,6 +369,7 @@ export default function PengajuanKelompokKeahlian({ onChangePage }) {
             </div>
           </div>
 
+<div className="container">
           <div className="navigasi-layout-page">
             <p className="title-kk">Kelompok Keahlian</p>
             <div className="left-feature">
@@ -401,6 +403,7 @@ export default function PengajuanKelompokKeahlian({ onChangePage }) {
                 </div>
               </div>
             </div>
+          </div>
           </div>
 
           <>
@@ -491,7 +494,7 @@ export default function PengajuanKelompokKeahlian({ onChangePage }) {
                                           }}
                                         >
                                           {`Lampiran ${linkIndex + 1} ${
-                                            dataAktif["Nama Kelompok Keahlian"]
+                                          dataAktif["Nama Kelompok Keahlian"]
                                           }`}
                                         </a>
                                       </div>
@@ -519,7 +522,7 @@ export default function PengajuanKelompokKeahlian({ onChangePage }) {
                                     )
                                   ) : (
                                     <p>Invalid Lampiran format</p>
-                                  ) // Handle non-string cases
+                                  ) 
                                 ) : (
                                   <p>Tidak ada lampiran</p>
                                 )}
