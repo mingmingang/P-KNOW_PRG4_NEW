@@ -125,6 +125,10 @@ export default function KelolaAKK({ onChangePage }) {
   
   const handleTabChange = (value) => {
     setActiveTab(value);
+<<<<<<< HEAD
+=======
+    console.log("data tab", value);
+>>>>>>> 367837bda1346bdec1593e27d1de46c241c9d302
   
     setCurrentFilter((prevFilter) => ({
       ...prevFilter,
@@ -133,6 +137,10 @@ export default function KelolaAKK({ onChangePage }) {
     }));
     console.log( "value", {prodi: value === '' ? "" : tabList.find(tab => tab.value === value)?.value, 
     page: 1})
+<<<<<<< HEAD
+=======
+    console.log("data saat ini", currentData)
+>>>>>>> 367837bda1346bdec1593e27d1de46c241c9d302
   };
   
   return (
@@ -146,7 +154,11 @@ export default function KelolaAKK({ onChangePage }) {
               <Input
                 ref={searchQuery}
                 forInput="pencarianKK"
+<<<<<<< HEAD
                 placeholder="Cari Kelompok Keahlian"
+=======
+                placeholder="Cari"
+>>>>>>> 367837bda1346bdec1593e27d1de46c241c9d302
                 style={{border:"none", width:"680px", height:"40px", borderRadius:"20px"}}
               />
               <Button2

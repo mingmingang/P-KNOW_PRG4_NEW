@@ -24,7 +24,10 @@ import {
   faUsers,
 } from "@fortawesome/free-solid-svg-icons";
 import { decode } from "he";
+<<<<<<< HEAD
 import "../../../../../src/index.css";
+=======
+>>>>>>> 367837bda1346bdec1593e27d1de46c241c9d302
 
 const inisialisasiData = [
   {

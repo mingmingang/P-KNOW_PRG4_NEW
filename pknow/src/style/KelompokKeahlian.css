@@ -40,7 +40,11 @@
 
 /* Gambar cover utama */
 .bg-white-kk .cover-daftar-kk {
+<<<<<<< HEAD
     width: 100%; /* Buat gambar full lebar */
+=======
+    width: 380px; /* Buat gambar full lebar */
+>>>>>>> 367837bda1346bdec1593e27d1de46c241c9d302
     height: 200px;
     object-fit: cover;
     border-top-left-radius: 14px;
@@ -145,6 +149,7 @@
     background-color: #3b89fd;
 }
 
+<<<<<<< HEAD
 .programm{
     width: 180px; margin-left:-20px;
     margin-top:1px;
@@ -165,6 +170,9 @@
     border-top-left-radius: 14px;
     border-top-right-radius: 14px;
 }
+=======
+
+>>>>>>> 367837bda1346bdec1593e27d1de46c241c9d302
 /* For Mobile */
 
 /* Media Query untuk Tablet */
@@ -184,6 +192,7 @@
 
 /* Media Query untuk Mobile */
 @media (max-width: 768px) {
+<<<<<<< HEAD
     .bg-white-kk .cover-daftar-kk {
         width: 100%;
     }
@@ -201,15 +210,20 @@
     }
     
 
+=======
+>>>>>>> 367837bda1346bdec1593e27d1de46c241c9d302
     .bg-white-kk {
         max-width: 100%;
     }
 
+<<<<<<< HEAD
     .programm{
         width: 180px; margin-left:15px;
         margin-top:1px;
     }
 
+=======
+>>>>>>> 367837bda1346bdec1593e27d1de46c241c9d302
     .bg-white-kk h3 {
         font-size: 20px;
     }

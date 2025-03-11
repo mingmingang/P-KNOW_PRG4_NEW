@@ -515,7 +515,11 @@ export default function MasterProsesIndex({ onChangePage }) {
           </div>
         </div>  
 
+<<<<<<< HEAD
       <div className="container">
+=======
+                <div className="container">
+>>>>>>> 367837bda1346bdec1593e27d1de46c241c9d302
         <div className="navigasi-layout-page">
           <p className="title-kk" style={{fontSize:"20px"}}> <button style={{backgroundColor:"transparent", border:"none", marginRight:"10px"}} onClick={handleGoBack}><img src={BackPage} width="50px" alt="" /></button>Kelola Materi / Program / Kategori <span style={{fontWeight:"bold"}}>{listKategori.length > 0
                   ? decode(

@@ -7,7 +7,11 @@
 .backSearch {
   background-image: url('../assets/backgroundSearch.png');
   width: 100%; 
+<<<<<<< HEAD
   height: 340px; 
+=======
+  height: 40vh; 
+>>>>>>> 367837bda1346bdec1593e27d1de46c241c9d302
   margin-left: 0;
   flex-shrink: 0;
   background-size: cover;
@@ -18,7 +22,11 @@
   align-items: center;
   padding: 100px 25px;
   text-align: center;
+<<<<<<< HEAD
 } 
+=======
+}
+>>>>>>> 367837bda1346bdec1593e27d1de46c241c9d302
 
 .backSearch h1{
   color: white;

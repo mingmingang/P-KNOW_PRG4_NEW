@@ -22,7 +22,10 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import maskotPknow from "../../../../assets/pknowmaskot.png";
 import { decode } from "he";
+<<<<<<< HEAD
 import "../../../../index.css";
+=======
+>>>>>>> 367837bda1346bdec1593e27d1de46c241c9d302
 
 export default function KKDetailPublish({ onChangePage, withID }) {
   const [errors, setErrors] = useState({});
@@ -211,7 +214,11 @@ export default function KKDetailPublish({ onChangePage, withID }) {
                 {formData.programStudi}
               </h5>
               <h4 className="fw-semibold" style={{ marginTop: "30px" }}>Tentang Kelompok Keahlian</h4>
+<<<<<<< HEAD
               <p className="py-2 desc-detail" style={{ textAlign: "justify" }}>
+=======
+              <p className="py-2" style={{ textAlign: "justify", width: "550px" }}>
+>>>>>>> 367837bda1346bdec1593e27d1de46c241c9d302
                 {decode(formData.deskripsi)}
               </p>
               <div className="">

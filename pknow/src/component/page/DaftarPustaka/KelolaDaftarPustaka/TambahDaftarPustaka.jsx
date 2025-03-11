@@ -145,8 +145,12 @@ export default function MasterDaftarPustakaAdd({ onChangePage, withID }) {
       }
   
       formDataRef.current[name] = value;
+<<<<<<< HEAD
       setDeskripsi(value); // Perbarui state tanpa merusak kursor
   
+=======
+
+>>>>>>> 367837bda1346bdec1593e27d1de46c241c9d302
       setTimeout(() => {
         if (deskripsiRef.current) {
           deskripsiRef.current.setSelectionRange(cursorPosition, cursorPosition);

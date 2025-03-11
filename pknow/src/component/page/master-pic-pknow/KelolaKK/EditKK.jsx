@@ -260,13 +260,21 @@ export default function KKEdit({ onChangePage, withID }) {
         <Loading />
       ) : (
         <>
+<<<<<<< HEAD
         <div className="container mb-4" style={{display:"flex", justifyContent:"space-between", marginTop:"100px"}}>
+=======
+        <div className="title" style={{display:"flex", justifyContent:"space-between", marginTop:"100px"}}>
+>>>>>>> 367837bda1346bdec1593e27d1de46c241c9d302
         <div className="back-and-title" style={{display:"flex"}}>
           <button style={{backgroundColor:"transparent", border:"none"}} onClick={handleGoBack}><img src={BackPage} alt="" /></button>
             <h4 style={{ color:"#0A5EA8", fontWeight:"bold",  marginTop:"10px", marginLeft:"20px"}}>Edit Kelompok Keahlian</h4>
           </div>
           </div>
+<<<<<<< HEAD
     <div className="container mb-4" >
+=======
+    <div className="container" >
+>>>>>>> 367837bda1346bdec1593e27d1de46c241c9d302
         <form onSubmit={handleAdd}>
           <div className="card">
             <div className="card-body p-4">

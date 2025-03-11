@@ -62,7 +62,11 @@ export default function PersetujuanAnggotaKK({ onChangePage }) {
             placeholder="Cari Kelompok Keahlian"
             showInput={false}
           />
+<<<<<<< HEAD
         <div className="container">
+=======
+<div className="container">
+>>>>>>> 367837bda1346bdec1593e27d1de46c241c9d302
           <div className="navigasi-layout-page">
             <p className="title-kk">Kelompok Keahlian</p>
             <div className="left-feature">
@@ -97,6 +101,10 @@ export default function PersetujuanAnggotaKK({ onChangePage }) {
             </div>
           </div>
           </div>
+<<<<<<< HEAD
+=======
+
+>>>>>>> 367837bda1346bdec1593e27d1de46c241c9d302
           <>
             {isLoading ? (
               <Loading />

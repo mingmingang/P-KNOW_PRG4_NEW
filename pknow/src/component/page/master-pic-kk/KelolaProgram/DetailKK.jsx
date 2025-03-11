@@ -22,8 +22,13 @@ export default function KKDetailProgram({ onChangePage, withID }) {
   const [listAnggota, setListAnggota] = useState([]);
   const [listProgram, setListProgram] = useState([]);
   const [showConfirmation, setShowConfirmation] = useState(false);
+<<<<<<< HEAD
   const [isBackAction, setIsBackAction] = useState(false);
 
+=======
+  const [isBackAction, setIsBackAction] = useState(false);  
+  console.log("dataa idd nih", withID);
+>>>>>>> 367837bda1346bdec1593e27d1de46c241c9d302
   const [formData, setFormData] = useState({
     key: "",
     nama: "",

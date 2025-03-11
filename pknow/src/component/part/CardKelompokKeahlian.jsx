@@ -447,7 +447,11 @@ function CardKelompokKeahlian({
               className="text-xl font-bold text-blue-600"
               style={{ fontSize: "16px", textAlign: "justify", lineHeight:"30px"  }}
             >
+<<<<<<< HEAD
              {data.title ? (decode(data.title).length > 27 ? decode(data.title).slice(0, 27) + "..." : decode(data.title)) : "Default Title"}
+=======
+             {data.title ? decode(data.title) : "Default Title"}
+>>>>>>> 367837bda1346bdec1593e27d1de46c241c9d302
             </h3>
           </div>
         </div>
