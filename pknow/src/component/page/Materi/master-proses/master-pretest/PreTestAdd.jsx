@@ -311,6 +311,16 @@ export default function MasterPreTestAdd({ onChangePage }) {
 
     formData.timer = convertTimeToSeconds(timer);
 
+    if (formData.timer === 0) {
+      Swal.fire({
+        title: "Gagal!",
+        text: "Durasi tidak boleh 0.",
+        icon: "error",
+        confirmButtonText: "OK",
+      });
+      return;
+    }
+
     const validationErrors = await validateAllInputs(
       formData,
       userSchema,

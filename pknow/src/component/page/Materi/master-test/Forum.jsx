@@ -495,7 +495,7 @@ const renderJudulForum = () => {
 
   return (
     <>
-      <div className="d-flex" style={{minHeight:"100vh"}}>
+      <div className="container d-flex" style={{minHeight:"100vh"}}>
     <div className="">
       <KMS_Rightbar
        isActivePengenalan={false}

@@ -244,10 +244,10 @@ export default function DetailKelas({ withID, onChangePage }) {
           >
            <i className="fas fa-arrow-left mr-3" style={{color:"white"}}></i>
           </button>
-          {withID.title}
+          {decode(withID.title ? withID.title : "")}
         </h4>
         <p style={{ paddingLeft: "30px", color: "white" }}>
-          Program Studi : {withID.ProgramStudi}
+        Program Studi : {decode(withID.ProgramStudi)}
         </p>
         <p
           style={{
@@ -325,7 +325,11 @@ export default function DetailKelas({ withID, onChangePage }) {
             fontSize: "16px",
           }}
         ></i>
-        {kategori["Nama Kategori Program"] || "Tidak ada deskripsi."} <br />
+        {decode(
+                  kategori["Nama Kategori Program"]
+                    ? kategori["Nama Kategori Program"]
+                    : "Tidak ada deskripsi."
+                )} <br />
       </p>
       {/* Render list materi jika kategori ini aktif */}
       {activeCategory === kategori.Key && (
@@ -368,7 +372,7 @@ export default function DetailKelas({ withID, onChangePage }) {
                         margin: "0",
                       }}
                     >
-                      {materi.Judul || "Judul tidak tersedia"}
+                      {decode(materi.Judul ? materi.Judul : "Judul tidak tersedia")}
                     </p>
                     <p
                       style={{
@@ -378,7 +382,7 @@ export default function DetailKelas({ withID, onChangePage }) {
                         textAlign: "justify",
                       }}
                     >
-                      {materi.Keterangan || "Deskripsi tidak tersedia"}
+                      {decode(materi.Keterangan ? materi.Keterangan : "Deskripsi tidak tersedia")}
                     </p>
                   </div>
                   <div className="" style={{width:"300px", marginTop:"40px"}}>

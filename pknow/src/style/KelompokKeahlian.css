@@ -1,14 +1,17 @@
 /* Container utama untuk komponen Kelompok Keahlian */
 .kelompokKeahlian {
-    display: flex;
+    /* display: flex; */
+    flex-wrap: wrap; /* Agar item tetap rapi saat layar lebih kecil */
+    justify-content: center;
 }
 
 .kelompok-keahlian-container {
     display: flex;
     flex-wrap: wrap;
-    margin: 0 5px;
-    justify-content: space-between;
+    justify-content: center; /* Agar rata tengah pada tampilan kecil */
+    gap: 20px; /* Beri jarak antar item */
 }
+
 
 .kelompok-keahlian-item {
     flex: 1 1 0%;
@@ -18,15 +21,16 @@
 
 /* Kotak background putih utama */
 .bg-white-kk {
-    margin-left: 20px;
     border-radius: 14px;
     background: #FFF;
     box-shadow: 0px 0px 20px 0px rgba(10, 95, 168, 0.20);
-    width: 380px;
+    width: 100%;
     min-height: 500px;
+    max-width: 380px; /* Maksimal agar tetap proporsional */
     margin-top: 5px;
     margin-bottom: 28px;
 }
+
 
 /* Judul dan dropdown di bagian atas */
 .title-kelompok-keahlian {
@@ -36,7 +40,7 @@
 
 /* Gambar cover utama */
 .bg-white-kk .cover-daftar-kk {
-    width: 380px;
+    width: 100%; /* Buat gambar full lebar */
     height: 200px;
     object-fit: cover;
     border-top-left-radius: 14px;
@@ -54,7 +58,7 @@
 }
 
 /* Teks umum */
-.bg-white-kk p {
+.bg-white-kk .descni {
     font-family: 'Poppins';
     color: black;
     margin: 0 20px;
@@ -105,6 +109,7 @@
 .pemilik p {
     font-size: 16px;
     font-family: 'Poppins SemiBold';
+    margin-left: 20px;
 }
 
 .prodi, .userProdi {
@@ -139,3 +144,75 @@
 .open:hover {
     background-color: #3b89fd;
 }
+
+.programm{
+    width: 180px; margin-left:-20px;
+    margin-top:1px;
+}
+
+.pengajuan{
+    margin-right: 40px;
+}
+
+.iconnn{
+    margin-right: 5px;
+}
+
+.newws{
+    width: 106.8%;
+    height: 200px;
+    object-fit: cover;
+    border-top-left-radius: 14px;
+    border-top-right-radius: 14px;
+}
+/* For Mobile */
+
+/* Media Query untuk Tablet */
+@media (max-width: 1024px) {
+    .kelompok-keahlian-container {
+        justify-content: center;
+    }
+
+    .kelompok-keahlian-item {
+        flex: 1 1 45%; /* Tampilkan 2 item dalam satu baris */
+    }
+
+    .bg-white-kk {
+        max-width: 95%;
+    }
+}
+
+/* Media Query untuk Mobile */
+@media (max-width: 768px) {
+    .bg-white-kk .cover-daftar-kk {
+        width: 100%;
+    }
+
+    .newws{
+        width: 106.8%;
+    }
+
+    .pic-value{
+        margin: 0px 4px 5px;
+    }
+
+    .pengajuan{
+        margin-right: 0px;
+    }
+    
+
+    .bg-white-kk {
+        max-width: 100%;
+    }
+
+    .programm{
+        width: 180px; margin-left:15px;
+        margin-top:1px;
+    }
+
+    .bg-white-kk h3 {
+        font-size: 20px;
+    }
+}
+
+  

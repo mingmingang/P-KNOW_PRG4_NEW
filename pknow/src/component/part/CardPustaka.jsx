@@ -24,7 +24,6 @@ function CardPustaka({
   let activeUser = "";
   const cookie = Cookies.get("activeUser");
   if (cookie) activeUser = JSON.parse(decryptId(cookie)).username;
-  console.log("aktif user", activeUser)
 
   const [expandDeskripsi, setExpandDeskripsi] = useState({});
   const handleExpandDescription = (bookId) => {
@@ -44,9 +43,6 @@ function CardPustaka({
     onStatus(book, status);
   };
 
-  console.log("pustaka", pustakas)
-
-
   return (
     <>
     {pustakaSaya === "ya" ? (
@@ -57,8 +53,6 @@ function CardPustaka({
                   background: "#198754",
                   borderRadius: "5px",
                   padding: "10px 20px",
-                  width: "40%",
-                  marginLeft: "20px",
                   marginBottom: "20px",
                   color: "white",
                   fontWeight: "bold",
@@ -67,16 +61,14 @@ function CardPustaka({
                 ↓ Milik Saya
               </div>
            
-              <div className="row mt-0 gx-4" style={{
-            maxWidth: "100%",
-          }}>
+              <div className="row mt-0 gx-4" >
 
         {pustakas.filter(
           (book) =>
             book.Key !== null &&
             (book.PemilikKK === activeUser || uploader === book.Uploader)
         ).length === 0 ? (
-          <div className="col-md-12 ml-3">
+          <div className="col-md-12">
             <Alert type="warning" message="Tidak ada data.." />
           </div>
         ) : (
@@ -104,9 +96,9 @@ function CardPustaka({
                   />
               </div>
   
-        <div className="row">
+        <div className="">
             <div className="d-flex justify-content-between align-items-center mt-4">
-              <h3 className="text-xl font-bold text-blue-600" style={{ fontSize: "20px", width:"100%" }}>
+              <h3 className="font-bold text-blue-600" style={{ fontSize: "18px", width:"100%" }}>
                 {decode(book.Judul)}
               </h3>
             </div>
@@ -118,7 +110,7 @@ function CardPustaka({
                         fontSize: "12px",
                       }}
                     >
-                      <div className="kk" style={{fontSize:"18px", fontWeight:"bold"}}>
+                      <div className="kk" style={{fontSize:"16px", fontWeight:"bold"}}>
                       <FontAwesomeIcon
                           icon={faBook}
                           style={{
@@ -127,7 +119,7 @@ function CardPustaka({
                             fontSize: "20px",
                           }}
                         />
-                        <span>{book["Kelompok Keahlian"]}</span>
+                        <span>{decode(book["Kelompok Keahlian"])}</span>
                       </div>
                     </div>
                     <div className="mb-1 mt-2">
@@ -136,7 +128,7 @@ function CardPustaka({
                         style={{
                           marginRight: "10px",
                           color: "black",
-                          fontSize: "20px",
+                          fontSize: "16px",
                         }}
                       />
                       <span style={{ fontSize: "16px", fontWeight:"600" }}>
@@ -150,18 +142,21 @@ function CardPustaka({
                     <div>
                     <p
       className="deskripsi d-flex"
-      style={{ fontSize: "14px", marginLeft: "0px", marginTop: "15px" }}
+      style={{ fontSize: "14px", marginLeft: "0px", marginTop: "15px", marginRight: "20px" }}
     >
-      {book.Keterangan.length > MAX_DESCRIPTION_LENGTH &&
+      {/* {book.Keterangan.length > MAX_DESCRIPTION_LENGTH &&
       !expandDeskripsi[book.Key] ? (
         <>
           {decode(book.Keterangan.slice(0, MAX_DESCRIPTION_LENGTH) + " ...")}
         </>
       ) : (
         <>{decode(book.Keterangan)}</>
-      )}
+      )} */}
+      {decode(book.Keterangan).substring(0, 100)}
+            {/* Menampilkan 200 huruf pertama */}
+            {book.Keterangan.length > 100 && "..."}
     </p>
-                      {book.Keterangan.length > MAX_DESCRIPTION_LENGTH && (
+                      {/* {book.Keterangan.length > MAX_DESCRIPTION_LENGTH && (
                         <a
                           className="btn btn-link text-decoration-none p-0"
                           onClick={() => handleExpandDescription(book.Key)}
@@ -181,11 +176,11 @@ function CardPustaka({
                             </>
                           )}
                         </a>
-                      )}
+                      )} */}
                     </div>
                   </div>
                 </div>
-                <div className="d-flex ">
+                <div className="d-flex" style={{marginLeft:"20px"}}>
                 <p className="mb-0 text-secondary mb-4" style={{marginRight:"100px"}}><i
                   className="fas fa-circle"
                   icon="circle"
@@ -285,8 +280,6 @@ function CardPustaka({
                   background: "#67ACE9",
                   borderRadius: "5px",
                   padding: "10px 20px",
-                  width: "40%",
-                  marginLeft: "20px",
                   marginBottom: "20px",
                   color: "white",
                   fontWeight: "bold",
@@ -294,9 +287,7 @@ function CardPustaka({
               >
                 ↓ Pustaka Bersama
               </div>
-              <div className="row mt-0 gx-4" style={{
-            maxWidth: "100%",
-          }}>
+              <div className="row mt-0 gx-4" >
 
 {pustakas.filter(
           (book) =>
@@ -305,7 +296,7 @@ function CardPustaka({
             book.PemilikKK !== activeUser &&
             uploader !== book.Uploader
         ).length === 0 ? (
-          <div className="col-md-12 ml-3">
+          <div className="col-md-12">
             <Alert type="warning" message="Tidak ada data.." />
           </div>
         ) : (
@@ -318,8 +309,6 @@ function CardPustaka({
             ) {
         return (
           <>
-        
-
           <div className="col-md-4 mb-4" key={book.Key} >
             <div
               className="bg-white-kk"
@@ -336,9 +325,9 @@ function CardPustaka({
                   />
               </div>
 
-        <div className="row">
+        <div className="">
             <div className="d-flex justify-content-between align-items-center mt-4">
-              <h3 className="text-xl font-bold text-blue-600" style={{ fontSize: "20px", width:"100%" }}>
+              <h3 className="font-bold text-blue-600" style={{ fontSize: "18px", width:"100%" }}>
                 {decode(book.Judul)}
               </h3>
             </div>
@@ -350,7 +339,7 @@ function CardPustaka({
                         fontSize: "12px",
                       }}
                     >
-                      <div className="kk" style={{fontSize:"18px", fontWeight:"bold"}}>
+                      <div className="kk" style={{fontSize:"16px", fontWeight:"bold"}}>
                       <FontAwesomeIcon
                         icon={faBook}
                         style={{
@@ -359,7 +348,7 @@ function CardPustaka({
                           fontSize: "20px",
                         }}
                       />
-                      <span>{book["Kelompok Keahlian"]}</span>
+                      <span>{decode(book["Kelompok Keahlian"])}</span>
                       </div>
                     </div>
                     <div className="mb-1 mt-2">
@@ -382,9 +371,9 @@ function CardPustaka({
                     <div>
                       <p
                         className="deskripsi d-flex"
-                        style={{ fontSize: "14px", marginLeft:'0px', marginTop:"15px" }}
+                        style={{ fontSize: "14px", marginLeft:'0px', marginTop:"15px", marginRight:"20px" }}
                       >
-                        {book.Keterangan.length > MAX_DESCRIPTION_LENGTH &&
+                        {/* {book.Keterangan.length > MAX_DESCRIPTION_LENGTH &&
                         !expandDeskripsi[book.Key] ? (
                           <>
                             {book.Keterangan.slice(0, MAX_DESCRIPTION_LENGTH) +
@@ -392,33 +381,17 @@ function CardPustaka({
                           </>
                         ) : (
                           <>{decode(book.Keterangan)}</>
-                        )}
+                        )} */}
+
+{decode(book.Keterangan).substring(0, 100)}
+            {/* Menampilkan 200 huruf pertama */}
+            {book.Keterangan.length > 100 && "..."}
                       </p>
-                      {book.Keterangan.length > MAX_DESCRIPTION_LENGTH && (
-                        <a
-                          className="btn btn-link text-decoration-none p-0"
-                          onClick={() => handleExpandDescription(book.Key)}
-                          style={{ fontSize: "12px" }}
-                        >
-                          {expandDeskripsi[book.Key] ? (
-                            <>
-                            <div className="" style={{marginTop:"-10px"}}>
-                              Tutup <Icon name={"caret-up"} />
-                              </div>
-                            </>
-                          ) : (
-                            <>
-                            <div className="" style={{marginTop:"-20px"}}>
-                              Baca Selengkapnya <Icon name={"caret-down"} />
-                              </div>
-                            </>
-                          )}
-                        </a>
-                      )}
+                     
                     </div>
                   </div>
                 </div>
-                <div className="d-flex ">
+                <div className="d-flex ml-3">
 
                 <p className="mb-0 text-secondary" style={{marginRight:"40px"}}><i
                   className="fas fa-circle"

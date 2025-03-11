@@ -14,6 +14,7 @@ import Search from "../../../part/Search";
 import Cookies from "js-cookie";
 import { decryptId } from "../../../util/Encryptor";
 import pknowMaskot from "../../../../assets/pknowmaskot.png";
+import { decode } from "he";
 
 export default function ProgramIndex({ onChangePage }) {
   let activeUser = "";
@@ -415,12 +416,15 @@ export default function ProgramIndex({ onChangePage }) {
         <Loading />
       ) : (
         
-        <div className="d-flex flex-column">
+        <div className="d-flex flex-column container">
            <h5
                         className="px-3 py-2 fw-bold"
-                        style={{color:"#0A5EA8", margin:"5px 50px", fontSize:"30px"}}
+                        style={{color:"#0A5EA8", fontSize:"30px"}}
                       >
-                        {currentData["Nama Kelompok Keahlian"]}
+                        {currentData && currentData["Nama Kelompok Keahlian"] 
+  ? decode(currentData["Nama Kelompok Keahlian"]) 
+  : "Nama Kelompok Keahlian tidak tersedia"}
+
                       </h5>
           <div className="flex-fill">
             <div className="container">
@@ -494,11 +498,17 @@ export default function ProgramIndex({ onChangePage }) {
                           </div>
                         </div>
                         
-                        <p className=" mt-4" style={{textAlign:"justify"}}>{currentData.Deskripsi}</p>
+                        <p className=" mt-4" style={{textAlign:"justify"}}>{currentData && currentData.Deskripsi 
+  ? decode(currentData.Deskripsi) 
+  : "Deskripsi tidak tersedia"}
+</p>
                         <h5 className="py-2"  style={{color:"#0A5EA8"}}>
                           Daftar Program dalam Kelompok Keahlian{" "}
                           <strong>
-                            {currentData["Nama Kelompok Keahlian"]}
+                          {currentData && currentData["Nama Kelompok Keahlian"] 
+  ? decode(currentData["Nama Kelompok Keahlian"]) 
+  : "Nama Kelompok Keahlian tidak tersedia"}
+
                           </strong>
                         </h5>
                         {listProgram[0]?.Message ? (

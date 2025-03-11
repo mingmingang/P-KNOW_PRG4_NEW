@@ -196,7 +196,7 @@ function CardKelompokKeahlian({
           icon={showUserProdi ? faUser : faClock}
           className="icon-style"
         />
-        <p className="text-gray-700" style={{ fontSize: "15px" }}>
+        <p className="text-gray-700 pic-value" style={{ fontSize: "15px" }}>
           PIC :{" "}
           {data.pic.key ? (
             data.pic.nama
@@ -412,14 +412,13 @@ function CardKelompokKeahlian({
                   style={{ marginLeft: "-60px" }}
                 >
                   <button
-                    className="bg-blue-100 text-white px-6 py-2 rounded-full d-flex align-items-center mr-4"
+                    className="bg-blue-100 text-white px-6 py-2 rounded-full d-flex align-items-center mr-4 programm"
                     aria-label={`Action for ${title}`}
-                    style={{ width: "180px", marginLeft:"-20px", marginTop:"1px" }}
                     onClick={() => onChangePage(link, data)}
                   >
                     <i
-                      className="fas fa-users"
-                      style={{ marginRight: "10px", marginTop: "2px" }}
+                      className="fas fa-users iconnn"
+                      style={{  marginTop: "2px" }}
                     ></i>
                     {ketButton}
                   </button>
@@ -442,13 +441,13 @@ function CardKelompokKeahlian({
           src={`${API_LINK}Upload/GetFile/${data.gambar}`}
           width="300"
         />
-        <div className="row">
+        <div className="">
           <div className="d-flex justify-content-between align-items-center mt-4">
             <h3
               className="text-xl font-bold text-blue-600"
-              style={{ fontSize: "18px", textAlign: "justify" }}
+              style={{ fontSize: "16px", textAlign: "justify", lineHeight:"30px"  }}
             >
-              {data.title}
+             {data.title ? (decode(data.title).length > 27 ? decode(data.title).slice(0, 27) + "..." : decode(data.title)) : "Default Title"}
             </h3>
           </div>
         </div>
@@ -463,7 +462,11 @@ function CardKelompokKeahlian({
               className="text-gray-700"
               style={{ marginLeft: "15px", width: "100%", fontSize: "15px" }}
             >
-              {showProdi ? data.prodi.nama : anggota}
+            {showProdi ? 
+  (data?.prodi?.nama && data.prodi.nama.length > 35 ? 
+    data.prodi.nama.slice(0, 35) + '...' : data?.prodi?.nama || '') 
+  : anggota}
+
             </p>
           </div>
           <div className="userProdi">{personInCharge}</div>
@@ -473,7 +476,7 @@ function CardKelompokKeahlian({
           className="deskripsi-container "
           style={{ alignItems: "center", width: "100%" }}
         >
-          <p className="deskripsi" style={{ marginBottom: "10px" }}>
+          <p className="deskripsi descni" style={{ marginBottom: "10px" }}>
             {decode(data.desc).substring(0, 100)}
             {/* Menampilkan 200 huruf pertama */}
             {data.desc.length > 100 && "..."}

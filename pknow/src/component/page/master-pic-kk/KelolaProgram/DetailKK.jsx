@@ -13,6 +13,7 @@ import BackPage from "../../../../assets/backPage.png";
 import Konfirmasi from "../../../part/Konfirmasi";
 import pknowMaskot from "../../../../assets/pknowmaskot.png";
 import { decode } from "html-entities";
+import "../../../../index.css";
 
 export default function KKDetailProgram({ onChangePage, withID }) {
   const [errors, setErrors] = useState({});
@@ -21,7 +22,7 @@ export default function KKDetailProgram({ onChangePage, withID }) {
   const [listAnggota, setListAnggota] = useState([]);
   const [listProgram, setListProgram] = useState([]);
   const [showConfirmation, setShowConfirmation] = useState(false);
-  const [isBackAction, setIsBackAction] = useState(false);  
+  const [isBackAction, setIsBackAction] = useState(false);
 
   const [formData, setFormData] = useState({
     key: "",
@@ -35,18 +36,17 @@ export default function KKDetailProgram({ onChangePage, withID }) {
   });
 
   const handleGoBack = () => {
-    setIsBackAction(true);  
-    setShowConfirmation(true);  
+    setIsBackAction(true);
+    setShowConfirmation(true);
   };
 
   const handleConfirmYes = () => {
-    setShowConfirmation(false); 
+    setShowConfirmation(false);
     window.location.reload();
   };
 
-
   const handleConfirmNo = () => {
-    setShowConfirmation(false);  
+    setShowConfirmation(false);
   };
 
   const getListAnggota = async () => {
@@ -163,7 +163,7 @@ export default function KKDetailProgram({ onChangePage, withID }) {
         key: withID.Key,
         nama: withID["Nama Kelompok Keahlian"],
         programStudi: withID["Prodi"],
-        personInCharge: withID["PIC"],
+        personInCharge: withID["PIC Name"],
         deskripsi: withID["Deskripsi"],
         status: withID["Status"],
       });
@@ -181,23 +181,44 @@ export default function KKDetailProgram({ onChangePage, withID }) {
           <Alert type="danger" message={isError.message} />
         </div>
       )}
-      <div className=""  style={{margin:"100px 80px", marginBottom:"20px"}}>
-      <div className="back-and-title" style={{display:"flex"}}>
-            <button style={{backgroundColor:"transparent", border:"none"}} onClick={handleGoBack}><img src={BackPage} alt="" /></button>
-              <h4 style={{ color:"#0A5EA8", fontWeight:"bold", fontSize:"30px", marginTop:"10px", marginLeft:"20px"}}>Detail Kelompok Keahlian</h4>
-            </div>
+      <div className="" style={{ margin: "100px 0px 20px"}}>
+        <div className="container back-and-title" style={{ display: "flex" }}>
+          <button
+            style={{ backgroundColor: "transparent", border: "none" }}
+            onClick={handleGoBack}
+          >
+            <img src={BackPage} alt="" />
+          </button>
+          <h4
+            style={{
+              color: "#0A5EA8",
+              fontWeight: "bold",
+              fontSize: "30px",
+              marginTop: "10px",
+              marginLeft: "20px",
+            }}
+          >
+            Detail Kelompok Keahlian
+          </h4>
+        </div>
       </div>
-      <div className="card" style={{margin:"20px 80px"}}>
+      <div className="card" style={{ margin: "20px 80px" }}>
         <div className="card-body">
           <div className="row pt-2">
             <div className="col-lg-7 px-4">
-              <h3 className="mb-3 fw-semibold">{formData.nama}</h3>
+              <h3 className="mb-3 fw-semibold">
+                {formData && formData.nama
+                  ? decode(formData.nama)
+                  : "Nama tidak tersedia"}
+              </h3>
               <h6 className="fw-semibold">
                 <span
                   className="bg-primary me-2"
                   style={{ padding: "2px" }}
                 ></span>
-                {formData.programStudi}
+                {formData && formData.programStudi
+                  ? decode(formData.programStudi)
+                  : "Program Studi tidak tersedia"}
               </h6>
               <div className="pt-2 ps-2">
                 <Icon
@@ -205,11 +226,18 @@ export default function KKDetailProgram({ onChangePage, withID }) {
                   cssClass="p-0 ps-1 text-dark"
                   title="PIC Kelompok Keahlian"
                 />{" "}
-                <span>PIC : {formData.personInCharge}</span>
+                <span>
+                  PIC :{" "}
+                  {formData && formData.personInCharge
+                    ? decode(formData.personInCharge)
+                    : "Person In Charge tidak tersedia"}
+                </span>
               </div>
               <hr className="mb-0" style={{ opacity: "0.2" }} />
               <p className="py-3" style={{ textAlign: "justify" }}>
-                {formData.deskripsi}
+                {formData && formData.deskripsi
+                  ? decode(formData.deskripsi)
+                  : "Deskripsi tidak tersedia"}
               </p>
             </div>
             {/* <div className="image">
@@ -227,7 +255,10 @@ export default function KKDetailProgram({ onChangePage, withID }) {
                         key={ag.Key}
                       >
                         <div className="d-flex w-100">
-                          <p className="mb-0 px-1 py-2 mt-2 me-2 fw-bold " style={{color:"#0A5EA8"}}>
+                          <p
+                            className="mb-0 px-1 py-2 mt-2 me-2 fw-bold "
+                            style={{ color: "#0A5EA8" }}
+                          >
                             {index + 1}
                           </p>
                           <div className="p-1 ps-2 d-flex">
@@ -237,10 +268,16 @@ export default function KKDetailProgram({ onChangePage, withID }) {
                               className="img-fluid rounded-circle"
                               width="45"
                             />
-                            <div className="ps-3" style={{color:"#0A5EA8"}}>
-                              <p className="mb-0 fw-bold">{ag["Nama Anggota"]}</p>
+                            <div className="ps-3" style={{ color: "#0A5EA8" }}>
+                              <p className="mb-0 fw-bold">
+                                {ag && ag["Nama Anggota"]
+                                  ? decode(ag["Nama Anggota"])
+                                  : "Nama Anggota tidak tersedia"}
+                              </p>
                               <p className="mb-0" style={{ fontSize: "13px" }}>
-                                {ag.Prodi}
+                                {ag && ag.Prodi
+                                  ? decode(ag.Prodi)
+                                  : "Prodi tidak tersedia"}
                               </p>
                             </div>
                           </div>
@@ -250,7 +287,7 @@ export default function KKDetailProgram({ onChangePage, withID }) {
                     <div className="text-end">
                       <Button
                         classType="text-decoration-none px-3 mt-2"
-                        style={{color:"white", backgroundColor:"#0A5EA8"}}
+                        style={{ color: "white", backgroundColor: "#0A5EA8" }}
                         type="submit"
                         label="Lihat Semua"
                         data-bs-toggle="modal"
@@ -264,15 +301,18 @@ export default function KKDetailProgram({ onChangePage, withID }) {
               )}
             </div>
           </div>
-          <h5 className="pt-2" style={{color:"#0A5EA8"}}>
+          <h5 className="pt-2" style={{ color: "#0A5EA8" }}>
             Daftar Program dalam Kelompok Keahlian{" "}
-            <strong>{formData.nama}</strong>
+            <strong>
+              {formData && formData.nama
+                ? decode(formData.nama)
+                : "Nama tidak tersedia"}
+            </strong>
           </h5>
           {listProgram.length > 0 ? (
             listProgram[0].Message ? (
               <p>Tidak Ada Program</p>
             ) : (
-             
               listProgram.map((data, index) => (
                 <div
                   key={data.Key}
@@ -282,7 +322,9 @@ export default function KKDetailProgram({ onChangePage, withID }) {
                     <p className="fw-medium mb-0" style={{ width: "20%" }}>
                       {index + 1}
                       {". "}
-                      {data["Nama Program"]}
+                      {data && data["Nama Program"]
+                        ? decode(data["Nama Program"])
+                        : "Nama Program tidak tersedia"}
                     </p>
                     <p
                       className="mb-0 pe-3"
@@ -290,7 +332,9 @@ export default function KKDetailProgram({ onChangePage, withID }) {
                         width: "80%",
                       }}
                     >
-                      {decode(data.Deskripsi)}
+                      {data && data.Deskripsi
+                        ? decode(data.Deskripsi)
+                        : "Deskripsi tidak tersedia"}
                     </p>
                   </div>
                   <div className="p-3 pt-0">
@@ -300,30 +344,38 @@ export default function KKDetailProgram({ onChangePage, withID }) {
                     <div className="row row-cols-3">
                       {data.kategori.map((kat, indexKat) => (
                         <>
-                        <div className="col">
-                          <div className="card card-kategori-program mt-3">
-                            <div className="card-body">
-                              <div className="d-flex justify-content-between">
-                                <h6 className="card-title">
-                                  {index + 1}
-                                  {"-"}
-                                  {indexKat + 1}
-                                  {". "}
-                                  {kat["Nama Kategori"]}
-                                </h6>
-                              </div>
-                              <div className="d-flex mt-2">
-                                <div className="me-2 bg-primary ps-1"></div>
-                                <p
-                                  className="card-subtitle"
-                                  style={{ textAlign: "justify" }}
-                                >
-                                  {kat.Deskripsi}
-                                </p>
+                          <div className="col">
+                            <div className="card card-kategori-program mt-3">
+                              <div className="card-body">
+                                <div className="d-flex justify-content-between">
+                                  <h6 className="card-title">
+                                    {index + 1}
+                                    {"-"}
+                                    {indexKat + 1}
+                                    {". "}
+                                    {kat && kat["Nama Kategori"]
+                                      ? decode(kat["Nama Kategori"])
+                                      : "Nama Kategori tidak tersedia"}
+                                  </h6>
+                                </div>
+                                <div className="d-flex mt-2">
+                                  <div className="me-2 bg-primary ps-1"></div>
+                                  <p
+                                    className="card-subtitle"
+                                    style={{ textAlign: "justify" }}
+                                  >
+                                   {
+  kat && kat.Deskripsi
+    ? decode(kat.Deskripsi).length > 150
+      ? decode(kat.Deskripsi).slice(0, 150) + '...'
+      : decode(kat.Deskripsi)
+    : "Deskripsi tidak tersedia"
+}
+                                  </p>
+                                </div>
                               </div>
                             </div>
                           </div>
-                        </div>
                         </>
                       ))}
                     </div>
@@ -346,7 +398,11 @@ export default function KKDetailProgram({ onChangePage, withID }) {
         <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable">
           <div className="modal-content">
             <div className="modal-header">
-              <h1 className="modal-title fs-5" id="modalAnggotaKK" style={{color:"#0A5EA8"}}>
+              <h1
+                className="modal-title fs-5"
+                id="modalAnggotaKK"
+                style={{ color: "#0A5EA8" }}
+              >
                 Anggota Kelompok Keahlian
               </h1>
               <button
@@ -416,10 +472,14 @@ export default function KKDetailProgram({ onChangePage, withID }) {
                             className="img-fluid rounded-circle"
                             width="45"
                           />
-                          <div className="ps-3" style={{color:"#0A5EA8"}}>
-                            <p className="mb-0 fw-bold">{ag["Nama Anggota"]}</p>
+                          <div className="ps-3" style={{ color: "#0A5EA8" }}>
+                            <p className="mb-0 fw-bold">{ag && ag["Nama Anggota"]
+                                ? decode(ag["Nama Anggota"])
+                                : "Nama Anggota tidak tersedia"}</p>
                             <p className="mb-0" style={{ fontSize: "13px" }}>
-                              {ag.Prodi}
+                            {ag && ag.Prodi
+                                ? decode(ag.Prodi)
+                                : "Prodi tidak tersedia"}
                             </p>
                           </div>
                         </div>
@@ -437,11 +497,15 @@ export default function KKDetailProgram({ onChangePage, withID }) {
       {showConfirmation && (
         <Konfirmasi
           title={isBackAction ? "Konfirmasi Kembali" : "Konfirmasi Simpan"}
-          pesan={isBackAction ? "Apakah anda ingin kembali?" : "Anda yakin ingin simpan data?"}
+          pesan={
+            isBackAction
+              ? "Apakah anda ingin kembali?"
+              : "Anda yakin ingin simpan data?"
+          }
           onYes={handleConfirmYes}
           onNo={handleConfirmNo}
         />
-        )}
+      )}
     </>
   );
 }

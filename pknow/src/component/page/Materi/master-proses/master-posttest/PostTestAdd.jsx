@@ -264,6 +264,16 @@ export default function MasterPostTestAdd({ onChangePage }) {
 
     formData.timer = convertTimeToSeconds(timer);
 
+    if (formData.timer === 0) {
+      Swal.fire({
+        title: "Gagal!",
+        text: "Durasi tidak boleh 0.",
+        icon: "error",
+        confirmButtonText: "OK",
+      });
+      return;
+    }
+
     const validationErrors = await validateAllInputs(
       formData,
       userSchema,
@@ -1666,7 +1676,7 @@ export default function MasterPostTestAdd({ onChangePage }) {
                               soal: content,
                             }));
                           }}
-                          apiKey="444kasui9s3azxih6ix4chynoxmhw6y1urkpmfhufvrbernz"
+                          apiKey="81ujooza2p3616vb7rdvc0lxphx68fe82f2aqj6qkmbvn6l4"
                           init={{
                             height: 300,
                             menubar: false,

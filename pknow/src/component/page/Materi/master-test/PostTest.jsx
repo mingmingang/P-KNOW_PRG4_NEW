@@ -19,6 +19,7 @@ import AppContext_test from "./TestContext";
 import Cookies from "js-cookie";
 import { decryptId } from "../../../util/Encryptor";
 import "../../../../style/Table.css";
+import { decode } from "html-entities";
 
 export default function MasterTestPreTest({
   onChangePage,
@@ -314,7 +315,7 @@ export default function MasterTestPreTest({
 
   return (
     <>
-      <div className="d-flex" style={{minHeight:"100vh"}}>
+      <div className="container d-flex" style={{minHeight:"100vh"}}>
         <div className="">
           <KMS_Rightbar
             isActivePengenalan={false}
@@ -354,16 +355,16 @@ export default function MasterTestPreTest({
                     className="mb-0 primary mt-4"
                     style={{ color: "#002B6C", fontWeight: "600" }}
                   >
-                    {currentData.quizDeskripsi}
+                    {decode(currentData.quizDeskripsi)}
                     
                   </h2>
                   <br />
                     <h6 className="mb-0" style={{ color: "#002B6C" }}>
-                      Dari {currentData.NamaKK} - {currentData.Prodi}
+                      Dari {decode(currentData.NamaKK)} - {decode(currentData.Prodi)}
                     </h6>
                     <br />
                     <h6 className="mb-2" style={{ color: "#002B6C", marginTop:"-10px" }}>
-                      Oleh {currentData.Nama} -{" "}
+                      Oleh {decode(currentData.Nama)} -{" "}
                       {formatDate(currentData.createdDate)}
                     </h6>
                   <p

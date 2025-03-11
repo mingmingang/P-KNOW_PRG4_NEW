@@ -17,6 +17,7 @@ import { validateAllInputs, validateInput } from "../../../util/ValidateForm";
 import NoImage from "../../../../assets/NoImage.png";
 import Konfirmasi from "../../../part/Konfirmasi";
 import AppContext_test from "../../master-test/TestContext";
+import { decode } from "he";
 
 const listKataKunci = [
   { Value: "Alat", Text: "Kat Kunci 1" },
@@ -61,10 +62,10 @@ export default function MasterDaftarPustakaEdit({ onChangePage, withID }) {
 
   const formDataRef = useRef({
     pus_id: withID.Key,
-    pus_judul: withID.Judul,
+    pus_judul: decode(withID.Judul),
     kke_id: withID.kke_id,
     pus_file: '',
-    pus_keterangan: withID.Keterangan,
+    pus_keterangan: decode(withID.Keterangan),
     pus_kata_kunci: withID["Kata Kunci"],
     pus_gambar: '',
     pus_status: "Aktif",
@@ -84,10 +85,10 @@ export default function MasterDaftarPustakaEdit({ onChangePage, withID }) {
   const resetForm = () => {
     formDataRef.current = {
       pus_id: withID.Key,
-      pus_judul: withID.Judul,
+      pus_judul: decode(withID.Judul),
       kke_id: withID["ID KK"],
       pus_file: '',
-      pus_keterangan: withID.Keterangan,
+      pus_keterangan: decode(withID.Keterangan),
       pus_kata_kunci: withID["Kata Kunci"],
       pus_gambar: '',
       pus_status: "Aktif",
@@ -102,6 +103,7 @@ export default function MasterDaftarPustakaEdit({ onChangePage, withID }) {
     }
   };
 
+  
   const handleInputChange = async (e) => {
     const { name, value } = e.target;
     const validationError = await validateInput(name, value, userSchema);
@@ -208,13 +210,13 @@ export default function MasterDaftarPustakaEdit({ onChangePage, withID }) {
           // Mengubah data menjadi format yang diinginkan
           const formattedData = data.map((item) => ({
             Value: item["Key"],
-            Text: item["Nama Kelompok Keahlian"],
+            Text: decode(item["Nama Kelompok Keahlian"]),
           }));
           setListKK(formattedData);
 
           // Mencocokkan dengan nama Kelompok Keahlian dari withID
           const matchingItem = formattedData.find(
-            (item) => item.Text === withID["Kelompok Keahlian"]
+            (item) => item.Value === withID["ID KK"]
           );
           if (matchingItem) {
             formDataRef.current.kke_id = matchingItem.Value;
@@ -301,15 +303,15 @@ export default function MasterDaftarPustakaEdit({ onChangePage, withID }) {
           <Alert type="danger" message={isError.message} />
         </div>
       )}
-         <div className="" style={{display:"flex", justifyContent:"space-between", marginTop:"100px", marginLeft:"70px", marginRight:"70px"}}>
-            <div className="back-and-title" style={{display:"flex"}}>
+         <div className="container" style={{display:"flex",marginTop:"100px"}}>
+            <div className="" style={{display:"flex"}}>
               <button style={{backgroundColor:"transparent", border:"none"}} onClick={handleGoBack}><img src={BackPage} alt="" /></button>
-                <h4 style={{ color:"#0A5EA8", fontWeight:"bold", fontSize:"30px", marginTop:"10px", marginLeft:"20px"}}>Edit Daftar Pustaka</h4>
+                <h4 style={{ color:"#0A5EA8", fontWeight:"bold", fontSize:"30px", marginTop:"10px", marginLeft:"20px"}}>Edit Knowledge Database</h4>
               </div>
                 
               </div>
       <form onSubmit={handleAdd}>
-        <div className="card" style={{margin:"20px 80px"}}>
+        <div className="card container mb-4 mt-4" >
           <div className="card-body p-4">
             <div className="row">
             <div className="col-lg-4" style={{display:"flex"}}>
@@ -396,7 +398,7 @@ export default function MasterDaftarPustakaEdit({ onChangePage, withID }) {
                   forInput="pus_kata_kunci"
                   label="Kata Kunci"
                   isRequired
-                  value={formDataRef.current.pus_kata_kunci}
+                  value={decode(formDataRef.current.pus_kata_kunci)}
                   onChange={handleInputChange}
                   errorMessage={errors.pus_kata_kunci}
                 />
@@ -447,7 +449,7 @@ export default function MasterDaftarPustakaEdit({ onChangePage, withID }) {
           </div>
          
 
-<div
+          <div
                 className="d-flex justify-content-end"
                 style={{
                   marginRight: "20px",

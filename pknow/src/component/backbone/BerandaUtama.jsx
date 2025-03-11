@@ -197,7 +197,7 @@ export default function BerandaUtama() {
         <Slider />
       </section>
 
-      <section className="sec6">
+      {/* <section className="sec6">
         <h4 style={{ textAlign: "center", color: "white", paddingTop: "60px", fontWeight: "bold" }}>
           Apa Tanggapan P-Knowers Tentang P-KNOW System?
         </h4>
@@ -210,7 +210,7 @@ export default function BerandaUtama() {
             <CommentCard key={index} {...comment} />
           ))}
         </div>
-      </section>
+      </section> */}
     </div>
   );
 }

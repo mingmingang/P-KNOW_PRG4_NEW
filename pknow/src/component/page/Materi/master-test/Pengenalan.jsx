@@ -18,6 +18,7 @@ import he from "he";
 import KMS_Rightbar from "../../../part/RightBar";
 import Cookies from "js-cookie";
 import { decryptId } from "../../../util/Encryptor";
+import { decode } from "html-entities";
 
 export default function MasterTestIndex({
   onChangePage,
@@ -159,7 +160,7 @@ export default function MasterTestIndex({
 
   return (
     <>
-      <div className="d-flex" style={{minHeight:"100vh"}}>
+      <div className="container d-flex" style={{minHeight:"100vh"}}>
         <div className="">
           <KMS_Rightbar
             isActivePengenalan={true}
@@ -207,15 +208,15 @@ export default function MasterTestIndex({
                   <div className="align-items-center mb-3">
                     <h1 style={{ color: "#002B6C" }} className="mb-0">
                       {" "}
-                      {currentData[0].Judul}
+                      {decode(currentData[0].Judul ? currentData[0].Judul : "Judul tidak tersedia")}
                     </h1>
                     <br />
                     <h6 className="mb-0" style={{ color: "#002B6C" }}>
-                      Dari {currentData[0].NamaKK} - {currentData[0].Prodi}
+                      Dari {decode(currentData[0].NamaKK)} - {decode(currentData[0].Prodi)}
                     </h6>
                     <br />
                     <h6 className="mb-0" style={{ color: "#002B6C", marginTop:"-10px" }}>
-                      Oleh {currentData[0].Nama} -{" "}
+                      Oleh {decode(currentData[0].Nama)} -{" "}
                       {formatDate(currentData[0].Creadate)}
                     </h6>
                   </div>

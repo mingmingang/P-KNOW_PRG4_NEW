@@ -22,6 +22,7 @@ import { decryptId } from "../../../../util/Encryptor";
 import { Stepper, Step, StepLabel, Box, colors } from "@mui/material";
 import BackPage from "../../../../../assets/backPage.png";
 import Konfirmasi from "../../../../part/Konfirmasi";
+import { decode } from "he";
 
 const steps = [
   "Pengenalan",
@@ -170,7 +171,6 @@ export default function MasterPostTestEdit({ onChangePage, withID }) {
     modifby: string(),
   });
 
-
   const handleJenisTypeChange = (e, questionIndex) => {
     const { value } = e.target; // Ambil jenis baru (Tunggal/Jamak)
 
@@ -283,8 +283,6 @@ export default function MasterPostTestEdit({ onChangePage, withID }) {
       setIsLoading(false);
     }
   }
-
-  
 
   //INI SAHAR
   // Call the combined function when the component mounts
@@ -701,8 +699,7 @@ export default function MasterPostTestEdit({ onChangePage, withID }) {
       const response = await axios.post(API_LINK + "Choice/DeleteChoice", {
         p1: choiceId,
       });
-      if(response.data.Hasil === "Sudah Berelasi"){
-        
+      if (response.data.Hasil === "Sudah Berelasi") {
       }
     } catch (error) {
       console.error("Error deleting choice:", error);
@@ -886,6 +883,16 @@ export default function MasterPostTestEdit({ onChangePage, withID }) {
 
     try {
       formData.timer = convertTimeToSeconds(timer);
+
+      if (formData.timer === 0) {
+        Swal.fire({
+          title: "Gagal!",
+          text: "Durasi tidak boleh 0.",
+          icon: "error",
+          confirmButtonText: "OK",
+        });
+        return; // Jika timer 0, proses tidak akan dilanjutkan
+      }
 
       // **1. Update Data Quiz**
       const quizPayload = {
@@ -1121,7 +1128,7 @@ export default function MasterPostTestEdit({ onChangePage, withID }) {
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
   };
- 
+
   const handlePageChange = (content) => {
     onChangePage(content);
   };
@@ -1226,7 +1233,11 @@ export default function MasterPostTestEdit({ onChangePage, withID }) {
                       type="text"
                       label="Deskripsi Quiz"
                       forInput="quizDeskripsi"
-                      value={formData.quizDeskripsi}
+                      value={
+                        formData && formData.quizDeskripsi
+                          ? decode(formData.quizDeskripsi)
+                          : "Deskripsi tidak tersedia"
+                      }
                       onChange={handleInputChange}
                       isRequired={true}
                     />
@@ -1389,7 +1400,7 @@ export default function MasterPostTestEdit({ onChangePage, withID }) {
                                 soal: content,
                               }));
                             }}
-                            apiKey="444kasui9s3azxih6ix4chynoxmhw6y1urkpmfhufvrbernz"
+                            apiKey="81ujooza2p3616vb7rdvc0lxphx68fe82f2aqj6qkmbvn6l4"
                             init={{
                               height: 300,
                               menubar: false,
@@ -1555,7 +1566,11 @@ export default function MasterPostTestEdit({ onChangePage, withID }) {
                                     onClick={() =>
                                       handleDeleteOption(index, optionIndex)
                                     }
-                                    style={{ marginRight: "10px", backgroundColor:"red", color:"white" }}
+                                    style={{
+                                      marginRight: "10px",
+                                      backgroundColor: "red",
+                                      color: "white",
+                                    }}
                                   />
 
                                   {/* Input Nilai untuk Pilihan */}
@@ -1644,8 +1659,8 @@ export default function MasterPostTestEdit({ onChangePage, withID }) {
                   ) : null}
                 </div>
                 <div className="total-score-container">
-          Total Skor: {validateTotalPoints()}
-        </div>
+                  Total Skor: {validateTotalPoints()}
+                </div>
               </div>
             ) : (
               <>

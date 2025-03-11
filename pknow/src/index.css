@@ -10,7 +10,6 @@
   display: flex;
   justify-content: space-between;
   margin-top: 20px;
-  padding: 10px 80px;
 }
 
 .title-kk {
@@ -62,4 +61,165 @@ main{background-color: white;}
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   z-index: 1000; /* Pastikan elemen ini di atas elemen lain */
   font-weight: 600;
+}
+
+.cari{
+  width: 700px;
+}
+
+.cari input{
+  width: 680px;
+}
+
+.card-keterangan{
+  width: 40%;
+}
+.title {
+  margin-right: 70px;
+}
+
+.title h4{
+  font-size: 30px;
+}
+
+.imageup{
+  display: flex;
+}
+
+.up{
+  width: 600px;
+}
+
+.jarak-card {
+  margin: 10px 140px;
+}
+
+.desc-detail{
+  width: auto;
+  padding-right: 20px;
+}
+
+.back-and-title{
+  margin-left:40px;
+}
+
+.img-publish{
+  width: 300px;
+  height: 200px;
+}
+
+.detail-kk {
+  width: 100%;
+  max-width: 500px;
+  height: 300px;
+  border-radius: 20px;
+  /* object-fit: cover;  */
+  border: 1px solid #ccc;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* For Mobile */
+@media (max-width: 768px) {
+
+  .title {
+    margin-left:10px; 
+    margin-right: 10px;
+  }
+
+  .img-publish{
+    margin-left: 10px;
+  }
+  
+  .detail-kk {
+    width: 100%;
+    /* max-width: 500px; */
+    height: 200px;
+    
+  }
+
+  .desc-detail{
+    width: auto;
+    padding-right: 0px;
+  }
+  .jarak-card{
+    margin: 0px;
+  }
+  .back-and-title{
+    margin-left: 40px;
+  }
+
+  .imageup{
+    display: block;
+  }
+
+  .up {
+    width: auto;
+  }
+
+  .title h4{
+    font-size: 20px;
+  }
+  .backSearch{
+    height: 40vh;
+  }
+  .backSearch p{
+      max-width: 350px;
+      font-size: 12px;
+  }
+
+  .backSearch .input-wrapper {
+    max-width: 100px;
+    margin-left: -200px;
+  }
+
+  .backSearch input {
+    width: 300px;
+  }
+
+  .backSearch h1{
+    max-width: 380px;
+  }
+
+  .backSearch h1 {
+    color: #fff;
+    font-size: 30px;
+    font-weight: 700;
+    /* width: 900px; */
+    margin-top: 10px;
+}
+
+  .cari {
+    max-width: 300px;
+  }
+  .status {
+    display : none;
+  }
+
+  .title-kk {
+    font-size: 15px;
+    align-items: center;
+    margin-top: 15px;
+  }
+
+  .navigasi-layout-page{
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .tes button {
+    font-size: 12px;
+    border-radius: 5px;
+  }
+
+  .card-keterangan{
+    width: 100%;
+  }
+}
+
+
+/* Add hamburger menu icon */
+.hamburger-menu {
+  display: none;
+  font-size: 24px;
+  cursor: pointer;
 }

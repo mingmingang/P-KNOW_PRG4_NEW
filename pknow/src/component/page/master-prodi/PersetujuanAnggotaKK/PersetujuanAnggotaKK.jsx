@@ -62,7 +62,7 @@ export default function PersetujuanAnggotaKK({ onChangePage }) {
             placeholder="Cari Kelompok Keahlian"
             showInput={false}
           />
-
+        <div className="container">
           <div className="navigasi-layout-page">
             <p className="title-kk">Kelompok Keahlian</p>
             <div className="left-feature">
@@ -96,7 +96,7 @@ export default function PersetujuanAnggotaKK({ onChangePage }) {
               </div>
             </div>
           </div>
-
+          </div>
           <>
             {isLoading ? (
               <Loading />
@@ -113,7 +113,7 @@ export default function PersetujuanAnggotaKK({ onChangePage }) {
                     {currentData.filter((value) => {
                       return value.Status === "Aktif";
                     }).length === 0 && (
-                      <div className="" style={{ margin: "5px 20px" }}>
+                      <div className="" style={{ margin: "5px 0px" }}>
                         <Alert type="warning" message="Tidak ada data!" />
                       </div>
                     )}

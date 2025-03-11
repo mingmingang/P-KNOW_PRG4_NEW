@@ -17,7 +17,7 @@ import Cookies from "js-cookie";
 import { decryptId } from "../../../util/Encryptor";
 import BackPage from "../../../../assets/backPage.png";
 import Konfirmasi from "../../../part/Konfirmasi";
-
+import { decode } from "he";
 const inisialisasiData = [
   {
     Key: null,
@@ -201,7 +201,7 @@ export default function PengajuanDetail({ onChangePage, withID }) {
             <div className="card-body p-4">
               <div className="row">
                 <div className="col-lg-6">
-                  <Label title="Nama" data={userData.Nama} />
+                  <Label title="Nama" data={decode(userData.Nama)} />
                 </div>
                 <div className="col-lg-6">
                   <Label title="Jabatan" data={userData.Role} />
@@ -209,7 +209,7 @@ export default function PengajuanDetail({ onChangePage, withID }) {
                 <div className="col-lg-6 my-3">
                   <Label
                     title="Kelompok Keahlian"
-                    data={withID["Nama Kelompok Keahlian"]}
+                    data={decode(withID["Nama Kelompok Keahlian"])}
                   />
                 </div>
                 <div className="col-lg-6 my-3">
@@ -229,7 +229,7 @@ export default function PengajuanDetail({ onChangePage, withID }) {
                               <div key={linkIndex}>
                                 <h5 className="mb-3" style={{marginTop:"15px"}}>{`Lampiran ${linkIndex + 1}`}</h5>
                                 <a href={link.trim()} target="_blank" rel="noopener noreferrer" style={{textDecoration:"none"}}>
-                                  {`Lampiran ${linkIndex + 1} ${withID["Nama Kelompok Keahlian"]}`}
+                                  {`Lampiran ${linkIndex + 1} ${decode(withID["Nama Kelompok Keahlian"])}`}
                                 </a>
                               </div>
                             ))
@@ -238,7 +238,7 @@ export default function PengajuanDetail({ onChangePage, withID }) {
                                 <div key={linkIndex}>
                                   <h5 className="mb-3">{`Lampiran ${index + 1}`}</h5>
                                   <a href={link.trim()} target="_blank" rel="noopener noreferrer">
-                                    {`Lampiran ${linkIndex + 1} ${withID["Nama Kelompok Keahlian"]}`}
+                                    {`Lampiran ${linkIndex + 1} ${decode(withID["Nama Kelompok Keahlian"])}`}
                                   </a>
                                 </div>
                               ))

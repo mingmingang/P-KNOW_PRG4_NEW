@@ -23,6 +23,7 @@ import { Stepper, Step, StepLabel, Box, colors } from "@mui/material";
 import BackPage from "../../../../../assets/backPage.png";
 import Konfirmasi from "../../../../part/Konfirmasi";
 import "../../../../../index.css";
+import { decode } from "he";
 
 const steps = [
   "Pengenalan",
@@ -894,6 +895,16 @@ export default function MasterPreTestEdit({ onChangePage, withID }) {
     try {
       formData.timer = convertTimeToSeconds(timer);
 
+      if (formData.timer === 0) {
+        Swal.fire({
+          title: "Gagal!",
+          text: "Durasi tidak boleh 0.",
+          icon: "error",
+          confirmButtonText: "OK",
+        });
+        return; 
+      }
+
       // **1. Update Data Quiz**
       const quizPayload = {
         quizId: formData.quizId,
@@ -1223,7 +1234,11 @@ export default function MasterPreTestEdit({ onChangePage, withID }) {
                       type="text"
                       label="Deskripsi Quiz"
                       forInput="quizDeskripsi"
-                      value={formData.quizDeskripsi}
+                      value={
+                        formData && formData.quizDeskripsi
+                          ? decode(formData.quizDeskripsi)
+                          : "Deskripsi tidak tersedia"
+                      }
                       onChange={handleInputChange}
                       isRequired={true}
                     />
@@ -1386,7 +1401,7 @@ export default function MasterPreTestEdit({ onChangePage, withID }) {
                                 soal: content,
                               }));
                             }}
-                            apiKey="444kasui9s3azxih6ix4chynoxmhw6y1urkpmfhufvrbernz"
+                            apiKey="81ujooza2p3616vb7rdvc0lxphx68fe82f2aqj6qkmbvn6l4"
                             init={{
                               height: 300,
                               menubar: false,

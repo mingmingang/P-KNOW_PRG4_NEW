@@ -20,6 +20,7 @@ import Cookies from "js-cookie";
 import { decryptId } from "../../../util/Encryptor";
 import WordViewer from "../../../part/DocumentViewer";
 import ExcelViewer from "../../../part/ExcelViewer";
+import { decode } from "html-entities";
 
 
   const inisialisasiData = [
@@ -213,7 +214,7 @@ async function updateProgres() {
 
 return (
   <>
-    <div className="d-flex" style={{minHeight:"100vh"}}>
+    <div className="container d-flex" style={{minHeight:"100vh"}}>
         <KMS_Rightbar
      isActivePengenalan={false}
      isActiveForum={false}
@@ -246,14 +247,14 @@ return (
         ) : (
           <>
           <div style={{  marginTop:"100px", marginBottom:"80px" }}>
-           <h1 style={{ fontWeight: 600, color: "#002B6C" }} className="ml-4">Materi {fileData.judul}</h1>
+           <h1 style={{ fontWeight: 600, color: "#002B6C" }} className="ml-4">Materi {decode(fileData.judul)}</h1>
            <br />
                     <h6 className="mb-0 ml-4" style={{ color: "#002B6C" }}>
-                      Dari {fileData.namaKK} - {fileData.prodi}
+                      Dari {decode(fileData.namaKK)} - {decode(fileData.prodi)}
                     </h6>
                     <br />
                         <h6 style={{ color: "#002B6C" }} className="ml-4">
-                            Oleh {fileData.uploader} - {formatDate(fileData.creadate)}
+                            Oleh {decode(fileData.uploader)} - {formatDate(fileData.creadate)}
                         </h6>
                         {fileExtension === "pdf" && (
            <div className="">{fileData.file ? (

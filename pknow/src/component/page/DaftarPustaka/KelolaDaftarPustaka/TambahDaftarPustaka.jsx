@@ -14,6 +14,7 @@ import UploadFile from "../../../util/UploadFile";
 import NoImage from "../../../../assets/NoImage.png";
 import BackPage from "../../../../assets/backPage.png";
 import Konfirmasi from "../../../part/Konfirmasi";
+import { decode } from "he";
 
 export default function MasterDaftarPustakaAdd({ onChangePage, withID }) {
   const [errors, setErrors] = useState({});
@@ -62,7 +63,6 @@ export default function MasterDaftarPustakaAdd({ onChangePage, withID }) {
     pus_kata_kunci: string().required("Isi Kata Kunci Terlebih Dahulu"),
     pus_keterangan: string()
       .required("Isi Keterangan Terlebih Dahulu")
-      .max(200, "Maksimal 200 Karakter")
       .min(100, "Minimum 100 Karakter"),
     pus_gambar: string(),
     pus_status: string(),
@@ -88,12 +88,51 @@ export default function MasterDaftarPustakaAdd({ onChangePage, withID }) {
     }
   };
 
+  // const handleInputChange = async (e) => {
+  //   const { name, value } = e.target;
+
+  //   if (name === "deskripsi") {
+  //     const cursorPosition = deskripsiRef.current.selectionStart;
+
+  //     try {
+  //       if (value === "") {
+  //         setErrors((prevErrors) => ({ ...prevErrors, [name]: "" }));
+  //       } else {
+  //         await userSchema.validateAt(name, { [name]: value });
+  //         setErrors((prevErrors) => ({ ...prevErrors, [name]: "" }));
+  //       }
+  //     } catch (error) {
+  //       setErrors((prevErrors) => ({ ...prevErrors, [name]: error.message }));
+  //     }
+
+  //     formDataRef.current[name] = value;
+
+  //     setTimeout(() => {
+  //       if (deskripsiRef.current) {
+  //         deskripsiRef.current.setSelectionRange(
+  //           cursorPosition,
+  //           cursorPosition
+  //         );
+  //       }
+  //     }, 0);
+  //   }
+
+  //   const validationError = await validateInput(name, value, userSchema);
+  //   formDataRef.current[name] = value;
+  //   setErrors((prevErrors) => ({
+  //     ...prevErrors,
+  //     [validationError.name]: validationError.error,
+  //   }));
+  // };
+
+  const [deskripsi, setDeskripsi] = useState(formDataRef.current.pus_keterangan || "");
+
   const handleInputChange = async (e) => {
     const { name, value } = e.target;
-
-    if (name === "deskripsi") {
-      const cursorPosition = deskripsiRef.current.selectionStart;
-
+    
+    if (name === "pus_keterangan") {
+      const cursorPosition = deskripsiRef.current?.selectionStart || 0;
+  
       try {
         if (value === "") {
           setErrors((prevErrors) => ({ ...prevErrors, [name]: "" }));
@@ -104,20 +143,17 @@ export default function MasterDaftarPustakaAdd({ onChangePage, withID }) {
       } catch (error) {
         setErrors((prevErrors) => ({ ...prevErrors, [name]: error.message }));
       }
-
+  
       formDataRef.current[name] = value;
-
-      // Mengembalikan posisi cursor setelah update
+      setDeskripsi(value); // Perbarui state tanpa merusak kursor
+  
       setTimeout(() => {
         if (deskripsiRef.current) {
-          deskripsiRef.current.setSelectionRange(
-            cursorPosition,
-            cursorPosition
-          );
+          deskripsiRef.current.setSelectionRange(cursorPosition, cursorPosition);
         }
       }, 0);
     }
-
+  
     const validationError = await validateInput(name, value, userSchema);
     formDataRef.current[name] = value;
     setErrors((prevErrors) => ({
@@ -125,6 +161,7 @@ export default function MasterDaftarPustakaAdd({ onChangePage, withID }) {
       [validationError.name]: validationError.error,
     }));
   };
+  
 
   const handleFileChange = (ref, extAllowed) => {
     const { name, value } = ref.current;
@@ -297,7 +334,7 @@ export default function MasterDaftarPustakaAdd({ onChangePage, withID }) {
         } else {
           const formattedData = data.map((item) => ({
             Value: item["Key"],
-            Text: item["Nama Kelompok Keahlian"],
+            Text: decode(item["Nama Kelompok Keahlian"]),
           }));
           setListKK(formattedData);
           setIsLoading(false);
@@ -326,7 +363,7 @@ export default function MasterDaftarPustakaAdd({ onChangePage, withID }) {
         </div>
       )}
       <div
-        className=""
+        className="container"
         style={{
           display: "flex",
           justifyContent: "space-between",
@@ -351,7 +388,7 @@ export default function MasterDaftarPustakaAdd({ onChangePage, withID }) {
               marginLeft: "20px",
             }}
           >
-            Tambah Daftar Pustaka
+            Tambah Knowledge Database
           </h4>
         </div>
         <div className="ket-draft">
@@ -361,7 +398,7 @@ export default function MasterDaftarPustakaAdd({ onChangePage, withID }) {
         </div>
       </div>
       <form onSubmit={handleAdd}>
-        <div className="card" style={{ margin: "20px 80px" }}>
+        <div className="card container mb-4 mt-4" >
           <div className="card-body p-4">
             <div className="row">
               <div className="col-lg-4" style={{ display: "flex" }}>

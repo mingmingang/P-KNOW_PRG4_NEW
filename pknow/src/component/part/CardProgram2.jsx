@@ -33,7 +33,6 @@ const CardProgram = ({ program, onChangePage }) => {
             : ""
         }`}
       >
-        {console.log("program", program)}
        <div className="">
        <img
           alt={`image`}
@@ -54,7 +53,9 @@ const CardProgram = ({ program, onChangePage }) => {
               borderRadius: "5px",
             }}
           >
-            {program["Nama Program"]}
+            {program["Nama Program"]
+              ? decode(program["Nama Program"])
+              : "Nama Program tidak tersedia"}
           </p>
           <p
             className="mb-0 mt-2"
@@ -72,7 +73,8 @@ const CardProgram = ({ program, onChangePage }) => {
             {program.Deskripsi.length > MAX_DESCRIPTION_LENGTH &&
             !expandDeskripsi ? (
               <>
-                {program.Deskripsi.slice(0, MAX_DESCRIPTION_LENGTH) + " ..."}
+                {decode(program.Deskripsi.slice(0, MAX_DESCRIPTION_LENGTH)) +
+                  " ..."}
                 <a
                   className="btn btn-link text-decoration-none p-0"
                   onClick={handleExpandDescription}
@@ -83,7 +85,9 @@ const CardProgram = ({ program, onChangePage }) => {
               </>
             ) : (
               <>
-                {decode(program.Deskripsi)}
+                {program.Deskripsi
+                  ? decode(program.Deskripsi)
+                  : "Deskripsi tidak tersedia"}
                 {expandDeskripsi && (
                   <a
                     className="btn btn-link text-decoration-none p-0"

@@ -7,7 +7,6 @@ export default function Paging({
   navigation,
 }) {
   function generatePageButton(pageSize, pageCurrent, totalData) {
-    console.log("current",pageCurrent)
     let totalPage = Math.ceil(totalData / pageSize);
     let segmentPage = Math.ceil(pageCurrent / 10);
     let maxSegmentPage = Math.ceil(totalPage / 10);

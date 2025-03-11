@@ -1,5 +1,6 @@
 import { forwardRef } from "react";
 import { FILE_LINK, API_LINK } from "../util/Constants";
+import "../../index.css";
 
 const FileUpload = forwardRef(function FileUpload(
   {
@@ -17,7 +18,7 @@ const FileUpload = forwardRef(function FileUpload(
 ) {
   return (
     <>
-      <div className="mb-3 mt-4" style={{ width: "600px" }}>
+      <div className="mb-3 mt-4 up">
         <label htmlFor={forInput} className="form-label fw-bold">
           {label}
           {isRequired ? <span className="text-danger"> *</span> : ""}

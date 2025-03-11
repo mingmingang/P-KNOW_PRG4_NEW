@@ -18,6 +18,7 @@ import SweetAlert from "../util/SweetAlert";
 import pknowmaskot from "../../assets/pknowmaskot.png";
 import Cookies from "js-cookie";
 import { decryptId } from "../util/Encryptor";
+import { decode } from "he";
 
 export default function DetailAKK({
   prodi,
@@ -111,7 +112,6 @@ export default function DetailAKK({
           API_LINK + "AnggotaKK/GetAnggotaKK",
           currentFilter
         );
-        console.log("data kk",currentFilter);
 
         if (data === "ERROR") {
           throw new Error("Terjadi kesalahan: Gagal mengambil daftar anggota.");
@@ -333,25 +333,28 @@ export default function DetailAKK({
 
   return (
     <>
-     <div className="back-and-title" style={{display:"flex", marginLeft:"80px", marginTop:"100px"}}>
+    <div className="container">
+     <div className="" style={{display:"flex", marginTop:"100px"}}>
       <button style={{backgroundColor:"transparent", border:"none"}} onClick={handleGoBack}><img src={BackPage} alt="" /></button>
                 <h4 style={{ color:"#0A5EA8", fontWeight:"bold", fontSize:"30px", marginTop:"10px", marginLeft:"20px"}}>Kelompok Keahlian</h4>
               </div>
-      <div className="content-container">
+              </div>
+              <div className="">
+      <div className="mt-4 container">
         <div className="information-kelompok-keahlian">
           <div className="informasi-kk">
-            <h1 className="title">{withID.title}</h1>
+            <h1 className="title">{decode(withID.title)}</h1>
             <div className="prodi" style={{marginBottom:"-20px"}}>
               <FontAwesomeIcon
                 icon={faGraduationCap}
                 style={{ fontSize: "1.5rem", marginRight: "-5px" }}
               />
               <p className="text-gray-700" style={{ fontFamily: "Poppins" }}>
-                {prodi}
+                {withID.prodi.nama}
               </p>
             </div>
             <p className="about" style={{fontSize:"22px"}}>Tentang Kelompok Keahlian</p>
-            <p className="deskripsi" style={{fontSize:"17px", width:"500px"}}>{withID.desc}</p>
+            <p className="deskripsi" style={{fontSize:"17px", width:"500px"}}>{decode(withID.desc)}</p>
             <div className="userProdi">
               <FontAwesomeIcon
                 icon={faUser}
@@ -370,7 +373,9 @@ export default function DetailAKK({
   />
 </div>
         </div>
+        </div>
         <>
+        <div className="container">
       {isError.error && (
         <div className="flex-fill">
           <Alert type="danger" message={isError.message} />
@@ -559,6 +564,7 @@ export default function DetailAKK({
           </div>
         </div>
       )}
+      </div>
     </>
 
 

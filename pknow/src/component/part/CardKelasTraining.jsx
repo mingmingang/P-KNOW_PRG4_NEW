@@ -55,7 +55,7 @@ function CardKelasTraining({
             classType={`${config.className} py-2 mt-3`}
             label="Detail Program"
             onClick={() => onChangePage("detailprogram", data)}
-            style={{ border: "none" }}
+            style={{ border: "none", width: "200px", marginLeft:"-40px" }}
           />
         </div>
       </div>
@@ -267,11 +267,11 @@ function CardKelasTraining({
        
         <div
           className="deskripsi-container "
-          style={{ alignItems: "center", width: "100%" }}
+          style={{ alignItems: "center", width: "100%", marginLeft:"20px", marginRight:"20px" }}
         >
           <p
             className="deskripsi"
-            style={{ marginBottom: "10px", fontSize: "15px" }}
+            style={{ marginBottom: "10px", fontSize: "15px", marginRight:"35px" }}
           >
             {decode(data.desc).substring(0, 130)}
             {/* Menampilkan 200 huruf pertama */}

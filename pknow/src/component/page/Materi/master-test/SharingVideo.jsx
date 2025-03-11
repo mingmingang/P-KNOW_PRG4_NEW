@@ -9,6 +9,7 @@ import ReactPlayer from 'react-player';
 import KMS_Rightbar from "../../../part/RightBar";
 import Cookies from "js-cookie";
 import { decryptId } from "../../../util/Encryptor";
+import { decode } from "html-entities";
 
 export default function MasterTestSharingVideo({ onChangePage, CheckDataReady, materiId }) {
     let activeUser = "";
@@ -124,7 +125,7 @@ export default function MasterTestSharingVideo({ onChangePage, CheckDataReady, m
 
     return (
         <>
-        <div className="d-flex" style={{minHeight:"100vh"}}>
+        <div className="container d-flex" style={{minHeight:"100vh"}}>
         <KMS_Rightbar
      isActivePengenalan={false}
      isActiveForum={false}
@@ -146,7 +147,7 @@ export default function MasterTestSharingVideo({ onChangePage, CheckDataReady, m
             <h1 className="ml-2" style={{fontWeight:"600", color: "#002B6C" }} >Sharing Expert Video</h1>
                     {currentData ? (
                         <p className="ml-2 mb-0">
-                            Dibuat oleh {currentData.Nama} - {formatDate(currentData.CreatedDate)}
+                            Dibuat oleh {decode(currentData.Nama)} - {formatDate(currentData.CreatedDate)}
                         </p>
                     ) : (
                         <div className=""></div>

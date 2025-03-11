@@ -11,6 +11,7 @@ import Cookies from "js-cookie";
 import { decryptId } from "../../../util/Encryptor";
 import WordViewer from "../../../part/DocumentViewer";
 import ExcelViewer from "../../../part/ExcelViewer";
+import { decode } from "html-entities";
 
 export default function MasterTestSharingPDF({ onChangePage, CheckDataReady, materiId }) {
   let activeUser = "";
@@ -154,7 +155,7 @@ export default function MasterTestSharingPDF({ onChangePage, CheckDataReady, mat
 
     return (
         <>
-        <div className="d-flex" style={{minHeight:"100vh"}}>
+        <div className="container d-flex" style={{minHeight:"100vh"}}>
         <KMS_Rightbar
      isActivePengenalan={false}
      isActiveForum={false}
@@ -177,7 +178,7 @@ export default function MasterTestSharingPDF({ onChangePage, CheckDataReady, mat
                     <h1 className="ml-4" style={{fontWeight:"600", color: "#002B6C" }}>Sharing Expert</h1>
                     {currentData ? (
                         <p className="ml-4">
-                            Dibuat oleh {currentData.Nama} - {formatDate(currentData.CreatedDate)}
+                            Dibuat oleh {decode(currentData.Nama)} - {formatDate(currentData.CreatedDate)}
                         </p>
                     ) : (
                       <div className=""></div>

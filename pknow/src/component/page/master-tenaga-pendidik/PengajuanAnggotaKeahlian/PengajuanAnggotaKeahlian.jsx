@@ -23,6 +23,8 @@ import {
   faClock,
   faUsers,
 } from "@fortawesome/free-solid-svg-icons";
+import { decode } from "he";
+import "../../../../../src/index.css";
 
 const inisialisasiData = [
   {
@@ -337,9 +339,8 @@ export default function PengajuanKelompokKeahlian({ onChangePage }) {
             </p>
             <div className="input-wrapper">
               <div
-                className=""
+                className="cari"
                 style={{
-                  width: "700px",
                   display: "flex",
                   backgroundColor: "white",
                   borderRadius: "20px",
@@ -352,7 +353,6 @@ export default function PengajuanKelompokKeahlian({ onChangePage }) {
                   placeholder="Cari Kelompok Keahlian"
                   style={{
                     border: "none",
-                    width: "680px",
                     height: "40px",
                     borderRadius: "20px",
                   }}
@@ -368,6 +368,7 @@ export default function PengajuanKelompokKeahlian({ onChangePage }) {
             </div>
           </div>
 
+<div className="container">
           <div className="navigasi-layout-page">
             <p className="title-kk">Kelompok Keahlian</p>
             <div className="left-feature">
@@ -401,6 +402,7 @@ export default function PengajuanKelompokKeahlian({ onChangePage }) {
                 </div>
               </div>
             </div>
+          </div>
           </div>
 
           <>
@@ -491,7 +493,7 @@ export default function PengajuanKelompokKeahlian({ onChangePage }) {
                                           }}
                                         >
                                           {`Lampiran ${linkIndex + 1} ${
-                                            dataAktif["Nama Kelompok Keahlian"]
+                                          dataAktif["Nama Kelompok Keahlian"]
                                           }`}
                                         </a>
                                       </div>
@@ -519,7 +521,7 @@ export default function PengajuanKelompokKeahlian({ onChangePage }) {
                                     )
                                   ) : (
                                     <p>Invalid Lampiran format</p>
-                                  ) // Handle non-string cases
+                                  ) 
                                 ) : (
                                   <p>Tidak ada lampiran</p>
                                 )}
@@ -535,7 +537,6 @@ export default function PengajuanKelompokKeahlian({ onChangePage }) {
                     style={{
                       padding: "10px",
                       backgroundColor: "#A7AAAC",
-                      marginLeft: "70px",
                       width: "25%",
                       borderRadius: "10px",
                     }}
@@ -570,15 +571,14 @@ export default function PengajuanKelompokKeahlian({ onChangePage }) {
                   (listKK.length === 0 ||
                     listKK.every((value) => value.Status === "None")) ? (
                     <>
-                      <div
-                        className=""
-                        style={{ marginLeft: "80px", marginRight: "80px" }}
-                      >
+                     
+                        <div className="container">
                         <Alert
                           type="warning mt-3"
                           message="Tidak ada data! Silahkan cari kelompok keahlian diatas.."
                         />
-                      </div>
+                        </div>
+                  
                     </>
                   ) : (
                     <div className="flex-fill">
@@ -587,7 +587,7 @@ export default function PengajuanKelompokKeahlian({ onChangePage }) {
                           (value) => value.Status === "Menunggu Acc"
                         ).length == 2 && (
                           <Alert
-                            type="info mt-2 ml-3 mr-3"
+                            type="info mt-2"
                             message="Anda hanya bisa mendaftar pada 2 Kelompok Keahlian. Tunggu konfirmasi dari prodi.."
                           />
                         )}
@@ -597,8 +597,6 @@ export default function PengajuanKelompokKeahlian({ onChangePage }) {
                             background: "#FFC107",
                             borderRadius: "5px",
                             padding: "10px 20px",
-                            width: "40%",
-                            marginLeft: "20px",
                             marginBottom: "20px",
                             color: "white",
                             fontWeight: "bold",
@@ -610,13 +608,12 @@ export default function PengajuanKelompokKeahlian({ onChangePage }) {
                           (value) => value.Status === "Menunggu Acc"
                         ).length == 0 && (
                           <Alert
-                            type="warning mt-2 mr-4 ml-4"
+                            type="warning mt-2 "
                             message="Anda belum melakukan pengajuan"
                           />
                         )}
                         <div
-                          className="row mt-3 gx-4"
-                          style={{ marginLeft: "5px" }}
+                          className="container row mt-3 gx-4"
                         >
                           {listKK
                             ?.filter((value) => {
@@ -636,8 +633,6 @@ export default function PengajuanKelompokKeahlian({ onChangePage }) {
                             background: "#61A2DC",
                             borderRadius: "5px",
                             padding: "10px 20px",
-                            width: "40%",
-                            marginLeft: "20px",
                             marginBottom: "20px",
                             color: "white",
                             fontWeight: "bold",
@@ -657,8 +652,7 @@ export default function PengajuanKelompokKeahlian({ onChangePage }) {
                           />
                         )}
                         <div
-                          className="row mt-3 gx-4"
-                          style={{ marginLeft: "5px" }}
+                          className="container row mt-3 gx-4"
                         >
                           {listKK
                             ?.filter((value) => {

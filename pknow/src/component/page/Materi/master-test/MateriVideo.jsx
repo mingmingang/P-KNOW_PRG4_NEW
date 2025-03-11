@@ -18,6 +18,7 @@ import KMS_Rightbar from "../../../part/RightBar";
 import { FaPlay, FaPause } from 'react-icons/fa'; 
 import Cookies from "js-cookie";
 import { decryptId } from "../../../util/Encryptor";
+import { decode } from "html-entities";
 
   const inisialisasiData = [
     {
@@ -170,7 +171,7 @@ export default function MasterTestIndex({ onChangePage, materiId }) {
 
   return (
     <>
-     <div className="d-flex" style={{height:"100vh"}}>
+     <div className="container d-flex" style={{height:"100vh"}}>
         <KMS_Rightbar
      isActivePengenalan={false}
      isActiveForum={false}
@@ -203,12 +204,12 @@ export default function MasterTestIndex({ onChangePage, materiId }) {
                 ) : (
                     <>
                        <div style={{marginTop:"100px", marginLeft:"20px", marginBottom:"80px" }}>
-                            <h1 style={{ fontWeight: 600, color: "#002B6C" }}>Materi Video {currentData.Judul}</h1>
+                            <h1 style={{ fontWeight: 600, color: "#002B6C" }}>Materi Video {decode(currentData.Judul)}</h1>
                             <h6 className="mb-3" style={{ color: "#002B6C" }}>
-                      Dari {currentData.NamaKK} - {currentData.Prodi}
+                      Dari {decode(currentData.NamaKK)} - {decode(currentData.Prodi)}
                     </h6>
                             <h6 style={{ color: "#002B6C" }}>
-                                Oleh {currentData.Nama} - {formatDate(currentData.Creadate)}
+                                Oleh {decode(currentData.Nama)} - {formatDate(currentData.Creadate)}
                             </h6>
                             {currentData.File_video ? (
                                 <ReactPlayer

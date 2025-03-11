@@ -14,6 +14,7 @@ import NoImage from "../../../../assets/NoImage.png";
 import BackPage from "../../../../assets/backPage.png";
 import Konfirmasi from "../../../part/Konfirmasi";
 import { Editor } from "@tinymce/tinymce-react";
+import "../../../../index.css";
 
 export default function TambahKK({ onChangePage }) {
   const [errors, setErrors] = useState({});
@@ -53,7 +54,7 @@ export default function TambahKK({ onChangePage }) {
   });
 
   const userSchema = object({
-    nama: string().max(25, "maksimum 25 karakter").required("harus diisi"),
+    nama: string().max(45, "maksimum 45 karakter").required("harus diisi"),
     programStudi: string().required("harus dipilih"),
     personInCharge: string(),
     deskripsi: string().min(100,"Minimum 100 karakter").required("harus diisi"),
@@ -267,21 +268,21 @@ export default function TambahKK({ onChangePage }) {
         <Loading />
       ) : (
         <>
-          <div className="" style={{display:"flex", justifyContent:"space-between", marginTop:"100px", marginLeft:"70px", marginRight:"70px"}}>
+          <div className="container mb-4" style={{display:"flex", justifyContent:"space-between", marginTop:"100px"}}>
             <div className="back-and-title" style={{display:"flex"}}>
               <button style={{backgroundColor:"transparent", border:"none"}} onClick={handleGoBack}><img src={BackPage} alt="" /></button>
-                <h4 style={{ color:"#0A5EA8", fontWeight:"bold", fontSize:"30px", marginTop:"10px", marginLeft:"20px"}}>Tambah Kelompok Keahlian</h4>
+                <h4 style={{ color:"#0A5EA8", fontWeight:"bold", marginTop:"10px", marginLeft:"20px"}}>Tambah Kelompok Keahlian</h4>
               </div>
                 <div className="ket-draft">
                 <span className="badge text-bg-dark " style={{fontSize:"16px"}}>Draft</span>
                 </div>
               </div>
-        <div className="" style={{ margin: "30px 70px" }}>
+        <div className="container mb-4" >
           <form onSubmit={handleAdd}>
             <div className="card">
               <div className="card-body p-4">
                 <div className="row">
-                  <div className="col-lg-4" style={{ display: "flex" }}>
+                  <div className="col-lg-4 imageup">
                     <div className="preview-img">
                       {filePreview ? (
                         <div

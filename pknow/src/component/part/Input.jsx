@@ -1,5 +1,4 @@
-// Input.jsx
-import React, { forwardRef } from "react";
+import React, { forwardRef, useRef, useEffect } from "react";
 
 const Input = forwardRef(function Input(
   {
@@ -10,10 +9,33 @@ const Input = forwardRef(function Input(
     isRequired = false,
     isDisabled = false,
     errorMessage,
+    value,
+    onChange,
     ...props
   },
   ref
 ) {
+  const inputRef = useRef(null);
+  const cursorPositionRef = useRef(0);
+
+  // Daftar input yang tidak mendukung selection range
+  const noSelectionTypes = ["checkbox", "radio", "file", "button", "submit", "reset"];
+
+  // Simpan posisi kursor sebelum perubahan value (hanya jika memungkinkan)
+  const handleChange = (e) => {
+    if (!noSelectionTypes.includes(type)) {
+      cursorPositionRef.current = e.target.selectionStart;
+    }
+    if (onChange) onChange(e);
+  };
+
+  // Kembalikan posisi kursor setelah re-render (jika memungkinkan)
+  useEffect(() => {
+    if (inputRef.current && !noSelectionTypes.includes(type)) {
+      inputRef.current.setSelectionRange(cursorPositionRef.current, cursorPositionRef.current);
+    }
+  }, [value]);
+
   return (
     <>
       {label !== "" && (
@@ -21,11 +43,7 @@ const Input = forwardRef(function Input(
           <label htmlFor={forInput} className="form-label fw-bold">
             {label}
             {isRequired ? <span className="text-danger"> *</span> : ""}
-            {errorMessage ? (
-              <span className="fw-normal text-danger"> {errorMessage}</span>
-            ) : (
-              ""
-            )}
+            {errorMessage ? <span className="fw-normal text-danger"> {errorMessage}</span> : ""}
           </label>
           {type === "textarea" ? (
             <textarea
@@ -34,8 +52,10 @@ const Input = forwardRef(function Input(
               name={forInput}
               className="form-control"
               placeholder={placeholder}
-              ref={ref}
+              ref={ref || inputRef}
               disabled={isDisabled}
+              value={value}
+              onChange={handleChange}
               {...props}
             ></textarea>
           ) : (
@@ -45,8 +65,10 @@ const Input = forwardRef(function Input(
               type={type}
               className="form-control"
               placeholder={placeholder}
-              ref={ref}
+              ref={ref || inputRef}
               disabled={isDisabled}
+              value={value}
+              onChange={handleChange}
               {...props}
             />
           )}
@@ -54,12 +76,7 @@ const Input = forwardRef(function Input(
       )}
       {label === "" && (
         <>
-        {errorMessage && (
-            <span className="small ms-1 text-danger">
-              {
-                errorMessage}
-            </span>
-          )}
+          {errorMessage && <span className="small ms-1 text-danger">{errorMessage}</span>}
           {type === "textarea" ? (
             <textarea
               rows="5"
@@ -67,8 +84,10 @@ const Input = forwardRef(function Input(
               name={forInput}
               className="form-control"
               placeholder={placeholder}
-              ref={ref}
+              ref={ref || inputRef}
               disabled={isDisabled}
+              value={value}
+              onChange={handleChange}
               {...props}
             ></textarea>
           ) : (
@@ -78,12 +97,13 @@ const Input = forwardRef(function Input(
               type={type}
               className="form-control"
               placeholder={placeholder}
-              ref={ref}
+              ref={ref || inputRef}
               disabled={isDisabled}
+              value={value}
+              onChange={handleChange}
               {...props}
             />
           )}
-          
         </>
       )}
     </>

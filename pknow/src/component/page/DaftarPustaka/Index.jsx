@@ -52,7 +52,7 @@ export default function DaftarPustaka({ onChangePage, withID }) {
   const cookie = Cookies.get("activeUser");
   if (cookie) activeUser = JSON.parse(decryptId(cookie)).username;
   if (cookie) activerole = JSON.parse(decryptId(cookie)).role;
-  // console.log("dataaa", withID.id)
+
   const [listKKE, setListKKE] = useState([]);
   const [isError, setIsError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -107,11 +107,14 @@ export default function DaftarPustaka({ onChangePage, withID }) {
   const getDataKK = async () => {
     try {
       let data = await UseFetch(API_LINK + "KK/GetFilterKK", { tes: ""});
-      console.log("data kk", data)
       if (!data || data.length === 0) {
         throw new Error("Data kosong atau tidak tersedia.");
       } else {
-        setListKKE(data); // Simpan data ke state jika diperlukan
+        const formattedData = data.map((item) => ({
+          Value: item["Value"],
+          Text: decode(item["Text"]),
+        }));
+        setListKKE(formattedData); 
       }
     } catch (e) {
       console.log(e.message);
@@ -224,10 +227,11 @@ export default function DaftarPustaka({ onChangePage, withID }) {
         API_LINK + "Pustaka/GetDataPustaka",
         currentFilter
       );
-      console.log("dataanya", data)
-      if (data === "ERROR" || data.length === 0) {
+      if (data === "ERROR") {
         setCurrentData([]);
         setIsEmpty(true);
+      } else if (data.length === 0) {
+        await new Promise((resolve) => setTimeout(resolve, 2000));
       }
       else {
         // ini sahar
@@ -270,12 +274,11 @@ export default function DaftarPustaka({ onChangePage, withID }) {
         API_LINK + "Pustaka/GetDataPustakaSaya",
         currentFilterSaya
       );
-
-      console.log("pustaka saya", data)
-
-      if (data === "ERROR" || data.length === 0) {
+      if (data === "ERROR") {
         setCurrentDataMilikSaya([]);
         setIsEmpty(true);
+      } else if (data.length === 0) {
+        await new Promise((resolve) => setTimeout(resolve, 2000));
       }
       else {
         setIsEmpty(false);
@@ -403,9 +406,8 @@ export default function DaftarPustaka({ onChangePage, withID }) {
         </p>
         <div className="input-wrapper">
           <div
-            className=""
+            className="cari"
             style={{
-              width: "700px",
               display: "flex",
               backgroundColor: "white",
               borderRadius: "20px",
@@ -418,7 +420,6 @@ export default function DaftarPustaka({ onChangePage, withID }) {
               placeholder="Cari Knowledge Database"
               style={{
                 border: "none",
-                width: "680px",
                 height: "40px",
                 borderRadius: "20px",
               }}
@@ -439,6 +440,7 @@ export default function DaftarPustaka({ onChangePage, withID }) {
       ) : (
         <div className="d-flex flex-column">
           <div className="flex-fill">
+          <div className="container">
             <div className="navigasi-layout-page">
               <p className="title-kk"> 
                 {/* <button
@@ -525,18 +527,22 @@ export default function DaftarPustaka({ onChangePage, withID }) {
                 </div>
               </div>
             </div>
+            </div>
             {isEmpty ? (
-              <div className="" style={{ margin: "10px 70px" }}>
+               <div className="container">
+              <div className="" style={{ margin: "10px 0px" }}>
                 <Alert
                   type="warning mt-3"
                   message="Tidak ada data! Silahkan cari pustaka diatas.."
                 />
               </div>
+              </div>
             ) : (
               <>
+                <div className="container">
                <div className="d-flex flex-column">
                   <div className="flex-fill">
-                    <div style={{ margin: "10px 50px" }}>
+                    <div style={{ margin: "10px 0px" }}>
                       <CardPustaka
                         pustakas={currentDataMilikSaya}
                         onDetail={onChangePage}
@@ -552,7 +558,6 @@ export default function DaftarPustaka({ onChangePage, withID }) {
               <div className="mb-4 d-flex justify-content-center">
               <div
                 className="d-flex flex-column"
-                style={{ marginLeft: "70px", marginBottom: "40px" }}
               >
                 <Paging
                   pageSize={PAGE_SIZE}
@@ -565,7 +570,7 @@ export default function DaftarPustaka({ onChangePage, withID }) {
 
                 <div className="d-flex flex-column">
                   <div className="flex-fill">
-                    <div style={{ margin: "10px 50px" }}>
+                    <div style={{ margin: "10px 0px" }}>
                       <CardPustaka
                         pustakas={currentData}
                         onDetail={onChangePage}
@@ -581,7 +586,6 @@ export default function DaftarPustaka({ onChangePage, withID }) {
                 <div className="mb-4 d-flex justify-content-center">
               <div
                 className="d-flex flex-column"
-                style={{ marginLeft: "70px", marginBottom: "40px" }}
               >
                 <Paging
                   pageSize={PAGE_SIZE}
@@ -590,6 +594,7 @@ export default function DaftarPustaka({ onChangePage, withID }) {
                   navigation={handleSetCurrentPage}
                 />
               </div>
+            </div>
             </div>
               </>
             )}

@@ -12,6 +12,8 @@ import Konfirmasi from "../../../part/Konfirmasi";
 import BackPage from "../../../../assets/backPage.png";
 import FileUpload from "../../../part/FileUpload";
 import UploadFile from "../../../util/UploadFile";
+import { decode } from "he";
+import "../../../../index.css";
 
 export default function KKEdit({ onChangePage, withID }) {
   const [errors, setErrors] = useState({});
@@ -40,10 +42,10 @@ export default function KKEdit({ onChangePage, withID }) {
   const resetForm = () => {
     formDataRef.current = {
       key: withID.id,
-      nama: withID.title,
+      nama: decode(withID.title),
       programStudi: withID.prodi.key,
       personInCharge: withID.pic.key ? withID.pic.key : "",
-      deskripsi: withID.desc,
+      deskripsi: decode(withID.desc),
       gambar: withID.gambar,
     };
     setFilePreview(false);
@@ -64,12 +66,10 @@ export default function KKEdit({ onChangePage, withID }) {
 
   const userSchema = object({
     key: string(),
-    nama: string().max(25, "maksimum 25 karakter").required("harus diisi"),
+    nama: string().max(45, "maksimum 45 karakter").required("harus diisi"),
     programStudi: string().required("harus dipilih"),
     personInCharge: string(),
-    deskripsi: string().min(100,"minimum 100 karakter")
-      .max(200, "maksimum 200 karakter")
-      .required("harus diisi"),
+    deskripsi: string().min(100,"minimum 100 karakter").required("harus diisi"),
     gambar: string(),
   });
 
@@ -174,10 +174,10 @@ export default function KKEdit({ onChangePage, withID }) {
   useEffect(() => {
     formDataRef.current = {
       key: withID.id,
-      nama: withID.title,
+      nama: decode(withID.title),
       programStudi: withID.prodi.key,
       personInCharge: withID.pic.key ? withID.pic.key : "",
-      deskripsi: withID.desc,
+      deskripsi: decode(withID.desc),
       gambar: withID.gambar,
     };
   }, []);
@@ -260,18 +260,18 @@ export default function KKEdit({ onChangePage, withID }) {
         <Loading />
       ) : (
         <>
-        <div className="" style={{display:"flex", justifyContent:"space-between", marginTop:"100px", marginLeft:"70px", marginRight:"70px"}}>
+        <div className="container mb-4" style={{display:"flex", justifyContent:"space-between", marginTop:"100px"}}>
         <div className="back-and-title" style={{display:"flex"}}>
           <button style={{backgroundColor:"transparent", border:"none"}} onClick={handleGoBack}><img src={BackPage} alt="" /></button>
-            <h4 style={{ color:"#0A5EA8", fontWeight:"bold", fontSize:"30px", marginTop:"10px", marginLeft:"20px"}}>Edit Kelompok Keahlian</h4>
+            <h4 style={{ color:"#0A5EA8", fontWeight:"bold",  marginTop:"10px", marginLeft:"20px"}}>Edit Kelompok Keahlian</h4>
           </div>
           </div>
-    <div className="" style={{ margin: "30px 70px" }}>
+    <div className="container mb-4" >
         <form onSubmit={handleAdd}>
           <div className="card">
             <div className="card-body p-4">
               <div className="row">
-              <div className="col-lg-4" style={{ display: "flex" }}>
+              <div className="col-lg-4 imageup">
                     <div className="preview-img">
                       {filePreview ? (
                         <div

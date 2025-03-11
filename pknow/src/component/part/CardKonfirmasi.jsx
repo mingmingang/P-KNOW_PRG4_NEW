@@ -3,11 +3,10 @@ import { useState } from "react";
 import Icon from "./Icon";
 import Button from "./Button copy";
 import { API_LINK } from "../util/Constants";
+import { decode } from "he";
 
 function CardKonfirmasi({ data, onChangePage, isShow }) {
   const [showAllText, setShowAllText] = useState(isShow);
-
-  console.log("dta", data)
 
   const handleToggleText = () => {
     setShowAllText(!showAllText);
@@ -29,7 +28,7 @@ function CardKonfirmasi({ data, onChangePage, isShow }) {
             <h5
               className="card-title px-3 pt-2 pb-3" style={{color:"#0A5EA8", fontWeight:"bold", marginBottom:"0"}}
             >
-              {data["Nama Kelompok Keahlian"]}
+              {decode(data["Nama Kelompok Keahlian"])}
             </h5>
             <div className="card-body p-3" style={{marginTop:"-20px"}}>
               <div>
@@ -74,7 +73,7 @@ function CardKonfirmasi({ data, onChangePage, isShow }) {
                   textAlign: "justify",
                 }}
               >
-                {data.Deskripsi}
+                {decode(data.Deskripsi)}
               </p>
               <div className="d-flex justify-content-between align-items-center">
                 <a

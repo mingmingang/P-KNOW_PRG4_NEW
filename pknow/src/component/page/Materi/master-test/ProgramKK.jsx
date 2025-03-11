@@ -14,6 +14,8 @@ import Button2 from "../../../part/Button copy";
 import Input from "../../../part/Input";
 import Konfirmasi from "../../../part/Konfirmasi";
 import Filter from "../../../part/Filter";
+import BackPage from "../../../../assets/backPage.png";
+import { decode } from "he";
 
 export default function ProgramKK({ onChangePage, withID }) {
   let activeUser = "";
@@ -203,7 +205,6 @@ export default function ProgramKK({ onChangePage, withID }) {
     });
   }
 
-  // MENGUBAH STATUS PROGRAM
   function handleSetStatus(data, status) {
     setIsError(false);
 
@@ -250,13 +251,14 @@ export default function ProgramKK({ onChangePage, withID }) {
   return (
     <div className="app-container">
       <div className="backSearch">
-        <h1>{"Program " + withID.title}</h1>
+        <h1>{"Program " + decode(withID.title)}</h1>
         <p>
           Jelajahi seluruh program-program yang tersedia didalam Kelompok
           Keahlian dan akses seluruh Materi yang diberikan.
         </p>
+        <div className="conatainer">
         <div className="input-wrapper">
-          <div
+          {/* <div
             className=""
             style={{
               width: "700px",
@@ -269,7 +271,7 @@ export default function ProgramKK({ onChangePage, withID }) {
             <Input
               // ref={searchQuery}
               forInput="pencarianKK"
-              placeholder="Cari"
+              placeholder="Cari Program"
               style={{
                 border: "none",
                 width: "680px",
@@ -284,7 +286,8 @@ export default function ProgramKK({ onChangePage, withID }) {
               // onClick={handleSearch}
               style={{ backgroundColor: "transparent", color: "#08549F" }}
             />
-          </div>
+          </div> */}
+        </div>
         </div>
       </div>
       <>
@@ -298,36 +301,17 @@ export default function ProgramKK({ onChangePage, withID }) {
         ) : (
           <div className="d-flex flex-column">
             <div className="flex-fill">
+             <div className="container">
               <div className="navigasi-layout-page">
-                <p className="title-kk"> <button
-            style={{ backgroundColor: "transparent", border: "none" }}
-            onClick={handleGoBack}
-          >
-           <i className="fas fa-arrow-left mr-3" style={{color:"#0A5EA8"}}></i>
+                <p className="title-kk"><button style={{backgroundColor:"transparent", border:"none", marginRight:"10px"}} onClick={handleGoBack}><img src={BackPage} width="50px" alt="" />
+           {/* <i className="fas fa-arrow-left mr-3" style={{color:"#0A5EA8"}}></i> */}
           </button>Program</p>
-                {/* <div className="left-feature">
-            <div className="tes" style={{ display: "flex" }}>
-              <div className="mt-1">
-              <Filter handleSearch={handleSearch}>
-                      <DropDown
-                        ref={searchFilterSort}
-                        forInput="ddUrut"
-                        label="Urut Berdasarkan"
-                        type="none"
-                        arrData={dataFilterSort}
-                        defaultValue="[Judul Pustaka] asc"
-                      />
-                    </Filter>
               </div>
-            </div>
-          </div> */}
               </div>
-            
               <>
-       
+              <div className="container">
                 <div className="d-flex flex-column">
                   <div className="flex-fill">
-                    {/* Conditional rendering for alert message */}
                     {currentData.filter(
                       (value) =>
                         value.Status === "Aktif"
@@ -366,16 +350,18 @@ export default function ProgramKK({ onChangePage, withID }) {
                               </div>
                             );
                           })}
+                          
                       </div>
                     )}
                   </div>
+                  
+                </div>
                 </div>
               </>
 
               <div className="mb-4 d-flex justify-content-center">
                 <div
                   className="d-flex flex-column"
-                  style={{ marginLeft: "70px", marginBottom: "40px" }}
                 >
                   <Paging
                     pageSize={PAGE_SIZE}

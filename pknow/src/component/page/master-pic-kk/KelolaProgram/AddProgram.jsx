@@ -37,15 +37,15 @@ export default function ProgramAdd({ onChangePage, withID }) {
   const userSchema = object({
     idKK: string(),
     idKry: string(),
-    nama: string().max(100, "maksimum 100 karakter").required("harus diisi"),
-    deskripsi: string().required("harus dipilih"),
+    nama: string().max(100, "maksimum 100 karakter").required("harus diisi").min(25, "minimum 25 karakter"),
+    deskripsi: string().required("harus dipilih").min(200, "minimum 200 karakter").max(300, "maksimum 300 karakter"),
     pro_gambar: string(),
   });
 
   useEffect(() => {
     formDataRef.current = {
       idKK: withID.Key,
-      idKry: withID["Kode Karyawan"],
+      idKry: withID["PIC"],
       nama: "",
       deskripsi: "",
       pro_gambar: "",
@@ -55,7 +55,7 @@ export default function ProgramAdd({ onChangePage, withID }) {
   const resetForm = () => {
     formDataRef.current = {
       idKK: withID.Key,
-      idKry: withID["Kode Karyawan"],
+      idKry: withID["PIC"],
       nama: "",
       deskripsi: "",
       pro_gambar: "",

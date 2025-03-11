@@ -4,6 +4,7 @@ import Icon from "./Icon";
 import CardProgram from "./CardProgram2";
 import { colors } from "@mui/material";
 import Alert from "./Alert";
+import { decode } from "he";
 
 const MAX_DESCRIPTION_LENGTH = 300;
 
@@ -34,7 +35,9 @@ const CardKK = ({ kk, onChangePage }) => {
               fontWeight:"600",
             }}
             
-          >{kk["Nama Kelompok Keahlian"]}</h5>
+          >{kk["Nama Kelompok Keahlian"]
+            ? decode(kk["Nama Kelompok Keahlian"])
+            : "Nama tidak tersedia"}</h5>
       <div className="card p-0 " style={{ borderRadius: "10px", height: cardHeight }}> {/* Set tinggi kartu */}
         <div className="card-body p-0">
           <div className="card-body px-3">
@@ -82,7 +85,10 @@ const CardKK = ({ kk, onChangePage }) => {
             >
               {kk.Deskripsi.length > MAX_DESCRIPTION_LENGTH && !expandDeskripsi[kk.Key] ? (
                 <>
-                  {kk.Deskripsi.slice(0, MAX_DESCRIPTION_LENGTH) + " ..."}
+                  {kk?.Deskripsi
+                    ? decode(kk.Deskripsi.slice(0, MAX_DESCRIPTION_LENGTH)) +
+                      " ..."
+                    : "Deskripsi tidak tersedia"}
                   <a
                     className="btn btn-link text-decoration-none p-0"
                     onClick={() => handleExpandDescription(kk.Key)}
@@ -93,7 +99,7 @@ const CardKK = ({ kk, onChangePage }) => {
                 </>
               ) : (
                 <>
-                  {kk.Deskripsi}
+                  {kk?.Deskripsi ? decode(kk.Deskripsi) : "Deskripsi tidak tersedia"}
                   {expandDeskripsi[kk.Key] && (
                     <a
                       className="btn btn-link text-decoration-none p-0"
@@ -106,7 +112,8 @@ const CardKK = ({ kk, onChangePage }) => {
                 </>
               )}
             </p>
-            <p style={{color:"#0A5EA8", fontWeight:"600", margin:"10px 0px"}}>Daftar Program dalam Kelompok Keahlian {kk["Nama Kelompok Keahlian"]}</p>
+            <p style={{color:"#0A5EA8", fontWeight:"600", margin:"10px 0px"}}>Daftar Program dalam Kelompok Keahlian {kk?.["Nama Kelompok Keahlian"] ? decode(kk["Nama Kelompok Keahlian"]) : "Nama tidak tersedia"}
+            </p>
             <hr style={{ opacity: "0.1" }} />
             {isContentVisible && (
               <>

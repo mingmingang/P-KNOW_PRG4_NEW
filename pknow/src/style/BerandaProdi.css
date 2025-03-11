@@ -1,4 +1,4 @@
-.slider-container{
+.slider-container {
   width: 100%;
 }
 
@@ -32,22 +32,21 @@
   transform: scale(1.2);
 }
 
-
 .slide {
   position: relative;
   color: #fff;
 }
 
 .action-button {
-  margin-top: 2rem; /* Changed to rem */
+  margin-top: 2rem;
   border: none;
   background-color: white;
-  width: 70%; /* Changed to percentage for responsiveness */
-  max-width: 280px; /* Added max-width */
+  width: 70%;
+  max-width: 280px;
   height: 60px;
   border-radius: 35px;
   color: var(--primary-color);
-  font-size: 1.25rem; /* Use rem for scalability */
+  font-size: 1.25rem;
   font-weight: 600;
   cursor: pointer;
 }
@@ -55,13 +54,14 @@
 .action-button:hover {
   background-color: var(--primary-color);
   color: white;
-  transition-duration: 0.5s; /* Shortened duration */
-  transform: translateY(-3px); /* Adjusted for a more noticeable effect */
+  transition-duration: 0.5s;
+  transform: translateY(-3px);
   z-index: inherit;
 }
 
 .content-wrapper {
   display: flex;
+  flex-direction: row;
   height: 90vh;
   width: 100%;
   padding-top: 100px;
@@ -72,10 +72,9 @@
   margin-top: 150px;
   margin-left: 90px;
   width: 800px;
-
 }
 
-.mascot{
+.mascot {
   width: 100px;
   display: flex;
 }
@@ -86,6 +85,45 @@
 }
 
 .text-content p {
-  width: 600px;
+  width: 700px;
   text-align: justify;
+}
+
+/* Responsive untuk layar 768px */
+@media screen and (max-width: 768px) {
+  .content-wrapper {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    height: auto;
+    padding-top: 100px;
+  }
+
+  .text-content {
+    margin: 0;
+    width: 90%;
+  }
+
+
+  .text-content h1 {
+    font-size: 40px;
+  }
+
+  .text-content p {
+    width: 82%;
+    text-align: justify;
+    font-size: 12px;
+    margin: 10px 30px;
+  }
+
+  .action-button {
+    width: 90%;
+    max-width: 250px;
+    height: 50px;
+    font-size: 1rem;
+  }
+
+  .mascot {
+    width: 80px;
+  }
 }

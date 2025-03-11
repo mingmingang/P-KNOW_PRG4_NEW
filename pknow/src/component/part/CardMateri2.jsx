@@ -31,12 +31,10 @@ function CardMateri({
   };
 
   const handleStatusChange = (book) => {
-    console.log(`Status buku ${book.Key} diubah`);
     onStatus(book.Key);
   };
 
   const handleDeleteMateri = (book) => {
-    console.log(`Materi ${book.Key} dihapus`);
     onDelete(book.Key);
   };
 
@@ -44,7 +42,6 @@ function CardMateri({
     AppContext_test.materiId = book.Key;
     AppContext_master.materiId = book.Key;
     AppContext_test.refreshPage += 1;
-    console.log("materiii nihh", AppContext_master.materiId)
     onBacaMateri("pengenalan", true, book.Key, true);
   };
 
@@ -64,7 +61,6 @@ function CardMateri({
           if (book.Key == null) {
             return null;
           }
-          {console.log("metrrr", book)}
           return (
             <div className="col-md-4 mb-4" key={book.Key}>
               <div
@@ -86,7 +82,7 @@ function CardMateri({
                       style={{ fontSize: "20px", textAlign: "justify", cursor:"pointer" }}
                       onClick={() => handleBacaMateri(book)}
                     >
-                      {book.Judul}
+                      {book?.Judul ? decode(book.Judul) : "Judul tidak tersedia"}
                     </h3>
                     <div className="mb-1 mt-3" style={{ fontSize: "16px" }}>
                       <FontAwesomeIcon
@@ -105,7 +101,7 @@ function CardMateri({
                           fontWeight: "600",
                         }}
                       >
-                        {book.Kategori}
+                        {book?.Kategori ? decode(book.Kategori) : "Kategori tidak tersedia"}
                       </span>
                     </div>
                     <div
@@ -125,7 +121,8 @@ function CardMateri({
                           color: "black",
                         }}
                       />
-                      {book.Nama} •{" "}
+
+                      {book?.Uploader ? decode(book.Uploader) : "Nama tidak tersedia"} •{" "}
                       {book.Creadate
                         ? new Intl.DateTimeFormat("id-ID", {
                             day: "numeric",
@@ -135,7 +132,7 @@ function CardMateri({
                         : "Tanggal Tidak Tersedia"}
                     </div>
                     <p
-                      className="card-text p-0 mt-3 mb-1"
+                      className="card-text p-0 mt-3 mb-1 mr-3"
                       style={{
                         fontSize: "15px",
 
@@ -150,7 +147,9 @@ function CardMateri({
     !expandDeskripsi[book.Key] ? (
       <>
         {/* Tampilkan hanya 100 karakter pertama */}
-        {book.Keterangan.slice(0, MAX_DESCRIPTION_LENGTH) + " ..."}
+        {decode(
+                              book.Keterangan.slice(0, MAX_DESCRIPTION_LENGTH)
+                            ) + " ..."}
         <a
           className="btn btn-link text-decoration-none p-0"
           onClick={() => handleExpandDescription(book.Key)}
@@ -174,7 +173,9 @@ function CardMateri({
     )
   ) : (
 
-    <>{decode(book.Keterangan)}</>
+    <>{book.Keterangan
+      ? decode(book.Keterangan)
+      : "Tidak ada keterangan"}</>
   )
 }
                     </p>

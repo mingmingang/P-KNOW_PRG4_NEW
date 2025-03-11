@@ -1,10 +1,12 @@
-import React, { forwardRef } from "react";
+import React, { forwardRef, useState } from "react";
 import Button from "./Button copy";
 import Icon from "./Icon";
 import Input from "./Input";
 import { colors } from "@mui/material";
 import { API_LINK } from "../util/Constants";
 import { decode } from "html-entities";
+
+const MAX_DESCRIPTION_LENGTH = 200;
 
 const CardProgram = ({
   id,
@@ -23,6 +25,11 @@ const CardProgram = ({
 
   const handleDeleteClick = (data) => {
     onDelete(data.Key);
+  };
+
+  const [expandDeskripsi, setExpandDeskripsi] = useState(false);
+  const handleExpandDescription = () => {
+    setExpandDeskripsi(!expandDeskripsi);
   };
 
   return (
@@ -64,7 +71,9 @@ const CardProgram = ({
         >
           {index}
           {". "}
-          {data["Nama Program"]}
+          {data && data["Nama Program"]
+              ? decode(data["Nama Program"])
+              : "Nama Program tidak tersedia"}
         </p>
         <p
           className="mb-0 pe-3"
@@ -77,7 +86,35 @@ const CardProgram = ({
             textAlign: "justify",
           }}
         >
-          {decode(data.Deskripsi)}
+          {data.Deskripsi.length > MAX_DESCRIPTION_LENGTH &&
+            !expandDeskripsi ? (
+              <>
+                {decode(data.Deskripsi.slice(0, MAX_DESCRIPTION_LENGTH)) +
+                  " ..."}
+                <a
+                  className="btn btn-link text-decoration-none p-0"
+                  onClick={handleExpandDescription}
+                  style={{ fontSize: "12px" }}
+                >
+                  Baca Selengkapnya <Icon name={"caret-down"} />
+                </a>
+              </>
+            ) : (
+              <>
+                {data.Deskripsi
+                  ? decode(data.Deskripsi)
+                  : "Deskripsi tidak tersedia"}
+                {expandDeskripsi && (
+                  <a
+                    className="btn btn-link text-decoration-none p-0"
+                    onClick={handleExpandDescription}
+                    style={{ fontSize: "12px" }}
+                  >
+                    Tutup <Icon name={"caret-up"} />
+                  </a>
+                )}
+              </>
+            )}
         </p>
         </div>
         

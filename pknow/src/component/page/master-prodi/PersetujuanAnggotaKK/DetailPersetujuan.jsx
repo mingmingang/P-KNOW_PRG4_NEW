@@ -22,6 +22,7 @@ import {
   faClock,
   faUsers,
 } from "@fortawesome/free-solid-svg-icons";
+import { decode } from "he";
 
 const inisialisasiData = [
   {
@@ -213,14 +214,14 @@ export default function DetailPersetujuan({ onChangePage, withID }) {
                   marginTop: "30px",
                 }}
               >
-                <div className="card mb-3 mt-2">
+                <div className="container card mb-3 mt-2">
                   <div className="row pt-3">
                     <div className="col-lg-6 px-4 ml-3">
                       <h3
                         className="mb-3 fw-semibold"
                         style={{ fontSize: "50px", color: "#0A5EA8" }}
                       >
-                        {formData["Nama Kelompok Keahlian"]}
+                      {decode(String(formData?.["Nama Kelompok Keahlian"] || "Data belum tersedia"))}
                       </h3>
                       <h5 className="fw-semibold">
                         <FontAwesomeIcon
@@ -237,7 +238,7 @@ export default function DetailPersetujuan({ onChangePage, withID }) {
                         className="py-2"
                         style={{ textAlign: "justify", width: "570px" }}
                       >
-                        {formData.Deskripsi}
+                          {decode(String(formData?.["Deskripsi"] || "Data belum tersedia"))}
                       </p>
                       <div className="">
                         <i className="fas fa-user"></i>
@@ -322,7 +323,7 @@ export default function DetailPersetujuan({ onChangePage, withID }) {
                   </div>
                 </div>
 
-                <div className="card mb-3">
+                <div className="container card mb-3">
                   <div
                     className="fw-bold ml-3 mt-4 d-flex"
                     style={{
@@ -418,7 +419,7 @@ export default function DetailPersetujuan({ onChangePage, withID }) {
                 </div>
 
                 { karyawan.Key && (
-  <div className="card mb-3 ">
+  <div className="container card mb-3 ">
     <div className="col-lg-20">
       <h3
         className="col-6 mb-3 mt-3 fw-bold"
@@ -506,7 +507,7 @@ export default function DetailPersetujuan({ onChangePage, withID }) {
 )}
 
 
-                <div className="float-end">
+                <div className="container">
                   <Button
                     style={{
                       marginBottom: "80px",

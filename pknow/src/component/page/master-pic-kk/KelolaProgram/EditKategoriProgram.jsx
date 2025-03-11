@@ -10,13 +10,14 @@ import Alert from "../../../part/Alert";
 import SweetAlert from "../../../util/SweetAlert";
 import BackPage from "../../../../assets/backPage.png";
 import Konfirmasi from "../../../part/Konfirmasi";
+import { decode } from "html-entities";
 
 export default function ProgramEdit({ onChangePage, withID }) {
   const [errors, setErrors] = useState({});
   const [isError, setIsError] = useState({ error: false, message: "" });
   const [isLoading, setIsLoading] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
-  const [isBackAction, setIsBackAction] = useState(false);  
+  const [isBackAction, setIsBackAction] = useState(false);
   const [formData, setFormData] = useState({
     idKatProgram: "",
     idProgram: "",
@@ -36,20 +37,18 @@ export default function ProgramEdit({ onChangePage, withID }) {
   });
 
   const handleGoBack = () => {
-    setIsBackAction(true);  
-    setShowConfirmation(true);  
+    setIsBackAction(true);
+    setShowConfirmation(true);
   };
 
   const handleConfirmYes = () => {
-    setShowConfirmation(false); 
+    setShowConfirmation(false);
     onChangePage("index");
   };
 
-
   const handleConfirmNo = () => {
-    setShowConfirmation(false);  
+    setShowConfirmation(false);
   };
-
 
   const handleInputChange = async (e) => {
     const { name, value } = e.target;
@@ -137,50 +136,85 @@ export default function ProgramEdit({ onChangePage, withID }) {
         <Loading />
       ) : (
         <>
-        <div className="" style={{display:"flex", justifyContent:"space-between", marginTop:"100px", marginLeft:"70px", marginRight:"70px"}}>
-          <div className="back-and-title" style={{display:"flex"}}>
-            <button style={{backgroundColor:"transparent", border:"none"}} onClick={handleGoBack}><img src={BackPage} alt="" /></button>
-              <h4 style={{ color:"#0A5EA8", fontWeight:"bold", fontSize:"30px", marginTop:"10px", marginLeft:"20px"}}>Edit Kategori Program</h4>
+          <div
+            className=""
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              marginTop: "100px",
+              marginLeft: "70px",
+              marginRight: "70px",
+            }}
+          >
+            <div className="back-and-title" style={{ display: "flex" }}>
+              <button
+                style={{ backgroundColor: "transparent", border: "none" }}
+                onClick={handleGoBack}
+              >
+                <img src={BackPage} alt="" />
+              </button>
+              <h4
+                style={{
+                  color: "#0A5EA8",
+                  fontWeight: "bold",
+                  fontSize: "30px",
+                  marginTop: "10px",
+                  marginLeft: "20px",
+                }}
+              >
+                Edit Kategori Program
+              </h4>
             </div>
-            </div>
-        <form onSubmit={handleAdd}>
-          <div className="card" style={{margin:"20px 80px", marginBottom:"40px"}}>
-            <div className="card-body p-4">
-              <div className="row">
-                <div className="col-lg-12">
-                  <Input
-                    type="text"
-                    forInput="nama"
-                    label="Nama Kategori"
-                    isRequired
-                    placeholder="Nama Mata Kuliah"
-                    value={formData.nama}
-                    onChange={handleInputChange}
-                    errorMessage={errors.nama}
-                  />
-                </div>
-                <div className="col-lg-12">
-                  <label style={{ paddingBottom: "5px", fontWeight: "bold" }}>
-                    Deskripsi/Penjelasan Singkat Kategori{" "}
-                    <span style={{ color: "red" }}> *</span>
-                  </label>
-                  <textarea
-                    className="form-control mb-3"
-                    style={{
-                      height: "200px",
-                    }}
-                    id="deskripsi"
-                    name="deskripsi"
-                    forInput="deskripsi"
-                    value={formData.deskripsi}
-                    onChange={handleInputChange}
-                    placeholder="Deskripsi/Penjelasan Program"
-                    required
-                  />
+          </div>
+          <form onSubmit={handleAdd}>
+            <div
+              className="card"
+              style={{ margin: "20px 80px", marginBottom: "40px" }}
+            >
+              <div className="card-body p-4">
+                <div className="row">
+                  <div className="col-lg-12">
+                    <Input
+                      type="text"
+                      forInput="nama"
+                      label="Nama Kategori"
+                      isRequired
+                      placeholder="Nama Mata Kuliah"
+                      value={
+                        formData && formData.nama
+                          ? decode(formData.nama)
+                          : "Nama tidak tersedia"
+                      }
+                      onChange={handleInputChange}
+                      errorMessage={errors.nama}
+                    />
+                  </div>
+                  <div className="col-lg-12">
+                    <label style={{ paddingBottom: "5px", fontWeight: "bold" }}>
+                      Deskripsi/Penjelasan Singkat Kategori{" "}
+                      <span style={{ color: "red" }}> *</span>
+                    </label>
+                    <textarea
+                      className="form-control mb-3"
+                      style={{
+                        height: "200px",
+                      }}
+                      id="deskripsi"
+                      name="deskripsi"
+                      forInput="deskripsi"
+                      value={
+                        formData && formData.deskripsi
+                          ? decode(formData.deskripsi)
+                          : "Deskripsi tidak tersedia"
+                      }
+                      onChange={handleInputChange}
+                      placeholder="Deskripsi/Penjelasan Program"
+                      required
+                    />
+                  </div>
                 </div>
               </div>
-            </div>
-            <div
+              <div
                 className="d-flex justify-content-end"
                 style={{
                   marginRight: "20px",
@@ -188,7 +222,7 @@ export default function ProgramEdit({ onChangePage, withID }) {
                   marginBottom: "20px",
                 }}
               >
-              <button
+                <button
                   className="btn btn-secondary btn-sm"
                   type="button"
                   onClick={resetForm}
@@ -213,23 +247,23 @@ export default function ProgramEdit({ onChangePage, withID }) {
                 >
                   Simpan
                 </button>
+              </div>
             </div>
-          </div>
-         
-        </form>
+          </form>
         </>
       )}
-        {showConfirmation && (
+      {showConfirmation && (
         <Konfirmasi
           title={isBackAction ? "Konfirmasi Kembali" : "Konfirmasi Simpan"}
-          pesan={isBackAction ? "Apakah anda ingin kembali?" : "Anda yakin ingin simpan data?"}
+          pesan={
+            isBackAction
+              ? "Apakah anda ingin kembali?"
+              : "Anda yakin ingin simpan data?"
+          }
           onYes={handleConfirmYes}
           onNo={handleConfirmNo}
         />
-        )}
-      
-      
+      )}
     </>
-    
   );
 }

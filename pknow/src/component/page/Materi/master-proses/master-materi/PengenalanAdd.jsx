@@ -26,6 +26,7 @@ import NoImage from "../../../../../assets/NoImage.png";
 import DOMPurify from "dompurify";
 import CustomStepper from "../../../../part/Stepp";
 const steps2 = ["Pengenalan", "Materi", "Forum", "Tambah Section"];
+import { decode } from "he";
 
 function getStepContent(stepIndex) {
   switch (stepIndex) {
@@ -493,11 +494,11 @@ export default function Pengenalan({ onChangePage }) {
                   type="text"
                   forInput="namaKK"
                   label="Kelompok Keahlian"
-                  value={
+                  value={decode(
                     listKategori.find(
                       (item) => item.value === formDataRef.current.kat_id
                     )?.namaKK || ""
-                  }
+                  )}
                   disabled
                   errorMessage={errors.namaKK}
                 />
@@ -507,11 +508,11 @@ export default function Pengenalan({ onChangePage }) {
                   type="text"
                   forInput="kat_id"
                   label="Kategori Program"
-                  value={
+                  value={decode(
                     listKategori.find(
                       (item) => item.value === formDataRef.current.kat_id
                     )?.label || ""
-                  }
+                  )}
                   disabled
                   errorMessage={errors.kat_id}
                 />
@@ -570,7 +571,7 @@ export default function Pengenalan({ onChangePage }) {
                         target: { name: "mat_pengenalan", value: content },
                       })
                     }
-                    apiKey="444kasui9s3azxih6ix4chynoxmhw6y1urkpmfhufvrbernz"
+                    apiKey="81ujooza2p3616vb7rdvc0lxphx68fe82f2aqj6qkmbvn6l4"
                     init={{
                       height: 300,
                       menubar: false,

@@ -3,6 +3,7 @@ import budi from "../../../../assets/fotobudi.png";
 import DetailKK from "../../../part/DetailAKK";
 import Footer from "../../../backbone/Footer";
 import { useState } from "react";
+import { decode } from "he";
 
 export default function LihatAKK({onChangePage, withID}) {
 

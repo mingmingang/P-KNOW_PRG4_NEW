@@ -21,6 +21,7 @@ import BackPage from "../../../../../assets/backPage.png";
 import Konfirmasi from "../../../../part/Konfirmasi";
 import Cookies from "js-cookie";
 import { decryptId } from "../../../../util/Encryptor";
+import { decode } from "he";
 
 const steps = ["Pengenalan", "Materi", "Forum", "Sharing Expert", "Pre Test", "Post Test"];
 
@@ -272,7 +273,11 @@ export default function MasterForumEdit({ onChangePage }) {
                     type="text"
                     forInput="forumJudul"
                     label="Judul Forum"
-                    value={formData.forumJudul}
+                    value={
+                      formData && formData.forumJudul
+                        ? decode(formData.forumJudul)
+                        : "Judul tidak tersedia"
+                    }
                     onChange={handleInputChange}
                     errorMessage={errors.forumJudul}
                     isRequired
@@ -287,7 +292,7 @@ export default function MasterForumEdit({ onChangePage }) {
                       id="forumIsi"
                       value={formData.forumIsi}
                       onEditorChange={(content) => setFormData({ ...formData, forumIsi: content })}
-                      apiKey='444kasui9s3azxih6ix4chynoxmhw6y1urkpmfhufvrbernz'
+                      apiKey='81ujooza2p3616vb7rdvc0lxphx68fe82f2aqj6qkmbvn6l4'
                       init={{
                         height: 300,
                         menubar: false,

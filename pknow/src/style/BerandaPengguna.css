@@ -67,27 +67,68 @@
 
 
 
-/* Media Queries for additional responsiveness */
+
 @media (max-width: 768px) {
+
     .ucapan {
-        width: 90%; /* Full width on smaller screens */
-        padding-left: 0;
-    }
-
-    .ucapan h1 {
-        font-size: 3rem; /* Responsive font size */
-    }
-
-    .ucapan p {
-        font-size: 1rem; /* Responsive font size */
-    }
-
-    .ucapan button {
-        width: 100%; /* Full width for buttons on smaller screens */
+        padding-top: 20vh;
+        width: 60%;
+        padding-left: 8%;
     }
 
     .imgDatang-maskot {
-        width: 80%; /* Adjust image container width */
-        margin-left: 0; /* Centering */
+      display: none;
     }
+
+    .ucapan {
+        width: 100%; /* Full width on smaller screens */
+        padding-left: 0;
+    }
+
+    .maskot {
+        display: none;
+    }
+    .ucapan h3 {
+        color: #fff;
+        font-size: 1.8rem;
+        margin-bottom: 0;
+        text-align: center;
+    }
+
+    .ucapan h1 {
+        font-weight: 700;
+        color: #fff;
+        font-size: 3rem;
+        margin-top: 0;
+        margin-bottom: 1rem;
+        line-height: 1.5;
+        text-align: center;
+    }
+    .ucapan p {
+        color: #fff;
+        font-size: 14px;
+        line-height: 1.5;
+        text-align: justify;
+        margin-bottom: 1rem;
+        max-width: 600px;
+        padding: 10px 30px;
+    }
+
+
+.ucapan button {
+    margin-top: 20px;
+    border: none;
+    background-color: #fff;
+    width: 70%;
+    max-width: 280px;
+    height: 60px;
+    border-radius: 35px;
+    color: var(--primary-color);
+    font-size: 1.25rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin-left: 50px;
 }
+
+}
+

@@ -4,6 +4,7 @@ import Input from "./Input";
 import AppContext_master from "../page/Materi/master-proses/MasterContext.jsx";
 import AppContext_test from "../page/Materi/master-test/TestContext.jsx";
 const MAX_DESCRIPTION_LENGTH = 100;
+import { decode } from "he";
 
 const CardKategoriProgram = ({
   data,
@@ -40,13 +41,12 @@ const CardKategoriProgram = ({
         ) : (
           ""
         )}
-        {console.log("dataa deskripsi", data)}
         <div className="card-body">
           <div className="d-flex justify-content-between">
             <h6 className="card-title">
               {index}
               {". "}
-              {data["Nama Kategori"]}
+              {data["Nama Kategori"] ? decode(data["Nama Kategori"]) : "Kategori tidak tersedia"}
             </h6>
             <div>
               <Icon
@@ -72,7 +72,8 @@ const CardKategoriProgram = ({
                   >
                    {data.Deskripsi && data.Deskripsi.length > MAX_DESCRIPTION_LENGTH && !expandDeskripsi ? (
                       <>
-                        {data.Deskripsi.slice(0, MAX_DESCRIPTION_LENGTH) + " ..."}
+                        {decode(data.Deskripsi.slice(0, MAX_DESCRIPTION_LENGTH)) +
+                      " ..."}
                         <a
                           className="btn btn-link text-decoration-none p-0"
                           onClick={handleExpandDescription}
@@ -83,7 +84,9 @@ const CardKategoriProgram = ({
                       </>
                     ) : (
                       <>
-                        {data.Deskripsi}
+                        {data.Deskripsi
+                      ? decode(data.Deskripsi)
+                      : "Deskripsi tidak tersedia"}
                         {expandDeskripsi && (
                           <a
                             className="btn btn-link text-decoration-none p-0"

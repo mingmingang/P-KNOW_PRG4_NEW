@@ -234,6 +234,7 @@ export default function RiwayatPengajuan({onChangePage}) {
           </div>
         </div>
                  <>
+                 <div className="container">
       <div className="d-flex flex-column">
       <div className="navigasi-layout-page">
           <p className="title-kk">Kelompok Keahlian</p>
@@ -281,11 +282,12 @@ export default function RiwayatPengajuan({onChangePage}) {
               </div>
               </div>
               </div>
+              </div>
           
           <div className="container">
             <div className="row mb-4 gx-4">
             {Array.isArray(listKK) && listKK.length > 0 && listKK[0]?.Message ? (
-              <div className="" style={{marginRight:"120px", marginLeft:"10px"}} >
+              <div className="" style={{marginRight:"120px"}} >
   <Alert type="warning" message="Tidak ada riwayat.." />
   </div>
 ) : (

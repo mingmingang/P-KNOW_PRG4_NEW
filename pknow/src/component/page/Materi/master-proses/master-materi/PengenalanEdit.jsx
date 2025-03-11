@@ -19,6 +19,7 @@ import { Stepper, Step, StepLabel, Box } from '@mui/material';
 import BackPage from "../../../../../assets/backPage.png";
 import Konfirmasi from "../../../../part/Konfirmasi";
 import NoImage from "../../../../../assets/NoImage.png";
+import { decode } from "he";
 
 const steps = ["Pengenalan", "Materi", "Forum", "Sharing Expert", "Pre Test", "Post Test"];
 
@@ -378,7 +379,15 @@ useEffect(() => {
                 type="text"
                 forInput="namaKK"
                 label="Kelompok Keahlian"
-                value={listKategori.find((item) => item.value === formDataRef.current.kat_id)?.namaKK || ""}
+                value={
+                  listKategori.length > 0
+                    ? decode(
+                        listKategori.find(
+                          (item) => item.value === formDataRef.current.kat_id
+                        )?.namaKK || "Nama tidak tersedia"
+                      )
+                    : "Nama tidak tersedia"
+                }
                 disabled
                 errorMessage={errors.namaKK}
               />
@@ -388,7 +397,15 @@ useEffect(() => {
                   type="text"
                   forInput="kat_id"
                   label="Kategori Program"
-                  value={listKategori.find((item) => item.value === formDataRef.current.kat_id)?.label || ""}
+                  value={
+                    listKategori.length > 0
+                      ? decode(
+                          listKategori.find(
+                            (item) => item.value === formDataRef.current.kat_id
+                          )?.label || "Label tidak tersedia"
+                        )
+                      : "Label tidak tersedia"
+                  }
                   disabled
                   errorMessage={errors.kat_id}
                   
@@ -401,7 +418,11 @@ useEffect(() => {
                   forInput="mat_judul"
                   label="Judul Materi"
                   placeholder="Judul Materi"
-                  value={formDataRef.current.mat_judul}
+                  value={
+                    formDataRef.current.mat_judul
+                      ? decode(formDataRef.current.mat_judul)
+                      : "Judul tidak tersedia"
+                  }
                   onChange={handleInputChange}
                   errorMessage={errors.mat_judul}
                   isRequired
@@ -413,7 +434,11 @@ useEffect(() => {
                   forInput="mat_kata_kunci"
                   label="Kata Kunci Materi"
                   placeholder="Kata Kunci Materi"
-                  value={formDataRef.current.mat_kata_kunci}
+                  value={
+                    formDataRef.current.mat_kata_kunci
+                      ? decode(formDataRef.current.mat_kata_kunci)
+                      : "Kata kunci tidak tersedia"
+                  }
                   onChange={handleInputChange}
                   errorMessage={errors.mat_kata_kunci}
                   isRequired
@@ -439,7 +464,7 @@ useEffect(() => {
                     id="mat_pengenalan"
                     value={formDataRef.current.mat_pengenalan}
                     onEditorChange={(content) => handleInputChange({ target: { name: 'mat_pengenalan', value: content } })}
-                    apiKey='444kasui9s3azxih6ix4chynoxmhw6y1urkpmfhufvrbernz'
+                    apiKey='81ujooza2p3616vb7rdvc0lxphx68fe82f2aqj6qkmbvn6l4'
                     init={{
                       height: 300,
                       menubar: false,

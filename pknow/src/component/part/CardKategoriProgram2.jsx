@@ -3,6 +3,7 @@ import Icon from "./Icon.jsx";
 import AppContext_master from "../page/Materi/master-proses/MasterContext.jsx";
 import AppContext_test from "../page/Materi/master-test/TestContext.jsx";
 const MAX_DESCRIPTION_LENGTH = 100;
+import { decode } from "he";
 
 const CardKategoriProgram = ({ onChangePage, kategori }) => {
   const [expandDeskripsi, setExpandDeskripsi] = useState(false);
@@ -48,7 +49,10 @@ const CardKategoriProgram = ({ onChangePage, kategori }) => {
                   className="card-title"
                   
                 >
-                  {kategori["Nama Kategori Program"]}
+                  {kategori["Nama Kategori Program"] 
+  ? decode(kategori["Nama Kategori Program"]) 
+  : "Kategori Program tidak tersedia"}
+
                 </h6>
                 <div>
                   <Icon
@@ -74,7 +78,7 @@ const CardKategoriProgram = ({ onChangePage, kategori }) => {
                   >
                     {kategori.Deskripsi.length > MAX_DESCRIPTION_LENGTH && !expandDeskripsi ? (
                       <>
-                        {kategori.Deskripsi.slice(0, MAX_DESCRIPTION_LENGTH) + " ..."}
+                        {decode(kategori.Deskripsi.slice(0, MAX_DESCRIPTION_LENGTH)) + " ..."}
                         <a
                           className="btn btn-link text-decoration-none p-0"
                           onClick={handleExpandDescription}
@@ -85,7 +89,9 @@ const CardKategoriProgram = ({ onChangePage, kategori }) => {
                       </>
                     ) : (
                       <>
-                        {kategori.Deskripsi}
+                        {kategori.Deskripsi 
+      ? decode(kategori.Deskripsi) 
+      : "Deskripsi tidak tersedia"}
                         {expandDeskripsi && (
                           <a
                             className="btn btn-link text-decoration-none p-0"

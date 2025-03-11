@@ -19,6 +19,7 @@ import Search from "../../../part/Search";
 import BackPage from "../../../../assets/backPage.png";
 import Konfirmasi from "../../../part/Konfirmasi";
 import "../../../../style/KelompokKeahlian.css";
+import { decode } from "he";
 
 const inisialisasiData = [
   {
@@ -464,10 +465,22 @@ export default function MasterProsesIndex({ onChangePage }) {
                 />
               </div>
             )}
+            
              <div className="backSearch">
-          <h1>{listKategori.find((item) => item.value === AppContext_test.KategoriIdByKK)?.label || ""}</h1>
+          <h1>{listKategori.length > 0
+                ? decode(
+                    listKategori.find(
+                      (item) => item.value === AppContext_test.KategoriIdByKK
+                    )?.label || "Label tidak tersedia"
+                  )
+                : "Label tidak tersedia"}</h1>
           <p>
-          {listKategori.find((item) => item.value === AppContext_test.KategoriIdByKK)?.deskripsi || ""}
+          {listKategori.length > 0
+  ? decode(
+      (listKategori.find((item) => item.value === AppContext_test.KategoriIdByKK)?.deskripsi || "Deskripsi tidak tersedia").slice(0, 200)
+    ) + "..."
+  : "Deskripsi tidak tersedia"}
+
           </p>
           <div className="input-wrapper">
             <div
@@ -502,9 +515,15 @@ export default function MasterProsesIndex({ onChangePage }) {
           </div>
         </div>  
 
-
+      <div className="container">
         <div className="navigasi-layout-page">
-          <p className="title-kk" style={{fontSize:"20px"}}> <button style={{backgroundColor:"transparent", border:"none", marginRight:"10px"}} onClick={handleGoBack}><img src={BackPage} width="50px" alt="" /></button>Kelola Materi / Program / Kategori <span style={{fontWeight:"bold"}}>{listKategori.find((item) => item.value === AppContext_test.KategoriIdByKK)?.label || ""}</span></p>
+          <p className="title-kk" style={{fontSize:"20px"}}> <button style={{backgroundColor:"transparent", border:"none", marginRight:"10px"}} onClick={handleGoBack}><img src={BackPage} width="50px" alt="" /></button>Kelola Materi / Program / Kategori <span style={{fontWeight:"bold"}}>{listKategori.length > 0
+                  ? decode(
+                      listKategori.find(
+                        (item) => item.value === AppContext_test.KategoriIdByKK
+                      )?.label || "Kategori tidak tersedia"
+                    )
+                  : "Kategori tidak tersedia"}</span></p>
           <div className="left-feature">
             <div className="tes" style={{ display: "flex" }}>
               <div className="mr-2">
@@ -540,6 +559,7 @@ export default function MasterProsesIndex({ onChangePage }) {
               </div>
             </div>
           </div>
+        </div>
         </div>
             <div className="mt-1">
             {isEmpty ? (

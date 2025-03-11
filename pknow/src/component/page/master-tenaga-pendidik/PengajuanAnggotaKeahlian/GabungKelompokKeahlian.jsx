@@ -15,6 +15,7 @@ import { API_LINK } from "../../../util/Constants";
 import { validateAllInputs, validateInput } from "../../../util/ValidateForm";
 import BackPage from "../../../../assets/backPage.png";
 import Konfirmasi from "../../../part/Konfirmasi";
+import { decode } from "he";
 
 export default function PengajuanAdd({ onChangePage, withID }) {
   let activeUser = "";
@@ -36,18 +37,6 @@ export default function PengajuanAdd({ onChangePage, withID }) {
     Nama: "",
     kry_id: "",
   });
-
-  // const handleHapusLampiran = (index) => {
-  //   // Hapus file dari fileInfos
-  //   setFileInfos((prevInfos) => prevInfos.filter((_, i) => i !== index));
-  
-  //   // Hapus referensi file
-  //   lampiranRefs.current = lampiranRefs.current.filter((_, i) => i !== index);
-  
-  //   // Kurangi jumlah lampiran
-  //   setLampiranCount((prevCount) => prevCount - 1);
-  // };
-  
 
   const handleHapusLampiran = (index) => {
     setFileInfos((prevInfos) => prevInfos.filter((_, i) => i !== index));
@@ -364,7 +353,7 @@ export default function PengajuanAdd({ onChangePage, withID }) {
                   <div className="col-lg-6">
                     <Label
                       title="Kelompok Keahlian"
-                      data={withID["Nama Kelompok Keahlian"]}
+                      data={decode(withID["Nama Kelompok Keahlian"])}
                     />
                   </div>
                   <div className="col-lg-12 mt-3">

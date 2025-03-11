@@ -44,11 +44,11 @@ export default function Header({
     return parts
       .map((part) => part[0]?.toUpperCase())
       .join("")
-      .slice(0, 2); 
+      .slice(0, 2);
   };
 
   const handleConfirmYes = () => {
-    window.location.replace("/logout"); 
+    window.location.replace("/logout");
     setShowConfirmation(false); // Hide the confirmation dialog
   };
 
@@ -93,11 +93,16 @@ export default function Header({
     fetchData();
   }, []);
 
-  const toggleMenu = () => {
-    setIsMenuVisible(!isMenuVisible);
+  const [isNavOpen, setIsNavOpen] = useState(false); // Untuk kontrol nav baru
+
+  // Toggle untuk nav baru
+  const toggleNav = () => {
+    setIsNavOpen(!isNavOpen); // Membuka atau menutup nav baru
   };
 
-  const [isMenuVisible, setIsMenuVisible] = useState(false);
+  const closeNav = () => {
+    setIsNavOpen(false);
+  };
 
   return (
     <div>
@@ -115,11 +120,6 @@ export default function Header({
         {showMenu && (
           <div className="menu-profile-container">
             <div className="menu">
-                            {/* Hamburger Menu */}
-                            <div className="hamburger-menu" onClick={toggleMenu}>
-                <i className="fas fa-bars"></i>
-              </div>
-
               <ul className="menu-center">
                 {listMenu.map((menu) => {
                   if (menu.isHidden) return null;
@@ -137,9 +137,13 @@ export default function Header({
                           {menu.icon && <i className={menu.icon}></i>}
                           <span>{menu.head}</span>
                           {/* Render a down-chevron icon if the menu is not "Beranda" */}
-                          {menu.head !== "Beranda" && menu.head !== "Knowledge Database" && (
-                              <i className="fas fa-chevron-down" aria-hidden="true"></i>
-                            )} 
+                          {menu.head !== "Beranda" &&
+                            menu.head !== "Knowledge Database" && (
+                              <i
+                                className="fas fa-chevron-down"
+                                aria-hidden="true"
+                              ></i>
+                            )}
                         </div>
                       </a>
 
@@ -179,12 +183,12 @@ export default function Header({
           {/* Conditionally render user info if showUserInfo is true */}
           {showUserInfo && (
             <>
-            <div className="pengguna">
-              <h3>{userProfile.name}</h3>
-              <h4>{userProfile.role}</h4>
-              <p>Terakhir Masuk: {userProfile.lastLogin}</p>
-            </div>
-              </>
+              <div className="pengguna">
+                <h3>{userProfile.name}</h3>
+                <h4>{userProfile.role}</h4>
+                <p>Terakhir Masuk: {userProfile.lastLogin}</p>
+              </div>
+            </>
           )}
 
           <div
@@ -192,28 +196,31 @@ export default function Header({
             onMouseEnter={() => setProfileDropdownVisible(true)} // Show dropdown on hover
             onMouseLeave={() => setProfileDropdownVisible(false)} // Hide dropdown when hover ends
           >
-          {showUserInfo && (
-            <>
-         {userProfile.photo ? (
-                <img src={userProfile.photo} alt="Profile" />
-              ) : (
-                <div className="menu-profil-img" style={{
-                  width: "60px",
-    height: "60px",
-    borderRadius: "50%",
-    backgroundColor: "#e0e7ff",
-    color: "#1a73e8",
-    fontWeight: "bold",
-    fontSize: "24px",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    margin: "0 auto 10px"
-                }}>
-                  {getInitials(userProfile.name)}
-                </div>
-              )}
-            </>
+            {showUserInfo && (
+              <>
+                {userProfile.photo ? (
+                  <img src={userProfile.photo} alt="Profile" />
+                ) : (
+                  <div
+                    className="menu-profil-img"
+                    style={{
+                      width: "60px",
+                      height: "60px",
+                      borderRadius: "50%",
+                      backgroundColor: "#e0e7ff",
+                      color: "#1a73e8",
+                      fontWeight: "bold",
+                      fontSize: "24px",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      margin: "0 auto 10px",
+                    }}
+                  >
+                    {getInitials(userProfile.name)}
+                  </div>
+                )}
+              </>
             )}
             {isProfileDropdownVisible && (
               <ul className="profile-dropdown">
@@ -225,12 +232,7 @@ export default function Header({
                     <i className="fas fa-bell" style={{ color: "#0A5EA8" }}></i>{" "}
                     <span style={{ color: "#0A5EA8" }}>
                       Notifikasi{" "}
-                      <span
-                      className="notif"
-
-                      >
-                        {countNotifikasi}
-                      </span>
+                      <span className="notif">{countNotifikasi}</span>
                     </span>
                   </span>
                 </li>
@@ -251,7 +253,81 @@ export default function Header({
             )}
           </div>
         </div>
+        {/* Hamburger Button */}
+        {showUserInfo && (
+        <div className="hamburger" onClick={toggleNav}>
+          <i className={`fas fa-${isNavOpen ? "times" : "bars"}`}></i>{" "}
+          {/* Toggle icon */}
+        </div>
+        )}
       </nav>
+      {/* Tampilkan nav baru jika isNavOpen true */}
+      {/* Tampilkan nav baru jika isNavOpen true */}
+      {isNavOpen && (
+        <div className="nav-overlay">
+          <div className="close-btn" onClick={closeNav}>
+            <i className="fas fa-times"></i>
+          </div>
+
+          <div className="menu-profile-container">
+            <div className="menu">
+              <ul className="menu-vertical">
+                {listMenu.map((menu) => {
+                  if (menu.isHidden) return null;
+                  const isActive = activeURL === menu.link;
+
+                  return (
+                    <li key={menu.headkey} className={isActive ? "active" : ""}>
+                      <a
+                        href={menu.link}
+                        onClick={() => setActiveMenu(menu.head)}
+                      >
+                        <div className="menu-item">
+                          {/* Render icon for main menu */}
+                          {menu.icon && <i className={menu.icon}></i>}
+                          <span>{menu.head}</span>
+                          {/* Render a down-chevron icon if the menu has sub-menu */}
+                          {menu.sub && menu.sub.length > 0 && (
+                            <i
+                              className="fas fa-chevron-down ml-2"
+                              aria-hidden="true"
+                            ></i>
+                          )}
+                        </div>
+                      </a>
+
+                      {/* Render sub-menu if it exists */}
+                      {menu.sub && menu.sub.length > 0 && (
+                        <ul className="dropdown-combobox">
+                          {menu.sub.map((sub) => {
+                            // Determine the icon class based on sub-menu title
+                            const iconClass = iconMapping[sub.title] || "";
+
+                            return (
+                              <li key={sub.link}>
+                                <a
+                                  href={sub.link}
+                                  onClick={() =>
+                                    setActiveMenu(`${menu.head} - ${sub.title}`)
+                                  }
+                                >
+                                  {/* Render the icon if iconClass is set */}
+                                  {iconClass && <i className={iconClass}></i>}
+                                  <span>{sub.title}</span>
+                                </a>
+                              </li>
+                            );
+                          })}
+                        </ul>
+                      )}
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Show confirmation dialog if the state is true */}
       {showConfirmation && (
