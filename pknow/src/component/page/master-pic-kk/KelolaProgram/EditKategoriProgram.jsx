@@ -181,7 +181,7 @@ export default function ProgramEdit({ onChangePage, withID }) {
                       isRequired
                       placeholder="Nama Mata Kuliah"
                       value={
-                        formData && formData.nama
+                        formData && decode(formData.nama)
                           ? decode(formData.nama)
                           : "Nama tidak tersedia"
                       }
@@ -190,27 +190,22 @@ export default function ProgramEdit({ onChangePage, withID }) {
                     />
                   </div>
                   <div className="col-lg-12">
-                    <label style={{ paddingBottom: "5px", fontWeight: "bold" }}>
-                      Deskripsi/Penjelasan Singkat Kategori{" "}
-                      <span style={{ color: "red" }}> *</span>
-                    </label>
-                    <textarea
-                      className="form-control mb-3"
-                      style={{
-                        height: "200px",
-                      }}
-                      id="deskripsi"
-                      name="deskripsi"
-                      forInput="deskripsi"
-                      value={
-                        formData && formData.deskripsi
-                          ? decode(formData.deskripsi)
-                          : "Deskripsi tidak tersedia"
-                      }
-                      onChange={handleInputChange}
-                      placeholder="Deskripsi/Penjelasan Program"
-                      required
-                    />
+                   
+
+<Input
+                  type="textarea"
+                   placeholder="Deskripsi/Penjelasan Kategori Program"
+                  forInput="deskripsi"
+                  label="Deskripsi/Penjelasan Kategori Program"
+                  isRequired
+                  value={
+                    formData && decode(formData.deskripsi)
+                      ? decode(formData.deskripsi)
+                      : "Deskripsi tidak tersedia"
+                  }
+                  onChange={handleInputChange}
+                  errorMessage={errors.deskripsi}
+                />
                   </div>
                 </div>
               </div>

@@ -227,10 +227,6 @@ export default function DaftarPustaka({ onChangePage, withID }) {
         API_LINK + "Pustaka/GetDataPustaka",
         currentFilter
       );
-<<<<<<< HEAD
-=======
-      console.log("dataanya", data)
->>>>>>> 367837bda1346bdec1593e27d1de46c241c9d302
       if (data === "ERROR") {
         setCurrentData([]);
         setIsEmpty(true);
@@ -278,12 +274,6 @@ export default function DaftarPustaka({ onChangePage, withID }) {
         API_LINK + "Pustaka/GetDataPustakaSaya",
         currentFilterSaya
       );
-<<<<<<< HEAD
-=======
-
-      console.log("pustaka saya", data)
-
->>>>>>> 367837bda1346bdec1593e27d1de46c241c9d302
       if (data === "ERROR") {
         setCurrentDataMilikSaya([]);
         setIsEmpty(true);

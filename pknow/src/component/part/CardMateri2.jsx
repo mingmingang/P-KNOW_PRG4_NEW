@@ -9,6 +9,8 @@ import { API_LINK } from "../util/Constants.js";
 import "../../style/KelompokKeahlian.css";
 import review from "../../assets/reviewJawaban.png";
 import { decode } from "html-entities";
+import Cookies from "js-cookie";
+import { decryptId } from "../util/Encryptor.js";
 
 function CardMateri({
   materis,
@@ -21,6 +23,10 @@ function CardMateri({
   MAX_DESCRIPTION_LENGTH = 100,
   isNonEdit,
 }) {
+
+  let activeUser = "";
+  const cookie = Cookies.get("activeUser");
+  if (cookie) activeUser = JSON.parse(decryptId(cookie)).role;
   const [expandDeskripsi, setExpandDeskripsi] = useState({});
 
   const handleExpandDescription = (bookId) => {
@@ -193,60 +199,65 @@ function CardMateri({
                 >
                   {isNonEdit === false ? (
                     <>
-                      {book.Status === "Aktif" && (
-                        <button
-                          className="btn btn-sm text-primary"
-                          title="Edit Materi"
-                          onClick={() =>
-                            onEdit(
-                              "pengenalanEdit",
-                              (AppContext_test.DetailMateriEdit = book),
-                              (AppContext_test.DetailMateri = book),
-                              (AppContext_master.DetailMateri = book)
-                            )
-                          }
-                        >
-                          <i
-                            className="fas fa-edit"
-                            style={{ fontSize: "20px" }}
-                          ></i>
-                        </button>
-                      )}
+                      {activeUser !== "ROL05" && (
+  <>
+    {book.Status === "Aktif" && (
+      <button
+        className="btn btn-sm text-primary"
+        title="Edit Materi"
+        onClick={() =>
+          onEdit(
+            "pengenalanEdit",
+            (AppContext_test.DetailMateriEdit = book),
+            (AppContext_test.DetailMateri = book),
+            (AppContext_master.DetailMateri = book)
+          )
+        }
+      >
+        <i className="fas fa-edit" style={{ fontSize: "20px" }}></i>
+      </button>
+    )}
+    <button
+      className="btn btn-circle"
+      onClick={() => handleStatusChange(book)}
+    >
+      {book.Status === "Aktif" ? (
+        <i className="fas fa-toggle-on text-primary" style={{ fontSize: "20px" }}></i>
+      ) : (
+        <i className="fas fa-toggle-off text-red" style={{ fontSize: "20px" }}></i>
+      )}
+    </button>
+    <button
+      className="btn btn-sm text-primary"
+      title="Review Jawaban"
+      onClick={() => handleReviewJawaban(book)}
+    >
+      <img src={review} alt="" width="25px" />
+    </button>
+    {/* <button
+      className="btn btn-sm"
+      style={{ color: "red" }}
+      title="Hapus Materi"
+      onClick={() => handleDeleteMateri(book)}
+    >
+      <i className="fas fa-trash" style={{ fontSize: "20px" }}></i>
+    </button> */}
+  </>
+)}
+
+{activeUser === "ROL05" && (
+  <>
+     <div className="">
                       <button
-                        className="btn btn-circle"
-                        onClick={() => handleStatusChange(book)}
+                        className="btn btn-outline-primary mt-2 ml-2"
+                        type="button"
+                        onClick={() => handleBacaMateri(book)}
                       >
-                        {book.Status === "Aktif" ? (
-                          <i
-                            className="fas fa-toggle-on text-primary"
-                            style={{ fontSize: "20px" }}
-                          ></i>
-                        ) : (
-                          <i
-                            className="fas fa-toggle-off text-red"
-                            style={{ fontSize: "20px" }}
-                          ></i>
-                        )}
+                        Baca Materi
                       </button>
-                      <button
-                        className="btn btn-sm text-primary"
-                        title="Review Jawaban"
-                        onClick={() => handleReviewJawaban(book)}
-                      >
-                        <img src={review} alt="" width="25px" />
-                      </button>
-                      <button
-                        className="btn btn-sm"
-                        style={{ color: "red" }}
-                        title="Hapus Materi"
-                        onClick={() => handleDeleteMateri(book)}
-                      >
-                        <i
-                          className="fas fa-trash"
-                          style={{ fontSize: "20px" }}
-                        ></i>
-                      </button>
-                      
+                    </div>
+  </>
+)}
                     </>
                   ) : (
                     <div className="">

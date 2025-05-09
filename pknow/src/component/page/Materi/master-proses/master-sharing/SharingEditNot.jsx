@@ -378,14 +378,12 @@ const handlePageChange = (content) => {
               </div>
             </div>
           </div>
-          <div className="float my-4 mx-4 d-flex  " style={{justifyContent:"space-between"}}>
-                  <div className="">
-          <Button
-            classType="outline-secondary me-2 px-4 py-2 ml-4"
+          <div className="ml-4">
+            <Button
+            classType="outline-secondary me-2 px-4 py-2"
             label="Sebelumnya"
-            onClick={() => onChangePage("forumEdit", AppContext_test.ForumForm, AppContext_master.MateriForm)}
+            onClick={() => onChangePage("forumEdit", AppContext_test.ForumForm, AppContext_test.MateriForm , AppContext_master.count += 1)}
           />
-          </div>
           <div className="d-flex">
     
             <div className="mr-2">

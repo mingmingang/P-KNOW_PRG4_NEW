@@ -51,6 +51,7 @@ export default function MasterForumAdd({ onChangePage }) {
     createdby: AppContext_test.activeUser,
     secType: "",
   });
+  
   const handleGoBack = () => {
     setIsBackAction(true);
     setShowConfirmation(true);

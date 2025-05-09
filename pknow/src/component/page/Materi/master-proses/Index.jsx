@@ -20,6 +20,8 @@ import BackPage from "../../../../assets/backPage.png";
 import Konfirmasi from "../../../part/Konfirmasi";
 import "../../../../style/KelompokKeahlian.css";
 import { decode } from "he";
+import Cookies from "js-cookie";
+import { decryptId } from "../../../util/Encryptor";
 
 const inisialisasiData = [
   {
@@ -51,6 +53,9 @@ const dataFilterStatus = [
 ];
 
 export default function MasterProsesIndex({ onChangePage }) {
+  let activeUser = "";
+  const cookie = Cookies.get("activeUser");
+  if (cookie) activeUser = JSON.parse(decryptId(cookie)).role;
   const [isError, setIsError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [currentData, setCurrentData] = useState(inisialisasiData);
@@ -515,11 +520,7 @@ export default function MasterProsesIndex({ onChangePage }) {
           </div>
         </div>  
 
-<<<<<<< HEAD
       <div className="container">
-=======
-                <div className="container">
->>>>>>> 367837bda1346bdec1593e27d1de46c241c9d302
         <div className="navigasi-layout-page">
           <p className="title-kk" style={{fontSize:"20px"}}> <button style={{backgroundColor:"transparent", border:"none", marginRight:"10px"}} onClick={handleGoBack}><img src={BackPage} width="50px" alt="" /></button>Kelola Materi / Program / Kategori <span style={{fontWeight:"bold"}}>{listKategori.length > 0
                   ? decode(
@@ -552,15 +553,17 @@ export default function MasterProsesIndex({ onChangePage }) {
                     />
                 </Filter>
               </div>
-              <div className="">
-              <Button
-                  iconName="add"
-                  classType="primary py-2 rounded-4" 
-                  title="Tambah Materi"
-                  label="Tambah Materi"
-                  onClick={handleButtonClick}
-                />
-              </div>
+              {activeUser !== "ROL05" && (
+  <div className="">
+    <Button
+      iconName="add"
+      classType="primary py-2 rounded-4"
+      title="Tambah Materi"
+      label="Tambah Materi"
+      onClick={handleButtonClick}
+    />
+  </div>
+)}
             </div>
           </div>
         </div>

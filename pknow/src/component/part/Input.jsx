@@ -19,11 +19,11 @@ const Input = forwardRef(function Input(
   const cursorPositionRef = useRef(0);
 
   // Daftar input yang tidak mendukung selection range
-  const noSelectionTypes = ["checkbox", "radio", "file", "button", "submit", "reset"];
+  const noSelectionTypes = ["checkbox", "radio", "file", "button", "submit", "reset", "number"];
 
   // Simpan posisi kursor sebelum perubahan value (hanya jika memungkinkan)
   const handleChange = (e) => {
-    if (!noSelectionTypes.includes(type)) {
+    if (!noSelectionTypes.includes(type) && e.target.selectionStart !== null) {
       cursorPositionRef.current = e.target.selectionStart;
     }
     if (onChange) onChange(e);
@@ -31,10 +31,18 @@ const Input = forwardRef(function Input(
 
   // Kembalikan posisi kursor setelah re-render (jika memungkinkan)
   useEffect(() => {
-    if (inputRef.current && !noSelectionTypes.includes(type)) {
-      inputRef.current.setSelectionRange(cursorPositionRef.current, cursorPositionRef.current);
+    if (
+      inputRef.current &&
+      !noSelectionTypes.includes(type) &&
+      typeof cursorPositionRef.current === "number"
+    ) {
+      try {
+        inputRef.current.setSelectionRange(cursorPositionRef.current, cursorPositionRef.current);
+      } catch (error) {
+        console.warn("Selection not supported for input type:", type);
+      }
     }
-  }, [value]);
+  }, [value, type]);
 
   return (
     <>

@@ -88,51 +88,12 @@ export default function MasterDaftarPustakaAdd({ onChangePage, withID }) {
     }
   };
 
-  // const handleInputChange = async (e) => {
-  //   const { name, value } = e.target;
-
-  //   if (name === "deskripsi") {
-  //     const cursorPosition = deskripsiRef.current.selectionStart;
-
-  //     try {
-  //       if (value === "") {
-  //         setErrors((prevErrors) => ({ ...prevErrors, [name]: "" }));
-  //       } else {
-  //         await userSchema.validateAt(name, { [name]: value });
-  //         setErrors((prevErrors) => ({ ...prevErrors, [name]: "" }));
-  //       }
-  //     } catch (error) {
-  //       setErrors((prevErrors) => ({ ...prevErrors, [name]: error.message }));
-  //     }
-
-  //     formDataRef.current[name] = value;
-
-  //     setTimeout(() => {
-  //       if (deskripsiRef.current) {
-  //         deskripsiRef.current.setSelectionRange(
-  //           cursorPosition,
-  //           cursorPosition
-  //         );
-  //       }
-  //     }, 0);
-  //   }
-
-  //   const validationError = await validateInput(name, value, userSchema);
-  //   formDataRef.current[name] = value;
-  //   setErrors((prevErrors) => ({
-  //     ...prevErrors,
-  //     [validationError.name]: validationError.error,
-  //   }));
-  // };
-
-  const [deskripsi, setDeskripsi] = useState(formDataRef.current.pus_keterangan || "");
-
   const handleInputChange = async (e) => {
     const { name, value } = e.target;
-    
-    if (name === "pus_keterangan") {
-      const cursorPosition = deskripsiRef.current?.selectionStart || 0;
-  
+
+    if (name === "deskripsi") {
+      const cursorPosition = deskripsiRef.current.selectionStart;
+
       try {
         if (value === "") {
           setErrors((prevErrors) => ({ ...prevErrors, [name]: "" }));
@@ -143,21 +104,19 @@ export default function MasterDaftarPustakaAdd({ onChangePage, withID }) {
       } catch (error) {
         setErrors((prevErrors) => ({ ...prevErrors, [name]: error.message }));
       }
-  
-      formDataRef.current[name] = value;
-<<<<<<< HEAD
-      setDeskripsi(value); // Perbarui state tanpa merusak kursor
-  
-=======
 
->>>>>>> 367837bda1346bdec1593e27d1de46c241c9d302
+      formDataRef.current[name] = value;
+
       setTimeout(() => {
         if (deskripsiRef.current) {
-          deskripsiRef.current.setSelectionRange(cursorPosition, cursorPosition);
+          deskripsiRef.current.setSelectionRange(
+            cursorPosition,
+            cursorPosition
+          );
         }
       }, 0);
     }
-  
+
     const validationError = await validateInput(name, value, userSchema);
     formDataRef.current[name] = value;
     setErrors((prevErrors) => ({
@@ -165,7 +124,6 @@ export default function MasterDaftarPustakaAdd({ onChangePage, withID }) {
       [validationError.name]: validationError.error,
     }));
   };
-  
 
   const handleFileChange = (ref, extAllowed) => {
     const { name, value } = ref.current;
@@ -367,7 +325,7 @@ export default function MasterDaftarPustakaAdd({ onChangePage, withID }) {
         </div>
       )}
       <div
-        className="container"
+        className=""
         style={{
           display: "flex",
           justifyContent: "space-between",
@@ -402,7 +360,7 @@ export default function MasterDaftarPustakaAdd({ onChangePage, withID }) {
         </div>
       </div>
       <form onSubmit={handleAdd}>
-        <div className="card container mb-4 mt-4" >
+        <div className="card" style={{ margin: "20px 80px" }}>
           <div className="card-body p-4">
             <div className="row">
               <div className="col-lg-4" style={{ display: "flex" }}>
@@ -517,16 +475,14 @@ export default function MasterDaftarPustakaAdd({ onChangePage, withID }) {
               </div>
 
               <div className="col-lg-12">
-                <Input
+              <Input
                   type="textarea"
-                  placeholder="Masukan Deskripsi Pustaka"
                   forInput="pus_keterangan"
-                  label="Deskripsi / Ringkasan Pustaka"
+                  label="Sinopsis / Ringkasan Pustaka"
                   isRequired
                   value={formDataRef.current.pus_keterangan}
                   onChange={handleInputChange}
                   errorMessage={errors.pus_keterangan}
-                  ref={deskripsiRef}
                 />
               </div>
             </div>

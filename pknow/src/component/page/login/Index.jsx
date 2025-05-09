@@ -185,7 +185,6 @@ export default function Login() {
         lastLogin: null,
       };
 
-      console.log("user", userInfo)
       let user = encryptId(JSON.stringify(userInfo));
 
       Cookies.set("activeUser", user, { expires: 1 });
@@ -195,16 +194,6 @@ export default function Login() {
         userInfo.peran === "PIC Kelompok Keahlian" ||
         userInfo.peran === "Tenaga Pendidik"
       ) {
-<<<<<<< HEAD
-        console.log("testi")
-        window.location.href = ROOT_LINK + "/beranda_utama";
-      } else if (userInfo.peran === "Program Studi") {
-        window.location.href = ROOT_LINK + "/beranda_prodi";
-      } else if (userInfo.peran === "Tenaga Kependidikan") {
-        window.location.href = ROOT_LINK +  "/beranda_tenaga_kependidikan";
-      } else if (userInfo.peran === "Mahasiswa") {
-        window.location.href = ROOT_LINK + "/beranda_mahasiswa";
-=======
         window.location.href = ROOT_LINK + "beranda_utama";
       } else if (userInfo.peran === "Program Studi") {
         window.location.href = ROOT_LINK + "beranda_prodi";
@@ -212,7 +201,6 @@ export default function Login() {
         window.location.href = ROOT_LINK +  "beranda_tenaga_kependidikan";
       } else if (userInfo.peran === "Mahasiswa") {
         window.location.href = ROOT_LINK + "beranda_mahasiswa";
->>>>>>> 367837bda1346bdec1593e27d1de46c241c9d302
       }
     } catch (error) {
       window.scrollTo(0, 0);

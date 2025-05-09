@@ -16,6 +16,7 @@ import { Autoplay } from "swiper/modules";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "../../style/Slider.css";
+import maskotBoyGirl from "../../assets/maskotAstraBoyGirl.png";
 
 const sliderData = [
   { name: "Adila Ilma", role: "UX Designer", company: "CrescentRating", img: sample },
@@ -109,7 +110,7 @@ export default function BerandaUtama() {
       <section className="sec1">
         <div className="ucapan">
           <h3>Selamat Datang di</h3>
-          <h1>System Knowledge Management System</h1>
+          <h1>Knowledge Management System</h1>
           <p>
             “Sistem Manajemen Pengetahuan ini akan membantu Anda belajar lebih
             efisien. Mari kita mulai dengan menjelajahi fitur-fitur yang
@@ -170,8 +171,8 @@ export default function BerandaUtama() {
             <h4>
               Partner Perusahaan yang Bekerja Sama dengan ASTRAtech
             </h4>
-            <img  src={perusahaan} alt="Perusahaan ASTRA" />
-            <div className="mt-3">
+            <img  src={perusahaan} alt="Perusahaan ASTRA" className="cmp_astra" />
+            <div className="mt-4">
               <button
                 style={{
                   borderRadius: "10px",
@@ -188,29 +189,23 @@ export default function BerandaUtama() {
           </div>
         </div>
       </section>
-      {/* <section className="" style={{backgroundColor:"white"}}>
-        <div className="">
-      <h4 style={{ textAlign: "center", color: "#0A5EA8", paddingTop: "60px", fontWeight: "bold" }}>
-          Mentor dan Tenaga Pendidik P-KNOW
-        </h4>
-        </div>
-        <Slider />
-      </section>
 
-      {/* <section className="sec6">
-        <h4 style={{ textAlign: "center", color: "white", paddingTop: "60px", fontWeight: "bold" }}>
-          Apa Tanggapan P-Knowers Tentang P-KNOW System?
-        </h4>
-        <p style={{ textAlign: "center", color: "white", fontSize: "14px" }} className="mt-4">
-          Manfaat dan kegunaan yang dirasakan oleh para P-Knowers ketika menggunakan P-KNOW System.
-          Ayo menjadi salah satunya!
+
+      <section className="sec6">
+<div className="ucapan2">
+        <h3>Strategic Talent Development</h3>
+        <h1>Build Your Talent, Expand Your Growth</h1>
+        <p>
+            Unlock your organizations full potential through our comprehensive talent development ecosystem. 
+            We architect customized growth frameworks that align individual capabilities.
         </p>
-        <div className="d-flex ml-4 mt-4">
-          {comments.map((comment, index) => (
-            <CommentCard key={index} {...comment} />
-          ))}
         </div>
-      </section> */}
+        
+        <div className="imgMaskot">
+          <img className="maskot" src={maskotBoyGirl} alt="Ilustrasi Cewek VR" />
+        </div>
+     
+      </section>
     </div>
   );
 }

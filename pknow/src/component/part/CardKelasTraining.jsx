@@ -265,17 +265,15 @@ function CardKelasTraining({
 )}
 
        
+       
         <div
           className="deskripsi-container "
-          style={{ alignItems: "center", width: "100%", marginLeft:"20px", marginRight:"20px" }}
+          style={{ alignItems: "center", width: "100%" }}
         >
-          <p
-            className="deskripsi"
-            style={{ marginBottom: "10px", fontSize: "15px", marginRight:"35px" }}
-          >
-            {decode(data.desc).substring(0, 130)}
+          <p className="deskripsi descni" style={{ marginBottom: "10px" }}>
+            {decode(data.desc).substring(0, 100)}
             {/* Menampilkan 200 huruf pertama */}
-            {data.desc.length > 130 && "..."}
+            {data.desc.length > 100 && "..."}
           </p>
         </div>
 

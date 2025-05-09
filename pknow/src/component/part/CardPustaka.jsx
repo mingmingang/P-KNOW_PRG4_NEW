@@ -43,11 +43,6 @@ function CardPustaka({
     onStatus(book, status);
   };
 
-<<<<<<< HEAD
-=======
-  console.log("pustaka nihh", pustakas)
-
->>>>>>> 367837bda1346bdec1593e27d1de46c241c9d302
   return (
     <>
     {pustakaSaya === "ya" ? (

@@ -210,6 +210,8 @@ export default function Pengenalan({ onChangePage }) {
       setErrors
     );
 
+    console.log("dataaa",formDataRef.current )
+
     if (Object.values(validationErrors).every((error) => !error)) {
       setIsLoading(true);
       setIsError((prevError) => ({ ...prevError, error: false }));

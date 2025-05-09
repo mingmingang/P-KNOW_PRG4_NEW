@@ -191,6 +191,7 @@ export default function ProgramAdd({ onChangePage, withID }) {
 
   if (isLoading) return <Loading />;
 
+
   return (
     <>
       {isError.error && (
@@ -284,25 +285,28 @@ export default function ProgramAdd({ onChangePage, withID }) {
                       errorMessage={errors.nama}
                     />
                   </div>
+
                   <div className="col-lg-12">
-                    <label
+                    {/* <label
                       style={{ paddingBottom: "5px", fontWeight: "bold" }}
                     >
                       Deskripsi/Penjelasan Program{" "}
                       <span style={{ color: "red" }}> *</span>
-                    </label>
-                    <textarea
-                      className="form-control mb-3"
-                      style={{
-                        height: "200px",
-                      }}
-                      id="deskripsi"
-                      name="deskripsi"
-                      value={formDataRef.current.deskripsi}
-                      onChange={handleInputChange}
-                      placeholder="Deskripsi/Penjelasan Program"
-                      required
-                    />
+                    </label> */}
+               
+
+<Input
+                  type="textarea"
+                   placeholder="Deskripsi/Penjelasan Program"
+                  forInput="deskripsi"
+                  label="Deskripsi/Penjelasan Program"
+                  isRequired
+                  value={formDataRef.current.deskripsi}
+                  onChange={handleInputChange}
+                  errorMessage={errors.deskripsi}
+                />
+
+
                   </div>
                 </div>
               </div>

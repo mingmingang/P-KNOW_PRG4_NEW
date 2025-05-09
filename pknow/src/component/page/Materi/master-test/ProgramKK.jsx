@@ -316,11 +316,11 @@ export default function ProgramKK({ onChangePage, withID }) {
                       (value) =>
                         value.Status === "Aktif"
                     ).length === 0 ? (
-                      <div className="alert alert-warning" style={{margin:"0px 80px"}} role="alert">
+                      <div className="alert alert-warning"  role="alert">
                         Belum ada program di kelompok keahlian ini saat ini
                       </div>
                     ) : (
-                      <div className="row" style={{ margin: "10px 50px" }}>
+                      <div className="row" >
                         {currentData
                           .filter(
                             (value) =>

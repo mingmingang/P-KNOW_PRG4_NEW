@@ -22,6 +22,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import maskotPknow from "../../../../assets/pknowmaskot.png";
 import { decode } from "he";
+import "../../../../index.css";
 
 export default function KKDetailPublish({ onChangePage, withID }) {
   const [errors, setErrors] = useState({});
@@ -156,7 +157,6 @@ export default function KKDetailPublish({ onChangePage, withID }) {
               }
             })
           );
-
           setListProgram(updatedListProgram);
           setIsLoading(false);
           break;
@@ -196,13 +196,12 @@ export default function KKDetailPublish({ onChangePage, withID }) {
           <Alert type="danger" message={isError.message} />
         </div>
       )}
-      <div className="back-and-title" style={{ display: "flex", marginLeft: "80px", marginTop: "100px" }}>
+      <div className="container" style={{ display: "flex", marginTop: "100px" }}>
         <button style={{ backgroundColor: "transparent", border: "none" }} onClick={handleGoBack}><img src={BackPage} alt="" /></button>
         <h4 style={{ color: "#0A5EA8", fontWeight: "bold", fontSize: "30px", marginTop: "10px", marginLeft: "20px" }}>Kelompok Keahlian</h4>
       </div>
-      <div className="ket-draft">
-      </div>
-      <div className="card" style={{ margin: "10px 140px", border: "none" }}>
+      <div className="container mt-4 mb-4">
+      <div className="" style={{  border: "none" }}>
         <div className="card-body">
           <div className="row pt-2">
             <div className="col-lg-7 px-4">
@@ -212,7 +211,7 @@ export default function KKDetailPublish({ onChangePage, withID }) {
                 {formData.programStudi}
               </h5>
               <h4 className="fw-semibold" style={{ marginTop: "30px" }}>Tentang Kelompok Keahlian</h4>
-              <p className="py-2" style={{ textAlign: "justify", width: "550px" }}>
+              <p className="py-2 desc-detail" style={{ textAlign: "justify" }}>
                 {decode(formData.deskripsi)}
               </p>
               <div className="">
@@ -222,22 +221,13 @@ export default function KKDetailPublish({ onChangePage, withID }) {
             </div>
             <div className="col-lg-5">
               <img
-                className="cover-daftar-kk"
-                height="200"
+                className="detail-kk"
+                
                 src={`${API_LINK}Upload/GetFile/${formData.gambar}`}
-                width="300"
-                style={{
-                  width: 500,
-                  height: 300,
-                  borderRadius: "20px",
-                  objectFit: "",
-                  border: "1px solid #ccc", // Border dengan warna abu-abu muda
-                  boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
-                  marginLeft:"-50px" // Drop shadow
-                }}
+             
               />
             </div>
-            <div className="mt-3">
+            <div className="container mt-3">
               <h5 className="pt-2">
                 Daftar Anggota Kelompok Keahlian{" "}
                 <strong style={{color:"#0A5EA8"}}>{decode(formData.nama)}</strong>
@@ -495,6 +485,7 @@ export default function KKDetailPublish({ onChangePage, withID }) {
               />
               )}
             </div>
+          </div>
           </div>
         </div>
       </div>

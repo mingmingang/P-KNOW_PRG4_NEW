@@ -75,10 +75,6 @@ main{background-color: white;}
   width: 40%;
 }
 .title {
-<<<<<<< HEAD
-=======
-  margin-left:70px; 
->>>>>>> 367837bda1346bdec1593e27d1de46c241c9d302
   margin-right: 70px;
 }
 
@@ -94,7 +90,6 @@ main{background-color: white;}
   width: 600px;
 }
 
-<<<<<<< HEAD
 .jarak-card {
   margin: 10px 140px;
 }
@@ -105,7 +100,7 @@ main{background-color: white;}
 }
 
 .back-and-title{
-  margin-left:40px;
+ 
 }
 
 .img-publish{
@@ -123,8 +118,6 @@ main{background-color: white;}
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-=======
->>>>>>> 367837bda1346bdec1593e27d1de46c241c9d302
 /* For Mobile */
 @media (max-width: 768px) {
 
@@ -133,7 +126,6 @@ main{background-color: white;}
     margin-right: 10px;
   }
 
-<<<<<<< HEAD
   .img-publish{
     margin-left: 10px;
   }
@@ -156,8 +148,6 @@ main{background-color: white;}
     margin-left: 40px;
   }
 
-=======
->>>>>>> 367837bda1346bdec1593e27d1de46c241c9d302
   .imageup{
     display: block;
   }

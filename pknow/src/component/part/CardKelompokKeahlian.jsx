@@ -409,13 +409,15 @@ function CardKelompokKeahlian({
               {ketButton && (
                 <div
                   className="d-flex justify-content-end"
-                  style={{ marginLeft: "-60px" }}
+                  style={{ marginLeft: "-50px" }}
                 >
                   <button
-                    className="bg-blue-100 text-white px-6 py-2 rounded-full d-flex align-items-center mr-4 programm"
+                    className="bg-blue-50 text-white  px-2 py-2 rounded-full d-flex align-items-center programm"
                     aria-label={`Action for ${title}`}
                     onClick={() => onChangePage(link, data)}
+              
                   >
+                    <div className="ml-4"></div>
                     <i
                       className="fas fa-users iconnn"
                       style={{  marginTop: "2px" }}
@@ -447,11 +449,7 @@ function CardKelompokKeahlian({
               className="text-xl font-bold text-blue-600"
               style={{ fontSize: "16px", textAlign: "justify", lineHeight:"30px"  }}
             >
-<<<<<<< HEAD
-             {data.title ? (decode(data.title).length > 27 ? decode(data.title).slice(0, 27) + "..." : decode(data.title)) : "Default Title"}
-=======
-             {data.title ? decode(data.title) : "Default Title"}
->>>>>>> 367837bda1346bdec1593e27d1de46c241c9d302
+             {data.title ? (decode(data.title).length > 21 ? decode(data.title).slice(0, 30) + "..." : decode(data.title)) : "Default Title"}
             </h3>
           </div>
         </div>

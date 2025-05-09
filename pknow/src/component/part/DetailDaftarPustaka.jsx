@@ -117,6 +117,7 @@ export default function DetailDaftarPustaka({ onChangePage, withID }) {
               src={`${API_LINK}Upload/GetFile/${fileData.gambar}`}
               alt="Daftar Pustaka"
               className="cover"
+              style={{objectFit:"cover"}}
             />
           </div>
 

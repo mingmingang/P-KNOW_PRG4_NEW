@@ -320,23 +320,23 @@ export default function ProgramEdit({ onChangePage, withID }) {
                         Deskripsi/Penjelasan Program{" "}
                         <span style={{ color: "red" }}> *</span>
                       </label>
-                      <textarea
-                        className="form-control mb-3"
-                        style={{
-                          height: "200px",
-                        }}
-                        id="deskripsi"
-                        name="deskripsi"
-                        forInput="deskripsi"
-                        value={
-                          formData && formData.deskripsi
-                            ? decode(formData.deskripsi)
-                            : "Deskripsi tidak tersedia"
-                        }
-                        onChange={handleInputChange}
-                        placeholder="Deskripsi/Penjelasan Program"
-                        required
-                      />
+                      
+
+<Input
+                  type="textarea"
+                   placeholder="Deskripsi/Penjelasan Program"
+                  forInput="deskripsi"
+                  label="Deskripsi/Penjelasan Program"
+                  isRequired
+                  value={
+                    formData && formData.deskripsi
+                      ? decode(formData.deskripsi)
+                      : "Deskripsi tidak tersedia"
+                  }
+                  onChange={handleInputChange}
+                  errorMessage={errors.deskripsi}
+                />
+
                     </div>
                   </div>
                 </div>

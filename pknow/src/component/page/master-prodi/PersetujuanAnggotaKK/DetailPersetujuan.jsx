@@ -238,7 +238,7 @@ export default function DetailPersetujuan({ onChangePage, withID }) {
                         className="py-2"
                         style={{ textAlign: "justify", width: "570px" }}
                       >
-                          {decode(String(formData?.["Deskripsi"] || "Data belum tersedia"))}
+                        {decode(String(formData?.["Deskripsi"] || "Data belum tersedia"))}
                       </p>
                       <div className="">
                         <i className="fas fa-user"></i>

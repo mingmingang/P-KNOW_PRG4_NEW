@@ -15,7 +15,3 @@ ReactDOM.createRoot(document.getElementById("root")).render(
 
 
 
-// src/main.jsx (or wherever your app entry point is)
-
-
-

@@ -103,7 +103,6 @@ export default function MasterDaftarPustakaEdit({ onChangePage, withID }) {
     }
   };
 
-  
   const handleInputChange = async (e) => {
     const { name, value } = e.target;
     const validationError = await validateInput(name, value, userSchema);
@@ -303,15 +302,15 @@ export default function MasterDaftarPustakaEdit({ onChangePage, withID }) {
           <Alert type="danger" message={isError.message} />
         </div>
       )}
-         <div className="container" style={{display:"flex",marginTop:"100px"}}>
-            <div className="" style={{display:"flex"}}>
+         <div className="" style={{display:"flex", justifyContent:"space-between", marginTop:"100px", marginLeft:"70px", marginRight:"70px"}}>
+            <div className="back-and-title" style={{display:"flex"}}>
               <button style={{backgroundColor:"transparent", border:"none"}} onClick={handleGoBack}><img src={BackPage} alt="" /></button>
                 <h4 style={{ color:"#0A5EA8", fontWeight:"bold", fontSize:"30px", marginTop:"10px", marginLeft:"20px"}}>Edit Knowledge Database</h4>
               </div>
                 
               </div>
       <form onSubmit={handleAdd}>
-        <div className="card container mb-4 mt-4" >
+        <div className="card" style={{margin:"20px 80px"}}>
           <div className="card-body p-4">
             <div className="row">
             <div className="col-lg-4" style={{display:"flex"}}>
@@ -398,7 +397,7 @@ export default function MasterDaftarPustakaEdit({ onChangePage, withID }) {
                   forInput="pus_kata_kunci"
                   label="Kata Kunci"
                   isRequired
-                  value={decode(formDataRef.current.pus_kata_kunci)}
+                  value={formDataRef.current.pus_kata_kunci}
                   onChange={handleInputChange}
                   errorMessage={errors.pus_kata_kunci}
                 />

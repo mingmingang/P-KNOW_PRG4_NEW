@@ -333,14 +333,11 @@ export default function DetailAKK({
 
   return (
     <>
-    <div className="container">
-     <div className="" style={{display:"flex", marginTop:"100px"}}>
+     <div className="back-and-title" style={{display:"flex", marginLeft:"80px", marginTop:"100px"}}>
       <button style={{backgroundColor:"transparent", border:"none"}} onClick={handleGoBack}><img src={BackPage} alt="" /></button>
                 <h4 style={{ color:"#0A5EA8", fontWeight:"bold", fontSize:"30px", marginTop:"10px", marginLeft:"20px"}}>Kelompok Keahlian</h4>
               </div>
-              </div>
-              <div className="">
-      <div className="mt-4 container">
+      <div className="content-container">
         <div className="information-kelompok-keahlian">
           <div className="informasi-kk">
             <h1 className="title">{decode(withID.title)}</h1>
@@ -373,9 +370,7 @@ export default function DetailAKK({
   />
 </div>
         </div>
-        </div>
         <>
-        <div className="container">
       {isError.error && (
         <div className="flex-fill">
           <Alert type="danger" message={isError.message} />
@@ -564,7 +559,6 @@ export default function DetailAKK({
           </div>
         </div>
       )}
-      </div>
     </>
 
 

@@ -12,6 +12,7 @@ import Alert from "../../../part/Alert";
 import Label from "../../../part/Label";
 import BackPage from "../../../../assets/backPage.png";
 import Konfirmasi from "../../../part/Konfirmasi";
+import { decode } from "he";
 
 export default function KategoriProgramAdd({ onChangePage, withID }) {
   const [errors, setErrors] = useState({});
@@ -150,7 +151,7 @@ export default function KategoriProgramAdd({ onChangePage, withID }) {
             <div className="card-body p-4">
               <div className="row">
                 <div className="col-lg-12">
-                  <Label title="Nama Program" data={withID["Nama Program"]} />
+                  <Label title="Nama Program" data={decode(withID["Nama Program"])} />
                 </div>
                 <div className="col-lg-12">
                   <Input
@@ -165,23 +166,16 @@ export default function KategoriProgramAdd({ onChangePage, withID }) {
                   />
                 </div>
                 <div className="col-lg-12">
-                  <label style={{ paddingBottom: "5px", fontWeight: "bold" }}>
-                    Deskripsi/Penjelasan Singkat Kategori{" "}
-                    <span style={{ color: "red" }}> *</span>
-                  </label>
-                  <textarea
-                    className="form-control mb-3"
-                    style={{
-                      height: "200px",
-                    }}
-                    id="deskripsi"
-                    name="deskripsi"
-                    forInput="deskripsi"
-                    value={formDataRef.current.deskripsi}
-                    onChange={handleInputChange}
-                    placeholder="Deskripsi/Penjelasan Program"
-                    required
-                  />
+                <Input
+                  type="textarea"
+                   placeholder="Deskripsi/Penjelasan Kategori Program"
+                  forInput="deskripsi"
+                  label="Deskripsi/Penjelasan Kategori Program"
+                  isRequired
+                  value={formDataRef.current.deskripsi}
+                  onChange={handleInputChange}
+                  errorMessage={errors.deskripsi}
+                />
                 </div>
               </div>
             </div>

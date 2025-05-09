@@ -39,18 +39,23 @@ justify-content: space-between; /* Membuat konten tersebar merata */
 .sec5 {
   display: flex;
   width: 100%; /* Changed to percentage for responsiveness */
-  height: 60vh;
+  height: 40vh;
   background-size: cover;
   background-color: white;
 }
 
-
 .sec6 {
-  width: 100%; /* Changed to percentage for responsiveness */
-  height: 60vh;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  min-height: 60vh; /* Ubah dari height ke min-height */
   margin-top: 100px;
-  background-size: cover;
-  background-color: var(--secondary-color);
+  background-color: var(--primary-color);
+  color: white;
+  padding: 0 5%;
+  position: relative;
+  overflow: hidden; /* Untuk containment */
 }
 
 .comment {
@@ -67,6 +72,42 @@ justify-content: space-between; /* Membuat konten tersebar merata */
   padding-top: 24vh; /* Changed to viewport height */
   width: 50%;
   padding-left: 8%; /* Changed to percentage for responsiveness */
+}
+
+.ucapan2 {
+  flex: 0 0 60%; /* Lebar konten teks */
+  z-index: 2;
+}
+
+.imgMaskot {
+  position: absolute;
+  right: 5%;
+  bottom: 0;
+  width: 50%;
+  max-width: 600px;
+  height: 100%;
+  display: flex;
+  align-items: flex-end;
+}
+
+.maskot {
+  width: 100%;
+  height: auto;
+  max-height: 90vh;
+  object-fit: contain;
+  object-position: right bottom;
+}
+
+.ucapan2 h1{
+  font-weight: bold;
+  font-size: 55px;
+  margin-top: 30px;;
+}
+
+.ucapan2 p {
+  line-height: 30px;
+  text-align: justify;
+  margin-top: 25px;
 }
 
 .ucapan h3 {
@@ -123,10 +164,6 @@ justify-content: space-between; /* Membuat konten tersebar merata */
   height: 100%;
 }
 
-.ceweVR, .cowoTop {
-  width: 100%;
-  margin-right: 0; /* Reset margin */
-}
 
 .sec4 p {
   margin: 10px 200px;
@@ -180,6 +217,10 @@ justify-content: space-between; /* Membuat konten tersebar merata */
 
 /* Media Queries for additional responsiveness */
 @media (max-width: 768px) {
+  .sec1{
+    background-size: cover; /* This will prevent the background from repeating */
+    background-position: center; /* Optional: to center the background image */
+  }
   .ucapan {
       width: 90%; /* Full width on smaller screens */
       padding-left: 0;
@@ -328,15 +369,26 @@ justify-content: space-between; /* Membuat konten tersebar merata */
       display: block;
     }
 
-    .sec5 button{
-      display: flex;
-      justify-content: center;
-      margin-left: 70px;
-      margin-top: 40px;
+    .sec4 {
+      background-size: cover; 
+      background-position: center; 
+    }
+
+    .sec4 img {
+      width: 350px;
+    }
+   .sec5{
+      max-height: 350px;
    }
 
-   .sec5{
-      max-height: 400px;
+   .sec5 h4 {
+    width: 100%;
+    text-align: left;
+    margin-left: -10px;
+   }
+
+   .cmp_astra {
+    margin-left: 30px;
    }
 
    .sec6 div{
@@ -344,4 +396,43 @@ justify-content: space-between; /* Membuat konten tersebar merata */
    }
 }
 
+
+/* Responsive Breakpoints */
+@media (max-width: 1200px) {
+  .imgMaskot {
+    width: 40%;
+  }
+}
+
+@media (max-width: 992px) {
+  .ucapan2 {
+    max-width: 70%;
+  }
+  .maskot {
+    height: 85%;
+  }
+}
+
+@media (max-width: 768px) {
+  .sec6 {
+    flex-direction: column;
+    padding-bottom: 300px; /* Ruang untuk gambar */
+  }
+  .ucapan2 {
+    max-width: 100%;
+  }
+  .imgMaskot {
+    position: relative;
+    width: 80%;
+    height: auto;
+    margin-top: 30px;
+    align-self: flex-end;
+  }
+  .maskot {
+    height: auto;
+    width: 100%;
+    max-height: 300px;
+    right: 0;
+  }
+}
 

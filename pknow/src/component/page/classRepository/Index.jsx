@@ -333,7 +333,6 @@ export default function ClassRepositoryIndex({ onChangePage }) {
               >
                 ↓ Belum Dipublikasikan
               </div>
-              {console.log("data belum", currentData)}
                 <div className="d-flex flex-column">
                   <div className="flex-fill">
                     <div className="row" style={{ margin: "10px 50px" }}>
