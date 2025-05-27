@@ -1,6 +1,9 @@
 import React from "react";
+import { useEffect, useRef, useState } from "react";
+import { motion, useAnimation } from "framer-motion";
+import { useInView } from "react-intersection-observer";
 import Slider from "react-slick";
-import "../../../style/BerandaProdi.css"; // Custom CSS for styling
+import "../../../style/BerandaProdi.css";
 import maskotP4 from "../../../assets/backBeranda/MaskotP4.png";
 import maskotTPM from "../../../assets/backBeranda/maskotTPM.png";
 import maskotMI from "../../../assets/backBeranda/MaskotMI.png";
@@ -24,6 +27,49 @@ import iconAstra from "../../../assets/iconAstra.png";
 import perusahaan from "../../../assets/perusahaan.png";
 import logo from "../../../assets/logo.png";
 import "../../../style/Beranda.css";
+import maskotBoyGirl from "../../../assets/maskotAstraBoyGirl.png";
+
+const AnimatedSection = ({ children, delay = 0 }) => {
+  const controls = useAnimation();
+  const [ref, inView] = useInView({
+    threshold: 0.1,
+    triggerOnce: true
+  });
+
+  useEffect(() => {
+    if (inView) {
+      controls.start("visible");
+    }
+  }, [controls, inView]);
+
+  const variants = {
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { 
+        duration: 0.5, 
+        delay,
+        ease: "easeOut"
+      }
+    },
+    hidden: {
+      opacity: 0,
+      y: 50
+    }
+  };
+
+  return (
+    <motion.div
+      ref={ref}
+      initial="hidden"
+      animate={controls}
+      variants={variants}
+    >
+      {children}
+    </motion.div>
+  );
+};
+
 
 export default function Prodi() {
   const handleKnowledgeDatabase = () => {
@@ -157,6 +203,8 @@ export default function Prodi() {
 
   return (
     <>
+    <AnimatedSection>
+
       <div className="slider-container">
         <Slider {...settings}>
           {slidesData.map((slide, index) => (
@@ -186,7 +234,10 @@ export default function Prodi() {
           ))}
         </Slider>
       </div>
-
+            
+    </AnimatedSection>
+                
+    <AnimatedSection delay={0.2}>
       <section className="sec4" style={{ 
   display: "flex", 
   flexDirection: "column", 
@@ -218,6 +269,9 @@ export default function Prodi() {
     <img src={iconAstra} alt="Icon ASTRA" />
   </div>
 </section>
+</AnimatedSection>
+
+<AnimatedSection>
 
       <section className="sec5">
         <div className="company">
@@ -251,32 +305,27 @@ export default function Prodi() {
           </div>
         </div>
       </section>
+        
+</AnimatedSection>
 
-
-     {/* <section className="" style={{backgroundColor:"white"}}>
-        <div className="">
-      <h4 style={{ textAlign: "center", color: "#0A5EA8", paddingTop: "60px", fontWeight: "bold" }}>
-          Mentor dan Tenaga Pendidik P-KNOW
-        </h4>
-        </div>
-        <Slider />
-      </section> */}
-
-
-      {/* <section className="sec6">
-        <h4 style={{ textAlign: "center", color: "white", paddingTop: "60px", fontWeight: "bold" }}>
-          Apa Tanggapan P-Knowers Tentang P-KNOW System?
-        </h4>
-        <p style={{ textAlign: "center", color: "white", fontSize: "14px" }} className="mt-4">
-          Manfaat dan kegunaan yang dirasakan oleh para P-Knowers ketika menggunakan P-KNOW System.
-          Ayo menjadi salah satunya!
-        </p>
-        <div className="d-flex ml-4 mt-4">
-          {comments.map((comment, index) => (
-            <CommentCard key={index} {...comment} />
-          ))}
-        </div>
-      </section> */}
+<AnimatedSection>
+         <section className="sec6">
+          <div className="ucapan2">
+                  <h3>Strategic Talent Development</h3>
+                  <h1>Build Your Talent, Expand Your Growth</h1>
+                  <p>
+                      Unlock your organizations full potential through our comprehensive talent development ecosystem. 
+                      We architect customized growth frameworks that align individual capabilities.
+                  </p>
+                  </div>
+                  
+                  <div className="imgMaskot">
+                    <img className="maskot" src={maskotBoyGirl} alt="Ilustrasi Cewek VR" />
+                  </div>
+              
+                </section>
+                </AnimatedSection>
+          
   
     </>
   );

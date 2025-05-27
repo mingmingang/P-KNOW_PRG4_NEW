@@ -10,6 +10,7 @@ import { decryptId } from "../../util/Encryptor";
 import CardClassTraining from "../../part/CardKelasTraining";
 import Paging from "../../part/Paging";
 import "../../../../src/index.css";
+import AnimatedSection from "../../part/AnimatedSection";
 
 export default function ClassRepositoryIndex({ onChangePage }) {
   let activeUser = "";
@@ -271,12 +272,15 @@ export default function ClassRepositoryIndex({ onChangePage }) {
 
   return (
     <div className="app-container">
+      <AnimatedSection>
       <Search
         title="Class Repository"
         description="ASTRAtech memiliki banyak program studi, di dalam program studi terdapat class repository dari Program Kelompok Keahlian yang dibuat."
         showInput={false}
       />
+      </AnimatedSection>
       <>
+      <AnimatedSection delay={0.3}>
         {isError.error && (
           <div className="flex-fill">
             <Alert type="danger" message={isError.message} />
@@ -286,8 +290,8 @@ export default function ClassRepositoryIndex({ onChangePage }) {
           <Loading />
         ) : (
           <div className="d-flex flex-column">
-            <div className="flex-fill">
-              <div className="navigasi-layout-page">
+            <div className="flex-fill container">
+              <div className="mt-4">
                 <p className="title-kk">Class Training</p>
                 {/* <div className="left-feature">
             <div className="tes" style={{ display: "flex" }}>
@@ -319,23 +323,21 @@ export default function ClassRepositoryIndex({ onChangePage }) {
               </div>
               <>
               <div
-                className="card-keterangan"
-                style={{
-                  background: "red",
-                  borderRadius: "5px",
-                  padding: "10px 20px",
-                  width: "40%",
-                  marginLeft: "80px",
-                  marginBottom: "20px",
-                  color: "white",
-                  fontWeight: "bold",
-                }}
-              >
+            className="card-keterangan"
+            style={{
+              background: "#61A2DC",
+              borderRadius: "5px",
+              padding: "10px 20px",
+              marginBottom: "20px",
+              color: "white",
+              fontWeight: "bold",
+            }}
+          >
                 ↓ Belum Dipublikasikan
               </div>
                 <div className="d-flex flex-column">
                   <div className="flex-fill">
-                    <div className="row" style={{ margin: "10px 50px" }}>
+                    <div className="row">
                     {currentData[0]?.Message === "data kosong" && (
                         <div className="" style={{ margin: "5px 20px" }}>
                           <Alert type="warning" message="Tidak ada data!" />
@@ -371,7 +373,6 @@ export default function ClassRepositoryIndex({ onChangePage }) {
               <div className="mb-4 d-flex justify-content-center">
                 <div
                   className="d-flex flex-column"
-                  style={{ marginLeft: "70px", marginBottom: "40px" }}
                 >
                   <Paging
                     pageSize={PAGE_SIZE}
@@ -383,24 +384,22 @@ export default function ClassRepositoryIndex({ onChangePage }) {
               </div>
 
               <>
-              <div
-                className="card-keterangan"
-                style={{
-                  background: "#61A2DC",
-                  borderRadius: "5px",
-                  padding: "10px 20px",
-                  width: "40%",
-                  marginLeft: "80px",
-                  marginBottom: "20px",
-                  color: "white",
-                  fontWeight: "bold",
-                }}
-              >
+                  <div
+            className="card-keterangan"
+            style={{
+              background: "#61A2DC",
+              borderRadius: "5px",
+              padding: "10px 20px",
+              marginBottom: "20px",
+              color: "white",
+              fontWeight: "bold",
+            }}
+          >
                 ↓ Terpublikasi
               </div>
                 <div className="d-flex flex-column">
                   <div className="flex-fill">
-                    <div className="row" style={{ margin: "10px 50px" }}>
+                    <div className="row" >
                     {currentDataPublikasi[0]?.Message === "data kosong" && (
                         <div className="" style={{ margin: "5px 20px" }}>
                           <Alert type="warning" message="Tidak ada data!" />
@@ -436,7 +435,6 @@ export default function ClassRepositoryIndex({ onChangePage }) {
               <div className="mb-4 d-flex justify-content-center">
                 <div
                   className="d-flex flex-column"
-                  style={{ marginLeft: "70px", marginBottom: "40px" }}
                 >
                   <Paging
                     pageSize={PAGE_SIZE}
@@ -449,6 +447,7 @@ export default function ClassRepositoryIndex({ onChangePage }) {
             </div>
           </div>
         )}
+        </AnimatedSection>
       </>
     </div>
   );

@@ -104,26 +104,15 @@ function CardPengajuanBaru({ data, onChangePage, isShow }) {
       <img
           alt="gambar"
           className="newws"
-          height="200"
           src={`${API_LINK}Upload/GetFile/${data.Gambar}`}
-          width="300"
-          style={{marginLeft:"-12px"}}
         />
         <div
           className=""
         >
-          <div className="">
+          <div className="content">
             <h5
               className="fw-bold mt-3"
               style={{color:"#0A5EA8"}}
-              // style={{
-              //   backgroundColor:
-              //     data.Status === "Ditolak"
-              //       ? "#DC3545"
-              //       : data.Status === "Menunggu Acc"
-              //       ? "#FFC107"
-              //       : "#6C757D",
-              // }}
             >
                 {data["Nama Kelompok Keahlian"] ? decode(data["Nama Kelompok Keahlian"]) : "Default Title"}
             

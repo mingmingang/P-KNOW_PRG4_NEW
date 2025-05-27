@@ -110,7 +110,7 @@ export default function DetailDaftarPustaka({ onChangePage, withID }) {
         </button>
         <h1 className="title">Knowledge Database</h1>
       </div>
-      <div className="daftar-pustaka-content">
+      <div className="container card mb-4 py-4 px-3">
         <div className="pustaka-layout">
           <div className="daftar-pustaka-title-layout">
             <img

@@ -529,7 +529,68 @@ nav {
 }
 
 /* For Mobile */
-@media (max-width: 768px) {
+@media (min-width: 768px) and (max-width: 1024px){
+  .menu-center {
+    flex-direction: column;
+    gap: 15px;
+    text-align: center;
+  }
+
+  .menu-center li {
+    font-size: 1em;
+  }
+
+  .profile {
+    margin-top: 10px;
+  }
+
+  .fotoprofil img {
+    width: 40px;
+    height: 40px;
+  }
+  .menu-center {
+    display: none;
+  }
+  
+.pengguna h3 {
+  margin-top: 5px;
+  margin-bottom: 2px;
+  font-weight: bold;
+  text-align: right;
+  font-size: 0.8em;
+
+}
+
+.pengguna h4 {
+  /* text-align: right; */
+  font-weight: 600;
+  font-size: 0.7em;
+ 
+}
+
+.pengguna p {
+  font-size: 0.6em;
+  text-align: right;
+  color: rgba(77, 77, 77, 0.7);
+}
+
+}
+
+/* Hamburger button styles */
+.hamburger {
+  display: none;
+  cursor: pointer;
+  font-size: 30px;
+  padding: 10px;
+  color: #000;
+}
+
+.hamburger i {
+  color: #0a5ea8;
+}
+
+/* For Mobile */
+@media (max-width: 768px){
   .menu-center {
     flex-direction: column;
     gap: 15px;
@@ -590,7 +651,7 @@ nav {
 }
 
 /* Menu styles for small screens */
-@media (max-width: 768px) {
+@media (min-width: 768px) and (max-width: 1024px){
   
   .hamburger {
     display: block; /* Show hamburger on small screens */
@@ -712,4 +773,127 @@ nav {
   color: var(--primary-color);
 }
 
+
+
+@media (max-width: 768px) {
+  
+  .hamburger {
+    display: block; /* Show hamburger on small screens */
+  }
+
+}
+
+/* Nav Baru yang menutupi konten */
+.nav-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: white;
+  z-index: 999; /* Pastikan berada di atas konten */
+  display: flex;
+  
+  align-items: flex-start;
+  flex-direction: column;
+  padding-top: 100px; /* Agar tidak tertutup logo */
+  padding-left: 20px; /* Menambahkan padding kiri untuk jarak */
+  padding-right: 20px; /* Menambahkan padding kanan untuk jarak */
+}
+
+/* Tombol close nav */
+.nav-overlay .close-btn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  cursor: pointer;
+  font-size: 30px;
+  color: #000;
+}
+
+/* Menu vertikal */
+.menu-vertical {
+  display: flex;
+  flex-direction: column;
+  gap: 20px; /* Jarak antar menu */
+  list-style-type: none;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+}
+
+/* Menu item */
+.menu-vertical li {
+  position: relative;
+  margin-bottom: 10px; /* Jarak antar item */
+}
+
+/* Menu link */
+.menu-vertical li a {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: var(--secondary-color);
+  font-weight: 500;
+  font-size: 1.125rem;
+}
+
+.menu-vertical li a i {
+  margin-right: 10px; /* Spasi antara icon dan teks */
+}
+
+/* Hover untuk item menu */
+.menu-vertical li a:hover {
+  color: var(--primary-color);
+  background-color: rgba(240, 240, 240, 0.8);
+  border-radius: 10px;
+}
+
+/* Dropdown seperti combobox */
+.dropdown-combobox {
+  display: none; /* Hidden by default */
+ 
+  left: 0;
+  width: 100%;
+  background-color: white;
+  
+  border-radius: 10px;
+  padding: 10px 0;
+  margin-top: 5px;
+  z-index: 1000;
+}
+
+/* Menampilkan dropdown ketika item di hover */
+.menu-vertical li:hover .dropdown-combobox {
+  display: block;
+}
+
+/* Item dalam dropdown */
+.dropdown-combobox li {
+  padding: 10px 15px;
+  list-style: none;
+}
+
+.dropdown-combobox li a {
+  text-decoration: none;
+  color: var(--primary-color);
+  display: block;
+}
+
+.dropdown-combobox li a:hover {
+  background-color: rgba(240, 240, 240, 0.8);
+  border-radius: 10px;
+  color: rgb(53, 140, 216);
+}
+
+/* Menambahkan efek hover pada item dropdown */
+.dropdown-combobox li a i {
+  font-size: 18px;
+  margin-right: 10px;
+  vertical-align: middle;
+}
+
+/* Active state untuk menu utama */
+.menu-vertical li.active a {
+  color: var(--primary-color);
+}
 

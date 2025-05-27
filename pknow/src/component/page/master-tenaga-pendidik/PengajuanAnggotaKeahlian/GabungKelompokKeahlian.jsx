@@ -333,16 +333,16 @@ export default function PengajuanAdd({ onChangePage, withID }) {
               <Alert2 type="danger" message={isError.message} />
             </div>
           )}
-            <div className="" style={{display:"flex", justifyContent:"space-between", marginTop:"100px", marginLeft:"70px", marginRight:"70px"}}>
+            <div className="container" style={{display:"flex", justifyContent:"space-between", marginTop:"100px"}}>
             <div className="back-and-title" style={{display:"flex"}}>
               <button style={{backgroundColor:"transparent", border:"none"}} onClick={handleGoBack}><img src={BackPage} alt="" /></button>
                 <h4 style={{ color:"#0A5EA8", fontWeight:"bold", fontSize:"30px", marginTop:"10px", marginLeft:"20px"}}>Pengajuan Kelompok Keahlian</h4>
               </div>
                 <div className="ket-draft">
-                <span className="badge text-bg-dark " style={{fontSize:"16px"}}>Draft</span>
+                <span className="badge text-bg-dark " style={{fontSize:"16px", alignItems:"center"}}>Draft</span>
                 </div>
               </div>
-              <div className="" style={{ margin: "30px 70px" }}>
+              <div className="container">
           <form onSubmit={handleAdd}>
             <div className="card">
               <div className="card-body p-4">
@@ -360,81 +360,79 @@ export default function PengajuanAdd({ onChangePage, withID }) {
                   <div className="fw-bold mb-3" >
                         Lampiran Pendukung
                       </div>
-                    <div className="card">
-                      <div className="card-body p-4">
-                        <Alert
-                          type="info fw-bold"
-                          message="Notes: Lampiran dapat berupa Sertifikat Keahlian, Surat Tugas, atau
-                          Berkas Lainnya yang berkaitan"
-                        />
-                        <div className="d-flex" style={{justifyContent:"space-between"}}>
-                            <div className="">
-                        <p className="mb-0">
-                          Format Penamaan:
-                          namafile_namakelompokkeahlian_namakaryawan (Opsional)
-                        </p>
-                        <p className="">
-                          Contoh: SertifikasiMicrosoft_DataScience_CandraBagus
-                        </p>
-                        </div>
-                        <div className="">
-                        <Button
-                          iconName="add"
-                          classType="primary btn-sm mb-3 rounded-4 py-2"
-                          label="Tambah Lampiran"
-                          onClick={handleTambahLampiran}
-                        />
-                        </div>
-                        </div>
-                        {[...Array(lampiranCount)].map((_, index) => (
-                          <>
-                          <div className="d-flex">
-                          <div key={index} style={{width:"130%"}}>
-                            <FileUpload
-                              isRequired="true"
-                              forInput={`lampiran_${index}`}
-                              label={`Lampiran ${index + 1}`}
-                              onChange={() =>
-                                handleFileChange(
-                                  lampiranRefs.current[index],
-                                  "pdf",
-                                  index
-                                )
-                              }
-                              formatFile=".pdf"
-                              ref={
-                                lampiranRefs.current[index] ||
-                                (lampiranRefs.current[index] =
-                                  React.createRef())
-                              }
-                              style={{width:"185%"}}
-                            />
-                            {fileInfos[index] && (
-                              <div className="mt-2">
-                                <strong>File Info:</strong>
-                                <ul>
-                                  <li>Nama: {fileInfos[index].fileName}</li>
-                                  <li>Ukuran: {fileInfos[index].fileSize}</li>
-                                  <li>Ekstensi: {fileInfos[index].fileExt}</li>
-                                </ul>
-                              </div>
-                            )}
-                             
-                          </div>
-                          <div style={{marginTop:"60px"}}>
-                          <button
-                            type="button"
-                            className="btn btn-danger btn-sm ms-3"
-                            onClick={() => handleHapusLampiran(index)}
-                          >
-                            Hapus
-                          </button>
-                          </div>
-                          </div>
-                          </>
-                        ))}
-                      </div>
-                    </div>
+                      <div className="card">
+  <div className="card-body p-4">
+    <Alert
+      type="info fw-bold"
+      message="Notes: Lampiran dapat berupa Sertifikat Keahlian, Surat Tugas, atau Berkas Lainnya yang berkaitan"
+    />
+
+    {/* Header Format Penamaan + Button Tambah */}
+    <div className="d-flex justify-content-between align-items-start flex-wrap">
+      <div className="mb-3 me-3">
+        <p className="mb-1">
+          <strong>Format Penamaan:</strong><br />
+          namafile_namaKK (Opsional)
+        </p>
+        <p className="mb-0">
+          Contoh: <i>Sertifikasi_DataScience_Candra</i>
+        </p>
+      </div>
+      <Button
+        iconName="add"
+        classType="primary btn-sm mb-3 rounded-4 py-2"
+        label="Tambah Lampiran"
+        onClick={handleTambahLampiran}
+      />
+    </div>
+
+    {/* Daftar Lampiran */}
+    {lampiranCount > 0 &&
+      [...Array(lampiranCount)].map((_, index) => (
+        <div className="d-flex flex-wrap align-items-start mb-4" key={index}>
+          <div className="flex-grow-1">
+            <FileUpload
+              isRequired="true"
+              forInput={`lampiran_${index}`}
+              label={`Lampiran ${index + 1}`}
+              onChange={() =>
+                handleFileChange(
+                  lampiranRefs.current[index],
+                  "pdf",
+                  index
+                )
+              }
+              formatFile=".pdf"
+              ref={
+                lampiranRefs.current[index] ||
+                (lampiranRefs.current[index] = React.createRef())
+              }
+            />
+            {fileInfos[index] && (
+              <div className="mt-2">
+                <strong>File Info:</strong>
+                <ul className="mb-0">
+                  <li>Nama: {fileInfos[index].fileName}</li>
+                  <li>Ukuran: {fileInfos[index].fileSize}</li>
+                  <li>Ekstensi: {fileInfos[index].fileExt}</li>
+                </ul>
+              </div>
+            )}
+          </div>
+          <div className="ms-3 mt-4">
+            <button
+              type="button"
+              className="btn btn-danger btn-sm"
+              onClick={() => handleHapusLampiran(index)}
+            >
+              Hapus
+            </button>
+          </div>
+        </div>
+      ))}
+  </div>
+</div>
+
                   </div>
                 </div>
               </div>

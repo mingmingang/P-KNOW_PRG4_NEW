@@ -15,6 +15,8 @@ import NoImage from "../../../../assets/NoImage.png";
 import BackPage from "../../../../assets/backPage.png";
 import Konfirmasi from "../../../part/Konfirmasi";
 import { decode } from "he";
+import AnimatedSection from "../../../part/AnimatedSection";
+import "../../../../index.css"
 
 export default function MasterDaftarPustakaAdd({ onChangePage, withID }) {
   const [errors, setErrors] = useState({});
@@ -319,22 +321,21 @@ export default function MasterDaftarPustakaAdd({ onChangePage, withID }) {
 
   return (
     <>
+    <AnimatedSection>
       {isError.error && (
         <div className="flex-fill">
           <Alert type="danger" message={isError.message} />
         </div>
       )}
       <div
-        className=""
+        className="container mb-3"
         style={{
           display: "flex",
           justifyContent: "space-between",
           marginTop: "100px",
-          marginLeft: "70px",
-          marginRight: "70px",
         }}
       >
-        <div className="back-and-title" style={{ display: "flex" }}>
+        <div className="" style={{ display: "flex" }}>
           <button
             style={{ backgroundColor: "transparent", border: "none" }}
             onClick={handleGoBack}
@@ -360,10 +361,11 @@ export default function MasterDaftarPustakaAdd({ onChangePage, withID }) {
         </div>
       </div>
       <form onSubmit={handleAdd}>
-        <div className="card" style={{ margin: "20px 80px" }}>
+        <div className="container mb-4">
+        <div className="card" >
           <div className="card-body p-4">
             <div className="row">
-              <div className="col-lg-4" style={{ display: "flex" }}>
+              <div className="col-lg-4 box-image" >
                 <div className="file-preview">
                   <div className="preview-img">
                     {filePreview ? (
@@ -523,6 +525,7 @@ export default function MasterDaftarPustakaAdd({ onChangePage, withID }) {
             </button>
           </div>
         </div>
+        </div>
       </form>
       {showConfirmation && (
         <Konfirmasi
@@ -536,6 +539,7 @@ export default function MasterDaftarPustakaAdd({ onChangePage, withID }) {
           onNo={handleConfirmNo}
         />
       )}
+      </AnimatedSection>
     </>
   );
 }

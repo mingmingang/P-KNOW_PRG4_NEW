@@ -14,10 +14,11 @@ import { API_LINK } from "../../../util/Constants";
 import Label from "../../../part/Label";
 import BackPage from "../../../../assets/backPage.png";
 import { validateAllInputs, validateInput } from "../../../util/ValidateForm";
-import NoImage from "../../../../assets/NoImage.png";
 import Konfirmasi from "../../../part/Konfirmasi";
 import AppContext_test from "../../master-test/TestContext";
 import { decode } from "he";
+import AnimatedSection from "../../../part/AnimatedSection";
+import "../../../../index.css"
 
 const listKataKunci = [
   { Value: "Alat", Text: "Kat Kunci 1" },
@@ -297,12 +298,13 @@ export default function MasterDaftarPustakaEdit({ onChangePage, withID }) {
 
   return (
     <>
+    <AnimatedSection>
       {isError.error && (
         <div className="flex-fill">
           <Alert type="danger" message={isError.message} />
         </div>
       )}
-         <div className="" style={{display:"flex", justifyContent:"space-between", marginTop:"100px", marginLeft:"70px", marginRight:"70px"}}>
+         <div className="" style={{display:"flex", justifyContent:"space-between", marginTop:"100px"}}>
             <div className="back-and-title" style={{display:"flex"}}>
               <button style={{backgroundColor:"transparent", border:"none"}} onClick={handleGoBack}><img src={BackPage} alt="" /></button>
                 <h4 style={{ color:"#0A5EA8", fontWeight:"bold", fontSize:"30px", marginTop:"10px", marginLeft:"20px"}}>Edit Knowledge Database</h4>
@@ -310,10 +312,11 @@ export default function MasterDaftarPustakaEdit({ onChangePage, withID }) {
                 
               </div>
       <form onSubmit={handleAdd}>
-        <div className="card" style={{margin:"20px 80px"}}>
+        <div className="container mb-4">
+        <div className="card">
           <div className="card-body p-4">
             <div className="row">
-            <div className="col-lg-4" style={{display:"flex"}}>
+            <div className="col-lg-4 box-image">
               <div className="file-preview">
               <div className="preview-img">
                   {filePreview ? (
@@ -483,6 +486,7 @@ export default function MasterDaftarPustakaEdit({ onChangePage, withID }) {
                 </button>
               </div>
         </div>
+        </div>
       </form>
       {showConfirmation && (
         <Konfirmasi
@@ -492,6 +496,7 @@ export default function MasterDaftarPustakaEdit({ onChangePage, withID }) {
           onNo={handleConfirmNo}
         />
         )}
+        </AnimatedSection>
     </>
   );
 }

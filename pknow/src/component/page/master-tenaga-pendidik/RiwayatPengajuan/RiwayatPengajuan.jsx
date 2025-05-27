@@ -1,28 +1,17 @@
-import Search from "../../../part/Search";
-import TableRiwayat from "../../../part/TableRiwayat";
 import React from "react";
 import { useEffect, useRef, useState } from "react";
-import SweetAlert from "../../../util/SweetAlert";
 import UseFetch from "../../../util/UseFetch";
-import Button from "../../../part/Button copy";
 import Input from "../../../part/Input";
-import Table from "../../../part/Table";
-import Paging from "../../../part/Paging";
 import Filter from "../../../part/Filter";
 import DropDown from "../../../part/Dropdown";
 import Alert from "../../../part/Alert";
-import Loading from "../../../part/Loading";
-import Icon from "../../../part/Icon";
-import CardKK from "../../../part/CardKelompokKeahlian";
-import { ListKelompokKeahlian } from "../../../util/Dummy";
 import { API_LINK } from "../../../util/Constants";
 import Cookies from "js-cookie";
 import { decryptId } from "../../../util/Encryptor";
-import Label from "../../../part/Label";
 import CardPengajuanBaru from "../../../part/CardPengajuanBaru";
-import { faL } from "@fortawesome/free-solid-svg-icons";
 import Button2 from "../../../part/Button copy";
 import "../../../../../src/index.css";
+import "../../../../style/Search.css";
 
 const inisialisasiKK = [
   {
@@ -200,11 +189,10 @@ export default function RiwayatPengajuan({onChangePage}) {
           <p>
           Riwayat Pengajuan akan menampilkan pengajuan anggota keahlia yang anda ajukan, hanya terdapat satu kelompok keahlian yang pengajuannya akan diterima oleh Program Studi.
           </p>
-          <div className="input-wrapper">
+          {/* <div className="input-wrapper">
             <div
               className=""
               style={{
-                width: "700px",
                 display: "flex",
                 backgroundColor: "white",
                 borderRadius: "20px",
@@ -217,7 +205,7 @@ export default function RiwayatPengajuan({onChangePage}) {
                 placeholder="Cari"
                 style={{
                   border: "none",
-                  width: "680px",
+
                   height: "40px",
                   borderRadius: "20px",
                 }}
@@ -231,7 +219,37 @@ export default function RiwayatPengajuan({onChangePage}) {
                 style={{ backgroundColor: "transparent", color: "#08549F" }}
               />
             </div>
-          </div>
+          </div> */}
+
+<div className="input-wrapper">
+              <div
+                className="cari"
+                style={{
+                  display: "flex",
+                  backgroundColor: "white",
+                  borderRadius: "20px",
+                  height: "40px",
+                }}
+              >
+                <Input
+                  ref={searchQuery}
+                  forInput="pencarianKK"
+                  placeholder="Cari Riwayat Pengajuan"
+                  style={{
+                    border: "none",
+                    height: "40px",
+                    borderRadius: "20px",
+                  }}
+                />
+                <Button2
+                  iconName="search"
+                  classType="px-4"
+                  title="Cari"
+                  onClick={handleSearch}
+                  style={{ backgroundColor: "transparent", color: "#08549F" }}
+                />
+              </div>
+            </div>
         </div>
                  <>
                  <div className="container">

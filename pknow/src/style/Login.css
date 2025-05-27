@@ -14,12 +14,15 @@
     background-position: center; 
 }
 
+
+
 .login-container {
   display: flex;
   justify-content: center;
   align-items: flex-end;
   height: 100vh;
 }
+
 
 /* Style the form box */
 .login-box {
@@ -30,6 +33,7 @@
     text-align: center;
     width: 500px;
     margin-bottom: 180px;
+ 
 
 }
 
@@ -281,6 +285,29 @@
     }
   }
 
+
+  @media (min-width: 768px) and (max-width:1080px){
+    .maskotlogin {
+      display: none;
+    }
+
+    main{
+      justify-content: center;   /* tengah horizontal */
+      align-items: center;  
+    }
+
+    .login-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .login-box{
+      margin-bottom: 0px;
+    }
+    
+  }
  
   
   @media (max-width: 768px) {
@@ -314,7 +341,7 @@
     .login-background {
       background-image: url('../assets/backgroundTMS.png');
       width: 100%; 
-      height: 80vh; 
+      height: 100vh; 
       padding: 20px;
     }
   
@@ -332,11 +359,23 @@
     .maskotlogin {
       display: none;/* Show mascot on tablet and larger */
     }
+
+    .login-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .login-box{
+      margin-bottom: 0px;
+    }
   }
   
   /* For Tablet and Desktop */
-  @media (min-width: 768px) {
+  @media (min-width: 1080px) {
     .maskotlogin {
       display: block;/* Show mascot on tablet and larger */
     }
   }
+  

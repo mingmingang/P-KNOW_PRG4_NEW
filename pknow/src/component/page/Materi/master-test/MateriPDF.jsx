@@ -50,6 +50,7 @@ export default function MasterTestIndex({ onChangePage,materiId }) {
   const [isError, setIsError] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [currentData, setCurrentData] = useState(inisialisasiData);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [fileData, setFileData] = useState({
     file: "",
 });
@@ -211,10 +212,71 @@ async function updateProgres() {
     updateProgres();
   }, []);
 
+      useEffect(() => {
+  const handleResize = () => {
+    if (window.innerWidth >= 992) {
+      setIsSidebarOpen(true);
+    } else {
+      setIsSidebarOpen(false);
+    }
+  };
+  window.addEventListener("resize", handleResize);
+  handleResize(); // initial call
+  return () => window.removeEventListener("resize", handleResize);
+}, []);
+
+
 
 return (
   <>
-    <div className="container d-flex" style={{minHeight:"100vh"}}>
+        <button 
+  className="d-lg-none btn btn-primary mb-3" 
+  onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+  style={{
+    position: 'fixed',
+    top: '100px',
+    right: '15px',
+    zIndex: 1000,
+    color: 'white',
+    fontSize: '20px'
+  }}
+>
+  {isSidebarOpen ? '✕' : '☰'}
+</button>
+
+   <div className="container">
+        {/* When sidebar is open on mobile */}
+        {isSidebarOpen && (
+          <div 
+            className="d-lg-none"
+            style={{
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              backgroundColor: 'rgba(0,0,0,0.5)',
+              zIndex: 999
+            }}
+            onClick={() => setIsSidebarOpen(false)}
+          />
+        )}
+      <div
+  className={`${
+    isSidebarOpen ? "d-block" : "d-none"
+  } d-lg-block`}
+  style={{
+    position: isSidebarOpen ? "fixed" : "relative",
+    zIndex: 999,
+    backgroundColor: "white",
+    height: isSidebarOpen ? "100vh" : "auto",
+    overflowY: "auto",
+    width: "350px",
+    left: isSidebarOpen ? "0" : "auto",
+    top: isSidebarOpen ? "0" : "auto",
+  }}
+>
+
         <KMS_Rightbar
      isActivePengenalan={false}
      isActiveForum={false}
@@ -232,6 +294,8 @@ return (
       // refreshKey={refreshKey}
       // setRefreshKey={setRefreshKey}
     />
+    </div>
+
     <div className="">
       {isError && (
         <div className="">
@@ -246,22 +310,26 @@ return (
           <Loading />
         ) : (
           <>
-          <div style={{  marginTop:"100px", marginBottom:"80px" }}>
-           <h1 style={{ fontWeight: 600, color: "#002B6C" }} className="ml-4">Materi {decode(fileData.judul)}</h1>
-           <br />
-                    <h6 className="mb-0 ml-4" style={{ color: "#002B6C" }}>
+           <div
+  className="d-flex flex-column flex-grow-1"
+  style={{
+    marginLeft: window.innerWidth >= 992 ? "350px" : "0", // 992px is Bootstrap 'lg'
+    transition: "margin-left 0.3s",
+    marginTop:"100px"
+  }}
+>
+           <h1 style={{ fontWeight: 600, color: "#002B6C" }} className="">Materi {decode(fileData.judul)}</h1>
+                    <h6 className="mb-0" style={{ color: "#002B6C" }}>
                       Dari {decode(fileData.namaKK)} - {decode(fileData.prodi)}
                     </h6>
-                    <br />
-                        <h6 style={{ color: "#002B6C" }} className="ml-4">
+                        <h6 style={{ color: "#002B6C" }} className="">
                             Oleh {decode(fileData.uploader)} - {formatDate(fileData.creadate)}
                         </h6>
                         {fileExtension === "pdf" && (
            <div className="">{fileData.file ? (
             <PDF_Viewer 
               pdfFileName={fileData.file} 
-              width="1000px" 
-              height="800px" 
+              width="100%"
             />
           ) : (
             <div className="alert alert-warning mt-4 mb-4 ml-4" >

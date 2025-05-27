@@ -37,6 +37,7 @@ export default function MasterTestPreTest({
   const [receivedMateriId, setReceivedMateriId] = useState();
   const [sectionData, setSectionData] = useState([]);
   const [error, setError] = useState(null);
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   function onStartTest() {
     try {
@@ -342,10 +343,71 @@ export default function MasterTestPreTest({
     }
   }
 
+    useEffect(() => {
+  const handleResize = () => {
+    if (window.innerWidth >= 992) {
+      setIsSidebarOpen(true);
+    } else {
+      setIsSidebarOpen(false);
+    }
+  };
+  window.addEventListener("resize", handleResize);
+  handleResize(); // initial call
+  return () => window.removeEventListener("resize", handleResize);
+}, []);
+
+
+
   return (
     <>
-      <div className="container d-flex" style={{minHeight:"100vh"}}>
-        <div className="">
+         <button 
+  className="d-lg-none btn btn-primary mb-3" 
+  onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+  style={{
+    position: 'fixed',
+    top: '100px',
+    right: '15px',
+    zIndex: 1000,
+    color: 'white',
+    fontSize: '20px'
+  }}
+>
+  {isSidebarOpen ? '✕' : '☰'}
+</button>
+
+     <div className="container d-flex">
+        {/* When sidebar is open on mobile */}
+        {isSidebarOpen && (
+          <div 
+            className="d-lg-none"
+            style={{
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              backgroundColor: 'rgba(0,0,0,0.5)',
+              zIndex: 999
+            }}
+            onClick={() => setIsSidebarOpen(false)}
+          />
+        )}
+      <div
+  className={`${
+    isSidebarOpen ? "d-block" : "d-none"
+  } d-lg-block`}
+  style={{
+    position: isSidebarOpen ? "fixed" : "relative",
+    zIndex: 999,
+    backgroundColor: "white",
+    height: isSidebarOpen ? "100vh" : "auto",
+    overflowY: "auto",
+    width: "350px",
+    left: isSidebarOpen ? "0" : "auto",
+    top: isSidebarOpen ? "0" : "auto",
+  }}
+>
+
           <KMS_Rightbar
             isActivePengenalan={false}
             isActiveForum={false}
@@ -374,7 +436,14 @@ export default function MasterTestPreTest({
           {isLoading ? (
             <Loading message="Sedang memuat data..." />
           ) : currentData ? ( 
-            <div style={{ marginRight: marginRight, marginLeft: "40px" }}>
+                  <div
+  className="d-flex flex-column flex-grow-1"
+  style={{
+    marginLeft: window.innerWidth >= 992 ? "350px" : "0", // 992px is Bootstrap 'lg'
+    transition: "margin-left 0.3s",
+  }}
+>
+
               <div className=" align-items-center mb-5">
                 <div style={{ marginTop: "80px" }}>
                   <div className="d-flex">

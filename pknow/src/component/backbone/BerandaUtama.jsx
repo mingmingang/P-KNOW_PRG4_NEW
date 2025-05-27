@@ -1,4 +1,7 @@
 import React from "react";
+import { useEffect, useRef, useState } from "react";
+import { motion, useAnimation } from "framer-motion";
+import { useInView } from "react-intersection-observer";
 import ceweVR from "../../assets/ceweVR_beranda.png";
 import cowoTop from "../../assets/cowoTop_beranda.png";
 import "../../style/Beranda.css";
@@ -25,6 +28,48 @@ const sliderData = [
   { name: "Dialus Andari", role: "UI/UX Designer", company: "Universal Eco Pasific", img: sample },
   { name: "Hutami Septiana Raswaty", role: "Digital Product Manager", company: "Telkom Indonesia", img: sample },
 ];
+
+// Perbaikan komponen AnimatedSection
+const AnimatedSection = ({ children, delay = 0 }) => {
+  const controls = useAnimation();
+  const [ref, inView] = useInView({
+    threshold: 0.1,
+    triggerOnce: true
+  });
+
+  useEffect(() => {
+    if (inView) {
+      controls.start("visible");
+    }
+  }, [controls, inView]);
+
+  const variants = {
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { 
+        duration: 0.5, 
+        delay,
+        ease: "easeOut"
+      }
+    },
+    hidden: {
+      opacity: 0,
+      y: 50
+    }
+  };
+
+  return (
+    <motion.div
+      ref={ref}
+      initial="hidden"
+      animate={controls}
+      variants={variants}
+    >
+      {children}
+    </motion.div>
+  );
+};
 
 function Slider() {
   return (
@@ -107,10 +152,11 @@ export default function BerandaUtama() {
 
   return (
     <div>
+       <AnimatedSection>
       <section className="sec1">
         <div className="ucapan">
           <h3>Selamat Datang di</h3>
-          <h1>Knowledge Management System</h1>
+          <h1>Politeknik Astra Knowledge Novelty & Wisdom</h1>
           <p>
             “Sistem Manajemen Pengetahuan ini akan membantu Anda belajar lebih
             efisien. Mari kita mulai dengan menjelajahi fitur-fitur yang
@@ -124,7 +170,9 @@ export default function BerandaUtama() {
           <img className="cowoTop" src={cowoTop} alt="Ilustrasi Cowok" />
         </div>
       </section>
-
+      </AnimatedSection>
+      
+      <AnimatedSection delay={0.2}>
       <section className="sec4" style={{ 
   display: "flex", 
   flexDirection: "column", 
@@ -156,7 +204,9 @@ export default function BerandaUtama() {
     <img src={iconAstra} alt="Icon ASTRA" />
   </div>
 </section>
+</AnimatedSection>
 
+<AnimatedSection delay={0.4}>
       <section className="sec5 mb-4">
         <div className="company">
           <div className="perusahaan">
@@ -184,28 +234,32 @@ export default function BerandaUtama() {
               </button>
             </div>
           </div>
-          <div className="logoAstratech" style={{ marginTop: "90px", marginRight: "100px" }}>
+          <div className="logoAstratech">
             <img src={logo} alt="Logo ASTRAtech" width="300px" />
           </div>
         </div>
       </section>
+      </AnimatedSection>
 
-
+      <AnimatedSection delay={0.6}>
       <section className="sec6">
-<div className="ucapan2">
-        <h3>Strategic Talent Development</h3>
-        <h1>Build Your Talent, Expand Your Growth</h1>
-        <p>
-            Unlock your organizations full potential through our comprehensive talent development ecosystem. 
-            We architect customized growth frameworks that align individual capabilities.
-        </p>
-        </div>
+    <div className="ucapan2">
+            <h3>Strategic Talent Development</h3>
+            <h1>Build Your Talent, Expand Your Growth</h1>
+            <p>
+                Unlock your organizations full potential through our comprehensive talent development ecosystem. 
+                We architect customized growth frameworks that align individual capabilities.
+            </p>
+            </div>
+            
+            <div className="imgMaskot">
+              <img className="maskot2" src={maskotBoyGirl} alt="Ilustrasi Cewek VR" />
+            </div>
         
-        <div className="imgMaskot">
-          <img className="maskot" src={maskotBoyGirl} alt="Ilustrasi Cewek VR" />
-        </div>
-     
-      </section>
-    </div>
+          </section>
+          </AnimatedSection>
+      </div>
   );
 }
+
+

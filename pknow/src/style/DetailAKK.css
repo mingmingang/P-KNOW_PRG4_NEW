@@ -37,8 +37,12 @@
     font-size: 16px;
 }
 
+.cover-kk-show  {
+    width: 5000px;
+}
+
 .informasi-kk .deskripsi {
-    width: 600px;
+    width: 100%;
     text-align: justify;
     font-size: 15px;
     line-height: 1.6;
@@ -262,4 +266,14 @@
     background-color: #ccc;
     color: #333;
     border: none;
+}
+
+@media (max-width:768px){
+    .information-kelompok-keahlian{
+        display: block;
+    }
+
+    .cover-kk-show  {
+    width: 5000px;
+}
 }

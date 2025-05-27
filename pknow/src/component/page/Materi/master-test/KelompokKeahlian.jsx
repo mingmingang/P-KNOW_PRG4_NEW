@@ -15,6 +15,7 @@ import DropDown from "../../../part/Dropdown";
 import "../../../../style/Search.css";
 import Cookies from "js-cookie";
 import { decryptId } from "../../../util/Encryptor";
+import AnimatedSection from "../../../part/AnimatedSection"
 
 const dataFilterSort = [
   { Value: "[Nama Kelompok Keahlian] asc", Text: "Nama Kelompok Keahlian [↑]" },
@@ -242,7 +243,9 @@ export default function KK({ onChangePage }) {
 
   return (
     <div className="app-container">
+      
       <main>
+        <AnimatedSection >
         <div className="backSearch">
           <h1>Kelompok Keahlian</h1>
           <p>
@@ -280,7 +283,9 @@ export default function KK({ onChangePage }) {
             </div>
           </div>
         </div>
+        </AnimatedSection>
 
+                <AnimatedSection delay={0.3}>
         <div className="">
           <div className="container">
           <div className="navigasi-layout-page">
@@ -413,6 +418,7 @@ export default function KK({ onChangePage }) {
           </div>
            */}
         </div>
+        </AnimatedSection>
       </main>
     </div>
   );

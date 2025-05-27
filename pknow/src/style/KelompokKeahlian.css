@@ -1,142 +1,154 @@
-/* Container utama untuk komponen Kelompok Keahlian */
 .kelompokKeahlian {
-    /* display: flex; */
-    flex-wrap: wrap; /* Agar item tetap rapi saat layar lebih kecil */
+    display: flex;
+    flex-wrap: wrap;
     justify-content: center;
+    gap: 20px;
 }
 
 .kelompok-keahlian-container {
     display: flex;
     flex-wrap: wrap;
-    justify-content: center; /* Agar rata tengah pada tampilan kecil */
-    gap: 20px; /* Beri jarak antar item */
+    justify-content: center;
+    gap: 20px;
 }
-
 
 .kelompok-keahlian-item {
-    flex: 1 1 0%;
-    margin-bottom: 20px;
+    flex: 1 1 300px; /* Tetapkan lebar minimum agar tidak terlalu kecil */
+    max-width: 400px;
+    display: flex;
+    flex-direction: column;
 }
-
 
 /* Kotak background putih utama */
 .bg-white-kk {
     border-radius: 14px;
     background: #FFF;
     box-shadow: 0px 0px 20px 0px rgba(10, 95, 168, 0.20);
-    width: 100%;
-    min-height: 500px;
-    max-width: 380px; /* Maksimal agar tetap proporsional */
-    margin-top: 5px;
-    margin-bottom: 28px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+    width: 400px;
+    overflow: hidden;
+    padding: 0px; 
+    margin: 10px;
 }
 
-
-/* Judul dan dropdown di bagian atas */
-.title-kelompok-keahlian {
-    display: flex;
-    justify-content: space-between;
+.content{
+    padding: 0px 20px;
 }
 
 /* Gambar cover utama */
-.bg-white-kk .cover-daftar-kk {
-    width: 100%; /* Buat gambar full lebar */
+.bg-white-kk .cover-daftar-kk,
+.newws {
+    width: 100%;
     height: 200px;
     object-fit: cover;
     border-top-left-radius: 14px;
     border-top-right-radius: 14px;
 }
 
+/* Judul dan dropdown */
+.title-kelompok-keahlian {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+}
+
 /* Judul */
 .bg-white-kk h3 {
-    color: var(--ASTRAtech, #0A5EA8);
-    font-size: 25px;
-    padding-left: 20px;
-    margin-bottom: 15px;
+    color: #0A5EA8;
+    font-size: 22px;
     font-weight: bold;
-    width: 300px;
+    margin: 10px 0;
 }
 
 /* Teks umum */
-.bg-white-kk .descni {
+.descni {
     font-family: 'Poppins';
     color: black;
-    margin: 0 20px;
-    margin-bottom: 12px;
+    margin: 0 20px 10px;
 }
 
-/* Deskripsi dalam teks paragraf */
-.bg-white-kk .deskripsi {
-    color: rgb(128, 128, 128);
-    text-align: justify;
+/* Deskripsi */
+.deskripsi {
+    color: #666;
     font-size: 15px;
+    margin: 0 20px 10px;
+    text-align: justify;
     max-height: 90px;
-    height: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
-/* Bagian status terbuka */
+
+/* Status dan tombol */
 .status-open {
-    display: flex;
-    justify-content: space-between;
-    margin: 0 20px;
+    align-items: center;
+    padding: 10px 20px;
+    border-top: 1px solid #eee;
+    margin-top: auto; /* Pastikan ini berada paling bawah */
 }
+
 
 .status-open img {
     width: 15px;
+    margin-right: 5px;
 }
 
 .status-open p {
-    margin-top: 15px;
     font-size: 15px;
-    margin-left: 5px;
+    margin: 0;
 }
 
 .status-open button {
     border-radius: 5px;
-    background: var(--Button, #0E6EFE);
+    background: #0E6EFE;
     color: white;
     border: none;
-    padding: 10px 25px;
+    padding: 8px 16px;
     font-size: 13px;
     font-weight: 600;
+    cursor: pointer;
 }
 
-/* Bagian pemilik (prodi dan userProdi) */
+/* Pemilik info */
 .pemilik {
-    margin-left: 20px;
+    margin: 0 20px 10px;
 }
 
 .pemilik p {
-    font-size: 16px;
-    font-family: 'Poppins SemiBold';
-    margin-left: 20px;
+    font-size: 15px;
+    font-weight: 600;
+    margin: 4px 0;
 }
 
-.prodi, .userProdi {
+.prodi,
+.userProdi {
     display: flex;
+    align-items: center;
+    gap: 5px;
 }
 
-/* Dropdown menu styling */
+/* Dropdown */
 .dropdown-menu {
     display: none;
     position: absolute;
     top: 100%;
     right: 0;
     z-index: 1000;
-    background-color: #ffffff;
-    border: none;
+    background: #fff;
     border-radius: 10px;
     min-width: 10rem;
-    box-shadow: 0 4px 8px rgba(41, 117, 217, 0.346);
+    box-shadow: 0 4px 8px rgba(41, 117, 217, 0.3);
     color: #0A5EA8;
 }
 
-/* Hover efek untuk item dalam dropdown */
 .dropdown-item:hover {
     background-color: #f0f0f0;
 }
 
-/* Menampilkan dropdown ketika aktif */
 .show {
     display: block;
 }
@@ -145,74 +157,98 @@
     background-color: #3b89fd;
 }
 
-.programm{
-    width: 180px; margin-left:-20px;
-    margin-top:1px;
+.person-icon {
+    margin-right: 12px;
 }
 
-.pengajuan{
-    margin-right: 40px;
+/* Responsif tablet */
+@media (min-width: 1024px) and (max-width:1080px){
+    .kelompok-keahlian-item {
+        flex: 1 1 45%;
+    }
+    .bg-white-kk {
+        border-radius: 14px;
+        background: #FFF;
+        box-shadow: 0px 0px 20px 0px rgba(10, 95, 168, 0.20);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        height: 100%;
+        width: 440px;
+        overflow: hidden;
+        padding: 0px; 
+        margin: 10px;
+    }
 }
 
-.iconnn{
-    margin-right: 5px;
-}
-
-.newws{
-    width: 106.8%;
-    height: 200px;
-    object-fit: cover;
-    border-top-left-radius: 14px;
-    border-top-right-radius: 14px;
-}
-/* For Mobile */
-
-/* Media Query untuk Tablet */
-@media (max-width: 1024px) {
-    .kelompok-keahlian-container {
-        justify-content: center;
+@media (min-width: 768px) and (max-width:1024px){
+    .kelompok-keahlian-item {
+        flex: 1 1 45%;
     }
 
-    .kelompok-keahlian-item {
-        flex: 1 1 45%; /* Tampilkan 2 item dalam satu baris */
+    .title-kk {
+        font-size: 18px;
+    }
+
+    .status tr td p {
+        font-size: 10px;
+    }
+
+    .card-footer p{
+        font-size: 12px;
     }
 
     .bg-white-kk {
-        max-width: 95%;
+        border-radius: 14px;
+        background: #FFF;
+        box-shadow: 0px 0px 20px 0px rgba(10, 95, 168, 0.20);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        height: 100%;
+        width: 340px;
+        overflow: hidden;
+        padding: 0px; 
+        margin: 10px;
     }
 }
 
-/* Media Query untuk Mobile */
+/* Responsif mobile */
 @media (max-width: 768px) {
-    .bg-white-kk .cover-daftar-kk {
-        width: 100%;
+    .kelompok-keahlian-item {
+        flex: 1 1 100%;
     }
 
-    .newws{
-        width: 106.8%;
+  
+    .title-kk {
+        font-size: 14px;
+    }
+    .bg-white-kk h3 {
+        font-size: 18px;
     }
 
-    .pic-value{
-        margin: 0px 4px 5px;
+    .btn-primary  {
+        font-size: 9px;
     }
 
-    .pengajuan{
-        margin-right: 0px;
+    .bg-white-kk {
+        border-radius: 14px;
+        background: #FFF;
+        box-shadow: 0px 0px 20px 0px rgba(10, 95, 168, 0.20);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        height: 100%;
+        width: 350px;
+        overflow: hidden;
+        padding: 0px; 
+        margin: 5px;
     }
     
 
-    .bg-white-kk {
-        max-width: 100%;
-    }
-
-    .programm{
-        width: 180px; margin-left:15px;
-        margin-top:1px;
-    }
-
-    .bg-white-kk h3 {
-        font-size: 20px;
+    .status-open {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
     }
 }
-
-  

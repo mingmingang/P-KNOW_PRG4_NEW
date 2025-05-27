@@ -11,6 +11,8 @@ import { jsPDF } from 'jspdf';
 import logo from "../../../../assets/loginMaskotTMS.png";
 import AppContext_master from "../master-proses/MasterContext.jsx";
 import AppContext_test from "./TestContext.jsx";
+import AnimatedSection from "../../../part/AnimatedSection.jsx";
+
 
 export default function DetailKelas({ withID, onChangePage }) {
   let activeUser = "";
@@ -205,69 +207,55 @@ export default function DetailKelas({ withID, onChangePage }) {
 
 
   return (
+    <AnimatedSection>
     <div className="app-container">
      <div
   className="header"
   style={{
-    height: "400px",
     width: "100%",
     padding: "100px 60px",
-    backgroundImage: `linear-gradient(to right, #0A5EA8, rgba(0,0,0,0)), url(${API_LINK}Upload/GetFile/${withID.gambar})`,
+    backgroundImage: `linear-gradient(rgb(0, 0, 0), rgba(0, 0, 0, 0)), url(${API_LINK}Upload/GetFile/${withID.gambar})`,
     objectFit:"cover",
-    backgroundSize: "55%", // Gambar hanya mengambil 50% dari tinggi div
+    backgroundSize: "cover", // Gambar hanya mengambil 50% dari tinggi div
     backgroundRepeat: "no-repeat", // Hindari pengulangan gambar
     backgroundPosition: "right", // Posisikan gambar di tengah
-    backgroundBlendMode: "overlay", // Satukan gradien dengan gambar
+    
   }}
 >
   <>
 <div
     className="background"
-    style={{
-      position: 'absolute',
-      top: "0",
-      left: "0",
-      height: "400px",
-      width: "100%",
-      backgroundImage: `
-        linear-gradient(to right, #0A5EA8, rgba(0,0,0,0)), 
-        linear-gradient(to right, #0A5EA8, #66a2fe)`,
-        padding:"80px 50px 40px 60px",
-      backgroundSize: "47% 100%", // Gradien kiri mengambil 45% lebar
-      backgroundRepeat: "no-repeat",
-    }}
+  
   >
-    <h4 style={{ color: "white", padding: "30px", paddingBottom: "0px" }}>
+    <h4 style={{ color: "white",  paddingBottom: "0px",  textShadow: "2px 2px 4px rgba(0, 0, 0, 0.73)" }}>
           <button
             style={{ backgroundColor: "transparent", border: "none" }}
             onClick={handleGoBack}
           >
-           <i className="fas fa-arrow-left mr-3" style={{color:"white"}}></i>
+           <i className="fas fa-arrow-left mr-3" style={{color:"white", textShadow: "2px 2px 4px rgba(0, 0, 0, 0.73)"}}></i>
           </button>
           {decode(withID.title ? withID.title : "")}
         </h4>
-        <p style={{ paddingLeft: "30px", color: "white" }}>
+        <p style={{  color: "white" , textShadow: "2px 2px 4px rgba(0, 0, 0, 0.73)"}}>
         Program Studi : {decode(withID.ProgramStudi)}
         </p>
         <p
           style={{
-            paddingLeft: "30px",
-            paddingRight:"40px",
             color: "white",
-            width: "600px",
             fontSize: "14px",
-            textAlign:"justify"
+            textAlign:"justify",
+            textShadow: "2px 2px 4px rgba(0, 0, 0, 0.73)"
           }}
         >
           {decode(withID.desc).substring(0, 300)}{/* Menampilkan 200 huruf pertama */}
           {withID.desc.length > 300 && "..."}
         </p>
 
-        <div className="" style={{width:"400px", marginTop:"40px"}}>
+        <div className="">
                       <button
-                        className="btn btn-outline-primary ml-4"
+                        className="btn btn-outline-primary mt-3"
                         type="button"
-                        style={{fontSize:"22px", marginTop:"-10px", color:"white", borderColor:"white"}}
+                        style={{fontSize:"20px", marginTop:"-10px", color:"white", borderColor:"white"}}
                         onClick={() => document.getElementById("materi").scrollIntoView({ behavior: "smooth" })}
                       >
                         Baca Materi
@@ -278,7 +266,7 @@ export default function DetailKelas({ withID, onChangePage }) {
         </div>
 </>
       </div>
-      <div className="" style={{ margin: "40px 100px" }}>
+      <div className="container mt-4">
         <h3 style={{ fontWeight: "500", color: "#0A5EA8" }}>Tentang Kelas</h3>
         <p
         id="materi"
@@ -292,7 +280,7 @@ export default function DetailKelas({ withID, onChangePage }) {
         </p>
       </div>
 
-      <div className="" style={{ margin: "40px 100px" }}>
+      <div className="container mb-4" >
         <h3 className="mb-4"  style={{ fontWeight: "500", color: "#0A5EA8" }}>Materi Kelas</h3>
 
 {listKategoriProgram.length > 0 ? (
@@ -434,5 +422,6 @@ export default function DetailKelas({ withID, onChangePage }) {
         />
       )}
     </div>
+    </AnimatedSection>
   );
 }

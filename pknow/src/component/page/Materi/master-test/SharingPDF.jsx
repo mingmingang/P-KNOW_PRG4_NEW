@@ -23,6 +23,7 @@ export default function MasterTestSharingPDF({ onChangePage, CheckDataReady, mat
     const [sectionData, setSectionData] = useState([]);
     const [marginRight, setMarginRight] = useState("5vh");
     const [fileExtension, setFileExtension] = useState("");
+     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
     AppContext_test.refreshPage = "sharingPDF";
 
@@ -153,9 +154,71 @@ export default function MasterTestSharingPDF({ onChangePage, CheckDataReady, mat
         return date.toLocaleDateString('id-ID', options);
       };
 
+            useEffect(() => {
+  const handleResize = () => {
+    if (window.innerWidth >= 992) {
+      setIsSidebarOpen(true);
+    } else {
+      setIsSidebarOpen(false);
+    }
+  };
+  window.addEventListener("resize", handleResize);
+  handleResize(); // initial call
+  return () => window.removeEventListener("resize", handleResize);
+}, []);
+
+
+
     return (
         <>
-        <div className="container d-flex" style={{minHeight:"100vh"}}>
+        <button 
+  className="d-lg-none btn btn-primary mb-3" 
+  onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+  style={{
+    position: 'fixed',
+    top: '100px',
+    right: '15px',
+    zIndex: 1000,
+    color: 'white',
+    fontSize: '20px'
+  }}
+>
+  {isSidebarOpen ? '✕' : '☰'}
+</button>
+
+   <div className="container">
+        {/* When sidebar is open on mobile */}
+        {isSidebarOpen && (
+          <div 
+            className="d-lg-none"
+            style={{
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              backgroundColor: 'rgba(0,0,0,0.5)',
+              zIndex: 999
+            }}
+            onClick={() => setIsSidebarOpen(false)}
+          />
+        )}
+      <div
+  className={`${
+    isSidebarOpen ? "d-block" : "d-none"
+  } d-lg-block`}
+  style={{
+    position: isSidebarOpen ? "fixed" : "relative",
+    zIndex: 999,
+    backgroundColor: "white",
+    height: isSidebarOpen ? "100vh" : "auto",
+    overflowY: "auto",
+    width: "350px",
+    left: isSidebarOpen ? "0" : "auto",
+    top: isSidebarOpen ? "0" : "auto",
+  }}
+>
+
         <KMS_Rightbar
      isActivePengenalan={false}
      isActiveForum={false}
@@ -170,14 +233,19 @@ export default function MasterTestSharingPDF({ onChangePage, CheckDataReady, mat
       isOpen={true}
       onChangePage={onChangePage}
       materiId={AppContext_test.materiId}
-      // refreshKey={refreshKey}
-      // setRefreshKey={setRefreshKey}
     />
-            
-                <div className="file-preview" style={{ marginTop: "100px",color:"#002B6C" }}>
-                    <h1 className="ml-4" style={{fontWeight:"600", color: "#002B6C" }}>Sharing Expert</h1>
+          </div>
+            <div
+  className="d-flex flex-column flex-grow-1"
+  style={{
+    marginLeft: window.innerWidth >= 992 ? "350px" : "0", // 992px is Bootstrap 'lg'
+    transition: "margin-left 0.3s",
+    marginTop:"100px"
+  }}
+>
+                    <h1 className="" style={{fontWeight:"600", color: "#002B6C" }}>Sharing Expert</h1>
                     {currentData ? (
-                        <p className="ml-4">
+                        <p className="">
                             Dibuat oleh {decode(currentData.Nama)} - {formatDate(currentData.CreatedDate)}
                         </p>
                     ) : (
@@ -187,7 +255,7 @@ export default function MasterTestSharingPDF({ onChangePage, CheckDataReady, mat
                         <div>
                       {fileExtension === "pdf" && (
            <div className="">
-            <PDF_Viewer pdfFileName={fileData.file} width="1000px" height="800px" />
+            <PDF_Viewer pdfFileName={fileData.file} width="100%" />
            </div>
           )}
         
@@ -219,7 +287,7 @@ export default function MasterTestSharingPDF({ onChangePage, CheckDataReady, mat
                   </div>
                 )}
               </div>
-              </div>
+</div>
         </>
     );
 }

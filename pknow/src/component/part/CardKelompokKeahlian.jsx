@@ -121,10 +121,10 @@ function CardKelompokKeahlian({
       <div>
       <Button
         iconName="info"
-        classType={`${config.className} py-2 mt-3`}
+        classType={`${config.className} py-2 rounded-3 `}
         label="Detail Kelas"
         onClick={() => onChangePage("detail", data)}
-        style={{ border: "none" }}
+        style={{ border: "none", fontSize:"11px" }}
       />
     </div>
     );
@@ -152,7 +152,7 @@ function CardKelompokKeahlian({
             width: "10px",
           }}
         />
-        <span style={{ marginRight: "50px" }}>Aktif</span>
+        <span >Aktif</span>
       </p>
     );
   }
@@ -178,7 +178,7 @@ function CardKelompokKeahlian({
   let personInCharge;
   if (data.status === "Draft" && !data.pic.key) {
     personInCharge = (
-      <div className=" d-flex">
+      <div className=" d-flex" style={{justifyContent:"space-between"}}>
         <FontAwesomeIcon
           icon={showUserProdi ? faUser : faClock}
           className="icon-style"
@@ -194,9 +194,9 @@ function CardKelompokKeahlian({
       <div className="d-flex">
         <FontAwesomeIcon
           icon={showUserProdi ? faUser : faClock}
-          className="icon-style"
+          className="icon-style person-icon"
         />
-        <p className="text-gray-700 pic-value" style={{ fontSize: "15px" }}>
+        <p className="text-gray-700 pic-value" style={{ fontSize: "15px"}}>
           PIC :{" "}
           {data.pic.key ? (
             data.pic.nama
@@ -231,7 +231,7 @@ function CardKelompokKeahlian({
     );
   } else if (config.footer === "Draft") {
     cardContent = (
-      <div className="d-flex justify-content-between">
+      <div className="d-flex justify-content-between" >
         {showStatusText ? (
           <div className="">
             <span style={{ fontSize: "14px" }}>{footerStatus}</span>
@@ -297,60 +297,51 @@ function CardKelompokKeahlian({
     );
   } else if (config.footer === "Menunggu") {
     cardContent = (
-      <div className="d-flex justify-content-between">
-        {showStatusText ? (
-          <div className="" style={{ display: "flex" }}>
-            {footerStatus}
-          </div>
-        ) : (
-          <a
-            href="#selengkapnya"
-            className="text-blue-600"
-            style={{ textDecoration: "none" }}
-          >
-            Selengkapnya <FontAwesomeIcon icon={faArrowRight} />
-          </a>
-        )}
-        <div
-          className="d-flex justify-content-end"
-          style={{ marginTop: "20px" }}
-        >
-          <Icon
-            name="edit"
-            type="Bold"
-            cssClass="btn px-2 py-0 text-primary"
-            title="Ubah data"
-            onClick={() => onChangePage("edit", data)}
-          />
-          {/* <Icon
-                name="trash"
-                type="Bold"
-                cssClass="btn px-2 py-0 text-primary"
-                title="Hapus data permanen"
-              /> */}
-          <Icon
-            name="list"
-            type="Bold"
-            cssClass="btn px-2 py-0 text-primary"
-            title="Lihat detail Kelompok Keahlian"
-            onClick={() => onChangePage("detailDraft", data)}
-          />
-          {data.pic.key ? (
-            <Icon
-              name="paper-plane"
-              type="Bold"
-              cssClass="btn px-1 py-0 text-primary"
-              title="Kirim ke Prodi bersangkutan untuk menentukan PIC"
-            />
-          ) : (
-            ""
-          )}
-        </div>
-      </div>
+    <div className="d-flex justify-content-between align-items-center w-100" >
+  {showStatusText ? (
+    <div className="d-flex align-items-center">
+      {footerStatus}
+    </div>
+  ) : (
+    <a
+      href="#selengkapnya"
+      className="text-blue-600"
+      style={{ textDecoration: "none" }}
+    >
+      Selengkapnya <FontAwesomeIcon icon={faArrowRight} />
+    </a>
+  )}
+
+  <div className="d-flex justify-content-end align-items-center">
+    <Icon
+      name="edit"
+      type="Bold"
+      cssClass="btn px-2 py-0 text-primary"
+      title="Ubah data"
+      onClick={() => onChangePage("edit", data)}
+    />
+    <Icon
+      name="list"
+      type="Bold"
+      cssClass="btn px-2 py-0 text-primary"
+      title="Lihat detail Kelompok Keahlian"
+      onClick={() => onChangePage("detailDraft", data)}
+    />
+    {data.pic.key && (
+      <Icon
+        name="paper-plane"
+        type="Bold"
+        cssClass="btn px-1 py-0 text-primary"
+        title="Kirim ke Prodi bersangkutan untuk menentukan PIC"
+      />
+    )}
+  </div>
+</div>
+
     );
   } else {
     cardContent = (
-      <div className="d-flex justify-content-between" style={{ width: "100%" }}>
+      <div className="d-flex justify-content-between" style={{ width: "100%", gap:"60px" }} >
         {showStatusText ? (
           <div className="" style={{ width: "100%" }}>
             <span style={{ fontSize: "14px" }}>{footerStatus}</span>
@@ -364,7 +355,7 @@ function CardKelompokKeahlian({
             Selengkapnya <FontAwesomeIcon icon={faArrowRight} />
           </a>
         )}
-        <div className="d-flex" style={{ width: "10%", marginTop: "15px" }}>
+        <div className="icon-kk d-flex">
           {showMenu ? (
             <>
               <Icon
@@ -406,26 +397,18 @@ function CardKelompokKeahlian({
           ) : (
             <div className="">
               {" "}
-              {ketButton && (
-                <div
-                  className="d-flex justify-content-end"
-                  style={{ marginLeft: "-50px" }}
-                >
-                  <button
-                    className="bg-blue-50 text-white  px-2 py-2 rounded-full d-flex align-items-center programm"
-                    aria-label={`Action for ${title}`}
-                    onClick={() => onChangePage(link, data)}
-              
-                  >
-                    <div className="ml-4"></div>
-                    <i
-                      className="fas fa-users iconnn"
-                      style={{  marginTop: "2px" }}
-                    ></i>
-                    {ketButton}
-                  </button>
-                </div>
-              )}
+           {ketButton && (
+    <button
+      className="d-flex align-items-center justify-content-center bg-primary text-white rounded-3 px-4 py-2"
+      style={{ minWidth: "160px", fontWeight: "bold", fontSize: "11px" }}
+      aria-label={`Action for ${title}`}
+      onClick={() => onChangePage(link, data)}
+    >
+      <i className="fas fa-users me-2" style={{ marginTop: "1px" }}></i>
+      {ketButton}
+    </button>
+  )}
+
             </div>
           )}
         </div>
@@ -443,8 +426,8 @@ function CardKelompokKeahlian({
           src={`${API_LINK}Upload/GetFile/${data.gambar}`}
           width="300"
         />
-        <div className="">
-          <div className="d-flex justify-content-between align-items-center mt-4">
+        <div className="content">
+          <div className="d-flex justify-content-between align-items-center mt-2">
             <h3
               className="text-xl font-bold text-blue-600"
               style={{ fontSize: "16px", textAlign: "justify", lineHeight:"30px"  }}
@@ -455,22 +438,19 @@ function CardKelompokKeahlian({
         </div>
 
         <div className="pemilik ">
-          <div className="prodi" style={{ fontSize: "14px" }}>
-            <FontAwesomeIcon
-              icon={showProdi ? faGraduationCap : faPeopleGroup}
-              className="icon-style"
-            />
-            <p
-              className="text-gray-700"
-              style={{ marginLeft: "15px", width: "100%", fontSize: "15px" }}
-            >
-            {showProdi ? 
-  (data?.prodi?.nama && data.prodi.nama.length > 35 ? 
-    data.prodi.nama.slice(0, 35) + '...' : data?.prodi?.nama || '') 
-  : anggota}
-
-            </p>
-          </div>
+          <div className="d-flex align-items-center mb-1" style={{ fontSize: "14px", justifyContent:"left" }}>
+    <FontAwesomeIcon
+      icon={showProdi ? faGraduationCap : faPeopleGroup}
+      className="me-2 text-dark"
+    />
+    <span style={{ fontSize: "15px", color: "#2c2c2c", fontWeight:"600" }}>
+      {showProdi
+        ? data?.prodi?.nama?.length > 35
+          ? `${data.prodi.nama.slice(0, 35)}...`
+          : data?.prodi?.nama || ""
+        : anggota}
+    </span>
+  </div>
           <div className="userProdi">{personInCharge}</div>
         </div>
 
@@ -485,7 +465,7 @@ function CardKelompokKeahlian({
           </p>
         </div>
 
-        <div className="card-footer status-open mb-4 mr-3 ml-3">
+        <div className="card-footer status-open mb-2 ">
           <div className="card-content" style={{ alignItems: "center" }}>
             {cardContent}
           </div>

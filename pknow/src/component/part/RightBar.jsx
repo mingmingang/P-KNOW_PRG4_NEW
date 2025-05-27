@@ -682,8 +682,6 @@ const [showSharingExpertVideo, setShowSharingExpertVideo] = useState(false);
                 Forum
               </button>
             </div>
-
-            
           </>
         </div>
       )}

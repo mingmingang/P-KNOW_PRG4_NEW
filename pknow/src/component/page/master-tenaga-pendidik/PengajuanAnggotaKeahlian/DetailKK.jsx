@@ -167,7 +167,8 @@ export default function KKDetailPublish({ onChangePage, withID }) {
           <Alert type="danger" message={isError.message} />
         </div>
       )}
-      <div className="card" style={{margin:"100px 100px"}}>
+      <div className="container mb-4" style={{marginTop:"100px"}}>
+      <div className="card" >
        
         <div className="card-body">
           <div className="row pt-2">
@@ -340,7 +341,7 @@ export default function KKDetailPublish({ onChangePage, withID }) {
         </div>
       </div>
       </div>
-     
+      </div>
       <div
         className="modal fade"
         id="modalAnggota"

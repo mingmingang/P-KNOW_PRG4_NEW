@@ -1,5 +1,7 @@
-// Login.jsx
-import React, { useState, useRef, useEffect } from "react";
+import React from "react";
+import { useEffect, useRef, useState } from "react";
+import { motion, useAnimation } from "framer-motion";
+import { useInView } from "react-intersection-observer";
 import Header from "../../backbone/Header";
 import Footer from "../../backbone/Footer";
 import "../../../style/Login.css";
@@ -30,6 +32,48 @@ import Alert from "../../part/AlertLogin";
 import Modal from "../../part/Modal";
 import Input from "../../part/Input";
 import { object, string } from "yup";
+
+const AnimatedSection = ({ children, delay = 0 }) => {
+  const controls = useAnimation();
+  const [ref, inView] = useInView({
+    threshold: 0.1,
+    triggerOnce: true
+  });
+
+  useEffect(() => {
+    if (inView) {
+      controls.start("visible");
+    }
+  }, [controls, inView]);
+
+  const variants = {
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { 
+        duration: 0.5, 
+        delay,
+        ease: "easeOut"
+      }
+    },
+    hidden: {
+      opacity: 0,
+      y: 50
+    }
+  };
+
+  return (
+    <motion.div
+      ref={ref}
+      initial="hidden"
+      animate={controls}
+      variants={variants}
+    >
+      {children}
+    </motion.div>
+  );
+};
+
 
 export default function Login() {
   const [errors, setErrors] = useState({});
@@ -217,6 +261,7 @@ export default function Login() {
     window.location.href = "/";
   } else {
     return (
+
       <div>
         {isLoading && <Loading />}
         {isError.error && (
@@ -226,6 +271,7 @@ export default function Login() {
         )}
 
         <Header showUserInfo={false} />
+        <AnimatedSection>
         <main>
           <section className="login-background">
             <div className="login-container">
@@ -345,6 +391,7 @@ export default function Login() {
             </div>
           </section>
         </main>
+        </AnimatedSection>
         <Footer />
 
         <Modal title="Pilih Peran" ref={modalRef} size="small">

@@ -51,6 +51,7 @@ justify-content: space-between; /* Membuat konten tersebar merata */
   width: 100%;
   min-height: 60vh; /* Ubah dari height ke min-height */
   margin-top: 100px;
+  background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0)), url('../assets/backgroundLogin.png');
   background-color: var(--primary-color);
   color: white;
   padding: 0 5%;
@@ -70,7 +71,7 @@ justify-content: space-between; /* Membuat konten tersebar merata */
 
 .ucapan {
   padding-top: 24vh; /* Changed to viewport height */
-  width: 50%;
+  width: 55%;
   padding-left: 8%; /* Changed to percentage for responsiveness */
 }
 
@@ -98,22 +99,41 @@ justify-content: space-between; /* Membuat konten tersebar merata */
   object-position: right bottom;
 }
 
+
+.maskot2 {
+  width: 100%;
+  height: auto;
+  max-height: 90vh;
+  object-fit: contain;
+  object-position: right bottom;
+}
+
 .ucapan2 h1{
   font-weight: bold;
   font-size: 55px;
-  margin-top: 30px;;
+  margin-top: 30px;
+  text-shadow: rgb(110, 110, 110) 4px 4px 8px;
 }
 
 .ucapan2 p {
   line-height: 30px;
   text-align: justify;
   margin-top: 25px;
+  text-shadow: rgb(0, 0, 0) 4px 4px 4px;
+}
+
+.ucapan2 h3 {
+  color: #FFF;
+  font-size: 1.8rem; /* Use rem for scalability */
+  margin-bottom: 0;
+  text-shadow: rgb(25, 25, 25) 2px 2px 5px;
 }
 
 .ucapan h3 {
   color: #FFF;
   font-size: 1.8rem; /* Use rem for scalability */
   margin-bottom: 0;
+ 
 }
 
 .ucapan h1 {
@@ -132,7 +152,7 @@ justify-content: space-between; /* Membuat konten tersebar merata */
   line-height: 1.5;
   text-align: justify;
   margin-bottom: 1rem; /* Changed to rem */
-  max-width: 600px; /* Added max-width */
+  width: 600px; /* Added max-width */
 }
 
 .ucapan button {
@@ -177,7 +197,6 @@ justify-content: space-between; /* Membuat konten tersebar merata */
 
 .sec5 p {
   text-align: justify;
-  width: 70%;
   margin-top: 20px;
   color: #717375;
 }
@@ -194,6 +213,11 @@ justify-content: space-between; /* Membuat konten tersebar merata */
   margin-left: 40px;
 }
 
+.logoAstratech {
+  margin-top: 40px;
+  margin-right: 80px;
+}
+
 .company{
   display: flex;
 }
@@ -201,9 +225,9 @@ justify-content: space-between; /* Membuat konten tersebar merata */
 .imgDatang {
   padding-top: 40vh; /* Changed to viewport height */
   display: flex;
-  width: 30%;
+  width: 25%;
   height: 100%;
-  margin-left: -100px;
+  margin-left: -120px;
 }
 
 .sec4 button:hover {
@@ -246,6 +270,7 @@ justify-content: space-between; /* Membuat konten tersebar merata */
   .sec6{
       height: 900px;
   }
+
   .sec6 h4 {
       font-size: 20px;  /* Reduce font size on smaller screens */
       padding-top: 40px; 
@@ -391,9 +416,7 @@ justify-content: space-between; /* Membuat konten tersebar merata */
     margin-left: 30px;
    }
 
-   .sec6 div{
-      display: none;
-   }
+
 }
 
 
@@ -418,6 +441,12 @@ justify-content: space-between; /* Membuat konten tersebar merata */
     flex-direction: column;
     padding-bottom: 300px; /* Ruang untuk gambar */
   }
+
+  .ucapan p {
+    width: 100%;
+      font-size: 14px; /* Responsive font size */
+  }
+
   .ucapan2 {
     max-width: 100%;
   }
@@ -434,5 +463,235 @@ justify-content: space-between; /* Membuat konten tersebar merata */
     max-height: 300px;
     right: 0;
   }
+  .sec6 {
+    background-size: cover;
+    background-position: center; 
+  }
+
+  .sec6 h3 {
+    margin-top: 40px;
+  }
+
+  .sec6 p {
+    font-size: 16px;
+  }
+
+  .sec6 {
+    height: 80vh;
+  }
+
+  .sec6 .maskot2 {
+    display: none;
+  }
 }
 
+
+
+@media (min-width: 768px) and (max-width:1080px) {
+  .sec1{
+    background-size: cover; /* This will prevent the background from repeating */
+    background-position: center; 
+    display: block;/* Optional: to center the background image */
+  }
+
+  .maskot2{
+    display: none;
+  }
+  .ucapan {
+      width: 100%; /* Full width on smaller screens */
+      padding-left: 0;
+      text-align: center;
+  }
+
+  .ucapan h3 {
+      font-size: 38px;
+      font-weight: bold; /* Responsive font size */
+  }
+
+  .ucapan p {
+    width: 100%;
+      font-size: 20px;
+      line-height: 45px; 
+      text-align: center;/* Responsive font size */
+  }
+
+
+  .ucapan button {
+      width: 100%;
+      text-align: center; /* Full width for buttons on smaller screens */
+  }
+
+  .imgDatang {
+      width: 40%; 
+      display: none;/* Adjust image container width */
+  }
+  .sec6{
+      height: 900px;
+  }
+  .sec6 h4 {
+      font-size: 20px;  /* Reduce font size on smaller screens */
+      padding-top: 40px; 
+      margin: 10px 30px; /* Adjust padding for better spacing */
+    }
+  
+    .sec6 p {
+      font-size: 12px;  /* Maintain smaller font size */
+      padding-left: 10px;
+      padding-right: 10px;
+    }
+  
+    .d-flex {
+      justify-content: center;
+      gap: 15px;
+    }
+
+    .comment {
+      width: 370px; /* Adjust card width on smaller screens */
+      padding: 15px; 
+      margin-left: 20px;
+      margin-top: 20px;/* Reduce padding on smaller screens */
+    }
+  
+    .d-flex img {
+      width: 35px;
+      height: 35px; /* Even smaller image */
+    }
+
+  
+    .comment p {
+      font-size: 12px;
+    }
+  
+    .isi {
+      font-size: 12px; /* Smaller text for comments */
+    }
+
+    .ucapan2 {
+      margin-top: 100px;
+    }
+
+    .ucapan2 p{
+      font-size: 23px;
+      line-height: 45px;
+    }
+    .ucapan h3{
+      text-align: center;
+    }
+    .ucapan h1{
+      text-align: center;
+      font-size: 30px;
+      font-weight: 600;
+      margin-top: 20px ;
+    }
+    .ucapan{
+      margin-left: 30px;
+    }
+
+
+    .sec1 p{
+      line-height: 30px;
+    }
+
+    .sec4 h4 {
+      font-size: 28px;
+    }
+
+    .sec4 p  {
+      margin: 40px 10px;
+      font-size: 20px;
+      line-height: 35px;
+    }
+
+    .sec4 img{
+      width: 400px;
+      margin-top: 30px;
+    }
+
+    .sec4 {
+      min-height: 90vh;
+      height: 90vh;
+    }
+
+    .sec4 button{
+      font-size: 20px;
+    }
+
+    .sec4 img {
+      width: 700px;
+    }
+
+    .sec5 .logoAstratech{
+      display: block;
+      margin: 40px;
+      width: 100px;
+    }
+
+    .sec5 h4{
+      margin-top: 20px;
+      font-size: 16px;
+      text-align: center;
+      margin-left: -40px;
+  }
+  .sec5 img {
+    margin-left: -20px;
+  }
+
+    .sec5 h3{
+      text-align: center;
+        margin-left: -10px;
+        font-size: 18px;
+        text-align: left;
+        max-width: 600px;
+        width: 100%;
+    }
+
+    .sec5 h4{
+      font-size: 14px;
+      max-width: 500px;
+    }
+
+    .sec5 .mt-4, .perusahaan{
+      max-width: 600px;
+    }
+
+    .sec5 p{
+      text-align: justify;
+      font-size: 14px;
+      font-weight: 500;
+      max-width: 560px;
+    }
+
+    .sec5 .perusahaan{
+      margin-top: 20px;
+      margin-left: 25px;
+    }
+
+
+
+    .sec4 {
+      background-size: cover; 
+      background-position: center; 
+    }
+
+   .sec5{
+      max-height: 350px;
+   }
+
+   .sec5 h4 {
+    width: 100%;
+    text-align: left;
+    margin-left: -10px;
+   }
+
+   .cmp_astra {
+    margin-left: 30px;
+   }
+
+     .sec6{
+    background-size: cover; /* This will prevent the background from repeating */
+    background-position: center; 
+    display: block;
+    
+  }
+
+}

@@ -94,7 +94,7 @@ footer {
 }
 
 /* Responsive Design for Tablets and Small Screens */
-@media (max-width: 768px) {
+@media (min-width: 768px) and  (max-width: 1080px){
     .footer-container {
         flex-direction: column;
         align-items: center;
@@ -113,6 +113,49 @@ footer {
 }
 
 /* iPhone and Small Mobile Screens */
+@media (min-width: 480px) and (max-width:1080px) {
+    footer {
+        padding: 30px;
+        text-align: left;
+    }
+
+    .footer-container {
+        padding: 0 20px;
+    }
+
+    .footer-section {
+        margin: 0.5em 0;
+        min-width: 100%;
+    }
+
+    .footer-section h3 {
+        font-size: 16px;
+        margin-bottom: 8px;
+        text-align: left;
+    }
+
+    .footer-section p,
+    .footer-section ul li {
+        font-size: 14px;
+        text-align: justify;
+    }
+
+    .footer-bottom p {
+        font-size: 12px;
+    }
+
+    .footer-logo img {
+        max-width: 70%;
+    }
+
+    .footer-detail {
+        display:block;
+    }
+    .hide-on-mobile {
+        display: none;
+      }
+}
+
 @media (max-width: 480px) {
     footer {
         padding: 30px;

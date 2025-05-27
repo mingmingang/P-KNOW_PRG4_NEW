@@ -1,4 +1,6 @@
 import { useEffect, useRef, useState } from "react";
+import { motion, useAnimation } from "framer-motion";
+import { useInView } from "react-intersection-observer";
 import { object, string } from "yup";
 import { API_LINK } from "../../../util/Constants";
 import { validateAllInputs, validateInput } from "../../../util/ValidateForm";
@@ -15,6 +17,47 @@ import BackPage from "../../../../assets/backPage.png";
 import Konfirmasi from "../../../part/Konfirmasi";
 import { Editor } from "@tinymce/tinymce-react";
 import "../../../../index.css";
+
+const AnimatedSection = ({ children, delay = 0 }) => {
+  const controls = useAnimation();
+  const [ref, inView] = useInView({
+    threshold: 0.1,
+    triggerOnce: true,
+  });
+
+  useEffect(() => {
+    if (inView) {
+      controls.start("visible");
+    }
+  }, [controls, inView]);
+
+  const variants = {
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.5,
+        delay,
+        ease: "easeOut",
+      },
+    },
+    hidden: {
+      opacity: 0,
+      y: 50,
+    },
+  };
+  return (
+    <motion.div
+      ref={ref}
+      initial="hidden"
+      animate={controls}
+      variants={variants}
+    >
+      {children}
+    </motion.div>
+  );
+};
+
 
 export default function TambahKK({ onChangePage }) {
   const [errors, setErrors] = useState({});
@@ -268,12 +311,13 @@ export default function TambahKK({ onChangePage }) {
         <Loading />
       ) : (
         <>
+        <AnimatedSection>
           <div className="container mb-4" style={{display:"flex", justifyContent:"space-between", marginTop:"100px"}}>
-            <div className="back-and-title" style={{display:"flex"}}>
+            <div className="" style={{display:"flex"}}>
               <button style={{backgroundColor:"transparent", border:"none"}} onClick={handleGoBack}><img src={BackPage} alt="" /></button>
                 <h4 style={{ color:"#0A5EA8", fontWeight:"bold", marginTop:"10px", marginLeft:"20px"}}>Tambah Kelompok Keahlian</h4>
               </div>
-                <div className="ket-draft">
+                <div className="ket-draft mt-4">
                 <span className="badge text-bg-dark " style={{fontSize:"16px"}}>Draft</span>
                 </div>
               </div>
@@ -439,6 +483,7 @@ export default function TambahKK({ onChangePage }) {
         />
         )}
         </div>
+        </AnimatedSection>
         </>
       )}
     </>

@@ -21,6 +21,7 @@ export default function MasterTestSharingVideo({ onChangePage, CheckDataReady, m
     const [sectionData, setSectionData] = useState([]);
     const [marginRight, setMarginRight] = useState("5vh");
     const [fileExtension, setFileExtension] = useState("");
+         const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
     AppContext_test.refreshPage = "sharingVideo";
 
@@ -123,9 +124,71 @@ export default function MasterTestSharingVideo({ onChangePage, CheckDataReady, m
         return date.toLocaleDateString('id-ID', options);
       };
 
+      
+            useEffect(() => {
+  const handleResize = () => {
+    if (window.innerWidth >= 992) {
+      setIsSidebarOpen(true);
+    } else {
+      setIsSidebarOpen(false);
+    }
+  };
+  window.addEventListener("resize", handleResize);
+  handleResize(); // initial call
+  return () => window.removeEventListener("resize", handleResize);
+}, []);
+
+
+
     return (
         <>
-        <div className="container d-flex" style={{minHeight:"100vh"}}>
+        <button 
+  className="d-lg-none btn btn-primary mb-3" 
+  onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+  style={{
+    position: 'fixed',
+    top: '100px',
+    right: '15px',
+    zIndex: 1000,
+    color: 'white',
+    fontSize: '20px'
+  }}
+>
+  {isSidebarOpen ? '✕' : '☰'}
+</button>
+
+   <div className="container">
+        {/* When sidebar is open on mobile */}
+        {isSidebarOpen && (
+          <div 
+            className="d-lg-none"
+            style={{
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              backgroundColor: 'rgba(0,0,0,0.5)',
+              zIndex: 999
+            }}
+            onClick={() => setIsSidebarOpen(false)}
+          />
+        )}
+      <div
+  className={`${
+    isSidebarOpen ? "d-block" : "d-none"
+  } d-lg-block`}
+  style={{
+    position: isSidebarOpen ? "fixed" : "relative",
+    zIndex: 999,
+    backgroundColor: "white",
+    height: isSidebarOpen ? "100vh" : "auto",
+    overflowY: "auto",
+    width: "350px",
+    left: isSidebarOpen ? "0" : "auto",
+    top: isSidebarOpen ? "0" : "auto",
+  }}
+>
         <KMS_Rightbar
      isActivePengenalan={false}
      isActiveForum={false}
@@ -143,28 +206,44 @@ export default function MasterTestSharingVideo({ onChangePage, CheckDataReady, m
       // refreshKey={refreshKey}
       // setRefreshKey={setRefreshKey}
     />
-            <div className="file-preview" style={{marginBottom:"20px", marginTop:"100px", color:"#002B6C" }}>
-            <h1 className="ml-2" style={{fontWeight:"600", color: "#002B6C" }} >Sharing Expert Video</h1>
+    </div>
+            <div
+  className="d-flex flex-column flex-grow-1"
+  style={{
+    marginLeft: window.innerWidth >= 992 ? "350px" : "0", // 992px is Bootstrap 'lg'
+    transition: "margin-left 0.3s",
+    marginTop:"100px"
+  }}
+>
+            <h1 className="" style={{fontWeight:"600", color: "#002B6C" }} >Sharing Expert Video</h1>
                     {currentData ? (
-                        <p className="ml-2 mb-0">
+                        <p className=" mb-0">
                             Dibuat oleh {decode(currentData.Nama)} - {formatDate(currentData.CreatedDate)}
                         </p>
                     ) : (
                         <div className=""></div>
                     )}
                     {fileData.file ? (
-                     <ReactPlayer
-                     url={`${API_LINK}Upload/GetFile/${fileData.file}`}
-                     playing={true}
-                     controls={true}
-                     width="1000px"
-                     maxwidth="1000px"
-                     height="90%"
-                     style={{
-                       borderRadius: "80px",
-                        marginLeft:"10px"
-                     }}
-                   />
+                  <div style={{
+  position: 'relative',
+  paddingTop: '56.25%', // Aspect ratio 16:9
+  borderRadius: '20px',
+  overflow: 'hidden',
+  margin: '10px'
+}}>
+  <ReactPlayer
+    url={`${API_LINK}Upload/GetFile/${fileData.file}`}
+    playing={true}
+    controls={true}
+    width="100%"
+    height="100%"
+    style={{
+      position: 'absolute',
+      top: 0,
+      left: 0,
+    }}
+  />
+</div>
                     ) : (
                         <div className="alert alert-warning mt-4 mb-4 ml-4" >
                         Tidak ada Sharing Expert Video yang tersedia.

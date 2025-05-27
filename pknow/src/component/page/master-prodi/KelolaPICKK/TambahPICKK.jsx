@@ -14,6 +14,7 @@ import FileUpload from "../../../part/FileUpload";
 import UploadFile from "../../../util/UploadFile";
 import Cookies from "js-cookie";
 import { decryptId } from "../../../util/Encryptor";
+import AnimatedSection from "../../../part/AnimatedSection";
 
 export default function TambahPIC({ onChangePage, withID }) {
   let activeUser = "";
@@ -306,6 +307,7 @@ export default function TambahPIC({ onChangePage, withID }) {
 
   return (
     <>
+    <AnimatedSection>
       {isError.error && (
         <div className="flex-fill">
           <Alert type="danger" message={isError.message} />
@@ -315,13 +317,13 @@ export default function TambahPIC({ onChangePage, withID }) {
         <Loading />
       ) : (
         <>
-        <div className="" style={{display:"flex", justifyContent:"space-between", marginTop:"100px", marginLeft:"70px", marginRight:"70px"}}>
-        <div className="back-and-title" style={{display:"flex"}}>
+        <div className="container mb-3" style={{display:"flex", justifyContent:"space-between", marginTop:"100px"}}>
+        <div className="" style={{display:"flex"}}>
           <button style={{backgroundColor:"transparent", border:"none"}} onClick={handleGoBack}><img src={BackPage} alt="" /></button>
             <h4 style={{ color:"#0A5EA8", fontWeight:"bold", fontSize:"30px", marginTop:"10px", marginLeft:"20px"}}>Edit Kelompok Keahlian</h4>
           </div>
           </div>
-    <div className="" style={{ margin: "30px 70px" }}>
+    <div className="container mb-4">
         <form onSubmit={handleAdd}>
           <div className="card">
             <div className="card-body p-4">
@@ -486,6 +488,7 @@ export default function TambahPIC({ onChangePage, withID }) {
         </div>
         </>
       )}
+      </AnimatedSection>
     </>
   );
 }

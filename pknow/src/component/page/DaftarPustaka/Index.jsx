@@ -1,4 +1,6 @@
-import { useState, useRef, useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
+import { motion, useAnimation } from "framer-motion";
+import { useInView } from "react-intersection-observer";
 import Search from "../../part/Search";
 import ButtonPro from "../../part/Button copy";
 import "../../../../src/index.css";
@@ -17,6 +19,9 @@ import SweetAlert from "../../util/SweetAlert";
 import Paging from "../../part/Paging";
 import { decode } from "he";
 import Konfirmasi from "../../part/Konfirmasi";
+import AnimatedSection from "../../part/AnimatedSection";
+
+
 
 const inisialisasiData = [
   {
@@ -398,6 +403,7 @@ export default function DaftarPustaka({ onChangePage, withID }) {
 
   return (
     <>
+            <AnimatedSection>
       <div className="backSearch">
         <h1>Knowledge Database</h1>
         <p>
@@ -434,10 +440,12 @@ export default function DaftarPustaka({ onChangePage, withID }) {
           </div>
         </div>
       </div>
+      </AnimatedSection>
 
       {isLoading ? (
         <Loading />
       ) : (
+        <AnimatedSection delay={0.4}>
         <div className="d-flex flex-column">
           <div className="flex-fill">
           <div className="container">
@@ -602,6 +610,7 @@ export default function DaftarPustaka({ onChangePage, withID }) {
            
           </div>
         </div>
+        </AnimatedSection>
       )}
         {showConfirmation && (
         <Konfirmasi

@@ -1,4 +1,6 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { motion, useAnimation } from "framer-motion";
+import { useInView } from "react-intersection-observer";
 import { PAGE_SIZE, API_LINK } from "../../../util/Constants";
 import SweetAlert from "../../../util/SweetAlert";
 import UseFetch from "../../../util/UseFetch";
@@ -11,6 +13,47 @@ import Loading from "../../../part/Loading";
 import Paging from "../../../part/Paging";
 import Input from "../../../part/Input";
 import "../../../../style/Search.css";
+
+const AnimatedSection = ({ children, delay = 0 }) => {
+  const controls = useAnimation();
+  const [ref, inView] = useInView({
+    threshold: 0.1,
+    triggerOnce: true,
+  });
+
+  useEffect(() => {
+    if (inView) {
+      controls.start("visible");
+    }
+  }, [controls, inView]);
+
+  const variants = {
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.5,
+        delay,
+        ease: "easeOut",
+      },
+    },
+    hidden: {
+      opacity: 0,
+      y: 50,
+    },
+  };
+  return (
+    <motion.div
+      ref={ref}
+      initial="hidden"
+      animate={controls}
+      variants={variants}
+    >
+      {children}
+    </motion.div>
+  );
+};
+
 
 export default function KelolaAKK({ onChangePage }) {
   const [isError, setIsError] = useState(false);
@@ -138,6 +181,7 @@ export default function KelolaAKK({ onChangePage }) {
   return (
     <div className="app-container">
       <main>
+        <AnimatedSection>
         <div className="backSearch">
           <h1>Kelola Anggota Kelompok Keahlian</h1>
           <p>ASTRAtech memiliki banyak program studi, di dalam program studi terdapat kelompok keahlian yang biasa disebut dengan Kelompok Keahlian</p>
@@ -159,6 +203,9 @@ export default function KelolaAKK({ onChangePage }) {
             </div>
           </div>
         </div>
+        </AnimatedSection>
+
+        <AnimatedSection delay={0.4}>
 
         <div className="container">
         <div className="navigasi-layout-page">
@@ -266,6 +313,7 @@ export default function KelolaAKK({ onChangePage }) {
             />
           </div>
         </div>
+        </AnimatedSection>
       </main>
     </div>
   );

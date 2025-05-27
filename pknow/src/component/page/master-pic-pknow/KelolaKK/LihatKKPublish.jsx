@@ -1,4 +1,6 @@
-import { useState, useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
+import { motion, useAnimation } from "framer-motion";
+import { useInView } from "react-intersection-observer";
 import Button from "../../../part/Button";
 import DropDown from "../../../part/Dropdown";
 import Input from "../../../part/Input";
@@ -23,6 +25,46 @@ import {
 import maskotPknow from "../../../../assets/pknowmaskot.png";
 import { decode } from "he";
 import "../../../../index.css";
+
+const AnimatedSection = ({ children, delay = 0 }) => {
+  const controls = useAnimation();
+  const [ref, inView] = useInView({
+    threshold: 0.1,
+    triggerOnce: true,
+  });
+
+  useEffect(() => {
+    if (inView) {
+      controls.start("visible");
+    }
+  }, [controls, inView]);
+
+  const variants = {
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.5,
+        delay,
+        ease: "easeOut",
+      },
+    },
+    hidden: {
+      opacity: 0,
+      y: 50,
+    },
+  };
+  return (
+    <motion.div
+      ref={ref}
+      initial="hidden"
+      animate={controls}
+      variants={variants}
+    >
+      {children}
+    </motion.div>
+  );
+};
 
 export default function KKDetailPublish({ onChangePage, withID }) {
   const [errors, setErrors] = useState({});
@@ -191,6 +233,7 @@ export default function KKDetailPublish({ onChangePage, withID }) {
 
   return (
     <>
+        <AnimatedSection>
       {isError.error && (
         <div className="flex-fill">
           <Alert type="danger" message={isError.message} />
@@ -222,9 +265,7 @@ export default function KKDetailPublish({ onChangePage, withID }) {
             <div className="col-lg-5">
               <img
                 className="detail-kk"
-                
                 src={`${API_LINK}Upload/GetFile/${formData.gambar}`}
-             
               />
             </div>
             <div className="container mt-3">
@@ -300,7 +341,7 @@ export default function KKDetailPublish({ onChangePage, withID }) {
               listProgram.map((data, index) => (
                 <div
                   key={data.Key}
-                  className="card card-program mt-3 border-secondary"
+                  className="card card-program mt-3 border-secondary mb-5"
                 >
                   <div className="card-body d-flex justify-content-between align-items-center border-bottom border-secondary">
                     <p className="fw-medium mb-0" style={{ width: "20%" }}>
@@ -497,6 +538,7 @@ export default function KKDetailPublish({ onChangePage, withID }) {
           onNo={handleConfirmNo}
         />
       )}
+      </AnimatedSection>
     </>
   );
 }

@@ -181,8 +181,8 @@ export default function KKDetailProgram({ onChangePage, withID }) {
           <Alert type="danger" message={isError.message} />
         </div>
       )}
-      <div className="" style={{ margin: "100px 0px 20px"}}>
-        <div className="container back-and-title" style={{ display: "flex" }}>
+      <div className="container mb-4" style={{marginTop:"100px"}}>
+        <div className="" style={{ display: "flex" }}>
           <button
             style={{ backgroundColor: "transparent", border: "none" }}
             onClick={handleGoBack}
@@ -202,7 +202,8 @@ export default function KKDetailProgram({ onChangePage, withID }) {
           </h4>
         </div>
       </div>
-      <div className="card" style={{ margin: "20px 80px" }}>
+      <div className="container mb-4">
+      <div className="card">
         <div className="card-body">
           <div className="row pt-2">
             <div className="col-lg-7 px-4">
@@ -387,6 +388,7 @@ export default function KKDetailProgram({ onChangePage, withID }) {
             <p>Tidak Ada Program</p>
           )}
         </div>
+      </div>
       </div>
       <div
         className="modal fade"

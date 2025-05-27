@@ -12,19 +12,19 @@
     background-color: var(--primary-color);
 }
 
-.ucapan {
+.ucapanMahasiswa {
     padding-top: 24vh; /* Changed to viewport height */
     width: 60%;
     padding-left: 8%; /* Changed to percentage for responsiveness */
 }
 
-.ucapan h3 {
+.ucapanMahasiswa h3 {
     color: #FFF;
     font-size: 1.8rem; /* Use rem for scalability */
     margin-bottom: 0;
 }
 
-.ucapan h1 {
+.ucapanMahasiswa h1 {
     font-weight: bold;
     color: #FFF;
     font-size: 3rem;
@@ -34,16 +34,16 @@
     max-width: 1000px; /* Added max-width */
 }
 
-.ucapan p {
+.ucapanMahasiswa p {
     color: #FFF;
     font-size: 1.25rem; /* Use rem for scalability */
     line-height: 1.5;
     text-align: justify;
     margin-bottom: 1rem; /* Changed to rem */
-    max-width: 600px; /* Added max-width */
+    width: 600px; /* Added max-width */
 }
 
-.ucapan button {
+.ucapanMahasiswa button {
     margin-top: 2rem; /* Changed to rem */
     border: none;
     background-color: white;
@@ -57,7 +57,7 @@
     cursor: pointer;
 }
 
-.ucapan button:hover {
+.ucapanMahasiswa button:hover {
     background-color: var(--primary-color);
     color: white;
     transition-duration: 0.5s; /* Shortened duration */
@@ -69,6 +69,10 @@
 
 
 @media (max-width: 768px) {
+  
+    .background-beranda{
+        display: block;
+    }
 
     .ucapan {
         padding-top: 20vh;
@@ -78,6 +82,15 @@
 
     .imgDatang-maskot {
       display: none;
+    }
+
+    .ucapanMahasiswa {
+        width: 100%;
+    }
+
+    .ucapanMahasiswa p{
+        width: 100%;
+        padding-right:50px ;
     }
 
     .ucapan {
@@ -132,3 +145,77 @@
 
 }
 
+
+@media (min-width: 768px) and (max-width:1024px) {
+    .background-beranda{
+        display: block;
+        width: 100%;
+    }
+
+    .ucapanMahasiswa{
+        width: 100%;
+    }
+    .ucapan {
+        padding-top: 20vh;
+        width: 60%;
+        padding-left: 8%;
+    }
+
+      .imgDatang-maskot {
+        position: absolute;
+        bottom: 0;
+        right: 30%; /* atau sesuaikan dengan posisi horizontal */
+        width: 100px; /* ukuran ideal desktop/tablet */
+      }
+
+    .ucapan {
+        width: 100%; /* Full width on smaller screens */
+        padding-left: 0;
+    }
+
+    .maskot {
+        display: none;
+    }
+    .ucapan h3 {
+        color: #fff;
+        font-size: 1.8rem;
+        margin-bottom: 0;
+        text-align: center;
+    }
+
+    .ucapan h1 {
+        font-weight: 700;
+        color: #fff;
+        font-size: 3rem;
+        margin-top: 0;
+        margin-bottom: 1rem;
+        line-height: 1.5;
+        text-align: center;
+    }
+    .ucapanMahasiswa p {
+        color: #fff;
+        line-height: 1.5;
+        text-align: justify;
+        margin-bottom: 1rem;
+        width: 100%;
+        padding-right: 80px;
+
+    }
+
+
+.ucapan button {
+    margin-top: 20px;
+    border: none;
+    background-color: #fff;
+    width: 70%;
+    max-width: 280px;
+    height: 60px;
+    border-radius: 35px;
+    color: var(--primary-color);
+    font-size: 1.25rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin-left: 50px;
+}
+
+}

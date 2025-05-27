@@ -406,22 +406,20 @@ export default function PengajuanKelompokKeahlian({ onChangePage }) {
           </div>
 
           <>
-            <div className="d-flex flex-column">
+            <div className="d-flex flex-column container">
               {dataAktif ? (
                 <div className="flex-fill">
                   <div
-                    className="text-white fw-medium"
+                    className="text-white fw-medium mb-4"
                     style={{
                       padding: "10px",
                       backgroundColor: "#0E6EFE",
-                      marginLeft: "70px",
-                      width: "25%",
                       borderRadius: "10px",
                     }}
                   >
                     ↓ Terdaftar sebagai anggota keahlian
                   </div>
-                  <div className="card" style={{ margin: "10px 65px" }}>
+                  <div className="card" >
                     <div className="card-body p-3">
                       <div className="row">
                         <div className="col-lg-7 pe-4">
@@ -533,17 +531,16 @@ export default function PengajuanKelompokKeahlian({ onChangePage }) {
                     </div>
                   </div>
                   <div
-                    className="text-white fw-medium"
+                    className="text-white fw-medium mt-4 mb-4"
                     style={{
                       padding: "10px",
                       backgroundColor: "#A7AAAC",
-                      width: "25%",
                       borderRadius: "10px",
                     }}
                   >
                     ↓ Kelompok Keahlian Lainnya
                   </div>
-                  <div className="card" style={{ margin: "20px 65px" }}>
+                  <div className="card mb-4">
                     <div className="card-body p-3">
                       <div className="row mt-0 gx-4">
                         {listKK
@@ -558,7 +555,6 @@ export default function PengajuanKelompokKeahlian({ onChangePage }) {
                               key={index}
                               data={value}
                               onChangePage={onChangePage}
-                              style={{ marginRight: "-20px" }}
                             />
                           ))}
                       </div>

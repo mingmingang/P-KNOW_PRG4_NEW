@@ -118,8 +118,16 @@ main{background-color: white;}
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
+.box-image{
+  display: flex;
+}
+
 /* For Mobile */
 @media (max-width: 768px) {
+
+  .box-image{
+    display: block;
+  }
 
   .title {
     margin-left:10px; 
@@ -213,6 +221,57 @@ main{background-color: white;}
 
   .card-keterangan{
     width: 100%;
+  }
+
+  
+}
+
+
+/* For mobile view: */
+@media (max-width: 768px) {
+  .d-lg-none {
+    display: block;
+  }
+  .d-lg-block {
+    display: none;
+  }
+
+  /* Sidebar (Rightbar) when opened on mobile */
+  .sidebar-open {
+    display: block;
+  }
+
+  /* Adjusting the main content to move right when the sidebar is opened */
+  .main-content {
+    margin-left: 250px;
+    transition: margin-left 0.3s ease-in-out;
+  }
+}
+
+/* For desktop view: */
+@media (min-width: 769px) {
+  .d-lg-block {
+    display: block;
+  }
+  .d-lg-none {
+    display: none;
+  }
+
+  /* Sidebar is always open on desktop */
+  .sidebar {
+    position: relative;
+    z-index: 999;
+    background-color: white;
+    height: 100vh;
+    overflow-y: auto;
+    width: 350px;
+    left: 0;
+    top: 0;
+  }
+
+  /* Main content with padding for the sidebar */
+  .main-content {
+    margin-left: 350px;
   }
 }
 

@@ -13,6 +13,8 @@ import Loading from "../../../part/Loading";
 import Search from "../../../part/Search";
 import "../../../../index.css";
 import Alert from "../../../part/Alert";
+import AnimatedSection from "../../../part/AnimatedSection";
+
 
 export default function PICIndex({ onChangePage }) {
   const [isError, setIsError] = useState(false);
@@ -85,6 +87,7 @@ export default function PICIndex({ onChangePage }) {
 
   return (
     <>
+    <AnimatedSection>
       <div className="">
         <Search
           title="Menentukan PIC Kelompok Keahlian"
@@ -213,6 +216,7 @@ export default function PICIndex({ onChangePage }) {
           </div>
         </div>
       </div>
+      </AnimatedSection>
     </>
   );
 }

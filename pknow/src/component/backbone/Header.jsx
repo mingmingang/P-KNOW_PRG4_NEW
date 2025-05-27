@@ -112,8 +112,7 @@ export default function Header({
             src={logo}
             alt="Logo ASTRAtech"
             title="Logo ASTRAtech"
-            width="170px"
-            height="40px"
+           
           />
         </div>
 
@@ -252,7 +251,7 @@ export default function Header({
               </ul>
             )}
           </div>
-        </div>
+        
         {/* Hamburger Button */}
         {showUserInfo && (
         <div className="hamburger" onClick={toggleNav}>
@@ -260,6 +259,7 @@ export default function Header({
           {/* Toggle icon */}
         </div>
         )}
+        </div>
       </nav>
       {/* Tampilkan nav baru jika isNavOpen true */}
       {/* Tampilkan nav baru jika isNavOpen true */}

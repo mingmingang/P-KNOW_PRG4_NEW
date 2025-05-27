@@ -33,6 +33,7 @@ export default function ProgramAdd({ onChangePage, withID }) {
     pro_gambar: "",
   });
   
+  console.log("id", withID)
 
   const userSchema = object({
     idKK: string(),
@@ -45,7 +46,7 @@ export default function ProgramAdd({ onChangePage, withID }) {
   useEffect(() => {
     formDataRef.current = {
       idKK: withID.Key,
-      idKry: withID["PIC"],
+      idKry: withID["Kode Karyawan"],
       nama: "",
       deskripsi: "",
       pro_gambar: "",
@@ -55,7 +56,7 @@ export default function ProgramAdd({ onChangePage, withID }) {
   const resetForm = () => {
     formDataRef.current = {
       idKK: withID.Key,
-      idKry: withID["PIC"],
+      idKry: withID["Kode Karyawan"],
       nama: "",
       deskripsi: "",
       pro_gambar: "",
@@ -104,12 +105,16 @@ export default function ProgramAdd({ onChangePage, withID }) {
       try {
         // Tunggu semua promise selesai
         await Promise.all(uploadPromises);
+
+        console.log("ide", formDataRef.current);
   
         // Lakukan permintaan ke API setelah semua upload selesai
         const data = await UseFetch(
           API_LINK + "Program/CreateProgram",
           formDataRef.current
         );
+
+        console.log("data yang dikirim", data)
   
         if (data === "ERROR") {
           setIsError((prevError) => {
@@ -203,7 +208,7 @@ export default function ProgramAdd({ onChangePage, withID }) {
         <Loading />
       ) : (
         <>
-          <div className="" style={{display:"flex", justifyContent:"space-between", marginTop:"100px", marginLeft:"70px", marginRight:"70px"}}>
+          <div className="container mb-4" style={{display:"flex", justifyContent:"space-between", marginTop:"100px"}}>
             <div className="back-and-title" style={{display:"flex"}}>
               <button style={{backgroundColor:"transparent", border:"none"}} onClick={handleGoBack}><img src={BackPage} alt="" /></button>
                 <h4 style={{ color:"#0A5EA8", fontWeight:"bold", fontSize:"30px", marginTop:"10px", marginLeft:"20px"}}>Tambah Program</h4>
@@ -212,7 +217,7 @@ export default function ProgramAdd({ onChangePage, withID }) {
                 <span className="badge text-bg-dark " style={{fontSize:"16px", marginTop:"20px"}}>Draft</span>
                 </div>
               </div>
-          <div className="" style={{ margin: "30px 70px" }}>
+          <div className="container mb-4">
           <form onSubmit={handleAdd}>
             <div className="card">
               <div className="card-body p-4">
@@ -305,8 +310,6 @@ export default function ProgramAdd({ onChangePage, withID }) {
                   onChange={handleInputChange}
                   errorMessage={errors.deskripsi}
                 />
-
-
                   </div>
                 </div>
               </div>

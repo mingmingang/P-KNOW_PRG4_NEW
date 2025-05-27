@@ -26,7 +26,7 @@ const CardKK = ({ kk, onChangePage }) => {
     }
   }, [kk.Deskripsi]);
   return (
-    <div className="mb-3 mt-3" style={{margin:"100px"}}>
+    <div className="mb-3 mt-3 container">
        <h5
             className="px-3 py-2"
             style={{

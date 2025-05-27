@@ -155,9 +155,10 @@ function CardKelasTraining({
         />
 
         <div className="row">
-          <div className="d-flex justify-content-between align-items-center mt-4">
+
+          <div className="d-flex justify-content-between align-items-center mt-2 ml-3">
             <h3
-              className="text-xl font-bold text-blue-600"
+              className="text-xl font-bold text-blue-600 "
               style={{ fontSize: "17px" }}
             >
               {decode(data.title)}
@@ -277,7 +278,7 @@ function CardKelasTraining({
           </p>
         </div>
 
-        <div className="card-footer status-open mb-4 mr-3 ml-3">
+        <div className="card-footer status-open mb-2  ">
           <div className="card-content" style={{ alignItems: "center" }}>
             {cardContent}
           </div>

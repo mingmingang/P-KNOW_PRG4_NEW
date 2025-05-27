@@ -1,17 +1,8 @@
 import React, { useEffect, useState } from "react";
-import SweetAlert from "../../../util/SweetAlert";
 import UseFetch from "../../../util/UseFetch";
-import Button from "../../../part/Button copy";
-import Input from "../../../part/Input";
-import Table from "../../../part/Table";
-import Paging from "../../../part/Paging";
-import Filter from "../../../part/Filter";
-import DropDown from "../../../part/Dropdown";
 import Alert from "../../../part/Alert";
 import Loading from "../../../part/Loading";
 import Label from "../../../part/Label";
-import FileUpload from "../../../part/FileUpload";
-import Icon from "../../../part/Icon";
 import { API_LINK } from "../../../util/Constants";
 import Cookies from "js-cookie";
 import { decryptId } from "../../../util/Encryptor";
@@ -174,7 +165,7 @@ export default function PengajuanDetail({ onChangePage, withID }) {
         <Loading />
       ) : (
         <>
-        <div className="" style={{display:"flex", justifyContent:"space-between", marginTop:"100px", marginLeft:"70px", marginRight:"70px"}}>
+        <div className="" style={{display:"flex", justifyContent:"space-between", marginTop:"100px"}}>
         <div className="back-and-title" style={{display:"flex"}}>
           <button style={{backgroundColor:"transparent", border:"none"}} onClick={handleGoBack}><img src={BackPage} alt="" /></button>
             <h4 style={{ color:"#0A5EA8", fontWeight:"bold", fontSize:"30px", marginTop:"10px", marginLeft:"20px"}}>Pengajuan Kelompok Keahlian</h4>
@@ -195,7 +186,7 @@ export default function PengajuanDetail({ onChangePage, withID }) {
         />{withID.Status}</p>
             </div>
           </div>
-          <div className="" style={{margin:"10px 80px"}}>
+          <div className="container mb-4">
         <form>
           <div className="card">
             <div className="card-body p-4">

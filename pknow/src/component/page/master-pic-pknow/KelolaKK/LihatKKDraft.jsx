@@ -1,4 +1,6 @@
-import { useState, useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
+import { motion, useAnimation } from "framer-motion";
+import { useInView } from "react-intersection-observer";
 import Button from "../../../part/Button";
 import DropDown from "../../../part/Dropdown";
 import Input from "../../../part/Input";
@@ -21,6 +23,47 @@ import {
   faUsers,
 } from "@fortawesome/free-solid-svg-icons";
 import { decode } from "he";
+
+const AnimatedSection = ({ children, delay = 0 }) => {
+  const controls = useAnimation();
+  const [ref, inView] = useInView({
+    threshold: 0.1,
+    triggerOnce: true,
+  });
+
+  useEffect(() => {
+    if (inView) {
+      controls.start("visible");
+    }
+  }, [controls, inView]);
+
+  const variants = {
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.5,
+        delay,
+        ease: "easeOut",
+      },
+    },
+    hidden: {
+      opacity: 0,
+      y: 50,
+    },
+  };
+  return (
+    <motion.div
+      ref={ref}
+      initial="hidden"
+      animate={controls}
+      variants={variants}
+    >
+      {children}
+    </motion.div>
+  );
+};
+
 
 export default function KKDetailDraft({ onChangePage, withID }) {
   const [errors, setErrors] = useState({});
@@ -188,14 +231,15 @@ export default function KKDetailDraft({ onChangePage, withID }) {
 
   return (
     <>
+    <AnimatedSection>
       {isError.error && (
         <div className="flex-fill">
           <Alert type="danger" message={isError.message} />
         </div>
       )}
       <div
-        className="back-and-title"
-        style={{ display: "flex", marginLeft: "80px", marginTop: "100px" }}
+        className="container mb-4"
+        style={{ display: "flex",marginTop: "100px" }}
       >
         <button
           style={{ backgroundColor: "transparent", border: "none" }}
@@ -216,7 +260,8 @@ export default function KKDetailDraft({ onChangePage, withID }) {
         </h4>
       </div>
       <div className="ket-draft"></div>
-      <div className="card" style={{ margin: "10px 140px", border: "none" }}>
+      <div className="container mb-4">
+      <div className="card">
         <div className="card-body">
           <div className="row pt-2">
             <div className="col-lg-7 px-4">
@@ -239,7 +284,7 @@ export default function KKDetailDraft({ onChangePage, withID }) {
               </h4>
               <p
                 className="py-2"
-                style={{ textAlign: "justify", width: "500px" }}
+                style={{ textAlign: "justify"}}
               >
                 {decode(formData.deskripsi)}
               </p>
@@ -256,21 +301,20 @@ export default function KKDetailDraft({ onChangePage, withID }) {
                 className="cover-daftar-kk"
                 height="200"
                 src={`${API_LINK}Upload/GetFile/${formData.gambar}`}
-                width="300"
                 style={{
-                  width: 500,
-                  height: 250,
                   borderRadius: "20px",
-                
+                  width:"100%",
+                  objectFit:"cover",
                   backgroundSize: "cover",
                 }}
               />
             </div>
           </div>
         </div>
-        <div className="status" style={{marginTop:"40px", marginBottom:"60px"}}>
+        <div className="" style={{marginTop:"40px", marginBottom:"60px"}}>
           <h4 style={{fontWeight:"bold", color:"#0A5EA8", textAlign:"center"}}>Status Kelompok Keahlian ini : {formData.status}</h4>
         </div>
+      </div>
       </div>
 
       {showConfirmation && (
@@ -285,6 +329,7 @@ export default function KKDetailDraft({ onChangePage, withID }) {
           onNo={handleConfirmNo}
         />
       )}
+      </AnimatedSection>
     </>
   );
 }

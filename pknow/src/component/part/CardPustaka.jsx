@@ -81,6 +81,7 @@ function CardPustaka({
           return(
             <>
             <div className="col-md-4 mb-4" key={book.Key} >
+              <div className="kelompokKeahlian">
             <div
               className="bg-white-kk"
             >
@@ -96,7 +97,7 @@ function CardPustaka({
                   />
               </div>
   
-        <div className="">
+        <div className="content">
             <div className="d-flex justify-content-between align-items-center mt-4">
               <h3 className="font-bold text-blue-600" style={{ fontSize: "18px", width:"100%" }}>
                 {decode(book.Judul)}
@@ -144,44 +145,18 @@ function CardPustaka({
       className="deskripsi d-flex"
       style={{ fontSize: "14px", marginLeft: "0px", marginTop: "15px", marginRight: "20px" }}
     >
-      {/* {book.Keterangan.length > MAX_DESCRIPTION_LENGTH &&
-      !expandDeskripsi[book.Key] ? (
-        <>
-          {decode(book.Keterangan.slice(0, MAX_DESCRIPTION_LENGTH) + " ...")}
-        </>
-      ) : (
-        <>{decode(book.Keterangan)}</>
-      )} */}
-      {decode(book.Keterangan).substring(0, 100)}
+    
+      {decode(book.Keterangan).substring(0, 150)}
             {/* Menampilkan 200 huruf pertama */}
-            {book.Keterangan.length > 100 && "..."}
+            {book.Keterangan.length > 150 && "..."}
     </p>
-                      {/* {book.Keterangan.length > MAX_DESCRIPTION_LENGTH && (
-                        <a
-                          className="btn btn-link text-decoration-none p-0"
-                          onClick={() => handleExpandDescription(book.Key)}
-                          style={{ fontSize: "12px" }}
-                        >
-                          {expandDeskripsi[book.Key] ? (
-                            <>
-                            <div className="" style={{marginTop:"-10px"}}>
-                              Tutup <Icon name={"caret-up"} />
-                              </div>
-                            </>
-                          ) : (
-                            <>
-                            <div className="" style={{marginTop:"-20px"}}>
-                              Baca Selengkapnya <Icon name={"caret-down"} />
-                              </div>
-                            </>
-                          )}
-                        </a>
-                      )} */}
+                    
                     </div>
                   </div>
                 </div>
-                <div className="d-flex" style={{marginLeft:"20px"}}>
-                <p className="mb-0 text-secondary mb-4" style={{marginRight:"100px"}}><i
+                <div className="card-footer mb-2 mr-2 ml-3 mt-2" > 
+                <div className="" style={{display:"flex", justifyContent:"space-between"}}>
+                <p className="mb-0 text-secondary mb-4"><i
                   className="fas fa-circle"
                   icon="circle"
                   style={{
@@ -262,6 +237,8 @@ function CardPustaka({
               </div>
                         )}
                       </div>
+                      </div>
+                    </div>
                     </div>
                   </div>
                 </>
@@ -310,6 +287,7 @@ function CardPustaka({
         return (
           <>
           <div className="col-md-4 mb-4" key={book.Key} >
+            <div className="kelompokKeahlian">
             <div
               className="bg-white-kk"
             >
@@ -325,7 +303,7 @@ function CardPustaka({
                   />
               </div>
 
-        <div className="">
+        <div className="content">
             <div className="d-flex justify-content-between align-items-center mt-4">
               <h3 className="font-bold text-blue-600" style={{ fontSize: "18px", width:"100%" }}>
                 {decode(book.Judul)}
@@ -369,29 +347,26 @@ function CardPustaka({
                       </span>
                     </div>
                     <div>
-                      <p
-                        className="deskripsi d-flex"
-                        style={{ fontSize: "14px", marginLeft:'0px', marginTop:"15px", marginRight:"20px" }}
-                      >
-                        {/* {book.Keterangan.length > MAX_DESCRIPTION_LENGTH &&
-                        !expandDeskripsi[book.Key] ? (
-                          <>
-                            {book.Keterangan.slice(0, MAX_DESCRIPTION_LENGTH) +
-                              " ..."}
-                          </>
-                        ) : (
-                          <>{decode(book.Keterangan)}</>
-                        )} */}
-
-{decode(book.Keterangan).substring(0, 100)}
-            {/* Menampilkan 200 huruf pertama */}
-            {book.Keterangan.length > 100 && "..."}
-                      </p>
+                    <p
+  className="deskripsi d-flex"
+  style={{ 
+    fontSize: "14px",
+    margin: "15px 20px 0 0",
+    display: "-webkit-box",
+    WebkitLineClamp: 3, // Jumlah baris maksimal
+    WebkitBoxOrient: "vertical",
+    overflow: "hidden",
+    textOverflow: "ellipsis"
+  }}
+>
+  {decode(book.Keterangan)}
+</p>
                      
                     </div>
                   </div>
                 </div>
-                <div className="d-flex ml-3">
+               <div className="card-footer mb-2 mr-2 ml-3 mt-2" > 
+                <div className="" style={{display:"flex", justifyContent:"space-between"}}>
 
                 <p className="mb-0 text-secondary" style={{marginRight:"40px"}}><i
                   className="fas fa-circle"
@@ -413,50 +388,10 @@ function CardPustaka({
                   : "Pustaka Bersama"
                 }</p>
 
-              {/* {uploader === book.Uploader && (
-                <div className="card-footer p-1 d-flex align-items-center justify-content-end">
-                  <Icon
-                    name="edit"
-                    type="Bold"
-                    cssClass="btn px-2 py-0 text-primary"
-                    title="Ubah pustaka"
-                    onClick={() => onEdit("edit", book)}
-                  />
-                  <Icon
-                    name="delete"
-                    type="Bold"
-                    style={{color:"red"}}
-                    title="Hapus pustaka"
-                    onClick={() => handleDeleteClick(book)}
-                  />
-                  <Icon
-                  name="list"
-                  type="Bold"
-                  cssClass="btn px-2 py-0 text-primary"
-                  title="Lihat detail Kelompok Keahlian"
-                  onClick={() => onDetail("detail", book)}
-                />
-                  <div
-                    className="form-check form-switch py-0 ms-2"
-                    style={{ width: "fit-content" }}
-                  >
-                    <Input
-                      type="checkbox"
-                      title="Aktif / Nonaktif"
-                      className="form-check-input"
-                      checked={book.Status === "Aktif"}
-                      onChange={() => handleStatusChange(book.Key, "Tidak Aktif")}
-                    />
-                    <label
-                      className="form-check-label"
-                      htmlFor="flexSwitchCheckDefault"
-                    ></label>
-                  </div>
-                </div>
-              )} */}
+          
 
             {uploader !== book.Uploader && (
-                <div className="card-footer p-1 d-flex align-items-center justify-content-end" style={{marginLeft:"30px", marginTop:"-10px"}}>
+                <div className="card-footer p-1 d-flex align-items-center justify-content-end" style={{marginLeft:"30px"}}>
                   <button
                     onClick={() => onDetail("detail", book)}
                     style={{width:"100px", border:"none", padding:"10px 20px", color:"white", background:"#0E6EFE", borderRadius:"10px", fontWeight:"bold", marginBottom:"10px"}}
@@ -466,6 +401,8 @@ function CardPustaka({
                   </div>
                         )}
                       </div>
+                      </div>
+                    </div>
                     </div>
                   </div>
                 </>

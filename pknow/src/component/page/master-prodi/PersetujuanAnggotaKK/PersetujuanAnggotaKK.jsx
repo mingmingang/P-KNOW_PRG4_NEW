@@ -16,6 +16,7 @@ import Icon from "../../../part/Icon";
 import Loading from "../../../part/Loading";
 import Alert from "../../../part/Alert";
 import axios from "axios";
+import AnimatedSection from "../../../part/AnimatedSection";
 
 export default function PersetujuanAnggotaKK({ onChangePage }) {
   const [isError, setIsError] = useState({ error: false, message: "" });
@@ -54,6 +55,7 @@ export default function PersetujuanAnggotaKK({ onChangePage }) {
 
   return (
     <>
+    <AnimatedSection>
       <div className="app-container">
         <main>
           <Search
@@ -135,6 +137,7 @@ export default function PersetujuanAnggotaKK({ onChangePage }) {
           </>
         </main>
       </div>
+      </AnimatedSection>
     </>
   );
 }
