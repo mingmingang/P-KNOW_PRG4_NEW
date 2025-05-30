@@ -662,7 +662,7 @@ export default function KelolaKK({ onChangePage }) {
                     style={{ marginLeft: "20px" }}
                     iconName="add"
                     classType="primary py-2 fw-semibold rounded-4"
-                    label="Tambah Data"
+                    label="Tambah"
                     onClick={() => onChangePage("add")}
                   />
                 </div>

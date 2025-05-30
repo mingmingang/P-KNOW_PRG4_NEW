@@ -14,6 +14,7 @@ import NoImage from "../../../../assets/NoImage.png";
 import FileUpload from "../../../part/FileUpload";
 import UploadFile from "../../../util/UploadFile";
 import { decode } from "html-entities";
+import "../../../../style/ProgramEdit.css";
 
 export default function ProgramEdit({ onChangePage, withID }) {
   const [errors, setErrors] = useState({});
@@ -204,42 +205,24 @@ export default function ProgramEdit({ onChangePage, withID }) {
         <Loading />
       ) : (
         <>
-          <div
-            className=""
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              marginTop: "100px",
-              marginLeft: "70px",
-              marginRight: "70px",
-            }}
-          >
-            <div className="back-and-title" style={{ display: "flex" }}>
-              <button
-                style={{ backgroundColor: "transparent", border: "none" }}
-                onClick={handleGoBack}
-              >
+          <div className="program-edit-container">
+            <div className="header-section">
+              <div className="back-and-title edit-pro">
+              <button className="back-button" onClick={handleGoBack}>
                 <img src={BackPage} alt="" />
               </button>
-              <h4
-                style={{
-                  color: "#0A5EA8",
-                  fontWeight: "bold",
-                  fontSize: "30px",
-                  marginTop: "10px",
-                  marginLeft: "20px",
-                }}
-              >
+              <h4 className="page-title program">
                 Edit Program
               </h4>
             </div>
           </div>
-          <div className="" style={{ margin: "30px 70px" }}>
+          </div>
+          <div className="form-container">
             <form onSubmit={handleAdd}>
-              <div className="card">
+              <div className="card edit-card">
                 <div className="card-body p-4">
                   <div className="row">
-                    <div className="col-lg-4" style={{ display: "flex" }}>
+                    <div className="col-lg-4 file-preview-section">
                       <div className="file-preview">
                         <div className="preview-img">
                           {filePreview ? (
@@ -314,15 +297,13 @@ export default function ProgramEdit({ onChangePage, withID }) {
                       />
                     </div>
                     <div className="col-lg-12">
-                      <label
-                        style={{ paddingBottom: "5px", fontWeight: "bold" }}
-                      >
+                      <label className="form-label">
                         Deskripsi/Penjelasan Program{" "}
                         <span style={{ color: "red" }}> *</span>
                       </label>
                       
 
-<Input
+                <Input
                   type="textarea"
                    placeholder="Deskripsi/Penjelasan Program"
                   forInput="deskripsi"
@@ -340,36 +321,16 @@ export default function ProgramEdit({ onChangePage, withID }) {
                     </div>
                   </div>
                 </div>
-                <div
-                  className="d-flex justify-content-end"
-                  style={{
-                    marginRight: "20px",
-                    marginTop: "-10px",
-                    marginBottom: "20px",
-                  }}
-                >
+                <div className="action-buttons">
                   <button
-                    className="btn btn-secondary btn-sm"
+                    className="cancel-button"
                     type="button"
                     onClick={resetForm}
-                    style={{
-                      marginRight: "10px",
-                      padding: "5px 15px",
-                      fontWeight: "bold",
-                      borderRadius: "10px",
-                    }}
                   >
                     Batalkan
                   </button>
-                  <button
-                    className="btn btn-primary btn-sm"
+                  <button className="save-button"
                     type="submit"
-                    style={{
-                      marginRight: "10px",
-                      padding: "5px 20px",
-                      fontWeight: "bold",
-                      borderRadius: "10px",
-                    }}
                   >
                     Simpan
                   </button>

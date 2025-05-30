@@ -14,6 +14,7 @@ import Konfirmasi from "../../../part/Konfirmasi";
 import NoImage from "../../../../assets/NoImage.png";
 import FileUpload from "../../../part/FileUpload";
 import UploadFile from "../../../util/UploadFile";
+import "../../../../style/Program.css";
 
 
 export default function ProgramAdd({ onChangePage, withID }) {
@@ -208,21 +209,22 @@ export default function ProgramAdd({ onChangePage, withID }) {
         <Loading />
       ) : (
         <>
-          <div className="container mb-4" style={{display:"flex", justifyContent:"space-between", marginTop:"100px"}}>
-            <div className="back-and-title" style={{display:"flex"}}>
-              <button style={{backgroundColor:"transparent", border:"none"}} onClick={handleGoBack}><img src={BackPage} alt="" /></button>
-                <h4 style={{ color:"#0A5EA8", fontWeight:"bold", fontSize:"30px", marginTop:"10px", marginLeft:"20px"}}>Tambah Program</h4>
+          <div className="program-add-container">
+            <div className="header-section add-pro">
+              <div className="back-and-title add-pro">
+              <button className="back-button" onClick={handleGoBack}><img src={BackPage} alt="" /></button>
+                <h4 className="page-title">Tambah Program</h4>
               </div>
                 <div className="ket-draft">
-                <span className="badge text-bg-dark " style={{fontSize:"16px", marginTop:"20px"}}>Draft</span>
+                <span className="draft-badge badge text-bg-dark ">Draft</span>
                 </div>
               </div>
-          <div className="container mb-4">
+          <div className="form-container">
           <form onSubmit={handleAdd}>
-            <div className="card">
+            <div className="card tambah-program">
               <div className="card-body p-4">
               <div className="row">
-              <div className="col-lg-4" style={{ display: "flex" }}>
+              <div className="col-lg-4 file-preview-section">
                 <div className="file-preview">
                   <div className="preview-img">
                     {filePreview ? (
@@ -236,11 +238,7 @@ export default function ProgramAdd({ onChangePage, withID }) {
                         <img
                           src={filePreview}
                           alt="Preview"
-                          style={{
-                            width: "200px",
-                            height: "auto",
-                            borderRadius: "20px",
-                          }}
+                          className="preview-image"
                         />
                       </div>
                     ) : (
@@ -254,11 +252,7 @@ export default function ProgramAdd({ onChangePage, withID }) {
                         <img
                           src={NoImage} // Use fallback image if no preview available
                           alt="No Preview Available"
-                          style={{
-                            width: "200px",
-                            height: "auto",
-                            borderRadius: "20px",
-                          }}
+                          className="preview-image"
                         />
                       </div>
                     )}
@@ -314,35 +308,18 @@ export default function ProgramAdd({ onChangePage, withID }) {
                 </div>
               </div>
               <div
-                className="d-flex justify-content-end"
-                style={{
-                  marginRight: "20px",
-                  marginTop: "-10px",
-                  marginBottom: "20px",
-                }}
+                className="action-buttons-tambahpro"
               >
               <button
-                  className="btn btn-secondary btn-sm"
+                  className="cancel-button-tambahpro btn-secondary btn-sm"
                   type="button"
                   onClick={resetForm}
-                  style={{
-                    marginRight: "10px",
-                    padding: "5px 15px",
-                    fontWeight: "bold",
-                    borderRadius: "10px",
-                  }}
                 >
                   Batalkan
                 </button>
                 <button
-                  className="btn btn-primary btn-sm"
+                  className="save-button-tambahpro btn-primary btn-sm"
                   type="submit"
-                  style={{
-                    marginRight: "10px",
-                    padding: "5px 20px",
-                    fontWeight: "bold",
-                    borderRadius: "10px",
-                  }}
                 >
                   Simpan
                 </button>
@@ -359,6 +336,7 @@ export default function ProgramAdd({ onChangePage, withID }) {
           onNo={handleConfirmNo}
         />
         )}
+        </div>
         </>
       )}
     </>

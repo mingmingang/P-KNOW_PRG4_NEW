@@ -19,6 +19,15 @@ a div:hover {
     margin-left: var(--responsiveContainer-margin-left);
   }
   
+  .backSearch .input-wrapper {
+  height: 40px;
+  border: none;
+}
+
+.backSearch .input-wrapper button {
+  margin-top: -60px;
+  margin-left: 650px;
+}
   
   @media only screen and (max-width: 1280px) {
     .sidebarMenu {
@@ -92,3 +101,23 @@ a div:hover {
   h5.card-title-pustaka:hover {
     text-decoration: underline;
   }
+
+  @media (max-width: 768px) {
+  .backSearch .input-wrapper input {
+  }
+
+  .backSearch .input-wrapper button {
+    margin-left: 250px;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1080px) {
+  .backSearch .input-wrapper {
+    height: 40px;
+    border: none;
+  }
+
+  .backSearch .input-wrapper button {
+    margin-left: 250px;
+  }
+}

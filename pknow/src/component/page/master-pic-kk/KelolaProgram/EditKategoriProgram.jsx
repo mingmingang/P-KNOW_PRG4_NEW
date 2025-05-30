@@ -11,6 +11,7 @@ import SweetAlert from "../../../util/SweetAlert";
 import BackPage from "../../../../assets/backPage.png";
 import Konfirmasi from "../../../part/Konfirmasi";
 import { decode } from "html-entities";
+import "../../../../style/KategoriProgramEdit.css";
 
 export default function ProgramEdit({ onChangePage, withID }) {
   const [errors, setErrors] = useState({});
@@ -136,42 +137,19 @@ export default function ProgramEdit({ onChangePage, withID }) {
         <Loading />
       ) : (
         <>
-          <div
-            className=""
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              marginTop: "100px",
-              marginLeft: "70px",
-              marginRight: "70px",
-            }}
-          >
-            <div className="back-and-title" style={{ display: "flex" }}>
-              <button
-                style={{ backgroundColor: "transparent", border: "none" }}
-                onClick={handleGoBack}
-              >
+          <div className="program-edit-container">
+            <div className="back-and-title edit-kat">
+              <button className="back-button" onClick={handleGoBack}>
                 <img src={BackPage} alt="" />
               </button>
-              <h4
-                style={{
-                  color: "#0A5EA8",
-                  fontWeight: "bold",
-                  fontSize: "30px",
-                  marginTop: "10px",
-                  marginLeft: "20px",
-                }}
-              >
+              <h4 className="page-title">
                 Edit Kategori Program
               </h4>
             </div>
           </div>
-          <form onSubmit={handleAdd}>
-            <div
-              className="card"
-              style={{ margin: "20px 80px", marginBottom: "40px" }}
-            >
-              <div className="card-body p-4">
+          <form onSubmit={handleAdd} className="edit-form kategori">
+            <div className="card edit-card">
+              <div className="card-body">
                 <div className="row">
                   <div className="col-lg-12">
                     <Input
@@ -192,7 +170,7 @@ export default function ProgramEdit({ onChangePage, withID }) {
                   <div className="col-lg-12">
                    
 
-<Input
+                <Input
                   type="textarea"
                    placeholder="Deskripsi/Penjelasan Kategori Program"
                   forInput="deskripsi"
@@ -209,37 +187,16 @@ export default function ProgramEdit({ onChangePage, withID }) {
                   </div>
                 </div>
               </div>
-              <div
-                className="d-flex justify-content-end"
-                style={{
-                  marginRight: "20px",
-                  marginTop: "-10px",
-                  marginBottom: "20px",
-                }}
-              >
+              <div className="action-buttons edit-kat">
                 <button
-                  className="btn btn-secondary btn-sm"
+                  className="cancel-button edit-kat"
                   type="button"
-                  onClick={resetForm}
-                  style={{
-                    marginRight: "10px",
-                    padding: "5px 15px",
-                    fontWeight: "bold",
-                    borderRadius: "10px",
-                  }}
-                >
+                  onClick={resetForm}>
                   Batalkan
                 </button>
                 <button
-                  className="btn btn-primary btn-sm"
-                  type="submit"
-                  style={{
-                    marginRight: "10px",
-                    padding: "5px 20px",
-                    fontWeight: "bold",
-                    borderRadius: "10px",
-                  }}
-                >
+                  className="save-button edit-kat"
+                  type="submit">
                   Simpan
                 </button>
               </div>

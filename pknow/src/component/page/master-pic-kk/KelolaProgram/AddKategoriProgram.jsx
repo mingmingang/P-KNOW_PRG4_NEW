@@ -13,29 +13,28 @@ import Label from "../../../part/Label";
 import BackPage from "../../../../assets/backPage.png";
 import Konfirmasi from "../../../part/Konfirmasi";
 import { decode } from "he";
+import "../../../../style/KategoriProgramAdd.css";
 
 export default function KategoriProgramAdd({ onChangePage, withID }) {
   const [errors, setErrors] = useState({});
   const [isError, setIsError] = useState({ error: false, message: "" });
   const [isLoading, setIsLoading] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
-  const [isBackAction, setIsBackAction] = useState(false);  
+  const [isBackAction, setIsBackAction] = useState(false);
 
   const handleGoBack = () => {
-    setIsBackAction(true);  
-    setShowConfirmation(true);  
+    setIsBackAction(true);
+    setShowConfirmation(true);
   };
 
   const handleConfirmYes = () => {
-    setShowConfirmation(false); 
+    setShowConfirmation(false);
     onChangePage("index");
   };
 
-
   const handleConfirmNo = () => {
-    setShowConfirmation(false);  
+    setShowConfirmation(false);
   };
-
 
   const formDataRef = useRef({
     idProgram: "",
@@ -111,11 +110,7 @@ export default function KategoriProgramAdd({ onChangePage, withID }) {
               };
             });
           } else {
-            SweetAlert(
-              "Sukses",
-              "Data Kategori berhasil disimpan",
-              "success"
-            );
+            SweetAlert("Sukses", "Data Kategori berhasil disimpan", "success");
             onChangePage("index");
           }
         })
@@ -136,94 +131,83 @@ export default function KategoriProgramAdd({ onChangePage, withID }) {
         <Loading />
       ) : (
         <>
-        <div className="" style={{display:"flex", justifyContent:"space-between", marginTop:"100px", marginLeft:"70px", marginRight:"70px"}}>
-          <div className="back-and-title" style={{display:"flex"}}>
-            <button style={{backgroundColor:"transparent", border:"none"}} onClick={handleGoBack}><img src={BackPage} alt="" /></button>
-              <h4 style={{ color:"#0A5EA8", fontWeight:"bold", fontSize:"30px", marginTop:"10px", marginLeft:"20px"}}>Tambah Kategori</h4>
-            </div>
+          <div className="kategori-add-container">
+            <div className="header-section">
+              <div className="back-and-title add-kat">
+                <button className="back-button" onClick={handleGoBack}>
+                  <img src={BackPage} alt="" />
+                </button>
+                <h4 className="page-title kategori">Tambah Kategori</h4>
+              </div>
               <div className="ket-draft">
-              <span className="badge text-bg-dark " style={{fontSize:"16px", marginTop:"20px"}}>Draft</span>
+                <span className="draft-badge badge text-bg-dark ">Draft</span>
               </div>
-            </div>
-        <div className="" style={{ margin: "30px 70px" }}>
-        <form onSubmit={handleAdd}>
-          <div className="card">
-            <div className="card-body p-4">
-              <div className="row">
-                <div className="col-lg-12">
-                  <Label title="Nama Program" data={decode(withID["Nama Program"])} />
-                </div>
-                <div className="col-lg-12">
-                  <Input
-                    type="text"
-                    forInput="nama"
-                    label="Nama Kategori"
-                    isRequired
-                    placeholder="Nama Kategori"
-                    value={formDataRef.current.nama}
-                    onChange={handleInputChange}
-                    errorMessage={errors.nama}
-                  />
-                </div>
-                <div className="col-lg-12">
-                <Input
-                  type="textarea"
-                   placeholder="Deskripsi/Penjelasan Kategori Program"
-                  forInput="deskripsi"
-                  label="Deskripsi/Penjelasan Kategori Program"
-                  isRequired
-                  value={formDataRef.current.deskripsi}
-                  onChange={handleInputChange}
-                  errorMessage={errors.deskripsi}
-                />
-                </div>
-              </div>
-            </div>
-            <div
-                className="d-flex justify-content-end"
-                style={{
-                  marginRight: "20px",
-                  marginTop: "-10px",
-                  marginBottom: "20px",
-                }}
-              >
-              <button
-                  className="btn btn-secondary btn-sm"
-                  type="button"
-                  onClick={resetForm}
-                  style={{
-                    marginRight: "10px",
-                    padding: "5px 15px",
-                    fontWeight: "bold",
-                    borderRadius: "10px",
-                  }}
-                >
-                  Batalkan
-                </button>
-                <button
-                  className="btn btn-primary btn-sm"
-                  type="submit"
-                  style={{
-                    marginRight: "10px",
-                    padding: "5px 20px",
-                    fontWeight: "bold",
-                    borderRadius: "10px",
-                  }}
-                >
-                  Simpan
-                </button>
             </div>
           </div>
-        </form>
-        </div>
-        {showConfirmation && (
-        <Konfirmasi
-          title={isBackAction ? "Konfirmasi Kembali" : "Konfirmasi Simpan"}
-          pesan={isBackAction ? "Apakah anda ingin kembali?" : "Anda yakin ingin simpan data?"}
-          onYes={handleConfirmYes}
-          onNo={handleConfirmNo}
-        />
-        )}
+          <div className="form-container add-kat">
+            <form onSubmit={handleAdd}>
+              <div className="card form-card">
+                <div className="card-body">
+                  <div className="row">
+                    <div className="col-lg-12">
+                      <Label
+                        title="Nama Program"
+                        data={decode(withID["Nama Program"])}
+                      />
+                    </div>
+                    <div className="col-lg-12 form-input">
+                      <Input
+                        type="text"
+                        forInput="nama"
+                        label="Nama Kategori"
+                        isRequired
+                        placeholder="Nama Kategori"
+                        value={formDataRef.current.nama}
+                        onChange={handleInputChange}
+                        errorMessage={errors.nama}
+                      />
+                    </div>
+                    <div className="col-lg-12 form-input">
+                      <Input
+                        type="textarea"
+                        placeholder="Deskripsi/Penjelasan Kategori Program"
+                        forInput="deskripsi"
+                        label="Deskripsi/Penjelasan Kategori Program"
+                        isRequired
+                        value={formDataRef.current.deskripsi}
+                        onChange={handleInputChange}
+                        errorMessage={errors.deskripsi}
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div className="action-buttons add-kat">
+                  <button
+                    className="cancel-button add-kat"
+                    type="button"
+                    onClick={resetForm}
+                  >
+                    Batalkan
+                  </button>
+                  <button className="save-button add-kat" type="submit">
+                    Simpan
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+          {showConfirmation && (
+            <Konfirmasi
+              title={isBackAction ? "Konfirmasi Kembali" : "Konfirmasi Simpan"}
+              pesan={
+                isBackAction
+                  ? "Apakah anda ingin kembali?"
+                  : "Anda yakin ingin simpan data?"
+              }
+              onYes={handleConfirmYes}
+              onNo={handleConfirmNo}
+            />
+          )}
         </>
       )}
     </>

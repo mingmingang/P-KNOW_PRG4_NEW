@@ -15,6 +15,7 @@ import Cookies from "js-cookie";
 import { decryptId } from "../../../util/Encryptor";
 import pknowMaskot from "../../../../assets/pknowmaskot.png";
 import { decode } from "he";
+import "../../../../style/KelolaProgram.css";
 
 export default function ProgramIndex({ onChangePage }) {
   let activeUser = "";
@@ -400,7 +401,7 @@ export default function ProgramIndex({ onChangePage }) {
   }
 
   return (
-    <div className="app-container">
+    <div lassName="header-container">
           <Search
                     title="Kelola Program"
                     description="ASTRAtech memiliki banyak program studi, di dalam program studi terdapat kelompok keahlian yang biasa disebut dengan Kelompok Keahlian."
@@ -417,15 +418,10 @@ export default function ProgramIndex({ onChangePage }) {
       ) : (
         
         <div className="d-flex flex-column container">
-           <h5
-                        className="px-3 py-2 fw-bold"
-                        style={{color:"#0A5EA8", fontSize:"30px"}}
-                      >
+           <h5 className="program-header">
                         {currentData && currentData["Nama Kelompok Keahlian"] 
   ? decode(currentData["Nama Kelompok Keahlian"]) 
-  : "Nama Kelompok Keahlian tidak tersedia"}
-
-                      </h5>
+  : "Nama Kelompok Keahlian tidak tersedia"}</h5>
           <div className="flex-fill">
             <div className="container">
               <div className="row gx-4">
@@ -437,10 +433,11 @@ export default function ProgramIndex({ onChangePage }) {
                       borderRadius: "10px",
                     }}
                   >
-                    <div className="card-body p-0">
+                    <div className="card-body p-0 program">
                       <div className="card-body px-3">
                         <div className="d-flex justify-content-between align-items-center" >
-                          <h6 className="card-programtitle mb-0">
+                          <h6 className="card-programtitle mb-0 d-flex flex-wrap align-items-center">
+                            <span className="d-flex align-items-center me-3 ">
                             <Icon
                               name="align-left"
                               type="Bold"
@@ -448,7 +445,6 @@ export default function ProgramIndex({ onChangePage }) {
                               title="Program"
                               style={{color:"#0A5EA8"}}
                             />
-                            <span>
                               <a
                                 href=""
                                 className="text-decoration-none text-dark"
@@ -459,14 +455,15 @@ export default function ProgramIndex({ onChangePage }) {
                                 Program
                               </a>
                             </span>
+
+                            <span className="d-flex align-items-center me-3">
                             <Icon
                               name="users"
                               type="Bold"
-                              cssClass="btn px-2 py-0 ms-3"
+                              cssClass="btn px-2 py-0"
                               title="Anggota Kelompok Keahlian"
                               style={{color:"#0A5EA8"}}
                             />
-                            <span>
                               <a
                                 href="#modalAnggota"
                                 data-bs-toggle="modal"
@@ -480,25 +477,29 @@ export default function ProgramIndex({ onChangePage }) {
                               </a>
                             </span>
                           </h6>
-                          <div className="action d-flex">
+                          <div className="d-flex action-kelola">
                             <Button
                               iconName="add"
-                              classType="primary  me-2 rounded-3 py-2"
-                              style={{marginRight:"10px"}}
+                              classType="primary-action-btn btn-primary btn-sm mb-2 py-2 rounded-3"
                               label="Tambah Program"
                               onClick={() => onChangePage("add", currentData)}
                             />
                             <Button
                               iconName="list"
-                              classType="btn-sm px-3 me-2"
+                              classType="secondary-action-btn btn-sm px-3 me-2"
                               title="Detail Kelompok Keahlian"
                               onClick={() => onChangePage("detailPublish",currentData)}
-                              style={{background:"white", color:"#0A5EA8",  boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.2)", fontSize:"18px", padding:"5px 10px" }}
+                              style={{
+                                  background: "white",
+                                  color: "#0A5EA8",
+                                  boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.2)",
+                                }}
                             />
                           </div>
                         </div>
                         
-                        <p className=" mt-4" style={{textAlign:"justify"}}>{currentData && currentData.Deskripsi 
+                        <p className=" mt-4" style={{textAlign:"justify"}}>
+                          {currentData && currentData.Deskripsi 
   ? decode(currentData.Deskripsi) 
   : "Deskripsi tidak tersedia"}
 </p>

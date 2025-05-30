@@ -1,6 +1,7 @@
 import React from "react";
 import { useState } from "react";
 import Icon from "./Icon";
+import "../../style/CardKonfirmasi.css";
 import Button from "./Button copy";
 import { API_LINK } from "../util/Constants";
 import { decode } from "he";
@@ -24,7 +25,7 @@ function CardKonfirmasi({ data, onChangePage, isShow }) {
           }}
         >
           <div className="card-body p-0">
-            <img src={`${API_LINK}Upload/GetFile/${data["Gambar"]}`} alt="" style={{width:"390px", height:"180px", objectFit:"cover", margin:"10px", borderRadius:"10px"}}/>
+            <img src={`${API_LINK}Upload/GetFile/${data["Gambar"]}`} alt="" className="card-image" style={{objectFit:"cover", borderRadius:"10px"}}/>
             <h5
               className="card-title px-3 pt-2 pb-3" style={{color:"#0A5EA8", fontWeight:"bold", marginBottom:"0"}}
             >

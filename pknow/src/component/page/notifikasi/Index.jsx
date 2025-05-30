@@ -8,13 +8,14 @@ import Table from "../../part/Table";
 import Paging from "../../part/Paging";
 import Filter from "../../part/Filter";
 import DropDown from "../../part/Dropdown";
+import "../../../style/Notifikasi.css"
 import Alert from "../../part/Alert";
 import Loading from "../../part/Loading";
 import Search from "../../part/Search";
 import Cookies from "js-cookie";
 import { decryptId } from "../../util/Encryptor";
 import axios from 'axios';
-
+import "../../../index.css";
 
 let activeUser = "";
 const cookie = Cookies.get("activeUser");
@@ -197,7 +198,7 @@ export default function NotifikasiIndex() {
 
   return (
     <>
-      <div className="d-flex flex-column">
+      <div className="app">
         {isError && (
           <div className="flex-fill">
             <Alert
@@ -206,8 +207,7 @@ export default function NotifikasiIndex() {
             />
           </div>
         )}
-        <div className="flex-fill">
-          <div className="input-group">
+          
             <Search
               title="Notifikasi P-KNOW Sistem"
               description="Lihat seluruh notifikasi aktivitas pesan - pesan data yang dikirimkan ke akun P-KNOW anda."
@@ -220,9 +220,7 @@ export default function NotifikasiIndex() {
               onClick={handleSearch}
             />
            
-          </div>
-        </div>
-        <div className="d-flex  mt-4 mb-4" style={{justifyContent:"flex-end", alignItems:"center", marginRight:"120px"}}>
+        <div className="buttonContainer d-flex  mt-4 mb-4" style={{justifyContent:"flex-end", alignItems:"center"}}>
             <Filter handleSearch={handleSearch}>
               <DropDown
                 ref={searchFilterSort}
@@ -250,7 +248,7 @@ export default function NotifikasiIndex() {
             ><i className="fa fa-check" ></i> Set Sudah Dibaca</button>
             </div>
             </div>
-        <div className="mt-3" style={{ margin: "10px 100px" }}>
+        <div className="Table mt-3">
           {isLoading ? (
             <Loading />
           ) : (

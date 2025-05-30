@@ -37,12 +37,8 @@
     font-size: 16px;
 }
 
-.cover-kk-show  {
-    width: 5000px;
-}
-
 .informasi-kk .deskripsi {
-    width: 100%;
+    width: 600px;
     text-align: justify;
     font-size: 15px;
     line-height: 1.6;
@@ -268,12 +264,68 @@
     border: none;
 }
 
-@media (max-width:768px){
-    .information-kelompok-keahlian{
-        display: block;
-    }
 
-    .cover-kk-show  {
-    width: 5000px;
+
+/*chiooooooooooooo*/
+@media screen and (max-width: 768px) {
+  .card-profile {
+    align-items: flex-start !important;
+    padding: 10px !important;
+  }
+
+  .card-profile img {
+    width: 40px !important;
+    height: 40px !important;
+    margin-bottom: 10px;
+  }
+
+  .card-profile .ps-3 {
+    padding-left: 0 !important;
+  }
+
+  .card-profile .btn {
+    align-self: flex-end;
+    margin-top: 10px;
+  }
+
+  .information-kelompok-keahlian {
+    flex-direction: column;
+    margin: 0 0px;
+  }
+
+  .detail-kk {
+    width: 100% !important;
+    height: auto !important;
+    margin-top: 20px;
+  }
+
+  .cover-kk-show img {
+    width: 100% !important;
+    height: auto !important;
+  }
+
+  .informasi-kk .deskripsi {
+    width: 100% !important;
+  }
+
+  .content-container {
+    margin: 20px;
+  }
+  
+  .back-and-title {
+    margin-left: 20px !important;
+  }
+   .title {
+    margin-left:0px; 
+  }
+  
 }
+
+
+@media screen and (min-width: 1024px) {
+  .detail-kk {
+    width: 100% !important;
+    height: auto !important;
+  }
 }
+

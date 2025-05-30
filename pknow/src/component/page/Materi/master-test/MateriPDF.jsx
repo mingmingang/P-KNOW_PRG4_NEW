@@ -271,7 +271,7 @@ return (
     backgroundColor: "white",
     height: isSidebarOpen ? "100vh" : "auto",
     overflowY: "auto",
-    width: "350px",
+    width: isSidebarOpen ? "350px" : "0px",
     left: isSidebarOpen ? "0" : "auto",
     top: isSidebarOpen ? "0" : "auto",
   }}
@@ -291,6 +291,9 @@ return (
       isOpen={true}
       onChangePage={onChangePage}
       materiId={AppContext_test.materiId}
+      handlePreTestClick_open={() => setIsSidebarOpen(true)}
+            handlePreTestClick_close={() => setIsSidebarOpen(false)}
+            isCollapsed={!isSidebarOpen}
       // refreshKey={refreshKey}
       // setRefreshKey={setRefreshKey}
     />
@@ -313,7 +316,7 @@ return (
            <div
   className="d-flex flex-column flex-grow-1"
   style={{
-    marginLeft: window.innerWidth >= 992 ? "350px" : "0", // 992px is Bootstrap 'lg'
+    marginLeft: window.innerWidth >= 992 ? (isSidebarOpen ? "23%" : "0px") : "0",
     transition: "margin-left 0.3s",
     marginTop:"100px"
   }}

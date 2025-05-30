@@ -5,6 +5,7 @@ import Input from "./Input";
 import { colors } from "@mui/material";
 import { API_LINK } from "../util/Constants";
 import { decode } from "html-entities";
+import "../../style/CardProgram.css";
 
 const MAX_DESCRIPTION_LENGTH = 200;
 
@@ -38,64 +39,31 @@ const CardProgram = ({
       className={`card card-program mt-3 ${isActive ? "border-primary" : ""}`}
     >
       {data.Status === "Draft" ? (
-        <span
-          className="text-danger bg-white px-2 ms-2 mb-0 fw-bold"
-          style={{
-            marginTop: "-12px",
-            width: "fit-content",
-            fontSize: "14px",
-          }}
-        >
-          Draft
-        </span>
+        <span className="draft-badge">Draft</span>
       ) : (
         ""
       )}
-      <div
-        className={`card-body d-flex justify-content-between ${
-          isActive ? "align-items-top border-bottom border-primary" : ""
-        }`}
-      >
+      <div className={`card-body-content ${isActive ? "active" : ""}`}>
         <img
           alt={`image`}
           className="cover-daftar-kk"
           height="200"
-          src={`${API_LINK}Upload/GetFile/${data.Gambar}`}
-          width="320"
-          style={{marginRight:"20px", borderRadius:"20px", objectFit:"cover"}}
-        />
-        <div className="">
-        <p
-          className="fw-medium"
-          style={{ width: "100%", borderRight: "solid grey 1px", backgroundColor:"#ABCCFF", borderRadius:"10px", padding:"5px 5px" }}
-        >
+          src={`${API_LINK}Upload/GetFile/${data.Gambar}`}/>
+        <div className="program-info">
+        <p className="program-index">
           {index}
           {". "}
           {data && data["Nama Program"]
               ? decode(data["Nama Program"])
               : "Nama Program tidak tersedia"}
         </p>
-        <p
-          className="mb-0 pe-3"
-          style={{
-            width: "100%",
-            display: isActive ? "block" : "-webkit-box",
-            WebkitLineClamp: 1,
-            WebkitBoxOrient: "vertical",
-            overflow: "hidden",
-            textAlign: "justify",
-          }}
-        >
+        <p className={`program-description ${!isActive ? "clamped" : ""}`}>
           {data.Deskripsi.length > MAX_DESCRIPTION_LENGTH &&
             !expandDeskripsi ? (
               <>
                 {decode(data.Deskripsi.slice(0, MAX_DESCRIPTION_LENGTH)) +
                   " ..."}
-                <a
-                  className="btn btn-link text-decoration-none p-0"
-                  onClick={handleExpandDescription}
-                  style={{ fontSize: "12px" }}
-                >
+                <a className="read-more-link" onClick={handleExpandDescription}>
                   Baca Selengkapnya <Icon name={"caret-down"} />
                 </a>
               </>
@@ -106,9 +74,8 @@ const CardProgram = ({
                   : "Deskripsi tidak tersedia"}
                 {expandDeskripsi && (
                   <a
-                    className="btn btn-link text-decoration-none p-0"
+                    className="read-more-link"
                     onClick={handleExpandDescription}
-                    style={{ fontSize: "12px" }}
                   >
                     Tutup <Icon name={"caret-up"} />
                   </a>
@@ -117,19 +84,11 @@ const CardProgram = ({
             )}
         </p>
         </div>
-        
-        <div
-          className="d-flex ps-3"
-        ><div className="d-flex">
+        <div className="action-buttons">
+        <div className="d-flex">
           <div className="mt-3">
           {data.Status === "Draft" ? (
-          <div
-            className="d-flex justify-content-between align-items-center mr-3 "
-            style={{
-              background:"white", color:"#0A5EA8",  boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.2)", fontSize:"25px", padding:"2px 10px", borderRadius:"10px", height:"50px", marginTop:"-12px" 
-            }}
-
-          >
+          <div className="draft-actions">
             <Icon
               name="edit"
               type="Bold"
@@ -155,9 +114,7 @@ const CardProgram = ({
             />
           </div>
         ) : (
-          <div
-            className="d-flex justify-content-between align-items-center px-3"
-          >
+          <div className="published-actions ">
             <Icon
               name="edit"
               type="Bold"
@@ -204,8 +161,8 @@ const CardProgram = ({
         className="card-body "
         style={{ display: isActive ? "block" : "none" }}
       >
-        <div className="d-flex justify-content-between">
-         <h5 className="text-primary fw-semibold mb-0 mt-2">
+        <div className="kategori-header">
+          <h5 className="text-primary fw-semibold mb-0 mt-2">
                                       Daftar Kategori Program
                                     </h5>
         

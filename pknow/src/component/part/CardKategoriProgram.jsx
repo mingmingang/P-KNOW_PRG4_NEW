@@ -5,6 +5,7 @@ import AppContext_master from "../page/Materi/master-proses/MasterContext.jsx";
 import AppContext_test from "../page/Materi/master-test/TestContext.jsx";
 const MAX_DESCRIPTION_LENGTH = 100;
 import { decode } from "he";
+import "../../style/CardKategoriProgram.css";
 
 const CardKategoriProgram = ({
   data,
@@ -28,27 +29,20 @@ const CardKategoriProgram = ({
     <div className="col">
       <div className="card card-kategori-program mt-3">
         {data.Status === "Draft" ? (
-          <span
-            className="text-danger bg-white px-2 ms-2 mb-0"
-            style={{
-              marginTop: "-12px",
-              width: "fit-content",
-              fontSize: "14px",
-            }}
-          >
+          <span className="draft-badge-katpro text-danger bg-white px-2 ms-2 mb-0">
             Draft
           </span>
         ) : (
           ""
         )}
         <div className="card-body">
-          <div className="d-flex justify-content-between">
+          <div className="card-header-row d-flex justify-content-between">
             <h6 className="card-title">
               {index}
               {". "}
               {data["Nama Kategori"] ? decode(data["Nama Kategori"]) : "Kategori tidak tersedia"}
             </h6>
-            <div>
+            <div className="materi-count">
               <Icon
                 name="file"
                 cssClass="text-primary me-1"
@@ -57,7 +51,7 @@ const CardKategoriProgram = ({
               <span className="text-primary">{data.MateriCount}</span>
             </div>
           </div>
-          <div className="d-flex mt-2">
+          <div className="description-container d-flex mt-2">
             <div className="me-2 bg-primary ps-1"></div>
              <div className="description-text">
                   <p
@@ -102,7 +96,7 @@ const CardKategoriProgram = ({
                 </div>
           </div>
           {data.Status === "Draft" ? (
-            <div className="d-flex justify-content-end mt-3">
+            <div className="draft-icon d-flex justify-content-end mt-3">
               <Icon
                 name="edit"
                 type="Bold"
@@ -127,7 +121,7 @@ const CardKategoriProgram = ({
             </div>
           ) : (
             <div className="d-flex justify-content-end">
-              <div className="d-flex justify-content-end">
+              <div className="lihat-materi d-flex justify-content-end">
               <button onClick={() => onChangePage("materi", AppContext_test.KategoriIdByKK = data.Key, AppContext_master.KategoriIdByKK = data.Key, data={data})} style={{border:"none", background:"#0E6EFE", padding:"5px 10px", color:"white", marginTop:"10px", borderRadius:"10px"}}>Lihat Materi</button>
               </div>
               <div className="mt-3">

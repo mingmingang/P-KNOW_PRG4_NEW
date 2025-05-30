@@ -1,6 +1,4 @@
-import { useEffect, useRef, useState } from "react";
-import { motion, useAnimation } from "framer-motion";
-import { useInView } from "react-intersection-observer";
+import { useState, useEffect } from "react";
 import Button from "../../../part/Button";
 import DropDown from "../../../part/Dropdown";
 import Input from "../../../part/Input";
@@ -24,47 +22,8 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import maskotPknow from "../../../../assets/pknowmaskot.png";
 import { decode } from "he";
+import "../../../../style/LihatKK.css";
 import "../../../../index.css";
-
-const AnimatedSection = ({ children, delay = 0 }) => {
-  const controls = useAnimation();
-  const [ref, inView] = useInView({
-    threshold: 0.1,
-    triggerOnce: true,
-  });
-
-  useEffect(() => {
-    if (inView) {
-      controls.start("visible");
-    }
-  }, [controls, inView]);
-
-  const variants = {
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.5,
-        delay,
-        ease: "easeOut",
-      },
-    },
-    hidden: {
-      opacity: 0,
-      y: 50,
-    },
-  };
-  return (
-    <motion.div
-      ref={ref}
-      initial="hidden"
-      animate={controls}
-      variants={variants}
-    >
-      {children}
-    </motion.div>
-  );
-};
 
 export default function KKDetailPublish({ onChangePage, withID }) {
   const [errors, setErrors] = useState({});
@@ -233,7 +192,6 @@ export default function KKDetailPublish({ onChangePage, withID }) {
 
   return (
     <>
-        <AnimatedSection>
       {isError.error && (
         <div className="flex-fill">
           <Alert type="danger" message={isError.message} />
@@ -248,7 +206,16 @@ export default function KKDetailPublish({ onChangePage, withID }) {
         <div className="card-body">
           <div className="row pt-2">
             <div className="col-lg-7 px-4">
-              <h3 className="mb-3 fw-semibold" style={{ fontSize: "50px", color: "#0A5EA8" }}>{decode(formData.nama)}</h3>
+              <h3
+  className="mb-3 fw-semibold"
+  style={{
+    fontSize: "calc(1.5rem + 1vw)",
+    color: "#0A5EA8",
+  }}
+>
+  {decode(formData.nama)}
+</h3>
+
               <h5 className="fw-semibold">
                 <FontAwesomeIcon icon={faGraduationCap} className="icon-style" style={{ marginRight: "10px" }} />
                 {formData.programStudi}
@@ -262,11 +229,13 @@ export default function KKDetailPublish({ onChangePage, withID }) {
                 <span style={{ marginLeft: "10px", fontWeight: "bold" }}>PIC : {formData.personInCharge}</span>
               </div>
             </div>
-            <div className="col-lg-5">
+            <div className="col-lg-5 mt-2">
               <img
-                className="detail-kk"
-                src={`${API_LINK}Upload/GetFile/${formData.gambar}`}
-              />
+  className="detail-kk img-fluid"
+  src={`${API_LINK}Upload/GetFile/${formData.gambar}`}
+  alt="Gambar Kelompok Keahlian"
+/>
+
             </div>
             <div className="container mt-3">
               <h5 className="pt-2">
@@ -341,7 +310,7 @@ export default function KKDetailPublish({ onChangePage, withID }) {
               listProgram.map((data, index) => (
                 <div
                   key={data.Key}
-                  className="card card-program mt-3 border-secondary mb-5"
+                  className="card card-program mt-3 border-secondary"
                 >
                   <div className="card-body d-flex justify-content-between align-items-center border-bottom border-secondary">
                     <p className="fw-medium mb-0" style={{ width: "20%" }}>
@@ -389,12 +358,19 @@ export default function KKDetailPublish({ onChangePage, withID }) {
                               </div>
                               <div className="d-flex mt-2">
                                 <div className="me-2 bg-primary ps-1"></div>
-                                <p
-                                  className="card-subtitle"
-                                  style={{ textAlign: "justify" }}
-                                >
-                                  {decode(kat.Deskripsi)}
-                                </p>
+                               <p
+  className="card-subtitle"
+  style={{
+    textAlign: "justify",
+    maxHeight: "100px",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    wordBreak: "break-word",
+  }}
+>
+  {decode(kat.Deskripsi)}
+</p>
+
                               </div>
                             </div>
                           </div>
@@ -538,7 +514,6 @@ export default function KKDetailPublish({ onChangePage, withID }) {
           onNo={handleConfirmNo}
         />
       )}
-      </AnimatedSection>
     </>
   );
 }

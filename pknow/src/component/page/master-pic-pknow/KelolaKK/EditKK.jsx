@@ -1,6 +1,4 @@
-import { useEffect, useRef, useState } from "react";
-import { motion, useAnimation } from "framer-motion";
-import { useInView } from "react-intersection-observer";
+import { useRef, useState, useEffect } from "react";
 import { object, string } from "yup";
 import { API_LINK } from "../../../util/Constants";
 import { validateAllInputs, validateInput } from "../../../util/ValidateForm";
@@ -16,47 +14,6 @@ import FileUpload from "../../../part/FileUpload";
 import UploadFile from "../../../util/UploadFile";
 import { decode } from "he";
 import "../../../../index.css";
-
-
-const AnimatedSection = ({ children, delay = 0 }) => {
-  const controls = useAnimation();
-  const [ref, inView] = useInView({
-    threshold: 0.1,
-    triggerOnce: true,
-  });
-
-  useEffect(() => {
-    if (inView) {
-      controls.start("visible");
-    }
-  }, [controls, inView]);
-
-  const variants = {
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.5,
-        delay,
-        ease: "easeOut",
-      },
-    },
-    hidden: {
-      opacity: 0,
-      y: 50,
-    },
-  };
-  return (
-    <motion.div
-      ref={ref}
-      initial="hidden"
-      animate={controls}
-      variants={variants}
-    >
-      {children}
-    </motion.div>
-  );
-};
 
 export default function KKEdit({ onChangePage, withID }) {
   const [errors, setErrors] = useState({});
@@ -303,13 +260,10 @@ export default function KKEdit({ onChangePage, withID }) {
         <Loading />
       ) : (
         <>
-         <AnimatedSection>
-        <div className="container mb-4" style={{display:"flex", justifyContent:"space-between", marginTop:"100px"}}>
-        <div  style={{display:"flex"}}>
-          <button style={{backgroundColor:"transparent", border:"none"}} onClick={handleGoBack}><img src={BackPage} alt="" /></button>
-            <h4 style={{ color:"#0A5EA8", fontWeight:"bold",  marginTop:"10px", marginLeft:"20px"}}>Edit Kelompok Keahlian</h4>
-          </div>
-          </div>
+        <div className="container" style={{ display: "flex", marginTop: "100px" }}>
+                <button style={{ backgroundColor: "transparent", border: "none" }} onClick={handleGoBack}><img src={BackPage} alt="" /></button>
+                <h4 style={{ color: "#0A5EA8", fontWeight: "bold", fontSize: "30px", marginTop: "10px", marginLeft: "20px" }}>Edit Kelompok Keahlian</h4>
+              </div>
     <div className="container mb-4" >
         <form onSubmit={handleAdd}>
           <div className="card">
@@ -469,7 +423,6 @@ export default function KKEdit({ onChangePage, withID }) {
         />
         )}
         </div>
-        </AnimatedSection>
         </>
       )}
     </>
