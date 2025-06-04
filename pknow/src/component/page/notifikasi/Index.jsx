@@ -8,13 +8,13 @@ import Table from "../../part/Table";
 import Paging from "../../part/Paging";
 import Filter from "../../part/Filter";
 import DropDown from "../../part/Dropdown";
-import "../../../style/Notifikasi.css"
+import "../../../style/Notifikasi.css";
 import Alert from "../../part/Alert";
 import Loading from "../../part/Loading";
 import Search from "../../part/Search";
 import Cookies from "js-cookie";
 import { decryptId } from "../../util/Encryptor";
-import axios from 'axios';
+import axios from "axios";
 import "../../../index.css";
 
 let activeUser = "";
@@ -75,7 +75,7 @@ export default function NotifikasiIndex() {
             user: activeUser,
           }
         );
-    
+
         // Validasi response data
         if (response.data && response.data.length !== 0) {
           window.location.reload();
@@ -207,53 +207,71 @@ export default function NotifikasiIndex() {
             />
           </div>
         )}
-          
-            <Search
-              title="Notifikasi P-KNOW Sistem"
-              description="Lihat seluruh notifikasi aktivitas pesan - pesan data yang dikirimkan ke akun P-KNOW anda."
-              placeholder="Cari Notifikasi"
+
+        <Search
+          title="Notifikasi P-KNOW Sistem"
+          description="Lihat seluruh notifikasi aktivitas pesan - pesan data yang dikirimkan ke akun P-KNOW anda."
+          placeholder="Cari Notifikasi"
+        />
+        <Button
+          iconName="search"
+          classType="primary px-4"
+          title="Cari"
+          onClick={handleSearch}
+        />
+
+        <div
+          className="buttonContainer d-flex  mt-4 mb-4"
+          style={{ justifyContent: "flex-end", alignItems: "center" }}
+        >
+          <Filter handleSearch={handleSearch}>
+            <DropDown
+              ref={searchFilterSort}
+              forInput="ddUrut"
+              label="Urut Berdasarkan"
+              type="none"
+              arrData={dataFilterSort}
+              defaultValue="[Waktu] desc"
             />
-            <Button
-              iconName="search"
-              classType="primary px-4"
-              title="Cari"
-              onClick={handleSearch}
+            <DropDown
+              ref={searchFilterStatus}
+              forInput="ddStatus"
+              label="Status"
+              type="none"
+              arrData={dataFilterStatus}
+              defaultValue="Belum Dibaca"
             />
-           
-        <div className="buttonContainer d-flex  mt-4 mb-4" style={{justifyContent:"flex-end", alignItems:"center"}}>
-            <Filter handleSearch={handleSearch}>
-              <DropDown
-                ref={searchFilterSort}
-                forInput="ddUrut"
-                label="Urut Berdasarkan"
-                type="none"
-                arrData={dataFilterSort}
-                defaultValue="[Waktu] desc"
-              />
-              <DropDown
-                ref={searchFilterStatus}
-                forInput="ddStatus"
-                label="Status"
-                type="none"
-                arrData={dataFilterStatus}
-                defaultValue="Belum Dibaca"
-              />
-            </Filter>
-            <div className="" style={{background:"green", padding:"10px 10px", color:"white", borderRadius:"10px", marginLeft:"20px"}}>
+          </Filter>
+          <div
+            className=""
+            style={{
+              background: "green",
+              padding: "10px 10px",
+              color: "white",
+              borderRadius: "10px",
+              marginLeft: "20px",
+            }}
+          >
             <button
-             style={{border:"none", background:"transparent", color:"white"}}
+              style={{
+                border: "none",
+                background: "transparent",
+                color: "white",
+              }}
               title="Set Sudah Dibaca"
               label="Set Sudah Dibaca"
               onClick={handleApproveNotificationAction}
-            ><i className="fa fa-check" ></i> Set Sudah Dibaca</button>
-            </div>
-            </div>
+            >
+              <i className="fa fa-check"></i> Set Sudah Dibaca
+            </button>
+          </div>
+        </div>
         <div className="Table mt-3">
           {isLoading ? (
             <Loading />
           ) : (
             <div className="d-flex flex-column">
-                {currentData.length === 0 && (
+              {currentData.length === 0 && (
                 <div className="" style={{ margin: "5px 20px" }}>
                   <Alert type="warning" message="Tidak ada data!" />
                 </div>

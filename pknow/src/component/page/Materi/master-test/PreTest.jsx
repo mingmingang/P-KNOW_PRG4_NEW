@@ -20,6 +20,7 @@ import axios from "axios";
 import AppContext_test from "./TestContext";
 import "../../../../style/Table.css";
 import { decode } from "html-entities";
+import { color } from "framer-motion";
 
 export default function MasterTestPreTest({
   onChangePage,
@@ -487,9 +488,13 @@ export default function MasterTestPreTest({
                 </div>
 
                 <Button
-                  classType="primary mt-2"
+                  classType=" mt-2"
                   label="Mulai Pre-Test"
                   onClick={onStartTest}
+                  style={{
+                    backgroundColor:"#0d6efd",
+                    color:"white"
+                  }}
                 />
               </div>
               <hr style={{ marginRight: "20px" }} />

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { API_LINK, PAGE_SIZE } from "../../util/Constants";
+import { API_LINK, PAGE_SIZE, APPLICATION_ID } from "../../util/Constants";
 import UseFetch from "../../util/UseFetch";
 import Loading from "../../part/Loading";
 import Alert from "../../part/Alert";
@@ -10,7 +10,19 @@ import { decryptId } from "../../util/Encryptor";
 import CardClassTraining from "../../part/CardKelasTraining";
 import Paging from "../../part/Paging";
 import "../../../../src/index.css";
+import Table from "../../part/Table";
 import AnimatedSection from "../../part/AnimatedSection";
+
+const inisialisasiData = [
+  {
+    ID: null,
+    Nama: null,
+    "Nomor Telepon": null,
+    Username: null,
+    "Tanggal Klaim": null,
+    Count: 0,
+  },
+];
 
 export default function ClassRepositoryIndex({ onChangePage }) {
   let activeUser = "";
@@ -20,9 +32,21 @@ export default function ClassRepositoryIndex({ onChangePage }) {
   const cardRefs = useRef([]);
   const [activeCard, setActiveCard] = useState(null);
   const [isError, setIsError] = useState({ error: false, message: "" });
-  const [isLoading, setIsLoading] = useState(true);
-  const [currentData, setCurrentData] = useState(null);
-  const [currentDataPublikasi, setCurrentDataPublikasi] = useState(null);
+
+  // Pisahkan status loading untuk setiap bagian
+  const [loadingStates, setLoadingStates] = useState({
+    userData: true,
+    programData: true,
+    publikasiData: true,
+    eksternalData: true,
+    kategoriProgram: true,
+  });
+
+  const [currentData, setCurrentData] = useState(inisialisasiData);
+  const [currentDataEksternal, setCurrentDataEksternal] =
+    useState(inisialisasiData);
+  const [currentDataPublikasi, setCurrentDataPublikasi] =
+    useState(inisialisasiData);
   const [listProgram, setListProgram] = useState([]);
   const [listAnggota, setListAnggota] = useState([]);
   const [listKategoriProgram, setListKategoriProgram] = useState([]);
@@ -31,6 +55,14 @@ export default function ClassRepositoryIndex({ onChangePage }) {
     query: "",
     sort: "[Nama Program] desc",
     status: "",
+  });
+
+  const [currentFilterPeserta, setCurrentFilterPeserta] = useState({
+    page: 1,
+    query: "",
+    sort: "[Waktu] desc",
+    app: APPLICATION_ID,
+    status: "Belum Dibaca",
   });
 
   const [currentFilterPublikasi, setCurrentFilterPublikasi] = useState({
@@ -46,24 +78,31 @@ export default function ClassRepositoryIndex({ onChangePage }) {
     kry_id: "",
   });
 
+  // Helper function untuk update loading state
+  const updateLoadingState = (key, value) => {
+    setLoadingStates((prev) => ({
+      ...prev,
+      [key]: value,
+    }));
+  };
+
   const getUserKryID = async () => {
     setIsError((prevError) => ({ ...prevError, error: false }));
-    try {
-      while (true) {
-        let data = await UseFetch(API_LINK + "Utilities/GetUserLogin", {
-          param: activeUser,
-        });
+    updateLoadingState("userData", true);
 
-        if (data === "ERROR") {
-          throw new Error("Terjadi kesalahan: Gagal mengambil daftar prodi.");
-        } else {
-          setUserData(data[0]);
-          setCurrentFilter((prevFilter) => ({
-            ...prevFilter,
-            kry_id: data[0].kry_id,
-          }));
-          break;
-        }
+    try {
+      let data = await UseFetch(API_LINK + "Utilities/GetUserLogin", {
+        param: activeUser,
+      });
+
+      if (data === "ERROR") {
+        throw new Error("Terjadi kesalahan: Gagal mengambil data user.");
+      } else {
+        setUserData(data[0]);
+        setCurrentFilter((prevFilter) => ({
+          ...prevFilter,
+          kry_id: data[0].kry_id,
+        }));
       }
     } catch (error) {
       setIsError((prevError) => ({
@@ -71,6 +110,8 @@ export default function ClassRepositoryIndex({ onChangePage }) {
         error: true,
         message: error.message,
       }));
+    } finally {
+      updateLoadingState("userData", false);
     }
   };
 
@@ -80,88 +121,79 @@ export default function ClassRepositoryIndex({ onChangePage }) {
 
   const getKK = async () => {
     setIsError({ error: false, message: "" });
-    setIsLoading(true);
+    updateLoadingState("programData", true);
+
     try {
-      while (true) {
-        let data = await UseFetch(
-          API_LINK + "Program/GetProgramAll",
-          currentFilter
-        );
-        if (data === "ERROR") {
-          throw new Error("Terjadi kesalahan: Gagal mengambil data Program.");
-        }  else {
-          setCurrentData(data);
-          setIsLoading(false);
-          break;
-        }
+      let data = await UseFetch(
+        API_LINK + "Program/GetProgramAll",
+        currentFilter
+      );
+
+      if (data === "ERROR") {
+        throw new Error("Terjadi kesalahan: Gagal mengambil data Program.");
+      } else {
+        setCurrentData(data);
       }
     } catch (e) {
-      setIsLoading(false);
-      console.log(e.message);
       setIsError({ error: true, message: e.message });
+    } finally {
+      updateLoadingState("programData", false);
     }
   };
-
 
   const getProgramPublikasi = async () => {
     setIsError({ error: false, message: "" });
-    setIsLoading(true);
+    updateLoadingState("publikasiData", true);
+
     try {
-      while (true) {
-        let data = await UseFetch(
-          API_LINK + "Program/GetDataProgramTerpublikasi",
-          currentFilterPublikasi
-        );
-        if (data === "ERROR") {
-          throw new Error("Terjadi kesalahan: Gagal mengambil data Program.");
-        }
-        else {
-          setCurrentDataPublikasi(data);
-          setIsLoading(false);
-          break;
-        }
+      let data = await UseFetch(
+        API_LINK + "Program/GetDataProgramTerpublikasi",
+        currentFilterPublikasi
+      );
+
+      if (data === "ERROR") {
+        throw new Error("Terjadi kesalahan: Gagal mengambil data Program.");
+      } else {
+        setCurrentDataPublikasi(data);
       }
     } catch (e) {
-      setIsLoading(false);
-      console.log(e.message);
       setIsError({ error: true, message: e.message });
+    } finally {
+      updateLoadingState("publikasiData", false);
     }
   };
 
-
   const getListKategoriProgram = async (filter) => {
-    try {
-      while (true) {
-        let data = await UseFetch(
-          API_LINK + "KategoriProgram/GetKategoriByProgram",
-          {
-            page: 1,
-            query: "",
-            sort: "[Nama Kategori] asc",
-            status: "",
-            kkeID: filter,
-          }
-        );
+    updateLoadingState("kategoriProgram", true);
 
-        if (data === "ERROR") {
-          throw new Error(
-            "Terjadi kesalahan: Gagal mengambil daftar kategori program."
-          );
-        } else if (data === "data kosong") {
-          setListKategoriProgram([]);
-          break;
-        } else {
-          setListKategoriProgram(data);
-          break;
+    try {
+      let data = await UseFetch(
+        API_LINK + "KategoriProgram/GetKategoriByProgram",
+        {
+          page: 1,
+          query: "",
+          sort: "[Nama Kategori] asc",
+          status: "",
+          kkeID: filter,
         }
+      );
+
+      if (data === "ERROR") {
+        throw new Error(
+          "Terjadi kesalahan: Gagal mengambil daftar kategori program."
+        );
+      } else if (data === "data kosong") {
+        setListKategoriProgram([]);
+      } else {
+        setListKategoriProgram(data);
       }
     } catch (e) {
-      console.log(e.message);
-      setIsError((prevError) => ({
-        ...prevError,
+      setIsError({
         error: true,
         message: e.message,
-      }));
+      });
+    } finally {
+      updateLoadingState("kategoriProgram", false);
     }
   };
 
@@ -170,13 +202,11 @@ export default function ClassRepositoryIndex({ onChangePage }) {
       await getKK();
       await getProgramPublikasi();
     };
-  
 
     fetchData();
   }, [currentFilter, currentFilterPublikasi]);
 
   function handleSetCurrentPage(newCurrentPage) {
-    setIsLoading(true);
     setCurrentFilter((prevFilter) => {
       return {
         ...prevFilter,
@@ -186,7 +216,6 @@ export default function ClassRepositoryIndex({ onChangePage }) {
   }
 
   function handleSetCurrentPagePublikasi(newCurrentPage) {
-    setIsLoading(true);
     setCurrentFilterPublikasi((prevFilter) => {
       return {
         ...prevFilter,
@@ -195,37 +224,38 @@ export default function ClassRepositoryIndex({ onChangePage }) {
     });
   }
 
-    function handleDelete(id) {
-      setIsError(false);
+  function handleDelete(id) {
+    setIsError(false);
 
-      SweetAlert(
-        "Konfirmasi Hapus",
-        "Anda yakin ingin <b>menghapus permanen</b> data ini?",
-        "warning",
-        "Hapus"
-      ).then((confirm) => {
-        if (confirm) {
-          setIsLoading(true);
-          UseFetch(API_LINK + "Program/DeleteProgram", {
-            idProgram: id,
+    SweetAlert(
+      "Konfirmasi Hapus",
+      "Anda yakin ingin <b>menghapus permanen</b> data ini?",
+      "warning",
+      "Hapus"
+    ).then((confirm) => {
+      if (confirm) {
+        updateLoadingState("programData", true);
+        UseFetch(API_LINK + "Program/DeleteProgram", {
+          idProgram: id,
+        })
+          .then((data) => {
+            if (data === "ERROR" || data.length === 0) {
+              setIsError(true);
+            } else if (data[0].hasil === "GAGAL") {
+              setIsError({
+                error: true,
+                message:
+                  "Terjadi kesalahan: Gagal menghapus program karena sudah terdapat Draft Kategori.",
+              });
+            } else {
+              SweetAlert("Sukses", "Data berhasil dihapus.", "success");
+              handleSetCurrentPage(currentFilter.page);
+            }
           })
-            .then((data) => {
-              if (data === "ERROR" || data.length === 0) setIsError(true);
-              else if (data[0].hasil === "GAGAL") {
-                setIsError({
-                  error: true,
-                  message:
-                    "Terjadi kesalahan: Gagal menghapus program karena sudah terdapat Draft Kategori.",
-                });
-              } else {
-                SweetAlert("Sukses", "Data berhasil dihapus.", "success");
-                handleSetCurrentPage(currentFilter.page);
-              }
-            })
-            .then(() => setIsLoading(false));
-        }
-      });
-    }
+          .finally(() => updateLoadingState("programData", false));
+      }
+    });
+  }
 
   function handleSetStatus(data, status) {
     setIsError(false);
@@ -241,14 +271,15 @@ export default function ClassRepositoryIndex({ onChangePage }) {
 
     SweetAlert("Konfirmasi", message, "info", "Ya").then((confirm) => {
       if (confirm) {
-        setIsLoading(true);
+        updateLoadingState("programData", true);
         UseFetch(API_LINK + "Program/SetStatusProgram", {
           idProgram: data.Key,
           status: status,
         })
           .then((data) => {
-            if (data === "ERROR" || data.length === 0) setIsError(true);
-            else if (data[0].hasil === "ERROR KATEGORI AKTIF") {
+            if (data === "ERROR" || data.length === 0) {
+              setIsError(true);
+            } else if (data[0].hasil === "ERROR KATEGORI AKTIF") {
               setIsError({
                 error: true,
                 message:
@@ -265,88 +296,165 @@ export default function ClassRepositoryIndex({ onChangePage }) {
               handleSetCurrentPage(currentFilter.page);
             }
           })
-          .then(() => setIsLoading(false));
+          .finally(() => updateLoadingState("programData", false));
       }
     });
   }
 
+  const formatTanggal = (tanggalString) => {
+    if (!tanggalString) return "-";
+
+    const options = {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    };
+
+    // Jika tanggal sudah dalam format Date object
+    if (tanggalString instanceof Date) {
+      return new Intl.DateTimeFormat("id-ID", options).format(tanggalString);
+    }
+
+    // Jika tanggal dalam format string
+    const tanggal = new Date(tanggalString);
+
+    // Validasi jika tanggal tidak valid
+    if (isNaN(tanggal.getTime())) {
+      return tanggalString; // Kembalikan aslinya jika tidak bisa diparse
+    }
+
+    return new Intl.DateTimeFormat("id-ID", options).format(tanggal);
+  };
+
+  useEffect(() => {
+    const fetchEksternalData = async () => {
+      setIsError(false);
+      updateLoadingState("eksternalData", true);
+
+      try {
+        const data = await UseFetch(
+          API_LINK + "Klaim/GetUserEksKlaim",
+          currentFilterPeserta
+        );
+
+        if (data === "ERROR") {
+          setIsError(true);
+        } else if (data.length === 0) {
+          setCurrentDataEksternal(inisialisasiData);
+        } else {
+          const formattedData = data.map((value) => ({
+            // ...value,
+            ID: value["ext_id"],
+            Nama: value["ext_nama_lengkap"],
+            "Nomor Telepon": value["ext_no_telp"],
+            Username: value["ext_username"],
+            "Tanggal Klaim": formatTanggal(value["klaim_tanggal"]),
+          }));
+          setCurrentDataEksternal(formattedData);
+        }
+      } catch {
+        setIsError(true);
+      } finally {
+        updateLoadingState("eksternalData", false);
+      }
+    };
+
+    fetchEksternalData();
+  }, [currentFilterPeserta]);
+
+  // Fungsi untuk mengecek apakah semua loading selesai
+  const isLoading = Object.values(loadingStates).some((state) => state);
+
   return (
     <div className="app-container">
       <AnimatedSection>
-      <Search
-        title="Class Repository"
-        description="ASTRAtech memiliki banyak program studi, di dalam program studi terdapat class repository dari Program Kelompok Keahlian yang dibuat."
-        showInput={false}
-      />
+        <Search
+          title="Class Repository"
+          description="ASTRAtech memiliki banyak program studi, di dalam program studi terdapat class repository dari Program Kelompok Keahlian yang dibuat."
+          showInput={false}
+        />
       </AnimatedSection>
+
       <>
-      <AnimatedSection delay={0.3}>
-        {isError.error && (
-          <div className="flex-fill">
-            <Alert type="danger" message={isError.message} />
+        <AnimatedSection delay={0.3}>
+          <div className="d-flex flex-column">
+            <div className="flex-fill container">
+              <div className="mt-4">
+                <p className="title-kk">Data User Eksternal</p>
+              </div>
+            </div>
+
+            <div className="container">
+              {loadingStates.eksternalData ? (
+                <Loading />
+              ) : (
+                <Table data={currentDataEksternal} />
+              )}
+            </div>
           </div>
-        )}
-        {isLoading ? (
-          <Loading />
-        ) : (
+
+          {isError.error && (
+            <div className="flex-fill">
+              <Alert type="danger" message={isError.message} />
+            </div>
+          )}
+
           <div className="d-flex flex-column">
             <div className="flex-fill container">
               <div className="mt-4">
                 <p className="title-kk">Class Training</p>
-                {/* <div className="left-feature">
-            <div className="tes" style={{ display: "flex" }}>
-              <div className="mt-1">
-              <Filter handleSearch={handleSearch}>
-                      <DropDown
-                        ref={searchFilterSort}
-                        forInput="ddUrut"
-                        label="Urut Berdasarkan"
-                        type="none"
-                        arrData={dataFilterSort}
-                        defaultValue="[Judul Pustaka] asc"
-                      />
-                    </Filter>
               </div>
-              {activerole !== "ROL05" && (
-          <div className="mt-1">
-            <ButtonPro
-              style={{ marginLeft: "20px" }}
-              iconName="add"
-              classType="primary py-2 rounded-4 fw-semibold"
-              label="Tambah Pustaka"
-              onClick={() => onChangePage("add")}
-            />
-          </div>
-        )}
-            </div>
-          </div> */}
-              </div>
+
               <>
-              <div
-            className="card-keterangan"
-            style={{
-              background: "#61A2DC",
-              borderRadius: "5px",
-              padding: "10px 20px",
-              marginBottom: "20px",
-              color: "white",
-              fontWeight: "bold",
-            }}
-          >
-                ↓ Belum Dipublikasikan
-              </div>
+                <div
+                  className="card-keterangan"
+                  style={{
+                    background: "#61A2DC",
+                    borderRadius: "5px",
+                    padding: "10px 20px",
+                    marginBottom: "20px",
+                    color: "white",
+                    fontWeight: "bold",
+                  }}
+                >
+                  ↓ Belum Dipublikasikan
+                </div>
+
                 <div className="d-flex flex-column">
                   <div className="flex-fill">
                     <div className="row">
-                    {currentData[0]?.Message === "data kosong" && (
-                        <div className="" style={{ margin: "5px 20px" }}>
+                      {loadingStates.programData ? (
+                        <div
+                          className="d-flex justify-content-center align-items-center w-100"
+                          style={{ minHeight: "200px" }}
+                        >
+                          <Loading />
+                        </div>
+                      ) : currentData[0]?.Message === "data kosong" ? (
+                        <div className="">
                           <Alert type="warning" message="Tidak ada data!" />
                         </div>
-                      )}
-                      {currentData
-                        .filter((value) => value.Status === "Aktif" && value.Publikasi != "Terpublikasi" ) // Filter hanya data dengan status Aktif
-                        .map((value, index) => {
-                          return (
+                      ) : (
+                        (() => {
+                          const filteredData = currentData.filter(
+                            (value) =>
+                              value.Status === "Aktif" &&
+                              value.Publikasi != "Terpublikasi"
+                          );
+
+                          if (filteredData.length === 0) {
+                            return (
+                              <div className="">
+                                <Alert
+                                  type="warning"
+                                  message="Tidak ada data yang belum terpublikasi!"
+                                />
+                              </div>
+                            );
+                          }
+
+                          return filteredData.map((value, index) => (
                             <div key={index} className="col-12 col-md-4 mb-4">
                               <CardClassTraining
                                 data={{
@@ -356,59 +464,77 @@ export default function ClassRepositoryIndex({ onChangePage }) {
                                   status: value.Status,
                                   gambar: value.Gambar,
                                   ProgramStudi: value.ProgramStudi,
-                                  harga : value.Harga,
-                                  publikasi: value.Publikasi
+                                  harga: value.Harga,
+                                  publikasi: value.Publikasi,
                                 }}
                                 onChangePage={onChangePage}
                                 onChangeStatus={handleSetStatus}
                               />
                             </div>
-                          );
-                        })}
+                          ));
+                        })()
+                      )}
                     </div>
                   </div>
                 </div>
-              </>
 
-              <div className="mb-4 d-flex justify-content-center">
-                <div
-                  className="d-flex flex-column"
-                >
-                  <Paging
-                    pageSize={PAGE_SIZE}
-                    pageCurrent={currentFilter.page}
-                    totalData={currentData[0]?.Count || 0}
-                    navigation={handleSetCurrentPage}
-                  />
-                </div>
-              </div>
+                {/* Only show paging if there's data and filtered data exists */}
+                {currentData[0]?.ID !== null &&
+                  currentData.filter(
+                    (value) =>
+                      value.Status === "Aktif" &&
+                      value.Publikasi != "Terpublikasi"
+                  ).length > 0 && (
+                    <div className="mb-4 d-flex justify-content-center">
+                      <div className="d-flex flex-column">
+                        <Paging
+                          pageSize={PAGE_SIZE}
+                          pageCurrent={currentFilter.page}
+                          totalData={currentData[0]?.Count || 0}
+                          navigation={handleSetCurrentPage}
+                        />
+                      </div>
+                    </div>
+                  )}
+              </>
 
               <>
-                  <div
-            className="card-keterangan"
-            style={{
-              background: "#61A2DC",
-              borderRadius: "5px",
-              padding: "10px 20px",
-              marginBottom: "20px",
-              color: "white",
-              fontWeight: "bold",
-            }}
-          >
-                ↓ Terpublikasi
-              </div>
+                <div
+                  className="card-keterangan"
+                  style={{
+                    background: "#61A2DC",
+                    borderRadius: "5px",
+                    padding: "10px 20px",
+                    marginBottom: "20px",
+                    color: "white",
+                    fontWeight: "bold",
+                  }}
+                >
+                  ↓ Terpublikasi
+                </div>
+
                 <div className="d-flex flex-column">
                   <div className="flex-fill">
-                    <div className="row" >
-                    {currentDataPublikasi[0]?.Message === "data kosong" && (
+                    <div className="row">
+                      {loadingStates.publikasiData ? (
+                        <div
+                          className="d-flex justify-content-center align-items-center w-100"
+                          style={{ minHeight: "200px" }}
+                        >
+                          <Loading />
+                        </div>
+                      ) : currentDataPublikasi[0]?.Message === "data kosong" ? (
                         <div className="" style={{ margin: "5px 20px" }}>
                           <Alert type="warning" message="Tidak ada data!" />
                         </div>
-                      )}
-                      {currentDataPublikasi
-                        .filter((value) => value.Status === "Aktif" && value.Publikasi == "Terpublikasi") // Filter hanya data dengan status Aktif
-                        .map((value, index) => {
-                          return (
+                      ) : (
+                        currentDataPublikasi
+                          .filter(
+                            (value) =>
+                              value.Status === "Aktif" &&
+                              value.Publikasi === "Terpublikasi"
+                          )
+                          .map((value, index) => (
                             <div key={index} className="col-12 col-md-4 mb-4">
                               <CardClassTraining
                                 data={{
@@ -418,24 +544,22 @@ export default function ClassRepositoryIndex({ onChangePage }) {
                                   status: value.Status,
                                   gambar: value.Gambar,
                                   ProgramStudi: value.ProgramStudi,
-                                  harga : value.Harga,
-                                  publikasi: value.Publikasi
+                                  harga: value.Harga,
+                                  publikasi: value.Publikasi,
                                 }}
                                 onChangePage={onChangePage}
                                 onChangeStatus={handleSetStatus}
                               />
                             </div>
-                          );
-                        })}
+                          ))
+                      )}
                     </div>
                   </div>
                 </div>
               </>
 
               <div className="mb-4 d-flex justify-content-center">
-                <div
-                  className="d-flex flex-column"
-                >
+                <div className="d-flex flex-column">
                   <Paging
                     pageSize={PAGE_SIZE}
                     pageCurrent={currentFilterPublikasi.page}
@@ -446,7 +570,6 @@ export default function ClassRepositoryIndex({ onChangePage }) {
               </div>
             </div>
           </div>
-        )}
         </AnimatedSection>
       </>
     </div>

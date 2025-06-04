@@ -29,10 +29,7 @@ import MasterForumEdit from "./master-forum/ForumEdit";
 import MasterPostTestAdd from "./master-posttest/PostTestAdd";
 import MasterPostTestEdit from "./master-posttest/PostTestEdit";
 import MasterPostTestEditNot from "./master-posttest/PostTestEditNot";
-// import MasterPostTestDetail from "./master-posttest/PostTestDetail";
-// // Kelompok Keahlian
 import PilihKelompokKeahlian from "./Kelompok_Keahlian";
-// import Masterpustakaa from "./pustaka";
 import MasterTestDetailTest from "../master-test/DetailTest";
 import MasterTestForum from "../master-test/Forum";
 import MasterTestMateriPDF from "../master-test/MateriPDF";
@@ -42,11 +39,9 @@ import MasterTestSharingVideo from "../master-test/SharingVideo";
 import MasterTestPostTest from "../master-test/PostTest";
 import MasterTestPreTest from "../master-test/PreTest";
 import MasterTestPengerjaanTest from "../master-test/Test";
-
 import KKDetailProgram from "../../master-pic-kk/KelolaProgram/DetailKK";
-
-//
 import "../../../../style/Materi.css";
+import ListPesertaProgram from "./ListPesertaProgram";
 
 export default function MasterProses() {
   const [pageMode, setPageMode] = useState("kk");
@@ -76,6 +71,15 @@ export default function MasterProses() {
             withID={dataID}
           />
         );
+
+        case "listPeserta":
+        return (
+          <ListPesertaProgram
+            onChangePage={handleSetPageMode}
+            withID={dataID}
+          />
+        );
+
       case "Pre-Test":
         return (
           <MasterPreTestAdd onChangePage={handleSetPageMode} withID={dataID} />

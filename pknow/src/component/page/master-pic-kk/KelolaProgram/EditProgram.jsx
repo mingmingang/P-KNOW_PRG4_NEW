@@ -207,7 +207,7 @@ export default function ProgramEdit({ onChangePage, withID }) {
         <>
           <div className="program-edit-container">
             <div className="header-section">
-              <div className="back-and-title edit-pro">
+              <div className="d-flex">
               <button className="back-button" onClick={handleGoBack}>
                 <img src={BackPage} alt="" />
               </button>
@@ -297,11 +297,7 @@ export default function ProgramEdit({ onChangePage, withID }) {
                       />
                     </div>
                     <div className="col-lg-12">
-                      <label className="form-label">
-                        Deskripsi/Penjelasan Program{" "}
-                        <span style={{ color: "red" }}> *</span>
-                      </label>
-                      
+                    
 
                 <Input
                   type="textarea"

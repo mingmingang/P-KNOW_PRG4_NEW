@@ -24,6 +24,7 @@ import he from "he";
 import Cookies from "js-cookie";
 import { decryptId } from "../../../util/Encryptor";
 import Search from "../../../part/Search";
+import { color } from "framer-motion";
 
 const ButtonContainer = styled.div`
   bottom: 35px;
@@ -38,6 +39,23 @@ export default function PengerjaanTest({
   quizId,
   durasi,
 }) {
+   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
+  const [isMobileView, setIsMobileView] = useState(false);
+   useEffect(() => {
+    const handleResize = () => {
+      setIsMobileView(window.innerWidth < 992); // 992px is Bootstrap's lg breakpoint
+    };
+    
+    // Initial check
+    handleResize();
+    
+    // Add event listener
+    window.addEventListener('resize', handleResize);
+    
+    // Cleanup
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   let activeUser = "";
   const cookie = Cookies.get("activeUser");
   if (cookie) activeUser = JSON.parse(decryptId(cookie)).username;
@@ -690,11 +708,41 @@ export default function PengerjaanTest({
         placeholder="Cari Kelompok Keahlian"
         showInput={false}
       />
-      <div
+
+       {/* Mobile Hamburger Button */}
+      {isMobileView && (
+        <button 
+          className="btn mb-3"
+          onClick={() => setIsMobileSidebarOpen(!isMobileSidebarOpen)}
+          style={{
+            position: 'fixed',
+            top: '100px',
+            right: '20px',
+            zIndex: 1000,
+            borderRadius: '10%',
+            width: '100px',
+            height: '50px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor:'#0d6efd',
+            color:"white"
+          }}
+        >
+          {isMobileSidebarOpen ? '✕ ' : '☰'}
+         Soal</button>
+      )}
+
+       <div
         className="d-flex mt-3"
-        style={{ marginLeft: "100px", marginRight: "100px", height: "100vh" }}
+        style={{ 
+          marginLeft: isMobileView ? "20px" : "100px", 
+          marginRight: isMobileView ? "20px" : "100px", 
+          height: "100vh",
+          position: 'relative'
+        }}
       >
-        <div className=" p-3 d-flex ">
+        <div className="p-3 d-flex" style={{width: isMobileView ? 'auto' : '910px',}}>
           <div className="mb-3 d-flex" style={{ overflowX: "auto" }}>
             {currentData.map((item, index) => {
               const key = `${item.question}_${index}`;
@@ -716,7 +764,7 @@ export default function PengerjaanTest({
                   className="mb-3"
                   style={{
                     display: "block",
-                    minWidth: "910px",
+               
                     marginRight: "20px",
                   }}
                 >
@@ -970,13 +1018,16 @@ export default function PengerjaanTest({
                           onClick={selectPreviousQuestion}
                         />
                         <Button
-                          classType="primary ms-2 px-4 py-2"
+                          classType=" ms-2 px-4 py-2"
                           label={
                             selectedQuestion < questionNumbers
                               ? "Berikutnya"
                               : "Selesai"
                           }
                           onClick={selectNextQuestionOrSubmit}
+                          style={
+                            {backgroundColor:"#0d6efd", color:"white"}
+                          }
                         />
                       </ButtonContainer>
                     </div>
@@ -985,26 +1036,64 @@ export default function PengerjaanTest({
               );
             })}
           </div>
-          <div
-            style={{
-              height: "100%",
-              width: "1px",
-              backgroundColor: "#E4E4E4",
-              margin: "0 auto",
-            }}
-          />
+
+         {!isMobileView && (
+            <div
+              style={{
+                height: "100%",
+                width: "1px",
+                backgroundColor: "#E4E4E4",
+                margin: "0 auto",
+              }}
+            />
+          )}
         </div>
 
-        <KMS_Sidebar
-          questionNumbers={questionNumbers}
-          selectedQuestion={selectedQuestion}
-          setSelectedQuestion={setSelectedQuestion}
-          answerStatus={answerStatus}
-          checkMainContent="test"
-          setTimeRemaining={setTimeRemaining}
-          timeRemaining={durasi}
-          onChangePage={onChangePage}
-        />
+         {(!isMobileView || isMobileSidebarOpen) && (
+          <div 
+            style={{
+              position: isMobileView ? 'fixed' : 'relative',
+              right: isMobileView ? '0' : 'auto',
+              top: isMobileView ? '0' : 'auto',
+              height: isMobileView ? '100vh' : 'auto',
+              width: isMobileView ? '100%' : 'auto',
+              backgroundColor: isMobileView ? 'white' : 'transparent',
+              paddingTop: isMobileView? '80px':'0px',
+              paddingLeft: isMobileView? '-10px':'0px',
+              zIndex: 999,
+              boxShadow: isMobileView ? '-5px 0 15px rgba(0,0,0,0.1)' : 'none',
+              overflowY: 'auto'
+            }}
+          >
+            <KMS_Sidebar
+              questionNumbers={questionNumbers}
+              selectedQuestion={selectedQuestion}
+              setSelectedQuestion={setSelectedQuestion}
+              answerStatus={answerStatus}
+              checkMainContent="test"
+              setTimeRemaining={setTimeRemaining}
+              timeRemaining={durasi}
+              onChangePage={onChangePage}
+              onClose={() => isMobileView && setIsMobileSidebarOpen(false)}
+            />
+          </div>
+        )}
+
+         {isMobileView && isMobileSidebarOpen && (
+          <div 
+            style={{
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              backgroundColor: 'rgba(0,0,0,0.5)',
+              zIndex: 998
+            }}
+            onClick={() => setIsMobileSidebarOpen(false)}
+          />
+        )}
+
       </div>
     </>
   );

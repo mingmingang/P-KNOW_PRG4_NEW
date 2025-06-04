@@ -527,7 +527,7 @@ export default function DaftarPustaka({ onChangePage, withID }) {
                         style={{ marginLeft: "20px" }}
                         iconName="add"
                         classType="primary py-2 rounded-4 fw-semibold"
-                        label="Tambah Pustaka"
+                        label="Tambah"
                         onClick={() => onChangePage("add")}
                       />
                     </div>

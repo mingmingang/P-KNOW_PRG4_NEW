@@ -1,19 +1,14 @@
 import { useState, createContext, useContext, useEffect } from "react";
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-// import KMS_Rightbar from "../../backbone/KMS_RightBar";
-import KMS_Rightbar from "../../../part/RightBar"
 import MasterTestIndex from "./Index";
 import MasterTestPostTest from "./PostTest";
 import MasterTestPreTest from "./PreTest";
 import MasterTestPengerjaanTest from "./Test";
-// import MasterTestHasilTest from "./HasilTest";
 import MasterTestDetailTest from "./DetailTest";
 import MasterTestForum from "./Forum";
 import MasterTestMateriPDF from "./MateriPDF";
 import MasterTestMateriVideo from "./MateriVideo";
 import MasterTestPengenalan from "./Pengenalan";
-import MasterSharing from "./SharingPDF";
-// import AppContext_test from "./TestContext";
 import MasterTestSharingPDF from "./SharingPDF";
 import MasterTestSharingVideo from "./SharingVideo";
 import MasterKelompokKeahlian from "./KelompokKeahlian";

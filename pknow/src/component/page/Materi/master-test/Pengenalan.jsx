@@ -242,8 +242,6 @@ export default function MasterTestIndex({
             handlePreTestClick_open={() => setIsSidebarOpen(true)}
             handlePreTestClick_close={() => setIsSidebarOpen(false)}
             isCollapsed={!isSidebarOpen}
-            // refreshKey={refreshKey}
-            // setRefreshKey={setRefreshKey}
           />
         </div>
   

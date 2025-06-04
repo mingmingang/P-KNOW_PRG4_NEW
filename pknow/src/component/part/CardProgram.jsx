@@ -36,7 +36,7 @@ const CardProgram = ({
   return (
     <div
       id={id}
-      className={`card card-program mt-3 ${isActive ? "border-primary" : ""}`}
+      className={`card  mt-3 ${isActive ? "border-primary" : ""}`}
     >
       {data.Status === "Draft" ? (
         <span className="draft-badge">Draft</span>

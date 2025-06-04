@@ -7,17 +7,24 @@ import Alert from "./Alert";
 import { decode } from "html-entities";
 import { API_LINK } from "../util/Constants";
 
-const MAX_DESCRIPTION_LENGTH = 200; // Sesuaikan dengan panjang maksimum yang diinginkan
+const MAX_DESCRIPTION_LENGTH = 200;
 
 const CardProgram = ({ program, onChangePage }) => {
   const [isContentVisible, setIsContentVisible] = useState(false);
   const [expandDeskripsi, setExpandDeskripsi] = useState(false);
+  
   const toggleContentVisibility = () => {
     setIsContentVisible(!isContentVisible);
   };
+  
   AppContext_test.KeyKelompokKeahlian = program["Kode KK"];
+  
   const handleExpandDescription = () => {
     setExpandDeskripsi(!expandDeskripsi);
+  };
+
+  const handleShowParticipants = () => {
+    onChangePage("listPeserta", program.Key);
   };
 
   return (
@@ -100,6 +107,23 @@ const CardProgram = ({ program, onChangePage }) => {
               </>
             )}
           </p>
+          {/* Add new button to show participants */}
+          <Button
+            iconName="users"
+            classType="btn-sm px-3 mt-3"
+            title="Lihat Peserta Program"
+            label="Lihat Peserta"
+            onClick={handleShowParticipants}
+            style={{
+              background: "white", 
+              color: "#0A5EA8",  
+              boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.2)",
+              fontSize: "16px",
+              padding: "5px 10px",
+              fontWeight: "600",
+              height: "40px"
+            }}
+          />
         </div>
         <div className="ps-3">
           <Button
