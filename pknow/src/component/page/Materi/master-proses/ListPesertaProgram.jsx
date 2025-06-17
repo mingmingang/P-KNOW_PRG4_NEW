@@ -171,6 +171,7 @@ const ListPesertaProgram = ({ onChangePage, withID }) => {
           updateLoadingState('eksternalData', false);
         }
       };
+
   
       fetchEksternalData();
     }, [currentFilterProgram]);
@@ -212,24 +213,24 @@ const ListPesertaProgram = ({ onChangePage, withID }) => {
                 </tr>
               </thead>
               <tbody>
-                {participants.map((participant, index) => (
-                  <tr key={participant.id}>
+                {currentData.map((participant, index) => (
+                  <tr key={participant.ID}>
                     <td>{index + 1}</td>
                     <td>
                       <div className="d-flex align-items-center">
                         <img
                           src={pknowMaskot}
-                          alt={participant.nama}
+                          alt={participant.Nama}
                           className="img-fluid rounded-circle me-3"
                           width="45"
                         />
                         <div>
-                          <div>{participant.nama}</div>
-                          <small className="text-muted">{participant.email}</small>
+                          <div>{participant.Nama}</div>
+                          <small className="text-muted">{participant["Nomor Telepon"]}</small>
                         </div>
                       </div>
                     </td>
-                    <td>
+                    {/* <td>
                       <div className="progress" style={{ height: "20px" }}>
                         <div
                           className="progress-bar"
@@ -256,7 +257,7 @@ const ListPesertaProgram = ({ onChangePage, withID }) => {
                       ) : (
                         <span className="badge bg-secondary">Belum Diputuskan</span>
                       )}
-                    </td>
+                    </td> */}
                    <td>
   {parseInt(participant.progres) < 100 ? (
     <span className="text-muted">
