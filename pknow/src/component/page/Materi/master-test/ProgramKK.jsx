@@ -4,16 +4,12 @@ import UseFetch from "../../../util/UseFetch";
 import Loading from "../../../part/Loading";
 import Alert from "../../../part/Alert";
 import SweetAlert from "../../../util/SweetAlert";
-import Search from "../../../part/Search";
 import Cookies from "js-cookie";
 import { decryptId } from "../../../util/Encryptor";
 import CardClassTraining from "../../../part/CardKelasTraining";
 import Paging from "../../../part/Paging";
 import "../../../../../src/index.css";
-import Button2 from "../../../part/Button copy";
-import Input from "../../../part/Input";
 import Konfirmasi from "../../../part/Konfirmasi";
-import Filter from "../../../part/Filter";
 import BackPage from "../../../../assets/backPage.png";
 import { decode } from "he";
 
@@ -22,12 +18,9 @@ export default function ProgramKK({ onChangePage, withID }) {
   const cookie = Cookies.get("activeUser");
   if (cookie) activeUser = JSON.parse(decryptId(cookie)).username;
   const cardRefs = useRef([]);
-  const [activeCard, setActiveCard] = useState(null);
   const [isError, setIsError] = useState({ error: false, message: "" });
   const [isLoading, setIsLoading] = useState(true);
   const [currentData, setCurrentData] = useState(null);
-  const [listProgram, setListProgram] = useState([]);
-  const [listAnggota, setListAnggota] = useState([]);
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [isBackAction, setIsBackAction] = useState(false);
   const [listKategoriProgram, setListKategoriProgram] = useState([]);
@@ -95,7 +88,6 @@ export default function ProgramKK({ onChangePage, withID }) {
 
   const getKK = async () => {
     setIsError({ error: false, message: "" });
-    //setIsLoading(true);
     try {
       while (true) {
         let data = await UseFetch(API_LINK + "Program/GetProgramByKK", {
@@ -172,7 +164,6 @@ export default function ProgramKK({ onChangePage, withID }) {
     });
   }
 
-  // DELETE PERMANEN DATA PROGRAM
   function handleDelete(id) {
     setIsError(false);
 
@@ -258,35 +249,6 @@ export default function ProgramKK({ onChangePage, withID }) {
         </p>
         <div className="conatainer">
         <div className="input-wrapper">
-          {/* <div
-            className=""
-            style={{
-              width: "700px",
-              display: "flex",
-              backgroundColor: "white",
-              borderRadius: "20px",
-              height: "40px",
-            }}
-          >
-            <Input
-              // ref={searchQuery}
-              forInput="pencarianKK"
-              placeholder="Cari Program"
-              style={{
-                border: "none",
-                width: "680px",
-                height: "40px",
-                borderRadius: "20px",
-              }}
-            />
-            <Button2
-              iconName="search"
-              classType="px-4"
-              title="Cari"
-              // onClick={handleSearch}
-              style={{ backgroundColor: "transparent", color: "#08549F" }}
-            />
-          </div> */}
         </div>
         </div>
       </div>
@@ -304,7 +266,6 @@ export default function ProgramKK({ onChangePage, withID }) {
              <div className="container">
               <div className="navigasi-layout-page">
                 <p className="title-kk"><button style={{backgroundColor:"transparent", border:"none", marginRight:"10px"}} onClick={handleGoBack}><img src={BackPage} width="50px" alt="" />
-           {/* <i className="fas fa-arrow-left mr-3" style={{color:"#0A5EA8"}}></i> */}
           </button>Program</p>
               </div>
               </div>

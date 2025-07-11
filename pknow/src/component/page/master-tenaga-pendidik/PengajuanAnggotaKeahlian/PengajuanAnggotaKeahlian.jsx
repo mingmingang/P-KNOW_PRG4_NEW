@@ -1,29 +1,18 @@
 import React from "react";
 import { useEffect, useRef, useState } from "react";
 import UseFetch from "../../../util/UseFetch";
-import Button from "../../../part/Button copy";
 import Input from "../../../part/Input";
 import Filter from "../../../part/Filter";
 import DropDown from "../../../part/Dropdown";
 import { API_LINK } from "../../../util/Constants";
 import Cookies from "js-cookie";
 import { decryptId } from "../../../util/Encryptor";
-import Label from "../../../part/Label";
 import CardPengajuanBaru from "../../../part/CardPengajuanBaru";
 import Alert from "../../../part/Alert";
 import "../../../../index.css";
-import Search from "../../../part/Search";
 import Button2 from "../../../part/Button copy";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faGraduationCap,
-  faUser,
-  faArrowRight,
-  faPeopleGroup,
-  faClock,
-  faUsers,
-} from "@fortawesome/free-solid-svg-icons";
-import { decode } from "he";
+import { faGraduationCap, faUser } from "@fortawesome/free-solid-svg-icons";
 import "../../../../../src/index.css";
 
 const inisialisasiData = [
@@ -75,28 +64,6 @@ export default function PengajuanKelompokKeahlian({ onChangePage }) {
     });
   }
 
-  async function pencaharian() {
-    setIsLoading(true); 
-    try {
-      const data = await UseFetch(API_LINK + "PengajuanKK/GetAnggotaKK", {
-        ...currentFilter,
-        query: searchQuery.current.value,
-      });
-
-      if (data && data.length > 0) {
-        setListKK(data); 
-      } else {
-        setListKK([]);
-      }
-    } catch (error) {
-      console.error("Error during search:", error);
-      setListKK([]); 
-    } finally {
-      setIsLoading(false); 
-    }
-  }
-
-  const [show, setShow] = useState(false);
   const [isError, setIsError] = useState(false);
   const [dataAktif, setDataAktif] = useState(false);
   const [listKK, setListKK] = useState(inisialisasiKK);
@@ -152,18 +119,16 @@ export default function PengajuanKelompokKeahlian({ onChangePage }) {
   }, []);
 
   const filterUniqueKK = (data) => {
-    let waitingAccCount = 0; // Hitung jumlah entri "Menunggu Acc"
+    let waitingAccCount = 0;
     const uniqueKK = data.reduce((acc, current) => {
       const existing = acc.find((item) => item["ID KK"] === current["ID KK"]);
-  
+
       if (!existing) {
-        // Tambahkan jika belum ada
         acc.push(current);
         if (current.Status === "Menunggu Acc") {
           waitingAccCount++;
         }
       } else {
-        // Prioritaskan "Aktif" di atas status lainnya
         if (current.Status === "Aktif") {
           acc = acc.map((item) =>
             item["ID KK"] === current["ID KK"] ? current : item
@@ -173,29 +138,30 @@ export default function PengajuanKelompokKeahlian({ onChangePage }) {
           existing.Status !== "Aktif" &&
           waitingAccCount < 2
         ) {
-          // Ganti dengan "Menunggu Acc" jika belum mencapai batas
           acc = acc.map((item) =>
             item["ID KK"] === current["ID KK"] ? current : item
           );
           waitingAccCount++;
         }
       }
-  
+
       return acc;
     }, []);
-  
+
     return uniqueKK;
   };
-  
-  
+
   const getDataKKStatusByUser = async () => {
     setIsError((prevError) => ({ ...prevError, error: false }));
     if (currentFilter.kry_id === "") return;
-  
+
     try {
       while (true) {
-        let data = await UseFetch(API_LINK + "PengajuanKK/GetAnggotaKK", currentFilter);
-  
+        let data = await UseFetch(
+          API_LINK + "PengajuanKK/GetAnggotaKK",
+          currentFilter
+        );
+
         if (data === "ERROR") {
           throw new Error("Terjadi kesalahan: Gagal mengambil daftar prodi.");
         } else if (data.length === 0) {
@@ -208,16 +174,11 @@ export default function PengajuanKelompokKeahlian({ onChangePage }) {
             }
             return value;
           });
-  
-          // Filter data untuk memastikan keunikan dan maksimal 2 "Menunggu Acc"
           const uniqueData = filterUniqueKK(formattedData);
-  
-          // Hitung status "Menunggu Acc"
+
           const waitingCount = uniqueData.filter(
             (value) => value.Status === "Menunggu Acc"
           ).length;
-  
-          // Atur status menjadi "None" jika lebih dari 2 "Menunggu Acc"
           const finalData = uniqueData.map((value) => {
             if (waitingCount === 2 && value.Status !== "Menunggu Acc") {
               return { ...value, Status: "None" };
@@ -265,7 +226,7 @@ export default function PengajuanKelompokKeahlian({ onChangePage }) {
     const parser = new DOMParser();
     const decodedString = parser.parseFromString(str, "text/html").body
       .textContent;
-    return decodedString || str; // Jika decoding gagal, gunakan string asli
+    return decodedString || str;
   };
 
   const getLampiran = async () => {
@@ -287,18 +248,12 @@ export default function PengajuanKelompokKeahlian({ onChangePage }) {
         const updatedData = data.map((item) => {
           if (item.Lampiran) {
             try {
-              // Decode HTML entities sebelum parsing JSON
               const cleanedLampiran = decodeHtmlEntities(item.Lampiran);
-
-              // Parse JSON string
               const parsedLampiran = JSON.parse(cleanedLampiran);
-
-              // Proses setiap file di dalam parsedLampiran
               const fileUrls = parsedLampiran.map((file) => {
                 return `${API_LINK}Upload/GetFile/${file.pus_file}`;
               });
 
-              // Tambahkan fileUrls ke objek item
               return { ...item, Lampiran: fileUrls };
             } catch (err) {
               console.error("Gagal mem-parse JSON Lampiran:", err);
@@ -368,41 +323,41 @@ export default function PengajuanKelompokKeahlian({ onChangePage }) {
             </div>
           </div>
 
-<div className="container">
-          <div className="navigasi-layout-page">
-            <p className="title-kk">Kelompok Keahlian</p>
-            <div className="left-feature">
-              <div className="status" style={{ display: "flex" }}>
-                <table>
-                  <tbody>
-                    <tr>
-                      <td>
-                        <i
-                          className="fas fa-circle"
-                          style={{ color: "#FFC107" }}
-                        ></i>
-                      </td>
-                      <td>
-                        <p>Menunggu Persetujuan Prodi</p>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-                <div className="" style={{ marginLeft: "20px" }}>
-                  <Filter handleSearch={handleSearch}>
-                    <DropDown
-                      ref={searchFilterSort}
-                      forInput="ddUrut"
-                      label="Urut Berdasarkan"
-                      type="none"
-                      arrData={dataFilterSort}
-                      defaultValue="[Nama Kelompok Keahlian] asc"
-                    />
-                  </Filter>
+          <div className="container">
+            <div className="navigasi-layout-page">
+              <p className="title-kk">Kelompok Keahlian</p>
+              <div className="left-feature">
+                <div className="status" style={{ display: "flex" }}>
+                  <table>
+                    <tbody>
+                      <tr>
+                        <td>
+                          <i
+                            className="fas fa-circle"
+                            style={{ color: "#FFC107" }}
+                          ></i>
+                        </td>
+                        <td>
+                          <p>Menunggu Persetujuan Prodi</p>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <div className="" style={{ marginLeft: "20px" }}>
+                    <Filter handleSearch={handleSearch}>
+                      <DropDown
+                        ref={searchFilterSort}
+                        forInput="ddUrut"
+                        label="Urut Berdasarkan"
+                        type="none"
+                        arrData={dataFilterSort}
+                        defaultValue="[Nama Kelompok Keahlian] asc"
+                      />
+                    </Filter>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
           </div>
 
           <>
@@ -419,7 +374,7 @@ export default function PengajuanKelompokKeahlian({ onChangePage }) {
                   >
                     ↓ Terdaftar sebagai anggota keahlian
                   </div>
-                  <div className="card" >
+                  <div className="card">
                     <div className="card-body p-3">
                       <div className="row">
                         <div className="col-lg-7 pe-4">
@@ -443,7 +398,7 @@ export default function PengajuanKelompokKeahlian({ onChangePage }) {
                               icon={faUser}
                               className="icon-style mr-2"
                             />
-                           PIC : {dataAktif?.PIC}
+                            PIC : {dataAktif?.PIC}
                           </h5>
                           <h5 className="fw-semibold">
                             <FontAwesomeIcon
@@ -491,7 +446,7 @@ export default function PengajuanKelompokKeahlian({ onChangePage }) {
                                           }}
                                         >
                                           {`Lampiran ${linkIndex + 1} ${
-                                          dataAktif["Nama Kelompok Keahlian"]
+                                            dataAktif["Nama Kelompok Keahlian"]
                                           }`}
                                         </a>
                                       </div>
@@ -519,7 +474,7 @@ export default function PengajuanKelompokKeahlian({ onChangePage }) {
                                     )
                                   ) : (
                                     <p>Invalid Lampiran format</p>
-                                  ) 
+                                  )
                                 ) : (
                                   <p>Tidak ada lampiran</p>
                                 )}
@@ -547,7 +502,7 @@ export default function PengajuanKelompokKeahlian({ onChangePage }) {
                           ?.filter((value) => {
                             return (
                               value.Status !== "Aktif" &&
-                              value.Status !== "Tidak Aktif" 
+                              value.Status !== "Tidak Aktif"
                             );
                           })
                           .map((value, index) => (
@@ -567,14 +522,12 @@ export default function PengajuanKelompokKeahlian({ onChangePage }) {
                   (listKK.length === 0 ||
                     listKK.every((value) => value.Status === "None")) ? (
                     <>
-                     
-                        <div className="container">
+                      <div className="container">
                         <Alert
                           type="warning mt-3"
                           message="Tidak ada data! Silahkan cari kelompok keahlian diatas.."
                         />
-                        </div>
-                  
+                      </div>
                     </>
                   ) : (
                     <div className="flex-fill">
@@ -608,9 +561,7 @@ export default function PengajuanKelompokKeahlian({ onChangePage }) {
                             message="Anda belum melakukan pengajuan"
                           />
                         )}
-                        <div
-                          className="container row mt-3 gx-4"
-                        >
+                        <div className="container row mt-3 gx-4">
                           {listKK
                             ?.filter((value) => {
                               return value.Status === "Menunggu Acc";
@@ -647,9 +598,7 @@ export default function PengajuanKelompokKeahlian({ onChangePage }) {
                             message="Belum ada kelompok Keahlian"
                           />
                         )}
-                        <div
-                          className="container row mt-3 gx-4"
-                        >
+                        <div className="container row mt-3 gx-4">
                           {listKK
                             ?.filter((value) => {
                               return value.Status !== "Menunggu Acc";

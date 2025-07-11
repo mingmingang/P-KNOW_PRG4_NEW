@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { Stepper } from "react-form-stepper";
 import Loading from "../../../../part/Loading";
 import Icon from "../../../../part/Icon";
 import { Card, ListGroup, Button, Badge, Form } from "react-bootstrap";
@@ -14,8 +13,6 @@ import he from "he";
 import Cookies from "js-cookie";
 import { decryptId } from "../../../../util/Encryptor";
 import Search from "../../../../part/Search";
-import AppContext_master from "../MasterContext.jsx";
-
 
 export default function MasterMateriReviewJawaban({
   onChangePage,
@@ -35,22 +32,23 @@ export default function MasterMateriReviewJawaban({
   const [badges, setBadges] = useState([]);
   const [reviewStatus, setReviewStatus] = useState([]);
   const [formDataReview, setFormDataReview] = useState([]);
-  const [questions, setQuestions] = useState([]);
   const [dataQuiz, setDataQuiz] = useState([]);
-  const [selectedQuizType, setSelectedQuizType] = useState("Pretest");// Default ke Pretest
+  const [selectedQuizType, setSelectedQuizType] = useState("Pretest"); // Default ke Pretest
 
   const fetchDataQuiz = async () => {
     setIsLoading(true);
     setIsError(false);
     try {
-      const response = await axios.post(API_LINK + "Quiz/GetDataQuizByIdMateri", {
-        materiId: AppContext_test.materiId,
-      });
+      const response = await axios.post(
+        API_LINK + "Quiz/GetDataQuizByIdMateri",
+        {
+          materiId: AppContext_test.materiId,
+        }
+      );
 
       if (response.data.length === 0) {
         setDataQuiz([]);
       } else {
-
         setDataQuiz(response.data);
         if (response.data.length === 1) {
           setSelectedQuizType(response.data[0].quizTipe);
@@ -96,18 +94,16 @@ export default function MasterMateriReviewJawaban({
                     answer: [],
                   };
                 }
-
-                // Cek apakah jawaban sudah ada
                 if (
                   !groupAnswer[trqId].answer.some(
                     (item) =>
-                      item.ans_jawaban_pengguna === answer.ans_jawaban_pengguna,
+                      item.ans_jawaban_pengguna === answer.ans_jawaban_pengguna
                   )
                 ) {
                   groupAnswer[trqId].answer.push({
                     que_id: answer.que_id,
                     ans_jawaban_pengguna: answer.ans_jawaban_pengguna,
-                    que_tipe: answer.que_tipe
+                    que_tipe: answer.que_tipe,
                   });
                 }
               });
@@ -141,33 +137,36 @@ export default function MasterMateriReviewJawaban({
         }
       }
     };
-    
+
     fetchData();
 
     return () => {
-      isMounted = false; // cleanup flag
+      isMounted = false;
     };
   }, [AppContext_test.materiId, AppContext_test.refresh, selectedQuizType]);
-
 
   const fetchDataWithRetry = async (retries = 1, delay = 1000) => {
     for (let i = 0; i < retries; i++) {
       try {
         setIsLoading(true);
-        const response = await axios.post(API_LINK + "Quiz/GetDataTransaksiReview", {
-          materiId: AppContext_test.materiId,
-          quiTipe: selectedQuizType, // Kirim tipe quiz yang dipilih
-        });
+        const response = await axios.post(
+          API_LINK + "Quiz/GetDataTransaksiReview",
+          {
+            materiId: AppContext_test.materiId,
+            quiTipe: selectedQuizType,
+          }
+        );
         if (response.data.length === 0) {
           setCurrentData([]);
-        } 
-  
+        }
+
         if (response.data.length !== 0) {
           setIsLoading(false);
           const filteredTransaksi = response.data.filter(
             (transaksi) =>
               transaksi.trq_status === "Not Reviewed" &&
-              (transaksi.que_tipe === "Essay" || transaksi.que_tipe === "Praktikum")
+              (transaksi.que_tipe === "Essay" ||
+                transaksi.que_tipe === "Praktikum")
           );
           return filteredTransaksi;
         }
@@ -241,7 +240,6 @@ export default function MasterMateriReviewJawaban({
     }
   };
 
-
   useEffect(() => {
     fetchDataQuiz();
   }, []);
@@ -259,7 +257,6 @@ export default function MasterMateriReviewJawaban({
     }
   }, [currentData]);
 
-  
   useEffect(() => {
     if (currentData.length > 0) {
       fetchQuestions(currentData[currentRespondentIndex].qui_tipe);
@@ -281,10 +278,7 @@ export default function MasterMateriReviewJawaban({
       (currentRespondentIndex + 1) % currentData.length
     );
   };
-  useEffect(() => {
-
-  }, [badges, reviewStatus]);
-
+  useEffect(() => {}, [badges, reviewStatus]);
 
   const handleSubmitAction = async () => {
     try {
@@ -353,7 +347,9 @@ export default function MasterMateriReviewJawaban({
     updatedReviewStatus[currentRespondentIndex][idSoal] = isCorrect;
     setReviewStatus(updatedReviewStatus);
     const updatedBadges = [...badges];
-    updatedBadges[currentRespondentIndex][idSoal] = isCorrect ? scaleValue : "salah"; // 0 untuk "Salah"
+    updatedBadges[currentRespondentIndex][idSoal] = isCorrect
+      ? scaleValue
+      : "salah";
     setBadges(updatedBadges);
 
     const detail = {
@@ -416,39 +412,44 @@ export default function MasterMateriReviewJawaban({
           />
         </div>
         <div className="d-flex justify-content-end">
-        <div className="">
-        </div>
-        <div className="" style={{marginBottom:"0px", marginRight:"100px", marginTop:"25px"}}>
-        {dataQuiz.length > 1 && (
-  <>
-    <div className="d-flex">
-      <div className="mr-3 mt-1 fw-bold">
-        <p style={{ color: "#0A5EA8" }}>Tipe Kuis :</p>
-      </div>
-      <div>
-        <Form.Select
-          value={selectedQuizType}
-          onChange={(e) => setSelectedQuizType(e.target.value)}
-        >
-          {dataQuiz
-            .sort((a, b) => {
-              // Prioritaskan "Pretest" sebelum "Posttest"
-              if (a.quizTipe === "Pretest") return -1;
-              if (b.quizTipe === "Pretest") return 1;
-              return 0;
-            })
-            .map((quiz) => (
-              <option key={quiz.quizId} value={quiz.quizTipe}>
-                {quiz.quizTipe}
-              </option>
-            ))}
-        </Form.Select>
-      </div>
-    </div>
-  </>
-)}
+          <div className=""></div>
+          <div
+            className=""
+            style={{
+              marginBottom: "0px",
+              marginRight: "100px",
+              marginTop: "25px",
+            }}
+          >
+            {dataQuiz.length > 1 && (
+              <>
+                <div className="d-flex">
+                  <div className="mr-3 mt-1 fw-bold">
+                    <p style={{ color: "#0A5EA8" }}>Tipe Kuis :</p>
+                  </div>
+                  <div>
+                    <Form.Select
+                      value={selectedQuizType}
+                      onChange={(e) => setSelectedQuizType(e.target.value)}
+                    >
+                      {dataQuiz
+                        .sort((a, b) => {
+                          if (a.quizTipe === "Pretest") return -1;
+                          if (b.quizTipe === "Pretest") return 1;
+                          return 0;
+                        })
+                        .map((quiz) => (
+                          <option key={quiz.quizId} value={quiz.quizTipe}>
+                            {quiz.quizTipe}
+                          </option>
+                        ))}
+                    </Form.Select>
+                  </div>
+                </div>
+              </>
+            )}
           </div>
-      </div>
+        </div>
         <div
           className="flex-fill mb-0 mt-3"
           style={{ marginRight: "100px", marginLeft: "100px" }}
@@ -469,8 +470,7 @@ export default function MasterMateriReviewJawaban({
     );
   }
 
-
-    if (isError) {
+  if (isError) {
     return (
       <>
         <div className="">
@@ -482,33 +482,38 @@ export default function MasterMateriReviewJawaban({
           />
         </div>
         <div className="d-flex justify-content-end">
-        <div className="">
-        </div>
-        <div className="" style={{marginBottom:"0px", marginRight:"100px", marginTop:"25px"}}>
-        {dataQuiz.length > 1 && (
-          <>
-          <div className="d-flex">
-            <div className="mr-3 mt-1 fw-bold">
-          <p style={{color:"#0A5EA8"}}>Tipe Kuis : </p>
-          </div>
-          <div className="">
-          <Form.Select
-            value={selectedQuizType}
-            onChange={(e) => setSelectedQuizType(e.target.value)}
-            
+          <div className=""></div>
+          <div
+            className=""
+            style={{
+              marginBottom: "0px",
+              marginRight: "100px",
+              marginTop: "25px",
+            }}
           >
-            {dataQuiz.map((quiz) => (
-              <option key={quiz.quizId} value={quiz.quizTipe}>
-                {quiz.quizTipe}
-              </option>
-            ))}
-          </Form.Select>
+            {dataQuiz.length > 1 && (
+              <>
+                <div className="d-flex">
+                  <div className="mr-3 mt-1 fw-bold">
+                    <p style={{ color: "#0A5EA8" }}>Tipe Kuis : </p>
+                  </div>
+                  <div className="">
+                    <Form.Select
+                      value={selectedQuizType}
+                      onChange={(e) => setSelectedQuizType(e.target.value)}
+                    >
+                      {dataQuiz.map((quiz) => (
+                        <option key={quiz.quizId} value={quiz.quizTipe}>
+                          {quiz.quizTipe}
+                        </option>
+                      ))}
+                    </Form.Select>
+                  </div>
+                </div>
+              </>
+            )}
           </div>
-          </div>
-          </>
-        )}
-          </div>
-      </div>
+        </div>
         <div
           className="flex-fill mb-0 mt-3"
           style={{ marginRight: "100px", marginLeft: "100px" }}
@@ -556,9 +561,9 @@ export default function MasterMateriReviewJawaban({
   };
 
   const removeHtmlTags = (str) => {
-    const decoded = he.decode(str); // Decode HTML entities seperti &lt; menjadi <
-    return decoded.replace(/<\/?[^>]+(>|$)/g, ''); // Hapus semua tag HTML
-};
+    const decoded = he.decode(str);
+    return decoded.replace(/<\/?[^>]+(>|$)/g, "");
+  };
 
   const scaleDescriptions = {
     0: "Salah",
@@ -572,14 +577,12 @@ export default function MasterMateriReviewJawaban({
   const matchedAnswer = (question, currentRespondent) => {
     if (!currentData || !currentRespondent) return null;
 
-  const answer = currentRespondent.answer.find(
-    (ans) =>
-      ans.que_id === question.Key && // ID soal cocok
-      ans.que_tipe === question.TipeSoal // Tipe soal cocok
-  );
+    const answer = currentRespondent.answer.find(
+      (ans) => ans.que_id === question.Key && ans.que_tipe === question.TipeSoal
+    );
     return answer ? answer.ans_jawaban_pengguna : null;
   };
-  
+
   return (
     <>
       <div className="">
@@ -592,40 +595,45 @@ export default function MasterMateriReviewJawaban({
       </div>
 
       <div className="d-flex justify-content-end">
-        <div className="">
+        <div className=""></div>
+        <div
+          className=""
+          style={{
+            marginBottom: "0px",
+            marginRight: "70px",
+            marginTop: "25px",
+          }}
+        >
+          {dataQuiz.length > 1 && (
+            <>
+              <div className="d-flex">
+                <div className="mr-3 mt-1 fw-bold">
+                  <p style={{ color: "#0A5EA8" }}>Tipe Kuis :</p>
+                </div>
+                <div>
+                  <Form.Select
+                    value={selectedQuizType}
+                    onChange={(e) => setSelectedQuizType(e.target.value)}
+                  >
+                    {dataQuiz
+                      .sort((a, b) => {
+                        if (a.quizTipe === "Pretest") return -1;
+                        if (b.quizTipe === "Pretest") return 1;
+                        return 0;
+                      })
+                      .map((quiz) => (
+                        <option key={quiz.quizId} value={quiz.quizTipe}>
+                          {quiz.quizTipe}
+                        </option>
+                      ))}
+                  </Form.Select>
+                </div>
+              </div>
+            </>
+          )}
         </div>
-        <div className="" style={{marginBottom:"0px", marginRight:"70px", marginTop:"25px"}}>
-        {dataQuiz.length > 1 && (
-          <>
-            <div className="d-flex">
-              <div className="mr-3 mt-1 fw-bold">
-                <p style={{ color: "#0A5EA8" }}>Tipe Kuis :</p>
-              </div>
-              <div>
-                <Form.Select
-                  value={selectedQuizType}
-                  onChange={(e) => setSelectedQuizType(e.target.value)}
-                >
-                  {dataQuiz
-                    .sort((a, b) => {
-                      // Prioritaskan "Pretest" sebelum "Posttest"
-                      if (a.quizTipe === "Pretest") return -1;
-                      if (b.quizTipe === "Pretest") return 1;
-                      return 0;
-                    })
-                    .map((quiz) => (
-                      <option key={quiz.quizId} value={quiz.quizTipe}>
-                        {quiz.quizTipe}
-                      </option>
-                    ))}
-                </Form.Select>
-              </div>
-            </div>
-          </>
-        )}
-          </div>
       </div>
-      
+
       <div className="container mb-4" style={{ marginTop: "20px" }}>
         <Card className="mb-4">
           <Card.Header
@@ -641,21 +649,21 @@ export default function MasterMateriReviewJawaban({
               </h3>
             </div>
             <div className="header-right" style={{ marginLeft: "auto" }}>
-            <select
-            className="form-select me-4 mt-4"
-            value={currentRespondentIndex} // Gunakan currentRespondentIndex sebagai value
-            onChange={(e) => {
-              const selectedIndex = parseInt(e.target.value, 10);
-              setCurrentRespondentIndex(selectedIndex);
-            }}
-            style={{ flex: "1" }}
-          >
-            {Object.values(currentData).map((respondent, index) => (
-              <option key={respondent.trq_id} value={index}>
-                {respondent.nama}
-              </option>
-            ))}
-          </select>
+              <select
+                className="form-select me-4 mt-4"
+                value={currentRespondentIndex}
+                onChange={(e) => {
+                  const selectedIndex = parseInt(e.target.value, 10);
+                  setCurrentRespondentIndex(selectedIndex);
+                }}
+                style={{ flex: "1" }}
+              >
+                {Object.values(currentData).map((respondent, index) => (
+                  <option key={respondent.trq_id} value={index}>
+                    {respondent.nama}
+                  </option>
+                ))}
+              </select>
               <span className="text-light">
                 <span className="ms-3">
                   <i className="bi bi-caret-right-fill"></i>
@@ -687,51 +695,61 @@ export default function MasterMateriReviewJawaban({
             {currentQuestions.map((question, questionIndex) => {
               const currentRespondent = currentData[currentRespondentIndex];
               const answer = matchedAnswer(question, currentRespondent);
-             
+
               return (
                 <Card key={question.Key} className="mb-4">
                   <Card.Header className="">
                     <div className="d-flex mb-2 justify-content-between">
                       <div className="d-flex">
-                      <Badge
-                        className="me-2"
-                        style={{
-                          backgroundColor:
-                            question.TipeSoal === "Essay"
-                              ? "#007bff"
-                              : "#ffc107", // Biru untuk Essay, Kuning untuk Praktikum
-                          color: "white", // Warna teks putih untuk kontras
-                        }}
-                      >
-                        {question.TipeSoal === "Essay" ? "Essay" : "Praktikum"}
-                      </Badge>
-                      {badges?.[currentRespondentIndex]?.[question.Key] && (
                         <Badge
-                          bg={badges[currentRespondentIndex][question.Key]}
                           className="me-2"
                           style={{
                             backgroundColor:
-                            badges?.[currentRespondentIndex]?.[question.Key] === "salah"
-                              ? "#dc3545" // Merah untuk "Salah"
-                              : badges?.[currentRespondentIndex]?.[question.Key] >= 4
-                              ? "#28a745" // Hijau untuk skala 4 dan 5
-                              : badges?.[currentRespondentIndex]?.[question.Key] >= 1
-                              ? "#ffa200" // Oranye untuk skala 1, 2, dan 3
-                              : "#6c757d", // Abu-abu untuk "Belum Dinilai"
-                          color: "white",
+                              question.TipeSoal === "Essay"
+                                ? "#007bff"
+                                : "#ffc107",
+                            color: "white",
                           }}
                         >
-                          {/* {badges[currentRespondentIndex][question.Key] === "success"
-                              ? "Benar"
-                              : "Salah"} */}
-                          {badges?.[currentRespondentIndex]?.[question.Key] === "salah"
-                          ? "Salah"
-                          : badges?.[currentRespondentIndex]?.[question.Key] !== undefined
-                          ? scaleDescriptions[badges[currentRespondentIndex][question.Key]] ||
-                            "Belum Dinilai"
-                          : "Belum Dinilai"}
+                          {question.TipeSoal === "Essay"
+                            ? "Essay"
+                            : "Praktikum"}
                         </Badge>
-                      )}
+                        {badges?.[currentRespondentIndex]?.[question.Key] && (
+                          <Badge
+                            bg={badges[currentRespondentIndex][question.Key]}
+                            className="me-2"
+                            style={{
+                              backgroundColor:
+                                badges?.[currentRespondentIndex]?.[
+                                  question.Key
+                                ] === "salah"
+                                  ? "#dc3545"
+                                  : badges?.[currentRespondentIndex]?.[
+                                      question.Key
+                                    ] >= 4
+                                  ? "#28a745"
+                                  : badges?.[currentRespondentIndex]?.[
+                                      question.Key
+                                    ] >= 1
+                                  ? "#ffa200"
+                                  : "#6c757d",
+                              color: "white",
+                            }}
+                          >
+                            {badges?.[currentRespondentIndex]?.[
+                              question.Key
+                            ] === "salah"
+                              ? "Salah"
+                              : badges?.[currentRespondentIndex]?.[
+                                  question.Key
+                                ] !== undefined
+                              ? scaleDescriptions[
+                                  badges[currentRespondentIndex][question.Key]
+                                ] || "Belum Dinilai"
+                              : "Belum Dinilai"}
+                          </Badge>
+                        )}
                       </div>
 
                       <div className="">
@@ -739,13 +757,13 @@ export default function MasterMateriReviewJawaban({
                           Maks. {question.NilaiJawaban} Point
                         </Badge>
                       </div>
-                      </div>
+                    </div>
 
-                      <div className="d-flex flex-column">
-                        <div className="">
-                          {removeHtmlTags(he.decode(question.Soal))}
-                        </div>
+                    <div className="d-flex flex-column">
+                      <div className="">
+                        {removeHtmlTags(he.decode(question.Soal))}
                       </div>
+                    </div>
                   </Card.Header>
                   <Card.Body>
                     <Form>
@@ -771,7 +789,7 @@ export default function MasterMateriReviewJawaban({
                             className="btn btn-primary"
                             onClick={() => {
                               if (answer) {
-                                downloadFile(answer); // Panggil fungsi downloadFile dengan matchedAnswer
+                                downloadFile(answer);
                               } else {
                                 alert("Tidak ada file untuk diunduh");
                               }
@@ -822,7 +840,7 @@ export default function MasterMateriReviewJawaban({
                                 currentRespondent.qui_id,
                                 currentRespondent.trq_id,
                                 scale,
-                                (scale / 5).toString() // Nilai skala (0.2, 0.4, dll.)
+                                (scale / 5).toString()
                               )
                             }
                           >

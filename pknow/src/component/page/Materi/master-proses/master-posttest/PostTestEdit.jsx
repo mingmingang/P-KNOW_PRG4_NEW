@@ -2,16 +2,11 @@ import React, { useRef, useState, useEffect } from "react";
 import Button from "../../../../part/Button copy";
 import { object, string } from "yup";
 import Input from "../../../../part/Input";
-import Loading from "../../../../part/Loading";
 import * as XLSX from "xlsx";
 import axios from "axios";
-import {
-  validateAllInputs,
-  validateInput,
-} from "../../../../util/ValidateForm";
+import { validateInput } from "../../../../util/ValidateForm";
 import { API_LINK } from "../../../../util/Constants";
 import FileUpload from "../../../../part/FileUpload";
-import uploadFile from "../../../../util/UploadImageQuiz";
 import { Editor } from "@tinymce/tinymce-react";
 import Swal from "sweetalert2";
 import AppContext_master from "../../master-test/TestContext";
@@ -101,13 +96,9 @@ export default function MasterPostTestEdit({ onChangePage, withID }) {
   const [selectedFile, setSelectedFile] = useState(null);
   const [timer, setTimer] = useState("");
   const [deletedChoices, setDeletedChoices] = useState([]);
-
-  //INI SAHAR
   let activeUser = "";
   const cookie = Cookies.get("activeUser");
   if (cookie) activeUser = JSON.parse(decryptId(cookie)).username;
-
-  //INI SAHAR
   const [formData, setFormData] = useState({
     quizId: "",
     materiId: "",
@@ -120,8 +111,6 @@ export default function MasterPostTestEdit({ onChangePage, withID }) {
     status: "Aktif",
     modifby: activeUser,
   });
-
-  //INI SAHAR
   const filteredData = {
     quizId: formData.quizId,
     materiId: formData.materiId,
@@ -134,8 +123,6 @@ export default function MasterPostTestEdit({ onChangePage, withID }) {
     status: formData.status,
     modifby: formData.modifby,
   };
-
-  //INI SAHAR
   const [formQuestion, setFormQuestion] = useState({
     quizId: "",
     soal: "",
@@ -145,10 +132,6 @@ export default function MasterPostTestEdit({ onChangePage, withID }) {
     status: "Aktif",
     quemodifby: activeUser,
   });
-
-  // formData.timer = timer;
-
-  //INI SAHAR
   const [formChoice, setFormChoice] = useState({
     urutanChoice: "",
     isiChoice: "",
@@ -156,8 +139,6 @@ export default function MasterPostTestEdit({ onChangePage, withID }) {
     nilaiChoice: "",
     quemodifby: activeUser,
   });
-
-  //INI SAHAR
   const userSchema = object({
     quizId: string(),
     materiId: string(),
@@ -172,7 +153,7 @@ export default function MasterPostTestEdit({ onChangePage, withID }) {
   });
 
   const handleJenisTypeChange = (e, questionIndex) => {
-    const { value } = e.target; // Ambil jenis baru (Tunggal/Jamak)
+    const { value } = e.target;
 
     setFormContent((prevFormContent) => {
       const updatedFormContent = [...prevFormContent];
@@ -183,12 +164,9 @@ export default function MasterPostTestEdit({ onChangePage, withID }) {
 
       let choicesToDelete = [];
       if (value === "Jamak") {
-        // Untuk "Jamak", hapus semua opsi yang memiliki isChecked sebagai false
         choicesToDelete = question.options
-          .filter((option) => !option.isChecked && option.id) // Ambil ID opsi yang tidak dicentang
+          .filter((option) => !option.isChecked && option.id)
           .map((option) => option.id);
-
-        // Reset semua opsi agar tidak dicentang
         question.options = question.options.filter(
           (option) => option.isChecked
         );
@@ -196,33 +174,27 @@ export default function MasterPostTestEdit({ onChangePage, withID }) {
           option.isChecked = false;
         });
       } else if (value === "Tunggal") {
-        // Untuk "Tunggal", hapus semua kecuali opsi pertama yang dicentang
         const firstCheckedOption = question.options.find(
           (option) => option.isChecked
         );
 
-        // Ambil opsi yang akan dihapus (tidak relevan untuk jenis Tunggal)
         choicesToDelete = question.options
           .filter((option) => option.id && option !== firstCheckedOption)
           .map((option) => option.id);
 
-        // Reset semua opsi dan hanya pertahankan satu yang dicentang
         question.options = firstCheckedOption
           ? [firstCheckedOption]
-          : question.options.slice(0, 1); // Pertahankan opsi pertama jika tidak ada yang dicentang
+          : question.options.slice(0, 1);
         question.options.forEach((option, idx) => {
-          option.isChecked = idx === 0; // Pastikan hanya satu yang dicentang
+          option.isChecked = idx === 0;
         });
       }
 
-      // Simpan ID opsi yang dihapus ke deletedChoices
       setDeletedChoices((prev) => [...prev, ...choicesToDelete]);
 
       return updatedFormContent;
     });
   };
-
-  /* ----- Handle Function Start ---- */
 
   const Materi = AppContext_master.DetailMateriEdit;
   const hasTest = Materi.Posttest !== null && Materi.Posttest !== "";
@@ -244,8 +216,6 @@ export default function MasterPostTestEdit({ onChangePage, withID }) {
       }
 
       const sectionId = sectionData[0].SectionId;
-
-      // Fetch quiz data using sectionId
       const quizResponse = await axios.post(
         API_LINK + "Quiz/GetDataQuizByIdSection",
         {
@@ -256,8 +226,6 @@ export default function MasterPostTestEdit({ onChangePage, withID }) {
       if (quizData.length === 0) {
         throw new Error("Quiz data not found.");
       }
-
-      // Process quiz data
       const convertedData = {
         ...quizData[0],
         tanggalAwal: quizData[0]?.tanggalAwal
@@ -284,8 +252,6 @@ export default function MasterPostTestEdit({ onChangePage, withID }) {
     }
   }
 
-  //INI SAHAR
-  // Call the combined function when the component mounts
   useEffect(() => {
     fetchSectionAndQuizData();
   }, []);
@@ -308,7 +274,6 @@ export default function MasterPostTestEdit({ onChangePage, withID }) {
           const filePromises = [];
 
           data.forEach((question) => {
-            // Jika pertanyaan sudah ada di formattedQuestions, tambahkan opsi baru
             if (question.Key in formattedQuestions) {
               if (question.TipeSoal === "Pilgan") {
                 formattedQuestions[question.Key].options.push({
@@ -321,12 +286,11 @@ export default function MasterPostTestEdit({ onChangePage, withID }) {
                 });
               }
             } else {
-              // Tambahkan pertanyaan baru
               formattedQuestions[question.Key] = {
                 type: question.TipeSoal,
                 text: question.Soal,
                 options: question.TipeSoal === "Pilgan" ? [] : [],
-                jenis: question.TipePilihan, // Tambahkan properti jenis
+                jenis: question.TipePilihan,
                 gambar: question.Gambar || "",
                 img: question.Gambar || "",
                 point: question.NilaiJawaban,
@@ -374,7 +338,6 @@ export default function MasterPostTestEdit({ onChangePage, withID }) {
             }
           });
 
-          // Tambahkan setelah forEach selesai memproses data pertanyaan
           Object.keys(formattedQuestions).forEach((key) => {
             if (formattedQuestions[key].options.length > 0) {
               formattedQuestions[key].options.sort(
@@ -401,42 +364,31 @@ export default function MasterPostTestEdit({ onChangePage, withID }) {
     }
   };
 
-  //INI SAHAR
   useEffect(() => {
     if (formData.quizId) getDataQuestion();
   }, [formData.quizId]);
 
-  //INI SAHAR
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [isBackAction, setIsBackAction] = useState(false);
 
-  //INI SAHAR
   const handlePointChange = (e, index) => {
     const { value } = e.target;
-
-    // Update point pada formContent
     const updatedFormContent = [...formContent];
     updatedFormContent[index].point = value;
     setFormContent(updatedFormContent);
-
-    // Update nilaiChoice pada formChoice
     setFormChoice((prevFormChoice) => ({
       ...prevFormChoice,
       nilaiChoice: value,
     }));
   };
 
-  //INI SAHAR
   const handleOptionPointChange = (e, questionIndex, optionIndex) => {
     const { value } = e.target;
 
-    // Parse value to integer
     const pointValue = parseInt(value, 10) || 0;
 
-    // Create a copy of formContent
     const updatedFormContent = formContent.map((question, qIndex) => {
       if (qIndex === questionIndex) {
-        // Update the specific option's point value
         const updatedOptions = question.options.map((option, oIndex) => {
           if (oIndex === optionIndex) {
             return {
@@ -447,13 +399,11 @@ export default function MasterPostTestEdit({ onChangePage, withID }) {
           return option;
         });
 
-        // Calculate total points for the question
         const totalPoints = updatedOptions.reduce(
           (acc, opt) => acc + opt.point,
           0
         );
 
-        // Return updated question with updated options and total points
         return {
           ...question,
           options: updatedOptions,
@@ -463,7 +413,6 @@ export default function MasterPostTestEdit({ onChangePage, withID }) {
       return question;
     });
 
-    // Update formContent state
     setFormContent(updatedFormContent);
   };
 
@@ -489,40 +438,36 @@ export default function MasterPostTestEdit({ onChangePage, withID }) {
     setSelectedFile(file);
   };
 
-  //INI SAHAR
   const addQuestion = (questionType) => {
     const newQuestion = {
       type: questionType,
       text: `Pertanyaan ${formContent.length + 1}`,
       options: [],
       point: 0,
-      correctAnswer: "", // Default correctAnswer
+      correctAnswer: "",
     };
     setFormContent([...formContent, newQuestion]);
     setSelectedOptions([...selectedOptions, ""]);
   };
 
   const handleQuestionTypeChange = async (e, index) => {
-    const newType = e.target.value; // Tipe baru
-    const questionId = formContent[index].key; // ID soal
+    const newType = e.target.value;
+    const questionId = formContent[index].key;
 
-    // Perbarui tipe soal di state frontend
     const updatedFormContent = [...formContent];
     updatedFormContent[index].type = newType;
 
     if (newType === "Pilgan") {
-      // Set default jenis ke Tunggal jika tipe diubah ke Pilgan
       updatedFormContent[index].jenis = "Tunggal";
-      updatedFormContent[index].options = []; // Reset opsi
+      updatedFormContent[index].options = [];
     }
 
     setFormContent(updatedFormContent);
 
     try {
-      // Kirim request untuk memanggil stored procedure
       const response = await axios.post(API_LINK + "Question/SetTypeQuestion", {
-        p1: questionId, // ID soal
-        p2: newType, // Tipe baru
+        p1: questionId,
+        p2: newType,
       });
     } catch (error) {
       console.error("Gagal memperbarui tipe soal:", error.message);
@@ -530,29 +475,21 @@ export default function MasterPostTestEdit({ onChangePage, withID }) {
     }
   };
 
-  //INI SAHAR
-
   const handleAddOption = (index) => {
     const updatedFormContent = [...formContent];
     const question = updatedFormContent[index];
 
-    // Create a new option with default values
     const newOption = {
       id: null,
       label: "",
       value: "",
       point: 0,
-      isChecked: false, // Default to unchecked
+      isChecked: false,
     };
-
-    // Add the new option to the question's options
     question.options.push(newOption);
-
-    // Update the form content state
     setFormContent(updatedFormContent);
   };
 
-  //INI SAHAR
   const handleOptionLabelChange = (e, questionIndex, optionIndex) => {
     const { value } = e.target;
     const updatedFormContent = [...formContent];
@@ -564,37 +501,29 @@ export default function MasterPostTestEdit({ onChangePage, withID }) {
     const { checked } = e.target;
     const updatedFormContent = [...formContent];
     const question = updatedFormContent[questionIndex];
-    // if (question.options && Array.isArray(question.options)) {
-    //   question.options.forEach((option, idx) => {
-    //     option.isChecked = idx === optionIndex;
-    //   });
-    // }
-    // Perbarui opsi berdasarkan apakah "Tunggal" atau "Jamak"
+
     if (question.jenis === "Tunggal") {
-      // Reset semua opsi lain jika tipe Tunggal
       question.options.forEach((option, idx) => {
-        option.isChecked = idx === optionIndex; // Hanya aktifkan opsi yang dipilih
-        option.point = idx === optionIndex ? option.point : 0; // Reset poin selain yang dipilih
+        option.isChecked = idx === optionIndex;
+        option.point = idx === optionIndex ? option.point : 0;
       });
     } else if (question.jenis === "Jamak") {
-      // Update opsi tanpa mereset yang lain
       question.options[optionIndex].isChecked = checked;
       if (!checked) {
-        question.options[optionIndex].point = 0; // Reset poin jika opsi tidak dipilih
+        question.options[optionIndex].point = 0;
       }
     }
     setFormContent(updatedFormContent);
   };
 
-  //INI SAHAR
   const handleDuplicateQuestion = (index) => {
     const questionToDuplicate = { ...formContent[index] };
     const duplicatedQuestion = {
       ...questionToDuplicate,
-      key: null, // Menandakan ini adalah pertanyaan baru
+      key: null,
       options: questionToDuplicate.options.map((option) => ({
         ...option,
-        id: null, // Menandakan ini adalah opsi baru
+        id: null,
       })),
     };
 
@@ -611,7 +540,6 @@ export default function MasterPostTestEdit({ onChangePage, withID }) {
     });
   };
 
-  //INI SAHAR
   const handleDeleteOption = (questionIndex, optionIndex) => {
     const updatedFormContent = [...formContent];
     const deletedOption =
@@ -625,12 +553,11 @@ export default function MasterPostTestEdit({ onChangePage, withID }) {
     setFormContent(updatedFormContent);
   };
 
-  //INI SAHAR
   const [isSaving, setIsSaving] = useState(false);
 
   const handleDeleteQuestion = (index) => {
     const question = formContent[index];
-    const questionId = question.key; // Pastikan key adalah question ID
+    const questionId = question.key;
 
     Swal.fire({
       title: "Apakah Anda yakin?",
@@ -642,7 +569,6 @@ export default function MasterPostTestEdit({ onChangePage, withID }) {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          // Jika pertanyaan adalah Pilihan Ganda, hapus semua opsi terkait terlebih dahulu
           if (question.type === "Pilgan") {
             for (const choice of question.options) {
               if (choice.id) {
@@ -651,7 +577,6 @@ export default function MasterPostTestEdit({ onChangePage, withID }) {
             }
           }
 
-          // Panggil API untuk menghapus pertanyaan
           const response = await axios.post(
             API_LINK + "Question/DeleteQuestion",
             {
@@ -659,7 +584,6 @@ export default function MasterPostTestEdit({ onChangePage, withID }) {
             }
           );
 
-          // Periksa apakah penghapusan berhasil
           if (response.data === null) {
             Swal.fire({
               title: "Gagal Dihapus!",
@@ -669,8 +593,6 @@ export default function MasterPostTestEdit({ onChangePage, withID }) {
             });
             return;
           }
-
-          // Jika berhasil, lanjutkan penghapusan dari state lokal
           const updatedFormContent = [...formContent];
           updatedFormContent.splice(index, 1);
           setFormContent(updatedFormContent);
@@ -693,33 +615,31 @@ export default function MasterPostTestEdit({ onChangePage, withID }) {
     });
   };
 
-  //INI SAHAR
   const deleteChoiceAPI = async (choiceId) => {
     try {
       const response = await axios.post(API_LINK + "Choice/DeleteChoice", {
         p1: choiceId,
       });
       if (response.data.Hasil === "Sudah Berelasi") {
+        console.log("Berhasil berelasi");
       }
     } catch (error) {
       console.error("Error deleting choice:", error);
     }
   };
 
-  //INI SAHAR
   const parseExcelData = (data) => {
     const questions = data
       .map((row, index) => {
-        // Skip header row (index 0) and the row di bawahnya (index 1)
         if (index < 2) return null;
 
-        const options = row[3] ? row[3].split(",") : []; // Pilihan Jawaban
-        const bobotPilgan = row[4] ? row[4].split(",").map(Number) : []; // Bobot Pilgan
-        const jenis = row[2]?.toLowerCase(); // Jenis soal
+        const options = row[3] ? row[3].split(",") : [];
+        const bobotPilgan = row[4] ? row[4].split(",").map(Number) : [];
+        const jenis = row[2]?.toLowerCase();
         const totalNonZero = bobotPilgan.filter((bobot) => bobot !== 0).length;
 
         return {
-          text: row[1], // Soal
+          text: row[1],
           type:
             jenis === "pilgan"
               ? "Pilgan"
@@ -731,19 +651,19 @@ export default function MasterPostTestEdit({ onChangePage, withID }) {
               ? totalNonZero > 1
                 ? "Jamak"
                 : "Tunggal"
-              : null, // Deteksi jamak/tunggal
+              : null,
           options:
             jenis === "pilgan"
               ? options.map((option, idx) => ({
                   label: option.trim(),
-                  point: bobotPilgan[idx] || 0, // Bobot masing-masing pilihan
-                  isChecked: bobotPilgan[idx] > 0, // Pilihan aktif jika bobotnya > 0
+                  point: bobotPilgan[idx] || 0,
+                  isChecked: bobotPilgan[idx] > 0,
                 }))
               : [],
           point:
             jenis === "essay" || jenis === "praktikum"
               ? parseInt(row[5] || 0, 10)
-              : null, // Total skor untuk Essay/Praktikum
+              : null,
         };
       })
       .filter(Boolean);
@@ -770,7 +690,6 @@ export default function MasterPostTestEdit({ onChangePage, withID }) {
     return totalPoints;
   };
 
-  //INI SAHAR
   const uploadFile = async (file) => {
     const formData = new FormData();
     formData.append("file", file);
@@ -787,7 +706,7 @@ export default function MasterPostTestEdit({ onChangePage, withID }) {
       );
 
       if (response.status === 200 && response.data) {
-        return response.data; // Pastikan ini berisi `newFileName`
+        return response.data;
       } else {
         throw new Error("Upload file gagal.");
       }
@@ -808,9 +727,8 @@ export default function MasterPostTestEdit({ onChangePage, withID }) {
 
     const allowedExtensions = ["jpg", "jpeg", "png"];
     const fileExtension = file.name.split(".").pop().toLowerCase();
-    const maxSizeInMB = 10; // Maksimum ukuran file (dalam MB)
+    const maxSizeInMB = 10;
 
-    // Validasi ekstensi file
     if (!allowedExtensions.includes(fileExtension)) {
       Swal.fire({
         icon: "warning",
@@ -820,7 +738,6 @@ export default function MasterPostTestEdit({ onChangePage, withID }) {
       return;
     }
 
-    // Validasi ukuran file
     if (file.size / 1024 / 1024 > maxSizeInMB) {
       Swal.fire({
         icon: "warning",
@@ -837,9 +754,8 @@ export default function MasterPostTestEdit({ onChangePage, withID }) {
       const updatedFormContent = [...formContent];
       updatedFormContent[index] = {
         ...updatedFormContent[index],
-        // selectedFile: file, // Simpan file baru
-        gambar: fileName, // Nama file baru dari server
-        previewUrl: URL.createObjectURL(file), // URL untuk preview
+        gambar: fileName,
+        previewUrl: URL.createObjectURL(file),
       };
       setFormContent(updatedFormContent);
     } catch (error) {
@@ -847,7 +763,6 @@ export default function MasterPostTestEdit({ onChangePage, withID }) {
     }
   };
 
-  //INI SAHAR
   const handleUploadFile = () => {
     if (selectedFile) {
       const reader = new FileReader();
@@ -891,10 +806,9 @@ export default function MasterPostTestEdit({ onChangePage, withID }) {
           icon: "error",
           confirmButtonText: "OK",
         });
-        return; // Jika timer 0, proses tidak akan dilanjutkan
+        return;
       }
 
-      // **1. Update Data Quiz**
       const quizPayload = {
         quizId: formData.quizId,
         materiId: formData.materiId,
@@ -903,7 +817,7 @@ export default function MasterPostTestEdit({ onChangePage, withID }) {
         quizTipe: formData.quizTipe,
         tanggalAwal: formData.tanggalAwal,
         tanggalAkhir: formData.tanggalAkhir,
-        timer: formData.timer, // Pastikan timer dalam format detik
+        timer: formData.timer,
         status: "Aktif",
         modifby: activeUser,
       };
@@ -922,7 +836,6 @@ export default function MasterPostTestEdit({ onChangePage, withID }) {
         setIsSaving(false);
         return;
       }
-      // Validasi total poin
       const totalPoints = validateTotalPoints();
       if (totalPoints !== 100) {
         Swal.fire({
@@ -935,7 +848,6 @@ export default function MasterPostTestEdit({ onChangePage, withID }) {
         return;
       }
 
-      // **1. Hapus pilihan lama yang ada di deletedChoices**
       for (const choiceId of deletedChoices) {
         try {
           await deleteChoiceAPI(choiceId);
@@ -947,22 +859,20 @@ export default function MasterPostTestEdit({ onChangePage, withID }) {
         }
       }
 
-      // **2. Simpan pertanyaan dan pilihan baru**
       for (const question of formContent) {
         let payload;
 
         const isBlobUrl = question.gambar?.startsWith("blob:") || false;
         const finalGambar = isBlobUrl ? question.img : question.gambar;
         if (!question.key) {
-          // Parameter untuk CREATE
           payload = {
-            p1: formData.quizId, // ID Quiz
-            p2: question.text, // Soal
-            p3: question.type, // Tipe Soal
+            p1: formData.quizId,
+            p2: question.text,
+            p3: question.type,
             p4: finalGambar || "",
-            p5: "Aktif", // Status
-            p6: activeUser, // Created By
-            p7: question.point || 0, // Poin
+            p5: "Aktif",
+            p6: activeUser,
+            p7: question.point || 0,
           };
 
           const response = await axios.post(
@@ -972,37 +882,34 @@ export default function MasterPostTestEdit({ onChangePage, withID }) {
           const newQuestionId = response.data?.[0]?.hasil;
 
           if (!newQuestionId) throw new Error("Failed to save question.");
-          question.key = newQuestionId; // Simpan ID setelah create
+          question.key = newQuestionId;
         } else {
-          // Parameter untuk UPDATE
           payload = {
-            p1: question.key, // ID Question (que_id)
-            p2: formData.quizId, // ID Quiz
-            p3: question.text, // Soal
-            p4: question.type, // Tipe Soal
-            p5: finalGambar || "", // Gambar
-            p6: "Aktif", // Status
-            p7: activeUser, // Modified By
-            p8: question.point || 0, // Poin
+            p1: question.key,
+            p2: formData.quizId,
+            p3: question.text,
+            p4: question.type,
+            p5: finalGambar || "",
+            p6: "Aktif",
+            p7: activeUser,
+            p8: question.point || 0,
           };
 
           await axios.post(API_LINK + "Question/UpdateDataQuestion", payload);
         }
 
-        // Tangani opsi untuk Pilihan Ganda
         if (question.type === "Pilgan") {
           for (const [optionIndex, option] of question.options.entries()) {
             let optionPayload;
 
             if (!option.id) {
-              // Parameter untuk CREATE opsi
               optionPayload = {
-                p1: optionIndex + 1, // Urutan
-                p2: option.label, // Isi Opsi
-                p3: question.key, // ID Question
-                p4: option.point || 0, // Nilai
-                p5: activeUser, // Created By
-                p6: question.jenis === "Tunggal" ? "Tunggal" : "Jamak", // Jenis Opsi
+                p1: optionIndex + 1,
+                p2: option.label,
+                p3: question.key,
+                p4: option.point || 0,
+                p5: activeUser,
+                p6: question.jenis === "Tunggal" ? "Tunggal" : "Jamak",
               };
               const optionResponse = await axios.post(
                 API_LINK + "Choice/SaveDataChoice",
@@ -1010,15 +917,14 @@ export default function MasterPostTestEdit({ onChangePage, withID }) {
               );
               option.id = optionResponse.data?.[0]?.hasil;
             } else {
-              // Parameter untuk UPDATE opsi
               optionPayload = {
-                cho_id: option.id, // ID Opsi
-                questionId: question.key, // ID Question
-                urutanChoice: optionIndex + 1, // Urutan
-                cho_isi: option.label, // Isi Opsi
-                cho_nilai: option.point || 0, // Nilai
-                quemodifby: activeUser, // Modified By
-                cho_tipe: question.jenis === "Tunggal" ? "Tunggal" : "Jamak", // Jenis Opsi
+                cho_id: option.id,
+                questionId: question.key,
+                urutanChoice: optionIndex + 1,
+                cho_isi: option.label,
+                cho_nilai: option.point || 0,
+                quemodifby: activeUser,
+                cho_tipe: question.jenis === "Tunggal" ? "Tunggal" : "Jamak",
               };
 
               await axios.post(
@@ -1052,8 +958,6 @@ export default function MasterPostTestEdit({ onChangePage, withID }) {
       setIsSaving(false);
     }
   };
-
-  //INI SAHAR
   useEffect(() => {
     const updatedFormContent = formContent.map((question) => {
       if (question.gambar && !question.previewUrl) {
@@ -1067,10 +971,9 @@ export default function MasterPostTestEdit({ onChangePage, withID }) {
     setFormContent(updatedFormContent);
   }, []);
 
-  //INI SAHAR
   const handleDownloadTemplate = () => {
     const link = document.createElement("a");
-    link.href = "/template.xlsx"; // Path to your template file in the public directory
+    link.href = "/template.xlsx";
     link.download = "template.xlsx";
     link.click();
   };
@@ -1090,7 +993,6 @@ export default function MasterPostTestEdit({ onChangePage, withID }) {
     }));
   };
 
-  //INI SAHAR
   const convertTimeToSeconds = () => {
     return parseInt(hours) * 3600 + parseInt(minutes) * 60;
   };
@@ -1103,7 +1005,6 @@ export default function MasterPostTestEdit({ onChangePage, withID }) {
     setMinutes(e.target.value);
   };
 
-  //INI SAHAR
   const convertSecondsToTimeFormat = (seconds) => {
     const formatHours = Math.floor(seconds / 3600)
       .toString()
@@ -1117,7 +1018,6 @@ export default function MasterPostTestEdit({ onChangePage, withID }) {
     return `${formatHours}:${formatMinutes}`;
   };
 
-  //INI SAHAR
   const removeHtmlTags = (html) => {
     const div = document.createElement("div");
     div.innerHTML = html;
@@ -1318,11 +1218,10 @@ export default function MasterPostTestEdit({ onChangePage, withID }) {
                             classType="primary btn-sm mx-2 px-3 py-2"
                             onClick={() =>
                               document.getElementById("fileInput").click()
-                            } // Memicu klik pada input file
+                            }
                           />
                         </div>
                       </div>
-                      {/* Tampilkan nama file yang dipilih */}
                       {selectedFile && <span>{selectedFile.name}</span>}
                       <div className="d-flex">
                         <div className="mr-4">
@@ -1416,8 +1315,6 @@ export default function MasterPostTestEdit({ onChangePage, withID }) {
                             }}
                           />
                         </div>
-
-                        {/* Tampilkan tombol gambar dan PDF hanya jika type = essay */}
                         {(question.type === "Essay" ||
                           question.type === "Praktikum") && (
                           <div className="col-lg-12 d-flex align-items-center form-check">
@@ -1434,8 +1331,6 @@ export default function MasterPostTestEdit({ onChangePage, withID }) {
                                 hasExisting={formContent[index]?.img || null}
                                 style={{ fontSize: "12px" }}
                               />
-
-                              {/* Tampilkan preview gambar jika ada gambar yang dipilih */}
                               {question.previewUrl && (
                                 <div
                                   style={{
@@ -1460,18 +1355,18 @@ export default function MasterPostTestEdit({ onChangePage, withID }) {
                               {question.gambar && !question.selectedFile && (
                                 <div
                                   style={{
-                                    maxWidth: "300px", // Set maximum width for the image container
-                                    maxHeight: "300px", // Set maximum height for the image container
-                                    overflow: "hidden", // Hide any overflow beyond the set dimensions
+                                    maxWidth: "300px",
+                                    maxHeight: "300px",
+                                    overflow: "hidden",
                                   }}
                                 >
                                   <img
                                     src={question.gambar}
                                     alt=""
                                     style={{
-                                      width: "100%", // Ensure image occupies full width of container
-                                      height: "auto", // Maintain aspect ratio
-                                      objectFit: "contain", // Fit image within container without distortion
+                                      width: "100%",
+                                      height: "auto",
+                                      objectFit: "contain",
                                     }}
                                   />
                                 </div>
@@ -1480,7 +1375,6 @@ export default function MasterPostTestEdit({ onChangePage, withID }) {
                                 <label className="form-label fw-bold">
                                   Point <span style={{ color: "Red" }}> *</span>
                                 </label>{" "}
-                                {/* Memberikan margin atas kecil untuk jarak yang rapi */}
                                 <Input
                                   type="number"
                                   value={question.point}
@@ -1519,7 +1413,6 @@ export default function MasterPostTestEdit({ onChangePage, withID }) {
                                     marginBottom: "10px",
                                   }}
                                 >
-                                  {/* Input Radio atau Checkbox */}
                                   <input
                                     type={
                                       question.jenis === "Tunggal"
@@ -1527,16 +1420,14 @@ export default function MasterPostTestEdit({ onChangePage, withID }) {
                                         : "checkbox"
                                     }
                                     id={`option_${index}_${optionIndex}`}
-                                    name={`option_${index}`} // Pastikan name sama untuk radio button
+                                    name={`option_${index}`}
                                     value={option.value}
-                                    checked={!!option.isChecked} // Atur apakah opsi ini dipilih
+                                    checked={!!option.isChecked}
                                     onChange={(e) =>
                                       handleOptionChange(e, index, optionIndex)
                                     }
                                     style={{ marginRight: "10px" }}
                                   />
-
-                                  {/* Input Label Opsi */}
                                   <input
                                     type="text"
                                     value={option.label}
@@ -1551,15 +1442,11 @@ export default function MasterPostTestEdit({ onChangePage, withID }) {
                                     readOnly={question.type === "answer"}
                                     style={{ marginRight: "10px" }}
                                   />
-
-                                  {/* Tampilkan Label Baru */}
                                   {!option.id && (
                                     <span className="badge bg-warning">
                                       Baru
                                     </span>
                                   )}
-
-                                  {/* Tombol Hapus Opsi */}
                                   <Button
                                     iconName="delete"
                                     classType="btn-sm ms-2 px-2 py-0"
@@ -1573,7 +1460,6 @@ export default function MasterPostTestEdit({ onChangePage, withID }) {
                                     }}
                                   />
 
-                                  {/* Input Nilai untuk Pilihan */}
                                   {option.isChecked && (
                                     <input
                                       type="text"

@@ -21,7 +21,7 @@ export default function ProgramIndex({ onChangePage }) {
   let activeUser = "";
   const cookie = Cookies.get("activeUser");
   if (cookie) activeUser = JSON.parse(decryptId(cookie)).username;
-  
+
   const cardRefs = useRef([]);
   const [activeCard, setActiveCard] = useState(null);
   const [isError, setIsError] = useState({ error: false, message: "" });
@@ -125,7 +125,7 @@ export default function ProgramIndex({ onChangePage }) {
     try {
       while (true) {
         let data = await UseFetch(API_LINK + "Program/GetProgram", filter);
-        
+
         if (data === "ERROR") {
           throw new Error("Terjadi kesalahan: Gagal mengambil data program.");
         } else if (data === "data kosong") {
@@ -248,13 +248,12 @@ export default function ProgramIndex({ onChangePage }) {
     });
   }
 
-  // DELETE PERMANEN DATA PROGRAM
   function handleDelete(id) {
     setIsError(false);
 
     SweetAlert(
       "Konfirmasi Hapus",
-      "Anda yakin ingin <b>menghapus permanen</b> data ini?",
+      "Anda yakin ingin menghapus permanen data ini?",
       "warning",
       "Hapus"
     ).then((confirm) => {
@@ -272,7 +271,7 @@ export default function ProgramIndex({ onChangePage }) {
                   "Terjadi kesalahan: Gagal menghapus program karena sudah terdapat Draft Kategori.",
               });
             } else {
-              SweetAlert("Sukses", "Data berhasil dihapus.", "success")
+              SweetAlert("Sukses", "Data berhasil dihapus.", "success");
               handleSetCurrentPage(currentFilter.page);
             }
           })
@@ -281,7 +280,6 @@ export default function ProgramIndex({ onChangePage }) {
     });
   }
 
-  // MENGUBAH STATUS PROGRAM
   function handleSetStatus(data, status) {
     setIsError(false);
 
@@ -325,7 +323,6 @@ export default function ProgramIndex({ onChangePage }) {
     });
   }
 
-  // DELETE PERMANEN DATA MATA KULIAH
   function handleDeleteKategori(id) {
     setIsError(false);
     SweetAlert(
@@ -351,7 +348,6 @@ export default function ProgramIndex({ onChangePage }) {
     });
   }
 
-  // MENGUBAH STATUS MATA KULIAH
   function handleSetStatusKategori(data, status) {
     setIsError(false);
     let message;
@@ -402,244 +398,250 @@ export default function ProgramIndex({ onChangePage }) {
 
   return (
     <div lassName="header-container">
-          <Search
-                    title="Kelola Program"
-                    description="ASTRAtech memiliki banyak program studi, di dalam program studi terdapat kelompok keahlian yang biasa disebut dengan Kelompok Keahlian."
-                    showInput={false}
-                />
-    <>
-      {isError.error && (
-        <div className="flex-fill">
-          <Alert type="danger" message={isError.message} />
-        </div>
-      )}
-      {isLoading ? (
-        <Loading />
-      ) : (
-        
-        <div className="d-flex flex-column container">
-           <h5 className="program-header">
-                        {currentData && currentData["Nama Kelompok Keahlian"] 
-  ? decode(currentData["Nama Kelompok Keahlian"]) 
-  : "Nama Kelompok Keahlian tidak tersedia"}</h5>
+      <Search
+        title="Kelola Program"
+        description="ASTRAtech memiliki banyak program studi, di dalam program studi terdapat kelompok keahlian yang biasa disebut dengan Kelompok Keahlian."
+        showInput={false}
+      />
+      <>
+        {isError.error && (
           <div className="flex-fill">
-            <div className="container">
-              <div className="row gx-4">
-                <div className="col-md-12">
-                  <div
-                    className="card p-0 mb-3"
-                    style={{
-                      border: "",
-                      borderRadius: "10px",
-                    }}
-                  >
-                    <div className="card-body p-0 program">
-                      <div className="card-body px-3">
-                        <div className="d-flex justify-content-between align-items-center" >
-                          <h6 className="card-programtitle mb-0 d-flex flex-wrap align-items-center">
-                            <span className="d-flex align-items-center me-3 ">
-                            <Icon
-                              name="align-left"
-                              type="Bold"
-                              cssClass="btn px-2 py-0"
-                              title="Program"
-                              style={{color:"#0A5EA8"}}
-                            />
-                              <a
-                                href=""
-                                className="text-decoration-none text-dark"
-                              >
-                                {listProgram[0]?.Message
-                                  ? "0"
-                                  : listProgram.length}{" "}
-                                Program
-                              </a>
-                            </span>
+            <Alert type="danger" message={isError.message} />
+          </div>
+        )}
+        {isLoading ? (
+          <Loading />
+        ) : (
+          <div className="d-flex flex-column container">
+            <h5 className="program-header">
+              {currentData && currentData["Nama Kelompok Keahlian"]
+                ? decode(currentData["Nama Kelompok Keahlian"])
+                : "Nama Kelompok Keahlian tidak tersedia"}
+            </h5>
+            <div className="flex-fill">
+              <div className="container">
+                <div className="row gx-4">
+                  <div className="col-md-12">
+                    <div
+                      className="card p-0 mb-3"
+                      style={{
+                        border: "",
+                        borderRadius: "10px",
+                      }}
+                    >
+                      <div className="card-body p-0 program">
+                        <div className="card-body px-3">
+                          <div className="d-flex justify-content-between align-items-center">
+                            <h6 className="card-programtitle mb-0 d-flex flex-wrap align-items-center">
+                              <span className="d-flex align-items-center me-3 ">
+                                <Icon
+                                  name="align-left"
+                                  type="Bold"
+                                  cssClass="btn px-2 py-0"
+                                  title="Program"
+                                  style={{ color: "#0A5EA8" }}
+                                />
+                                <a
+                                  href=""
+                                  className="text-decoration-none text-dark"
+                                >
+                                  {listProgram[0]?.Message
+                                    ? "0"
+                                    : listProgram.length}{" "}
+                                  Program
+                                </a>
+                              </span>
 
-                            <span className="d-flex align-items-center me-3">
-                            <Icon
-                              name="users"
-                              type="Bold"
-                              cssClass="btn px-2 py-0"
-                              title="Anggota Kelompok Keahlian"
-                              style={{color:"#0A5EA8"}}
-                            />
-                              <a
-                                href="#modalAnggota"
-                                data-bs-toggle="modal"
-                                data-bs-target="#modalAnggota"
-                                className="text-decoration-none text-dark"
-                              >
-                                {listAnggota[0]?.Message
-                                  ? "0"
-                                  : listAnggota.length}{" "}
-                                Anggota
-                              </a>
-                            </span>
-                          </h6>
-                          <div className="d-flex action-kelola">
-                            <Button
-                              iconName="add"
-                              classType="primary-action-btn btn-primary btn-sm mb-2 py-2 rounded-3"
-                              label="Tambah Program"
-                              onClick={() => onChangePage("add", currentData)}
-                            />
-                            <Button
-                              iconName="list"
-                              classType="secondary-action-btn btn-sm px-3 me-2"
-                              title="Detail Kelompok Keahlian"
-                              onClick={() => onChangePage("detailPublish",currentData)}
-                              style={{
+                              <span className="d-flex align-items-center me-3">
+                                <Icon
+                                  name="users"
+                                  type="Bold"
+                                  cssClass="btn px-2 py-0"
+                                  title="Anggota Kelompok Keahlian"
+                                  style={{ color: "#0A5EA8" }}
+                                />
+                                <a
+                                  href="#modalAnggota"
+                                  data-bs-toggle="modal"
+                                  data-bs-target="#modalAnggota"
+                                  className="text-decoration-none text-dark"
+                                >
+                                  {listAnggota[0]?.Message
+                                    ? "0"
+                                    : listAnggota.length}{" "}
+                                  Anggota
+                                </a>
+                              </span>
+                            </h6>
+                            <div className="d-flex action-kelola">
+                              <Button
+                                iconName="add"
+                                classType="primary-action-btn btn-primary btn-sm mb-2 py-2 rounded-3"
+                                label="Tambah Program"
+                                onClick={() => onChangePage("add", currentData)}
+                              />
+                              <Button
+                                iconName="list"
+                                classType="secondary-action-btn btn-sm px-3 me-2"
+                                title="Detail Kelompok Keahlian"
+                                onClick={() =>
+                                  onChangePage("detailPublish", currentData)
+                                }
+                                style={{
                                   background: "white",
                                   color: "#0A5EA8",
                                   boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.2)",
                                 }}
-                            />
+                              />
+                            </div>
                           </div>
-                        </div>
-                        
-                        <p className=" mt-4" style={{textAlign:"justify"}}>
-                          {currentData && currentData.Deskripsi 
-  ? decode(currentData.Deskripsi) 
-  : "Deskripsi tidak tersedia"}
-</p>
-                        <h5 className="py-2"  style={{color:"#0A5EA8"}}>
-                          Daftar Program dalam Kelompok Keahlian{" "}
-                          <strong>
-                          {currentData && currentData["Nama Kelompok Keahlian"] 
-  ? decode(currentData["Nama Kelompok Keahlian"]) 
-  : "Nama Kelompok Keahlian tidak tersedia"}
 
-                          </strong>
-                        </h5>
-                        {listProgram[0]?.Message ? (
-                          <Alert
-                            type="warning"
-                            message="Tidak ada data! Silahkan klik tombol tambah program diatas.."
-                          />
-                        ) : (
-                          listProgram.map((value, index) => (
-                            <ScrollIntoView
-                              key={value.Key}
-                              selector={`#card-${value.Key}`}
-                              smooth={true}
-                              alignToTop={false}
-                            >
-                              <CardProgram
-                                id={`card-${value.Key}`}
-                                data={value}
-                                isActive={activeCard === value.Key}
-                                onClick={() =>
-                                  handleCardClick(value.Key, index)
-                                }
-                                onChangePage={onChangePage}
-                                onDelete={handleDelete}
-                                onChangeStatus={handleSetStatus}
-                                index={index + 1}
-                                
+                          <p className=" mt-4" style={{ textAlign: "justify" }}>
+                            {currentData && currentData.Deskripsi
+                              ? decode(currentData.Deskripsi)
+                              : "Deskripsi tidak tersedia"}
+                          </p>
+                          <h5 className="py-2" style={{ color: "#0A5EA8" }}>
+                            Daftar Program dalam Kelompok Keahlian{" "}
+                            <strong>
+                              {currentData &&
+                              currentData["Nama Kelompok Keahlian"]
+                                ? decode(currentData["Nama Kelompok Keahlian"])
+                                : "Nama Kelompok Keahlian tidak tersedia"}
+                            </strong>
+                          </h5>
+                          {listProgram[0]?.Message ? (
+                            <Alert
+                              type="warning"
+                              message="Tidak ada data! Silahkan klik tombol tambah program diatas.."
+                            />
+                          ) : (
+                            listProgram.map((value, index) => (
+                              <ScrollIntoView
+                                key={value.Key}
+                                selector={`#card-${value.Key}`}
+                                smooth={true}
+                                alignToTop={false}
                               >
-                                {listKategoriProgram[0]?.Message ? (
-                                  <div className="" style={{marginTop:"20px"}}>
-                                  <Alert
-                                    type="warning"
-                                    message="Tidak ada data! Silahkan klik tombol tambah diatas.."
-                                  />
-                                  </div>
-                                ) : (
-                                  <div>
-                                   
-                                    <div className="row row-cols-3">
-                                      {listKategoriProgram.map(
-                                        (kat, indexKat) => (
-                                          <CardKategoriProgram
-                                            key={kat.id}
-                                            data={kat}
-                                            onChangePage={onChangePage}
-                                            onDelete={handleDeleteKategori}
-                                            onChangeStatus={
-                                              handleSetStatusKategori
-                                            }
-                                            index={`${index + 1}-${
-                                              indexKat + 1
-                                            }`}
-                                          />
-                                        )
-                                      )}
+                                <CardProgram
+                                  id={`card-${value.Key}`}
+                                  data={value}
+                                  isActive={activeCard === value.Key}
+                                  onClick={() =>
+                                    handleCardClick(value.Key, index)
+                                  }
+                                  onChangePage={onChangePage}
+                                  onDelete={handleDelete}
+                                  onChangeStatus={handleSetStatus}
+                                  index={index + 1}
+                                >
+                                  {listKategoriProgram[0]?.Message ? (
+                                    <div
+                                      className=""
+                                      style={{ marginTop: "20px" }}
+                                    >
+                                      <Alert
+                                        type="warning"
+                                        message="Tidak ada data! Silahkan klik tombol tambah diatas.."
+                                      />
                                     </div>
-                                  </div>
-                                )}
-                              </CardProgram>
-                            </ScrollIntoView>
-                          ))
-                        )}
+                                  ) : (
+                                    <div>
+                                      <div className="row row-cols-3">
+                                        {listKategoriProgram.map(
+                                          (kat, indexKat) => (
+                                            <CardKategoriProgram
+                                              key={kat.id}
+                                              data={kat}
+                                              onChangePage={onChangePage}
+                                              onDelete={handleDeleteKategori}
+                                              onChangeStatus={
+                                                handleSetStatusKategori
+                                              }
+                                              index={`${index + 1}-${
+                                                indexKat + 1
+                                              }`}
+                                            />
+                                          )
+                                        )}
+                                      </div>
+                                    </div>
+                                  )}
+                                </CardProgram>
+                              </ScrollIntoView>
+                            ))
+                          )}
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-          <div
-            className="modal fade"
-            id="modalAnggota"
-            tabindex="-1"
-            aria-labelledby="Anggota Kelompok Keahlian"
-            aria-hidden="true"
-          >
-            <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-              <div className="modal-content">
-                <div className="modal-header">
-                  <h1 className="modal-title fs-5" id="modalAnggotaKK">
-                    Anggota Kelompok Keahlian
-                  </h1>
-                  <button
-                    type="button"
-                    className="btn-close"
-                    data-bs-dismiss="modal"
-                    aria-label="Close"
-                  ></button>
-                </div>
-                <div className="modal-body">
-                  {listAnggota[0]?.Message ? (
-                    <Label title="Tidak ada anggota aktif!" />
-                  ) : (
-                    listAnggota.map((pr, index) => (
-                      <>
-                      <div className="card-profile mb-3 d-flex shadow-sm">
-                        <p className="mb-0 px-1 py-2 mt-2 me-2 fw-bold text-primary">
-                          {index + 1}
-                        </p>
-                        <div
-                          className="bg-primary"
-                          style={{ width: "1.5%" }}
-                        ></div>
-                        <div className="p-1 ps-2 d-flex">
-                          <img
-                            src={pknowMaskot}
-                            alt={pr["Nama Anggota"]}
-                            className="img-fluid rounded-circle"
-                            width="45"
-                          />
-                          <div className="ps-3">
-                            <p className="mb-0 fw-semibold">
-                              {pr["Nama Anggota"]}
+            <div
+              className="modal fade"
+              id="modalAnggota"
+              tabindex="-1"
+              aria-labelledby="Anggota Kelompok Keahlian"
+              aria-hidden="true"
+            >
+              <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                <div className="modal-content">
+                  <div className="modal-header">
+                    <h1 className="modal-title fs-5" id="modalAnggotaKK">
+                      Anggota Kelompok Keahlian
+                    </h1>
+                    <button
+                      type="button"
+                      className="btn-close"
+                      data-bs-dismiss="modal"
+                      aria-label="Close"
+                    ></button>
+                  </div>
+                  <div className="modal-body">
+                    {listAnggota[0]?.Message ? (
+                      <Label title="Tidak ada anggota aktif!" />
+                    ) : (
+                      listAnggota.map((pr, index) => (
+                        <>
+                          <div className="card-profile mb-3 d-flex shadow-sm">
+                            <p className="mb-0 px-1 py-2 mt-2 me-2 fw-bold text-primary">
+                              {index + 1}
                             </p>
-                            <p className="mb-0" style={{ fontSize: "13px" }}>
-                              {pr.Prodi}
-                            </p>
+                            <div
+                              className="bg-primary"
+                              style={{ width: "1.5%" }}
+                            ></div>
+                            <div className="p-1 ps-2 d-flex">
+                              <img
+                                src={pknowMaskot}
+                                alt={pr["Nama Anggota"]}
+                                className="img-fluid rounded-circle"
+                                width="45"
+                              />
+                              <div className="ps-3">
+                                <p className="mb-0 fw-semibold">
+                                  {pr["Nama Anggota"]}
+                                </p>
+                                <p
+                                  className="mb-0"
+                                  style={{ fontSize: "13px" }}
+                                >
+                                  {pr.Prodi}
+                                </p>
+                              </div>
+                            </div>
                           </div>
-                        </div>
-                      </div>
-                      </>
-                    ))
-                  )}
+                        </>
+                      ))
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      )}
-    </>
+        )}
+      </>
     </div>
   );
 }

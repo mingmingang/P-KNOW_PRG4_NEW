@@ -21,22 +21,24 @@ export default function KKEdit({ onChangePage, withID }) {
   const [isLoading, setIsLoading] = useState(false);
   const [listProdi, setListProdi] = useState([]);
   const [listKaryawan, setListKaryawan] = useState([]);
-  const [isBackAction, setIsBackAction] = useState(false);  
+  const [isBackAction, setIsBackAction] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
+  const [currentPIC, setCurrentPIC] = useState(withID.pic);
+  const [selectedPIC, setSelectedPIC] = useState(withID.pic);
+  const [isPICChanged, setIsPICChanged] = useState(false);
 
   const handleGoBack = () => {
-    setIsBackAction(true);  
-    setShowConfirmation(true);  
+    setIsBackAction(true);
+    setShowConfirmation(true);
   };
 
   const handleConfirmYes = () => {
-    setShowConfirmation(false); 
+    setShowConfirmation(false);
     onChangePage("index");
   };
 
-
   const handleConfirmNo = () => {
-    setShowConfirmation(false);  
+    setShowConfirmation(false);
   };
 
   const resetForm = () => {
@@ -61,7 +63,7 @@ export default function KKEdit({ onChangePage, withID }) {
     programStudi: "",
     personInCharge: "",
     deskripsi: "",
-    gambar:""
+    gambar: "",
   });
 
   const userSchema = object({
@@ -69,7 +71,9 @@ export default function KKEdit({ onChangePage, withID }) {
     nama: string().max(45, "maksimum 45 karakter").required("harus diisi"),
     programStudi: string().required("harus dipilih"),
     personInCharge: string(),
-    deskripsi: string().min(100,"minimum 100 karakter").required("harus diisi"),
+    deskripsi: string()
+      .min(100, "minimum 100 karakter")
+      .required("harus diisi"),
     gambar: string(),
   });
 
@@ -111,8 +115,25 @@ export default function KKEdit({ onChangePage, withID }) {
     const { name, value } = e.target;
 
     try {
-      if (name === "personInCharge" && value === "") {
-        setErrors((prevErrors) => ({ ...prevErrors, [name]: "" }));
+      if (name === "personInCharge") {
+        const selectedEmployee = listKaryawan.find(
+          (emp) => emp.Value === value
+        );
+        if (selectedEmployee) {
+          setSelectedPIC({
+            key: selectedEmployee.Value,
+            text: selectedEmployee.Text,
+          });
+          setIsPICChanged(true);
+        } else {
+          setSelectedPIC({ key: "", text: "" });
+          setIsPICChanged(false);
+        }
+
+        if (value === "") {
+          setErrors((prevErrors) => ({ ...prevErrors, [name]: "" }));
+          setSelectedPIC({ key: "", text: "" });
+        }
       } else {
         await userSchema.validateAt(name, { [name]: value });
         setErrors((prevErrors) => ({ ...prevErrors, [name]: "" }));
@@ -150,7 +171,7 @@ export default function KKEdit({ onChangePage, withID }) {
       }));
     }
   };
-  
+
   const getListKaryawan = async () => {
     try {
       let data = await UseFetch(API_LINK + "KK/GetListKaryawan", {
@@ -176,10 +197,11 @@ export default function KKEdit({ onChangePage, withID }) {
       key: withID.id,
       nama: decode(withID.title),
       programStudi: withID.prodi.key,
-      personInCharge: withID.pic.key ? withID.pic.key : "",
+      personInCharge: withID.pic?.key || "",
       deskripsi: decode(withID.desc),
       gambar: withID.gambar,
     };
+    setSelectedPIC(withID.pic || { key: "", text: "" });
   }, []);
 
   useEffect(() => {
@@ -191,7 +213,6 @@ export default function KKEdit({ onChangePage, withID }) {
       getListKaryawan();
     }
   }, [formDataRef.current.programStudi]);
-
 
   const handleAdd = async (e) => {
     e.preventDefault();
@@ -216,35 +237,35 @@ export default function KKEdit({ onChangePage, withID }) {
           )
         );
       }
-    try {
-      await Promise.all(uploadPromises);
+      try {
+        await Promise.all(uploadPromises);
 
-      const data = await UseFetch(
-        API_LINK + "KK/EditKK",
-        formDataRef.current
-      );
-
-      if (data === "ERROR") {
-        throw new Error("Terjadi kesalahan: Gagal mengedit data program.");
-      } else {
-        SweetAlert(
-          "Sukses",
-          "Data kelompok keahlian berhasil diedit",
-          "success"
+        const data = await UseFetch(
+          API_LINK + "KK/EditKK",
+          formDataRef.current
         );
-        onChangePage("index");
+
+        if (data === "ERROR") {
+          throw new Error("Terjadi kesalahan: Gagal mengedit data program.");
+        } else {
+          SweetAlert(
+            "Sukses",
+            "Data kelompok keahlian berhasil diedit",
+            "success"
+          );
+          onChangePage("index");
+        }
+      } catch (error) {
+        window.scrollTo(0, 0);
+        setIsError((prevError) => ({
+          ...prevError,
+          error: true,
+          message: error.message,
+        }));
+      } finally {
+        setIsLoading(false);
       }
-    } catch (error) {
-      window.scrollTo(0, 0);
-      setIsError((prevError) => ({
-        ...prevError,
-        error: true,
-        message: error.message,
-      }));
-    } finally {
-      setIsLoading(false);
-    }
-  } else window.scrollTo(0, 0);
+    } else window.scrollTo(0, 0);
   };
 
   if (isLoading) return <Loading />;
@@ -260,169 +281,210 @@ export default function KKEdit({ onChangePage, withID }) {
         <Loading />
       ) : (
         <>
-        <div className="container" style={{ display: "flex", marginTop: "100px" }}>
-                <button style={{ backgroundColor: "transparent", border: "none" }} onClick={handleGoBack}><img src={BackPage} alt="" /></button>
-                <h4 style={{ color: "#0A5EA8", fontWeight: "bold", fontSize: "30px", marginTop: "10px", marginLeft: "20px" }}>Edit Kelompok Keahlian</h4>
-              </div>
-    <div className="container mb-4" >
-        <form onSubmit={handleAdd}>
-          <div className="card">
-            <div className="card-body p-4">
-              <div className="row">
-              <div className="col-lg-4 imageup">
-                    <div className="preview-img">
-                      {filePreview ? (
-                        <div
-                          style={{
-                            marginTop: "10px",
-                            marginRight: "30px",
-                            marginBottom: "20px",
-                          }}
-                        >
-                          <img
-                            src={filePreview}
-                            alt="Preview"
+          <div
+            className="container"
+            style={{ display: "flex", marginTop: "100px" }}
+          >
+            <button
+              style={{ backgroundColor: "transparent", border: "none" }}
+              onClick={handleGoBack}
+            >
+              <img src={BackPage} alt="" />
+            </button>
+            <h4
+              style={{
+                color: "#0A5EA8",
+                fontWeight: "bold",
+                fontSize: "30px",
+                marginTop: "10px",
+                marginLeft: "20px",
+              }}
+            >
+              Edit Kelompok Keahlian
+            </h4>
+          </div>
+          <div className="container mb-4">
+            <form onSubmit={handleAdd}>
+              <div className="card">
+                <div className="card-body p-4">
+                  <div className="row">
+                    <div className="col-lg-4 imageup">
+                      <div className="preview-img">
+                        {filePreview ? (
+                          <div
                             style={{
-                              width: "200px",
-                              height: "auto",
-                              borderRadius: "20px",
+                              marginTop: "10px",
+                              marginRight: "30px",
+                              marginBottom: "20px",
                             }}
-                          />
-                        </div>
-                      ) : (
-                        <div
-                          style={{
-                            marginTop: "10px",
-                            marginRight: "30px",
-                            marginBottom: "20px",
-                          }}
-                        >
-                          <img
-                            src={`${API_LINK}Upload/GetFile/${formDataRef.current.gambar}`} // Use fallback image if no preview available
-                            alt="No Preview Available"
+                          >
+                            <img
+                              src={filePreview}
+                              alt="Preview"
+                              style={{
+                                width: "200px",
+                                height: "auto",
+                                borderRadius: "20px",
+                              }}
+                            />
+                          </div>
+                        ) : (
+                          <div
                             style={{
-                              width: "200px",
-                              height: "auto",
-                              borderRadius: "20px",
+                              marginTop: "10px",
+                              marginRight: "30px",
+                              marginBottom: "20px",
                             }}
-                          />
+                          >
+                            <img
+                              src={`${API_LINK}Upload/GetFile/${formDataRef.current.gambar}`}
+                              alt="No Preview Available"
+                              style={{
+                                width: "200px",
+                                height: "auto",
+                                borderRadius: "20px",
+                              }}
+                            />
+                          </div>
+                        )}
+                      </div>
+                      <div className="file-upload">
+                        <FileUpload
+                          forInput="gambarKelompokKeahlian"
+                          label="Gambar Kelompok Keahlian (.png)"
+                          formatFile=".png"
+                          ref={fileGambarRef}
+                          onChange={() =>
+                            handleFileChange(fileGambarRef, "png")
+                          }
+                          errorMessage={errors.gambar}
+                          isRequired={false}
+                        />
+                      </div>
+                    </div>
+                    <div className="col-lg-12">
+                      <Input
+                        type="text"
+                        forInput="nama"
+                        label="Nama Kelompok Keahlian"
+                        isRequired
+                        placeholder="Nama Kelompok Keahlian"
+                        value={formDataRef.current.nama}
+                        onChange={handleInputChange}
+                        errorMessage={errors.nama}
+                      />
+                    </div>
+                    <div className="col-lg-12">
+                      <label
+                        style={{ paddingBottom: "5px", fontWeight: "bold" }}
+                      >
+                        Deskripsi/Ringkasan Mengenai Kelompok Keahlian{" "}
+                        <span style={{ color: "red" }}> *</span>
+                      </label>
+                      <Input
+                        className="form-control mb-3"
+                        style={{
+                          height: "200px",
+                        }}
+                        type="textarea"
+                        id="deskripsi"
+                        name="deskripsi"
+                        forInput="deskripsi"
+                        value={formDataRef.current.deskripsi}
+                        onChange={handleInputChange}
+                        placeholder="Deskripsi/Ringkasan Mengenai Kelompok Keahlian"
+                        isRequired
+                        errorMessage={errors.deskripsi}
+                      />
+                    </div>
+                    <div className="col-lg-6">
+                      <Select2Dropdown
+                        forInput="programStudi"
+                        label="Program Studi"
+                        arrData={listProdi}
+                        isRequired
+                        value={formDataRef.current.programStudi}
+                        onChange={handleInputChange}
+                        errorMessage={errors.programStudi}
+                      />
+                    </div>
+                    <div className="col-lg-6">
+                      <Select2Dropdown
+                        forInput="personInCharge"
+                        label="PIC Kelompok Keahlian"
+                        arrData={listKaryawan}
+                        value={selectedPIC.key}
+                        onChange={handleInputChange}
+                        errorMessage={errors.personInCharge}
+                      />
+                      {currentPIC.key && (
+                        <div className="mt-2">
+                          <small>
+                            PIC Terpilih: <strong>{currentPIC.nama}</strong>
+                            {isPICChanged && (
+                              <span
+                                style={{ color: "orange", marginLeft: "10px" }}
+                              >
+                                (Perubahan belum disimpan)
+                              </span>
+                            )}
+                          </small>
                         </div>
                       )}
                     </div>
-                    <div className="file-upload">
-                      <FileUpload
-                        forInput="gambarKelompokKeahlian"
-                        label="Gambar Kelompok Keahlian (.png)"
-                        formatFile=".png"
-                        ref={fileGambarRef}
-                        onChange={() => handleFileChange(fileGambarRef, "png")}
-                        errorMessage={errors.gambar}
-                        isRequired={false}
-                      />
-                    </div>
                   </div>
-                <div className="col-lg-12">
-                  <Input
-                    type="text"
-                    forInput="nama"
-                    label="Nama Kelompok Keahlian"
-                    isRequired
-                    placeholder="Nama Kelompok Keahlian"
-                    value={formDataRef.current.nama}
-                    onChange={handleInputChange}
-                    errorMessage={errors.nama}
-                  />
                 </div>
-                <div className="col-lg-12">
-                  <label style={{ paddingBottom: "5px", fontWeight: "bold" }}>
-                    Deskripsi/Ringkasan Mengenai Kelompok Keahlian{" "}
-                    <span style={{ color: "red" }}> *</span>
-                  </label>
-                  <Input
-                      className="form-control mb-3"
-                      style={{
-                        height: "200px",
-                      }}
-                      type="textarea"
-                      id="deskripsi"
-                      name="deskripsi"
-                      forInput="deskripsi"
-                      value={formDataRef.current.deskripsi}
-                      onChange={handleInputChange}
-                      placeholder="Deskripsi/Ringkasan Mengenai Kelompok Keahlian"
-                      isRequired
-                      errorMessage={errors.deskripsi}
-                    />
-                </div>
-                <div className="col-lg-6">
-                  <Select2Dropdown
-                    forInput="programStudi"
-                    label="Program Studi"
-                    arrData={listProdi}
-                    isRequired
-                    value={formDataRef.current.programStudi}
-                    onChange={handleInputChange}
-                    errorMessage={errors.programStudi}
-                  />
-                </div>
-                <div className="col-lg-6">
-                  <Select2Dropdown
-                    forInput="personInCharge"
-                    label="PIC Kelompok Keahlian"
-                    arrData={listKaryawan}
-                    value={formDataRef.current.personInCharge}
-                    onChange={handleInputChange}
-                    errorMessage={errors.personInCharge}
-                  />
-                </div>
-              </div>
-            </div>
-            <div
-                className="d-flex justify-content-end"
-                style={{
-                  marginRight: "20px",
-                  marginTop: "-10px",
-                  marginBottom: "20px",
-                }}
-              >
-                <button
-                  className="btn btn-secondary btn-sm"
-                  type="button"
-                  onClick={resetForm}
+                <div
+                  className="d-flex justify-content-end"
                   style={{
-                    marginRight: "10px",
-                    padding: "5px 15px",
-                    fontWeight: "bold",
-                    borderRadius: "10px",
+                    marginRight: "20px",
+                    marginTop: "-10px",
+                    marginBottom: "20px",
                   }}
                 >
-                  Batalkan
-                </button>
-                <button
-                  className="btn btn-primary btn-sm"
-                  type="submit"
-                  style={{
-                    marginRight: "10px",
-                    padding: "5px 20px",
-                    fontWeight: "bold",
-                    borderRadius: "10px",
-                  }}
-                >
-                  Edit
-                </button>
+                  <button
+                    className="btn btn-secondary btn-sm"
+                    type="button"
+                    onClick={resetForm}
+                    style={{
+                      marginRight: "10px",
+                      padding: "5px 15px",
+                      fontWeight: "bold",
+                      borderRadius: "10px",
+                    }}
+                  >
+                    Batalkan
+                  </button>
+                  <button
+                    className="btn btn-primary btn-sm"
+                    type="submit"
+                    style={{
+                      marginRight: "10px",
+                      padding: "5px 20px",
+                      fontWeight: "bold",
+                      borderRadius: "10px",
+                    }}
+                  >
+                    Edit
+                  </button>
+                </div>
               </div>
+            </form>
+            {showConfirmation && (
+              <Konfirmasi
+                title={
+                  isBackAction ? "Konfirmasi Kembali" : "Konfirmasi Simpan"
+                }
+                pesan={
+                  isBackAction
+                    ? "Apakah anda ingin kembali?"
+                    : "Anda yakin ingin simpan data?"
+                }
+                onYes={handleConfirmYes}
+                onNo={handleConfirmNo}
+              />
+            )}
           </div>
-         
-        </form>
-        {showConfirmation && (
-        <Konfirmasi
-          title={isBackAction ? "Konfirmasi Kembali" : "Konfirmasi Simpan"}
-          pesan={isBackAction ? "Apakah anda ingin kembali?" : "Anda yakin ingin simpan data?"}
-          onYes={handleConfirmYes}
-          onNo={handleConfirmNo}
-        />
-        )}
-        </div>
         </>
       )}
     </>

@@ -4,7 +4,7 @@ import MasterTambahDaftarPustaka from "./KelolaDaftarPustaka/TambahDaftarPustaka
 import MasterLihatDaftarPustaka from "./KelolaDaftarPustaka/LihatDaftarPustaka";
 import MasterEditDaftarPustaka from "./KelolaDaftarPustaka/EditDaftarPustaka";
 import MasterKelompokKeahlian from "./KelompokKeahlian"
-import MasterDetail from "./LihatKKPublish";
+
 
 export default function MasterDaftarPustaka() {
   const [pageMode, setPageMode] = useState("index");
@@ -27,13 +27,6 @@ function getPageMode() {
             withID={dataID}
           />
         );
-        // case "detail":
-        //   return (
-        //     <MasterDetail
-        //       onChangePage={handleSetPageMode} 
-        //       withID={dataID}
-        //     />
-        //   );
       case "edit":
         return (
           <MasterEditDaftarPustaka

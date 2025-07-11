@@ -14,23 +14,23 @@ const Form = ({
   pesanKonfirmasi,
   backPage,
   onChangePage,
-  pesanKembali
+  pesanKembali,
 }) => {
   const [imagePreview, setImagePreview] = useState(null);
   const [showConfirmation, setShowConfirmation] = useState(false);
-  const [isBackAction, setIsBackAction] = useState(false); 
+  const [isBackAction, setIsBackAction] = useState(false);
 
   const navigate = useNavigate();
 
   const handleGoBack = () => {
-    setIsBackAction(true); 
-    setShowConfirmation(true); 
+    setIsBackAction(true);
+    setShowConfirmation(true);
   };
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    setIsBackAction(false); 
-    setShowConfirmation(true); 
+    setIsBackAction(false);
+    setShowConfirmation(true);
   };
 
   const handleConfirmYes = () => {
@@ -55,7 +55,6 @@ const Form = ({
     setShowConfirmation(false);
   };
 
-  // Handle image change and preview
   const handleImageChange = (event) => {
     const file = event.target.files[0];
     if (file && file.type.startsWith("image/")) {
@@ -73,7 +72,10 @@ const Form = ({
     <div className="form-layout">
       <div className="title-form">
         <div className="back-title-form">
-          <button onClick={handleGoBack} style={{ background: "none", border: "none", cursor: "pointer" }}>
+          <button
+            onClick={handleGoBack}
+            style={{ background: "none", border: "none", cursor: "pointer" }}
+          >
             <img src={back} alt="Back" />
           </button>
           <h1>{title}</h1>

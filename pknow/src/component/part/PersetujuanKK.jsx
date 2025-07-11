@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import budi from "../../assets/fotobudi.png";
-import Konfirmasi from "./Konfirmasi"; // Import Konfirmasi component
+import Konfirmasi from "./Konfirmasi";
 import "../../style/PersetujuanKK.css";
 
-export default function PersetujuanKK({onChangePage}) {
+export default function PersetujuanKK({ onChangePage }) {
   const [showDetails, setShowDetails] = useState(false);
   const [showConfirmApprove, setShowConfirmApprove] = useState(false);
   const [showConfirmReject, setShowConfirmReject] = useState(false);
@@ -11,7 +11,6 @@ export default function PersetujuanKK({onChangePage}) {
 
   const handleApprove = () => {
     setShowConfirmApprove(false);
-    // Add logic for approval here
     console.log("Kelompok Keahlian disetujui!");
   };
 
@@ -34,7 +33,7 @@ export default function PersetujuanKK({onChangePage}) {
 
   const handleDownload = (fileName) => {
     const link = document.createElement("a");
-    link.href = `/path/to/your/files/${fileName}`; // Adjust this to your file location
+    link.href = `/path/to/your/files/${fileName}`;
     link.download = fileName;
     document.body.appendChild(link);
     link.click();
@@ -48,7 +47,6 @@ export default function PersetujuanKK({onChangePage}) {
 
   const confirmLeavePage = () => {
     setShowLeaveConfirmation(false);
-    // Navigate to the previous page
     onChangePage("index");
   };
 
@@ -87,7 +85,6 @@ export default function PersetujuanKK({onChangePage}) {
             </div>
           </div>
 
-          {/* Confirmation for approve */}
           {showConfirmApprove && (
             <Konfirmasi
               title="Konfirmasi Persetujuan"
@@ -97,7 +94,6 @@ export default function PersetujuanKK({onChangePage}) {
             />
           )}
 
-          {/* Confirmation for reject */}
           {showConfirmReject && (
             <Konfirmasi
               title="Konfirmasi Penolakan"
@@ -106,8 +102,6 @@ export default function PersetujuanKK({onChangePage}) {
               onNo={() => setShowConfirmReject(false)}
             />
           )}
-
-          {/* Confirmation for leaving the page */}
           {showLeaveConfirmation && (
             <Konfirmasi
               title="Konfirmasi Kembali"
@@ -119,7 +113,6 @@ export default function PersetujuanKK({onChangePage}) {
         </div>
       </div>
 
-      {/* Show detail section when file icon is clicked */}
       {showDetails && (
         <div className="detail-lampiran">
           <h1>Detail pengajuan dan lampiran pendukung</h1>

@@ -1,14 +1,10 @@
 import { useState, useEffect } from "react";
 import Button from "../../../part/Button copy";
-import DropDown from "../../../part/Dropdown";
-import Input from "../../../part/Input";
 import Loading from "../../../part/Loading";
 import Alert from "../../../part/Alert";
-import Filter from "../../../part/Filter";
 import Icon from "../../../part/Icon";
 import { API_LINK } from "../../../util/Constants";
 import UseFetch from "../../../util/UseFetch";
-import { data } from "jquery";
 import BackPage from "../../../../assets/backPage.png";
 import Konfirmasi from "../../../part/Konfirmasi";
 import pknowMaskot from "../../../../assets/pknowmaskot.png";
@@ -16,7 +12,6 @@ import { decode } from "html-entities";
 import "../../../../style/DetailKK.css";
 
 export default function KKDetailProgram({ onChangePage, withID }) {
-  const [errors, setErrors] = useState({});
   const [isError, setIsError] = useState({ error: false, message: "" });
   const [isLoading, setIsLoading] = useState(false);
   const [listAnggota, setListAnggota] = useState([]);
@@ -140,7 +135,7 @@ export default function KKDetailProgram({ onChangePage, withID }) {
               } catch (e) {
                 console.log(e.message);
                 setIsError({ error: true, message: e.message });
-                return { ...program, kategori: [] }; // Handle error case by returning program with empty kategori
+                return { ...program, kategori: [] };
               }
             })
           );
@@ -240,9 +235,6 @@ export default function KKDetailProgram({ onChangePage, withID }) {
                   : "Deskripsi tidak tersedia"}
               </p>
             </div>
-            {/* <div className="image">
-            <img src={`${API_LINK}Upload/GetFile/${withID["Gambar"]}`} alt="" style={{width:"390px", height:"180px", objectFit:"cover", margin:"10px", borderRadius:"10px"}}/>
-            </div> */}
             <div className="col-lg-5">
               {listAnggota.length > 0 ? (
                 listAnggota[0].Message ? (
@@ -364,13 +356,12 @@ export default function KKDetailProgram({ onChangePage, withID }) {
                                     className="card-subtitle"
                                     style={{ textAlign: "justify" }}
                                   >
-                                   {
-  kat && kat.Deskripsi
-    ? decode(kat.Deskripsi).length > 150
-      ? decode(kat.Deskripsi).slice(0, 150) + '...'
-      : decode(kat.Deskripsi)
-    : "Deskripsi tidak tersedia"
-}
+                                    {kat && kat.Deskripsi
+                                      ? decode(kat.Deskripsi).length > 150
+                                        ? decode(kat.Deskripsi).slice(0, 150) +
+                                          "..."
+                                        : decode(kat.Deskripsi)
+                                      : "Deskripsi tidak tersedia"}
                                   </p>
                                 </div>
                               </div>
@@ -413,45 +404,6 @@ export default function KKDetailProgram({ onChangePage, withID }) {
               ></button>
             </div>
             <div className="modal-body">
-              {/* <div className="input-group mb-4">
-                <Input
-                  //   ref={searchQuery}
-                  forInput="pencarianProduk"
-                  placeholder="Cari"
-                />
-                <Button
-                  iconName="search"
-                  classType="primary px-4"
-                  title="Cari"
-                  //   onClick={handleSearch}
-                />
-                <Filter>
-                  <DropDown
-                    // ref={searchFilterSort}
-                    forInput="ddUrut"
-                    label="Urut Berdasarkan"
-                    type="none"
-                    // arrData={dataFilterSort}
-                    defaultValue="[Kode Produk] asc"
-                  />
-                  <DropDown
-                    // ref={searchFilterJenis}
-                    forInput="ddJenis"
-                    label="Jenis Produk"
-                    type="semua"
-                    // arrData={dataFilterJenis}
-                    defaultValue=""
-                  />
-                  <DropDown
-                    // ref={searchFilterStatus}
-                    forInput="ddStatus"
-                    label="Status"
-                    type="none"
-                    // arrData={dataFilterStatus}
-                    defaultValue="Aktif"
-                  />
-                </Filter>
-              </div> */}
               {listAnggota.length > 0 ? (
                 listAnggota[0].Message ? (
                   <p>Tidak Ada Anggota Aktif</p>
@@ -473,11 +425,13 @@ export default function KKDetailProgram({ onChangePage, withID }) {
                             width="45"
                           />
                           <div className="ps-3" style={{ color: "#0A5EA8" }}>
-                            <p className="mb-0 fw-bold">{ag && ag["Nama Anggota"]
+                            <p className="mb-0 fw-bold">
+                              {ag && ag["Nama Anggota"]
                                 ? decode(ag["Nama Anggota"])
-                                : "Nama Anggota tidak tersedia"}</p>
+                                : "Nama Anggota tidak tersedia"}
+                            </p>
                             <p className="mb-0" style={{ fontSize: "13px" }}>
-                            {ag && ag.Prodi
+                              {ag && ag.Prodi
                                 ? decode(ag.Prodi)
                                 : "Prodi tidak tersedia"}
                             </p>

@@ -13,7 +13,6 @@ import UploadFile from "../../../util/UploadFile";
 import NoImage from "../../../../assets/NoImage.png";
 import BackPage from "../../../../assets/backPage.png";
 import Konfirmasi from "../../../part/Konfirmasi";
-import { Editor } from "@tinymce/tinymce-react";
 
 export default function ChangeProfile({ onChangePage }) {
   const [errors, setErrors] = useState({});
@@ -22,22 +21,20 @@ export default function ChangeProfile({ onChangePage }) {
   const [listProdi, setListProdi] = useState([]);
   const [listKaryawan, setListKaryawan] = useState([]);
   const [showConfirmation, setShowConfirmation] = useState(false);
-  const [isBackAction, setIsBackAction] = useState(false);  
-  const [isFormDisabled, setIsFormDisabled] = useState(false);
+  const [isBackAction, setIsBackAction] = useState(false);
 
   const handleGoBack = () => {
-    setIsBackAction(true);  
-    setShowConfirmation(true);  
+    setIsBackAction(true);
+    setShowConfirmation(true);
   };
 
   const handleConfirmYes = () => {
-    setShowConfirmation(false); 
+    setShowConfirmation(false);
     onChangePage("index");
   };
 
-
   const handleConfirmNo = () => {
-    setShowConfirmation(false);  
+    setShowConfirmation(false);
   };
 
   const fileGambarRef = useRef(null);
@@ -54,11 +51,13 @@ export default function ChangeProfile({ onChangePage }) {
     nama: string().max(25, "maksimum 25 karakter").required("harus diisi"),
     programStudi: string().required("harus dipilih"),
     personInCharge: string(),
-    deskripsi: string().min(100,"minimum 100 karakter").required("harus diisi"),
+    deskripsi: string()
+      .min(100, "minimum 100 karakter")
+      .required("harus diisi"),
     gambar: string(),
   });
 
-  const [filePreview, setFilePreview] = useState(false); // state to store file preview
+  const [filePreview, setFilePreview] = useState(false);
 
   const handleFileChange = (ref, extAllowed) => {
     const { name, value } = ref.current;
@@ -75,11 +74,10 @@ export default function ChangeProfile({ onChangePage }) {
 
     if (error) ref.current.value = "";
     else {
-      // Show preview if the file is an image
       if (file && file.type.startsWith("image/")) {
         const reader = new FileReader();
         reader.onloadend = () => {
-          setFilePreview(reader.result); // Set the preview
+          setFilePreview(reader.result);
         };
         reader.readAsDataURL(file);
       }
@@ -192,7 +190,7 @@ export default function ChangeProfile({ onChangePage }) {
           API_LINK + "KK/CreateKK",
           formDataRef.current
         );
-        console.log("isian form",formDataRef.current);
+        console.log("isian form", formDataRef.current);
 
         if (data === "ERROR") {
           throw new Error("Terjadi kesalahan: Gagal menyimpan data program.");
@@ -243,176 +241,214 @@ export default function ChangeProfile({ onChangePage }) {
         <Loading />
       ) : (
         <>
-          <div className="" style={{display:"flex", justifyContent:"space-between", marginTop:"100px", marginLeft:"70px", marginRight:"70px"}}>
-            <div className="back-and-title" style={{display:"flex"}}>
-              <button style={{backgroundColor:"transparent", border:"none"}} onClick={handleGoBack}><img src={BackPage} alt="" /></button>
-                <h4 style={{ color:"#0A5EA8", fontWeight:"bold", fontSize:"30px", marginTop:"10px", marginLeft:"20px"}}>Tambah Kelompok Keahlian</h4>
-              </div>
-                <div className="ket-draft">
-                <span className="badge text-bg-dark " style={{fontSize:"16px"}}>Draft</span>
-                </div>
-              </div>
-        <div className="" style={{ margin: "30px 70px" }}>
-          <form onSubmit={handleAdd}>
-            <div className="card">
-              <div className="card-body p-4">
-                <div className="row">
-                  <div className="col-lg-4" style={{ display: "flex" }}>
-                    <div className="preview-img">
-                      {filePreview ? (
-                        <div
-                          style={{
-                            marginTop: "10px",
-                            marginRight: "30px",
-                            marginBottom: "20px",
-                          }}
-                        >
-                          <img
-                            src={filePreview}
-                            alt="Preview"
+          <div
+            className=""
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              marginTop: "100px",
+              marginLeft: "70px",
+              marginRight: "70px",
+            }}
+          >
+            <div className="back-and-title" style={{ display: "flex" }}>
+              <button
+                style={{ backgroundColor: "transparent", border: "none" }}
+                onClick={handleGoBack}
+              >
+                <img src={BackPage} alt="" />
+              </button>
+              <h4
+                style={{
+                  color: "#0A5EA8",
+                  fontWeight: "bold",
+                  fontSize: "30px",
+                  marginTop: "10px",
+                  marginLeft: "20px",
+                }}
+              >
+                Tambah Kelompok Keahlian
+              </h4>
+            </div>
+            <div className="ket-draft">
+              <span
+                className="badge text-bg-dark "
+                style={{ fontSize: "16px" }}
+              >
+                Draft
+              </span>
+            </div>
+          </div>
+          <div className="" style={{ margin: "30px 70px" }}>
+            <form onSubmit={handleAdd}>
+              <div className="card">
+                <div className="card-body p-4">
+                  <div className="row">
+                    <div className="col-lg-4" style={{ display: "flex" }}>
+                      <div className="preview-img">
+                        {filePreview ? (
+                          <div
                             style={{
-                              width: "200px",
-                              height: "auto",
-                              borderRadius: "20px",
+                              marginTop: "10px",
+                              marginRight: "30px",
+                              marginBottom: "20px",
                             }}
-                          />
-                        </div>
-                      ) : (
-                        <div
-                          style={{
-                            marginTop: "10px",
-                            marginRight: "30px",
-                            marginBottom: "20px",
-                          }}
-                        >
-                          <img
-                            src={NoImage} // Use fallback image if no preview available
-                            alt="No Preview Available"
+                          >
+                            <img
+                              src={filePreview}
+                              alt="Preview"
+                              style={{
+                                width: "200px",
+                                height: "auto",
+                                borderRadius: "20px",
+                              }}
+                            />
+                          </div>
+                        ) : (
+                          <div
                             style={{
-                              width: "200px",
-                              height: "auto",
-                              borderRadius: "20px",
+                              marginTop: "10px",
+                              marginRight: "30px",
+                              marginBottom: "20px",
                             }}
-                          />
-                        </div>
-                      )}
+                          >
+                            <img
+                              src={NoImage}
+                              alt="No Preview Available"
+                              style={{
+                                width: "200px",
+                                height: "auto",
+                                borderRadius: "20px",
+                              }}
+                            />
+                          </div>
+                        )}
+                      </div>
+                      <div className="file-upload">
+                        <FileUpload
+                          forInput="gambarAlatMesin"
+                          label="Gambar Kelompok Keahlian (.png)"
+                          formatFile=".png"
+                          ref={fileGambarRef}
+                          onChange={() =>
+                            handleFileChange(fileGambarRef, "png")
+                          }
+                          errorMessage={errors.gambar}
+                          isRequired={true}
+                        />
+                      </div>
                     </div>
-                    <div className="file-upload">
-                      <FileUpload
-                        forInput="gambarAlatMesin"
-                        label="Gambar Kelompok Keahlian (.png)"
-                        formatFile=".png"
-                        ref={fileGambarRef}
-                        onChange={() => handleFileChange(fileGambarRef, "png")}
-                        errorMessage={errors.gambar}
-                        isRequired={true}
+                    <div className="col-lg-12">
+                      <Input
+                        type="text"
+                        forInput="nama"
+                        label="Nama Kelompok Keahlian"
+                        isRequired
+                        placeholder="Nama Kelompok Keahlian"
+                        value={formDataRef.current.nama}
+                        onChange={handleInputChange}
+                        errorMessage={errors.nama}
+                      />
+                    </div>
+                    <div className="col-lg-12">
+                      <label
+                        style={{ paddingBottom: "5px", fontWeight: "bold" }}
+                      >
+                        Deskripsi/Ringkasan Mengenai Kelompok Keahlian{" "}
+                        <span style={{ color: "red" }}> *</span>
+                      </label>
+                      <Input
+                        className="form-control mb-3"
+                        style={{
+                          height: "200px",
+                        }}
+                        type="textarea"
+                        id="deskripsi"
+                        name="deskripsi"
+                        forInput="deskripsi"
+                        value={formDataRef.current.deskripsi}
+                        onChange={handleInputChange}
+                        placeholder="Deskripsi/Ringkasan Mengenai Kelompok Keahlian"
+                        isRequired
+                        errorMessage={errors.deskripsi}
+                      />
+                    </div>
+
+                    <div className="col-lg-6">
+                      <Select2Dropdown
+                        forInput="programStudi"
+                        label="Program Studi"
+                        arrData={listProdi}
+                        isRequired
+                        value={formDataRef.current.programStudi}
+                        onChange={handleInputChange}
+                        errorMessage={errors.programStudi}
+                      />
+                    </div>
+                    <div className="col-lg-6">
+                      <Select2Dropdown
+                        forInput="personInCharge"
+                        label="PIC Kelompok Keahlian"
+                        arrData={listKaryawan}
+                        value={formDataRef.current.personInCharge}
+                        onChange={handleInputChange}
+                        errorMessage={errors.personInCharge}
+                        disabled={!formDataRef.current.programStudi}
                       />
                     </div>
                   </div>
-                  <div className="col-lg-12">
-                    <Input
-                      type="text"
-                      forInput="nama"
-                      label="Nama Kelompok Keahlian"
-                      isRequired
-                      placeholder="Nama Kelompok Keahlian"
-                      value={formDataRef.current.nama}
-                      onChange={handleInputChange}
-                      errorMessage={errors.nama}
-                    />
-                  </div>
-                  <div className="col-lg-12">
-            
-                    <label style={{ paddingBottom: "5px", fontWeight: "bold" }}>
-                      Deskripsi/Ringkasan Mengenai Kelompok Keahlian{" "}
-                      <span style={{ color: "red" }}> *</span>
-                    </label>
-                    <Input
-                      className="form-control mb-3"
-                      style={{
-                        height: "200px",
-                      }}
-                      type="textarea"
-                      id="deskripsi"
-                      name="deskripsi"
-                      forInput="deskripsi"
-                      value={formDataRef.current.deskripsi}
-                      onChange={handleInputChange}
-                      placeholder="Deskripsi/Ringkasan Mengenai Kelompok Keahlian"
-                      isRequired
-                      errorMessage={errors.deskripsi}
-                    />
-                  </div>
-                
-                  <div className="col-lg-6">
-                    <Select2Dropdown
-                      forInput="programStudi"
-                      label="Program Studi"
-                      arrData={listProdi}
-                      isRequired
-                      value={formDataRef.current.programStudi}
-                      onChange={handleInputChange}
-                      errorMessage={errors.programStudi}
-                    />
-                  </div>
-                  <div className="col-lg-6">
-                    <Select2Dropdown
-                      forInput="personInCharge"
-                      label="PIC Kelompok Keahlian"
-                      arrData={listKaryawan}
-                      value={formDataRef.current.personInCharge}
-                      onChange={handleInputChange}
-                      errorMessage={errors.personInCharge}
-                      disabled={!formDataRef.current.programStudi}
-                    />
-                  </div>
+                </div>
+                <div
+                  className="d-flex justify-content-end"
+                  style={{
+                    marginRight: "20px",
+                    marginTop: "-10px",
+                    marginBottom: "20px",
+                  }}
+                >
+                  <button
+                    className="btn btn-secondary btn-sm"
+                    type="button"
+                    onClick={resetForm}
+                    style={{
+                      marginRight: "10px",
+                      padding: "5px 15px",
+                      fontWeight: "bold",
+                      borderRadius: "10px",
+                    }}
+                  >
+                    Batalkan
+                  </button>
+                  <button
+                    className="btn btn-primary btn-sm"
+                    type="submit"
+                    style={{
+                      marginRight: "10px",
+                      padding: "5px 20px",
+                      fontWeight: "bold",
+                      borderRadius: "10px",
+                    }}
+                  >
+                    Simpan
+                  </button>
                 </div>
               </div>
-              <div
-                className="d-flex justify-content-end"
-                style={{
-                  marginRight: "20px",
-                  marginTop: "-10px",
-                  marginBottom: "20px",
-                }}
-              >
-                <button
-                  className="btn btn-secondary btn-sm"
-                  type="button"
-                  onClick={resetForm}
-                  style={{
-                    marginRight: "10px",
-                    padding: "5px 15px",
-                    fontWeight: "bold",
-                    borderRadius: "10px",
-                  }}
-                >
-                  Batalkan
-                </button>
-                <button
-                  className="btn btn-primary btn-sm"
-                  type="submit"
-                  style={{
-                    marginRight: "10px",
-                    padding: "5px 20px",
-                    fontWeight: "bold",
-                    borderRadius: "10px",
-                  }}
-                >
-                  Simpan
-                </button>
-              </div>
-            </div>
-          </form>
-          {showConfirmation && (
-        <Konfirmasi
-          title={isBackAction ? "Konfirmasi Kembali" : "Konfirmasi Simpan"}
-          pesan={isBackAction ? "Apakah anda ingin kembali?" : "Anda yakin ingin simpan data?"}
-          onYes={handleConfirmYes}
-          onNo={handleConfirmNo}
-        />
-        )}
-        </div>
+            </form>
+            {showConfirmation && (
+              <Konfirmasi
+                title={
+                  isBackAction ? "Konfirmasi Kembali" : "Konfirmasi Simpan"
+                }
+                pesan={
+                  isBackAction
+                    ? "Apakah anda ingin kembali?"
+                    : "Anda yakin ingin simpan data?"
+                }
+                onYes={handleConfirmYes}
+                onNo={handleConfirmNo}
+              />
+            )}
+          </div>
         </>
       )}
     </>

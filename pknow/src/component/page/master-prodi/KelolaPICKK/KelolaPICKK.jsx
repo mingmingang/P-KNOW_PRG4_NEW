@@ -1,25 +1,17 @@
 import React from "react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { API_LINK } from "../../../util/Constants";
 import SweetAlert from "../../../util/SweetAlert";
 import UseFetch from "../../../util/UseFetch";
-import Button from "../../../part/Button copy";
-import Input from "../../../part/Input";
-import DropDown from "../../../part/Dropdown";
-import Filter from "../../../part/Filter";
 import CardKK from "../../../part/CardKelompokKeahlian";
-import Icon from "../../../part/Icon";
-import Loading from "../../../part/Loading";
 import Search from "../../../part/Search";
 import "../../../../index.css";
 import Alert from "../../../part/Alert";
 import AnimatedSection from "../../../part/AnimatedSection";
 
-
 export default function PICIndex({ onChangePage }) {
   const [isError, setIsError] = useState(false);
   const [currentData, setCurrentData] = useState([]);
-  const [message, setMessage] = useState("");
 
   const getListKK = async () => {
     setIsError(false);
@@ -87,135 +79,135 @@ export default function PICIndex({ onChangePage }) {
 
   return (
     <>
-    <AnimatedSection>
-      <div className="">
-        <Search
-          title="Menentukan PIC Kelompok Keahlian"
-          description="PIC Kelompok Keahlian dapat memodifikasi kelompok keahlian yang telah dibuat sebelumnya. Segala aktifitas kegiatan yang dilakukan akan diperiksa oleh PIC Kelompok Keahlian."
-          placeholder="Cari Kelompok Keahlian"
-          showInput={false}
-        />
-      </div>
-      <div className="container">
-        <div className="navigasi-layout-page">
-          <p className="title-kk">Kelompok Keahlian</p>
-          <div className="left-feature">
-            <div className="status">
-              <table>
-                <tbody>
-                  <tr>
-                    <td>
-                      <i
-                        className="fas fa-circle"
-                        style={{ color: "#4a90e2" }}
-                      ></i>
-                    </td>
-                    <td>
-                      <p>Aktif/Sudah Publikasi</p>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <i
-                        className="fas fa-circle"
-                        style={{ color: "#b0b0b0" }}
-                      ></i>
-                    </td>
-                    <td>
-                      <p>Menunggu PIC dari Prodi</p>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+      <AnimatedSection>
+        <div className="">
+          <Search
+            title="Menentukan PIC Kelompok Keahlian"
+            description="PIC Kelompok Keahlian dapat memodifikasi kelompok keahlian yang telah dibuat sebelumnya. Segala aktifitas kegiatan yang dilakukan akan diperiksa oleh PIC Kelompok Keahlian."
+            placeholder="Cari Kelompok Keahlian"
+            showInput={false}
+          />
+        </div>
+        <div className="container">
+          <div className="navigasi-layout-page">
+            <p className="title-kk">Kelompok Keahlian</p>
+            <div className="left-feature">
+              <div className="status">
+                <table>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <i
+                          className="fas fa-circle"
+                          style={{ color: "#4a90e2" }}
+                        ></i>
+                      </td>
+                      <td>
+                        <p>Aktif/Sudah Publikasi</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <i
+                          className="fas fa-circle"
+                          style={{ color: "#b0b0b0" }}
+                        ></i>
+                      </td>
+                      <td>
+                        <p>Menunggu PIC dari Prodi</p>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      <div className="d-flex flex-column">
-        <div className="flex-fill">
-          <div className="container">
-            <div className="row mt-0 gx-4">
-              <div className="d-flex justify-content-between">
-                <div
-                  className="card-keterangan"
-                  style={{
-                    background: "#A7AAAC",
-                    borderRadius: "5px",
-                    padding: "10px 20px",
-                    marginBottom: "20px",
-                    color: "white",
-                    fontWeight: "bold",
-                  }}
-                >
-                  ↓ Menunggu PIC dari Prodi
+        <div className="d-flex flex-column">
+          <div className="flex-fill">
+            <div className="container">
+              <div className="row mt-0 gx-4">
+                <div className="d-flex justify-content-between">
+                  <div
+                    className="card-keterangan"
+                    style={{
+                      background: "#A7AAAC",
+                      borderRadius: "5px",
+                      padding: "10px 20px",
+                      marginBottom: "20px",
+                      color: "white",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    ↓ Menunggu PIC dari Prodi
+                  </div>
                 </div>
-              </div>
-              {currentData.filter((value) => {
-                return value.data.status === "Menunggu";
-              }).length === 0 && (
-                <div className="" style={{ margin: "5px 0px" }}>
-                  <Alert type="warning" message="Tidak ada data!" />
-                </div>
-              )}
-              {currentData
-                .filter((value) => {
+                {currentData.filter((value) => {
                   return value.data.status === "Menunggu";
-                })
-                .map((value) => (
-                  <div className="col-md-4 mb-4" key={value.data.id}>
-                    <CardKK
-                      key={value.data.id}
-                      config={value.config}
-                      data={value.data}
-                      onChangePage={onChangePage}
-                    />
+                }).length === 0 && (
+                  <div className="" style={{ margin: "5px 0px" }}>
+                    <Alert type="warning" message="Tidak ada data!" />
                   </div>
-                ))}
+                )}
+                {currentData
+                  .filter((value) => {
+                    return value.data.status === "Menunggu";
+                  })
+                  .map((value) => (
+                    <div className="col-md-4 mb-4" key={value.data.id}>
+                      <CardKK
+                        key={value.data.id}
+                        config={value.config}
+                        data={value.data}
+                        onChangePage={onChangePage}
+                      />
+                    </div>
+                  ))}
 
-              <div className="my-3">
-                <div
-                  className="card-keterangan"
-                  style={{
-                    background: "#61A2DC",
-                    borderRadius: "5px",
-                    padding: "10px 20px",
-                    marginBottom: "20px",
-                    color: "white",
-                    fontWeight: "bold",
-                  }}
-                >
-                  ↓ Data Aktif / Sudah Dipublikasikan
-                </div>
-              </div>
-              {currentData.filter((value) => {
-                return value.data.status !== "Menunggu";
-              }).length === 0 && (
-                <div className="" style={{ margin: "5px 0px" }}>
-                  <Alert type="warning" message="Tidak ada data!" />
-                </div>
-              )}
-              {currentData
-                .filter((value) => {
-                  return value.data.status != "Menunggu";
-                })
-                .map((value) => (
-                  <div className="col-md-4 mb-4" key={value.data.id}>
-                    <CardKK
-                      key={value.data.id}
-                      title="Data Scientist"
-                      colorCircle="#61A2DC"
-                      config={value.config}
-                      data={value.data}
-                      onChangePage={onChangePage}
-                      onChangeStatus={handleSetStatus}
-                    />
+                <div className="my-3">
+                  <div
+                    className="card-keterangan"
+                    style={{
+                      background: "#61A2DC",
+                      borderRadius: "5px",
+                      padding: "10px 20px",
+                      marginBottom: "20px",
+                      color: "white",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    ↓ Data Aktif / Sudah Dipublikasikan
                   </div>
-                ))}
+                </div>
+                {currentData.filter((value) => {
+                  return value.data.status !== "Menunggu";
+                }).length === 0 && (
+                  <div className="" style={{ margin: "5px 0px" }}>
+                    <Alert type="warning" message="Tidak ada data!" />
+                  </div>
+                )}
+                {currentData
+                  .filter((value) => {
+                    return value.data.status != "Menunggu";
+                  })
+                  .map((value) => (
+                    <div className="col-md-4 mb-4" key={value.data.id}>
+                      <CardKK
+                        key={value.data.id}
+                        title="Data Scientist"
+                        colorCircle="#61A2DC"
+                        config={value.config}
+                        data={value.data}
+                        onChangePage={onChangePage}
+                        onChangeStatus={handleSetStatus}
+                      />
+                    </div>
+                  ))}
+              </div>
             </div>
           </div>
         </div>
-      </div>
       </AnimatedSection>
     </>
   );

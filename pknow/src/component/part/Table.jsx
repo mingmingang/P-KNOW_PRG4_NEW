@@ -2,7 +2,7 @@ import Icon from "./Icon";
 import "../../style/Table.css";
 
 export default function Table({
-  data = [], // Set default data as an empty array to prevent undefined issues
+  data = [], 
   onToggle = () => {},
   onCancel = () => {},
   onDelete = () => {},

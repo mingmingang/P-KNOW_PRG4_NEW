@@ -1,6 +1,6 @@
 import { forwardRef, useImperativeHandle, useRef } from "react";
 import Button from "./Button";
-import "../../style/Login.css"; // Link to an external CSS file for styling
+import "../../style/Login.css";
 
 const Modal = forwardRef(function Modal(
   { title, children, size, Button1 = null, Button2 = null, onClose },
@@ -9,7 +9,6 @@ const Modal = forwardRef(function Modal(
   const dialog = useRef();
   let maxSize;
 
-  // Determine the max size of the modal based on the size prop
   switch (size) {
     case "small":
       maxSize = "600px";
@@ -24,17 +23,16 @@ const Modal = forwardRef(function Modal(
       maxSize = "100%";
       break;
     default:
-      maxSize = "600px"; // Default to small size if no size prop is passed
+      maxSize = "600px";
   }
 
-  // Expose the open and close methods to parent components
   useImperativeHandle(ref, () => {
     return {
       open() {
-        dialog.current.showModal(); // Open the dialog
+        dialog.current.showModal();
       },
       close() {
-        dialog.current.close(); // Close the dialog
+        dialog.current.close();
       },
     };
   });
@@ -42,10 +40,12 @@ const Modal = forwardRef(function Modal(
   return (
     <dialog
       ref={dialog}
-      className="custom-modal rounded-4" // Apply the custom modal CSS class
+      className="custom-modal rounded-4"
       style={{ maxWidth: maxSize }}
     >
-      <div className="custom-modal-header " style={{fontWeight:'600'}}>{title}</div>
+      <div className="custom-modal-header " style={{ fontWeight: "600" }}>
+        {title}
+      </div>
       <hr className="custom-divider" />
       <div className="custom-modal-body">{children}</div>
       <hr className="custom-divider" />
@@ -57,8 +57,8 @@ const Modal = forwardRef(function Modal(
             <button
               type="button"
               onClick={() => {
-                if (onClose) onClose(); // Call the onClose function passed from the parent
-                dialog.current.close(); // Close the modal
+                if (onClose) onClose();
+                dialog.current.close();
               }}
             >
               Tutup

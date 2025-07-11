@@ -1,29 +1,18 @@
 import { useState, useEffect } from "react";
 import Button from "../../../part/Button copy";
-import DropDown from "../../../part/Dropdown";
-import Input from "../../../part/Input";
 import Loading from "../../../part/Loading";
 import Alert from "../../../part/Alert";
-import Filter from "../../../part/Filter";
-import Icon from "../../../part/Icon";
 import { API_LINK } from "../../../util/Constants";
 import UseFetch from "../../../util/UseFetch";
-import { colors } from "@mui/material";
 import maskotPknow from "../../../../assets/pknowmaskot.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faGraduationCap,
   faUser,
-  faArrowRight,
-  faPeopleGroup,
-  faClock,
-  faUsers,
 } from "@fortawesome/free-solid-svg-icons";
 import { decode } from "he";
 
 
 export default function KKDetailPublish({ onChangePage, withID }) {
-  const [errors, setErrors] = useState({});
   const [isError, setIsError] = useState({ error: false, message: "" });
   const [isLoading, setIsLoading] = useState(false);
   const [listAnggota, setListAnggota] = useState([]);
@@ -128,7 +117,7 @@ export default function KKDetailPublish({ onChangePage, withID }) {
               } catch (e) {
                 console.log(e.message);
                 setIsError({ error: true, message: e.message });
-                return { ...program, kategori: [] }; // Handle error case by returning program with empty kategori
+                return { ...program, kategori: [] };
               }
             })
           );
@@ -195,12 +184,6 @@ export default function KKDetailPublish({ onChangePage, withID }) {
                 {formData.programStudi}
               </h6>
               <div className="pt-2 ps-2">
-                {/* <Icon
-                  name="user"
-                  cssClass="p-0 ps-1 text-dark"
-                  title="PIC Kelompok Keahlian"
-                />{" "} */}
-                {/* <span>PIC : {formData.personInCharge}</span> */}
               </div>
               <hr className="mb-0" style={{ opacity: "0.2" }} />
               <p className="py-3" style={{ textAlign: "justify" }}>

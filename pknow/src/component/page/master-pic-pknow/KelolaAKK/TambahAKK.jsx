@@ -1,8 +1,4 @@
-import Header from "../../../backbone/Header";
-import budi from "../../../../assets/fotobudi.png";
 import DetailKK from "../../../part/DetailAKK";
-import Footer from "../../../backbone/Footer";
-import { decode } from "he";
 import { useEffect, useRef, useState } from "react";
 import { motion, useAnimation } from "framer-motion";
 import { useInView } from "react-intersection-observer";

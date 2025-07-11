@@ -5,10 +5,7 @@ import Alert from "../../../part/Alert";
 import Cookies from "js-cookie";
 import { decryptId } from "../../../util/Encryptor";
 import { decode } from "he";
-import BackPage from "../../../../assets/backPage.png";
 import Konfirmasi from "../../../part/Konfirmasi";
-import { jsPDF } from "jspdf";
-import logo from "../../../../assets/loginMaskotTMS.png";
 import AppContext_master from "../master-proses/MasterContext.jsx";
 import AppContext_test from "./TestContext.jsx";
 import AnimatedSection from "../../../part/AnimatedSection.jsx";
@@ -117,7 +114,7 @@ export default function DetailKelas({ withID, onChangePage }) {
           break;
         } else {
           setlistMateri(data);
-          setActiveCategory(kategoriKey); // Set kategori aktif
+          setActiveCategory(kategoriKey);
           break;
         }
       }
@@ -142,11 +139,9 @@ export default function DetailKelas({ withID, onChangePage }) {
   }
 
   const toggleCategory = (kategoriKey) => {
-    // Jika kategori yang diklik adalah kategori aktif, tutup (set null).
     if (activeCategory === kategoriKey) {
       setActiveCategory(null);
     } else {
-      // Jika kategori yang diklik berbeda, jadikan kategori aktif.
       setActiveCategory(kategoriKey);
       getDataMateriKategori(kategoriKey);
     }
@@ -158,11 +153,6 @@ export default function DetailKelas({ withID, onChangePage }) {
     AppContext_test.refreshPage += 1;
     onChangePage("pengenalan", true, book.Key, true);
   };
-
-  const [name, setName] = useState("");
-  const [course, setCourse] = useState("");
-  const [date, setDate] = useState("");
-
   return (
     <AnimatedSection>
       <div className="app-container">
@@ -173,9 +163,9 @@ export default function DetailKelas({ withID, onChangePage }) {
             padding: "100px 60px",
             backgroundImage: `linear-gradient(rgb(0, 0, 0), rgba(0, 0, 0, 0)), url(${API_LINK}Upload/GetFile/${withID.gambar})`,
             objectFit: "cover",
-            backgroundSize: "cover", // Gambar hanya mengambil 50% dari tinggi div
-            backgroundRepeat: "no-repeat", // Hindari pengulangan gambar
-            backgroundPosition: "right", // Posisikan gambar di tengah
+            backgroundSize: "cover",
+            backgroundRepeat: "no-repeat",
+            backgroundPosition: "right",
           }}
         >
           <>
@@ -308,7 +298,6 @@ export default function DetailKelas({ withID, onChangePage }) {
                   )}{" "}
                   <br />
                 </p>
-                {/* Render list materi jika kategori ini aktif */}
                 {activeCategory === kategori.Key && (
                   <div
                     style={{
@@ -319,7 +308,7 @@ export default function DetailKelas({ withID, onChangePage }) {
                   >
                     {listMateri.length > 0 ? (
                       listMateri
-                        .filter((materi) => materi.Status === "Aktif") // Filter materi yang Statusnya 'Aktif'
+                        .filter((materi) => materi.Status === "Aktif")
                         .map((materi, materiIndex) => (
                           <div
                             className="d-flex"

@@ -31,6 +31,7 @@
     "framer-motion": "^12.10.4",
     "he": "^1.2.0",
     "html-entities": "^2.5.2",
+    "html2canvas": "^1.4.1",
     "jquery": "^3.7.1",
     "js-cookie": "^3.0.5",
     "jspdf": "^2.5.2",

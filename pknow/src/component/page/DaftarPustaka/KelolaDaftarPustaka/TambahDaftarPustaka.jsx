@@ -4,11 +4,9 @@ import { API_LINK } from "../../../util/Constants";
 import { validateAllInputs, validateInput } from "../../../util/ValidateForm";
 import SweetAlert from "../../../util/SweetAlert";
 import UseFetch from "../../../util/UseFetch";
-import Button from "../../../part/Button copy";
 import Select2Dropdown from "../../../part/Select2Dropdown";
 import Input from "../../../part/Input";
 import FileUpload from "../../../part/FileUpload";
-import Loading from "../../../part/Loading";
 import Alert from "../../../part/Alert";
 import UploadFile from "../../../util/UploadFile";
 import NoImage from "../../../../assets/NoImage.png";
@@ -145,38 +143,12 @@ export default function MasterDaftarPustakaAdd({ onChangePage, withID }) {
       if (file && file.type.startsWith("image/")) {
         const reader = new FileReader();
         reader.onloadend = () => {
-          setFilePreview(reader.result); // Set the preview
+          setFilePreview(reader.result);
         };
         reader.readAsDataURL(file);
       }
     }
 
-    setErrors((prevErrors) => ({
-      ...prevErrors,
-      [validationError.name]: error,
-    }));
-  };
-
-  const handleFileChanges = async (ref, extAllowed, maxFileSize) => {
-    const { name, value } = ref.current;
-    const file = ref.current.files[0];
-    const fileName = file.name;
-    const fileSize = file.size;
-    const fileExt = fileName.split(".").pop();
-    const validationError = await validateInput(name, value, userSchema);
-    let error = "";
-
-    if (fileSize / 1024 / 1024 > maxFileSize) {
-      error = `Berkas terlalu besar, maksimal ${maxFileSize}MB`;
-      SweetAlert("Error", error, "error");
-    } else if (!extAllowed.split(",").includes(fileExt)) {
-      error = "Format berkas tidak valid";
-      SweetAlert("Error", error, "error");
-    }
-
-    if (error) ref.current.value = "";
-
-    formDataRef.current[name] = fileName;
     setErrors((prevErrors) => ({
       ...prevErrors,
       [validationError.name]: error,
@@ -237,7 +209,7 @@ export default function MasterDaftarPustakaAdd({ onChangePage, withID }) {
         uploadPromises.push(
           UploadFile(fileDocumentRef.current).then((data) => {
             if (data.Hasil) {
-              formDataRef.current["pus_file"] = data.Hasil; // Simpan nama file yang berhasil diunggah
+              formDataRef.current["pus_file"] = data.Hasil;
             } else {
               throw new Error("Upload file gagal");
             }
@@ -395,7 +367,7 @@ export default function MasterDaftarPustakaAdd({ onChangePage, withID }) {
                         }}
                       >
                         <img
-                          src={NoImage} // Use fallback image if no preview available
+                          src={NoImage}
                           alt="No Preview Available"
                           style={{
                             width: "200px",
@@ -445,7 +417,6 @@ export default function MasterDaftarPustakaAdd({ onChangePage, withID }) {
                 />
               </div>
               <div className="col-lg-4">
-                {/* Dijadikan text biasa */}
                 <Input
                   type="text"
                   forInput="pus_kata_kunci"

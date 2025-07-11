@@ -24,7 +24,7 @@ const CardProgram = ({ program, onChangePage }) => {
   };
 
   const handleShowParticipants = () => {
-    onChangePage("listPeserta", program.Key);
+    onChangePage("listPeserta", program);
   };
 
   return (

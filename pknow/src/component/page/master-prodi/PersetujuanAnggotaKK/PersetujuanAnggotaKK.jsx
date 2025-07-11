@@ -1,28 +1,17 @@
 import Search from "../../../part/Search";
-import KelompokKeahlian from "../../../part/KelompokKeahlian";
-import developerImage from "../../../../assets/developer.png";
 import "../../../../index.css";
-
 import React, { useEffect, useState } from "react";
 import { API_LINK } from "../../../util/Constants";
-import SweetAlert from "../../../util/SweetAlert";
 import UseFetch from "../../../util/UseFetch";
-import Button from "../../../part/Button";
-import Input from "../../../part/Input";
-import DropDown from "../../../part/Dropdown";
-import Filter from "../../../part/Filter";
 import CardKonfirmasi from "../../../part/CardKonfirmasi";
-import Icon from "../../../part/Icon";
 import Loading from "../../../part/Loading";
 import Alert from "../../../part/Alert";
-import axios from "axios";
 import AnimatedSection from "../../../part/AnimatedSection";
 
 export default function PersetujuanAnggotaKK({ onChangePage }) {
   const [isError, setIsError] = useState({ error: false, message: "" });
   const [isLoading, setIsLoading] = useState(true);
   const [currentData, setCurrentData] = useState([]);
-  const [listAnggota, setListAnggota] = useState([]);
 
   const getListKK = async () => {
     setIsError({ error: false, message: "" });

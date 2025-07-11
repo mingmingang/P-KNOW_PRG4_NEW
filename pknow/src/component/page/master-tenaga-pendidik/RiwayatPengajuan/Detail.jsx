@@ -31,7 +31,7 @@ export default function PengajuanDetail({ onChangePage, withID }) {
   const [listNamaFile, setListNamaFile] = useState([]);
   const [detail, setDetail] = useState(inisialisasiData);
   const [showConfirmation, setShowConfirmation] = useState(false);
-  const [isBackAction, setIsBackAction] = useState(false);  
+  const [isBackAction, setIsBackAction] = useState(false);
   const [userData, setUserData] = useState({
     Role: "",
     Nama: "",
@@ -39,20 +39,18 @@ export default function PengajuanDetail({ onChangePage, withID }) {
   });
 
   const handleGoBack = () => {
-    setIsBackAction(true);  
-    setShowConfirmation(true);  
+    setIsBackAction(true);
+    setShowConfirmation(true);
   };
 
   const handleConfirmYes = () => {
-    setShowConfirmation(false); 
+    setShowConfirmation(false);
     onChangePage("index");
   };
 
-
   const handleConfirmNo = () => {
-    setShowConfirmation(false);  
+    setShowConfirmation(false);
   };
-
 
   const getUserKryID = async () => {
     setIsLoading(true);
@@ -90,22 +88,22 @@ export default function PengajuanDetail({ onChangePage, withID }) {
 
   const decodeHtmlEntities = (str) => {
     const parser = new DOMParser();
-    const decodedString = parser.parseFromString(str, "text/html").body.textContent;
-    return decodedString || str; // Jika decoding gagal, gunakan string asli
+    const decodedString = parser.parseFromString(str, "text/html").body
+      .textContent;
+    return decodedString || str;
   };
 
-  
   const getListLampiran = async () => {
     setIsError((prevError) => ({ ...prevError, error: false }));
     setIsLoading(true);
-  
+
     try {
       let data = await UseFetch(API_LINK + "PengajuanKK/GetDetailLampiran", {
         page: 1,
         sort: "[ID Lampiran] ASC",
         akk_id: withID.Key,
       });
-  
+
       if (data === "ERROR") {
         throw new Error("Terjadi kesalahan: Gagal mengambil Detail Lampiran.");
       } else if (data.length === 0) {
@@ -114,27 +112,20 @@ export default function PengajuanDetail({ onChangePage, withID }) {
         const updatedData = data.map((item) => {
           if (item.Lampiran) {
             try {
-              // Decode HTML entities sebelum parsing JSON
               const cleanedLampiran = decodeHtmlEntities(item.Lampiran);
-  
-              // Parse JSON string
               const parsedLampiran = JSON.parse(cleanedLampiran);
-  
-              // Proses setiap file di dalam parsedLampiran
               const fileUrls = parsedLampiran.map((file) => {
                 return `${API_LINK}Upload/GetFile/${file.pus_file}`;
               });
-  
-              // Tambahkan fileUrls ke objek item
               return { ...item, Lampiran: fileUrls };
             } catch (err) {
               console.error("Gagal mem-parse JSON Lampiran:", err);
-              return { ...item, Lampiran: [] }; // Default ke array kosong jika parsing gagal
+              return { ...item, Lampiran: [] };
             }
           }
-          return item; // Jika tidak ada Lampiran, return item as is
+          return item;
         });
-        setDetail(updatedData); // Update state dengan data baru
+        setDetail(updatedData);
       }
     } catch (error) {
       console.error("Error fetching detail lampiran:", error);
@@ -149,7 +140,6 @@ export default function PengajuanDetail({ onChangePage, withID }) {
     }
   };
 
-  
   useEffect(() => {
     getListLampiran();
   }, [withID]);
@@ -165,96 +155,155 @@ export default function PengajuanDetail({ onChangePage, withID }) {
         <Loading />
       ) : (
         <>
-        <div className="" style={{display:"flex", justifyContent:"space-between", marginTop:"100px"}}>
-        <div className="back-and-title" style={{display:"flex"}}>
-          <button style={{backgroundColor:"transparent", border:"none"}} onClick={handleGoBack}><img src={BackPage} alt="" /></button>
-            <h4 style={{ color:"#0A5EA8", fontWeight:"bold", fontSize:"30px", marginTop:"10px", marginLeft:"20px"}}>Pengajuan Kelompok Keahlian</h4>
-          </div>
+          <div
+            className=""
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              marginTop: "100px",
+            }}
+          >
+            <div className="back-and-title" style={{ display: "flex" }}>
+              <button
+                style={{ backgroundColor: "transparent", border: "none" }}
+                onClick={handleGoBack}
+              >
+                <img src={BackPage} alt="" />
+              </button>
+              <h4
+                style={{
+                  color: "#0A5EA8",
+                  fontWeight: "bold",
+                  fontSize: "30px",
+                  marginTop: "10px",
+                  marginLeft: "20px",
+                }}
+              >
+                Pengajuan Kelompok Keahlian
+              </h4>
+            </div>
             <div className="ket-draft">
-            <p className="mb-0" style={{fontWeight:"600", marginTop:"10px"}}><i
-          className="fas fa-circle"
-          icon="circle"
-          style={{
-                color:
-                  withID.Status === "Ditolak"
-                    ? "#DC3545"
-                    : withID.Status === "Menunggu Acc"
-                    ? "#FFC107" 
-                    : "#6C757D",
-                    marginRight:"10px"
-              }}
-        />{withID.Status}</p>
+              <p
+                className="mb-0"
+                style={{ fontWeight: "600", marginTop: "10px" }}
+              >
+                <i
+                  className="fas fa-circle"
+                  icon="circle"
+                  style={{
+                    color:
+                      withID.Status === "Ditolak"
+                        ? "#DC3545"
+                        : withID.Status === "Menunggu Acc"
+                        ? "#FFC107"
+                        : "#6C757D",
+                    marginRight: "10px",
+                  }}
+                />
+                {withID.Status}
+              </p>
             </div>
           </div>
           <div className="container mb-4">
-        <form>
-          <div className="card">
-            <div className="card-body p-4">
-              <div className="row">
-                <div className="col-lg-6">
-                  <Label title="Nama" data={decode(userData.Nama)} />
-                </div>
-                <div className="col-lg-6">
-                  <Label title="Jabatan" data={userData.Role} />
-                </div>
-                <div className="col-lg-6 my-3">
-                  <Label
-                    title="Kelompok Keahlian"
-                    data={decode(withID["Nama Kelompok Keahlian"])}
-                  />
-                </div>
-                <div className="col-lg-6 my-3">
-                  <Label title="Status" data={withID.Status === "Menunggu Acc" ? "Menunggu Persetujuan" : withID.Status} />
-                </div>
-                <div className="col-lg-12">
-                <div className="fw-medium mb-2">Lampiran Pendukung</div>
-                <div className="card">
-                  <div className="card-body p-4">
-                  {detail?.map((item, index) => (
-                    <div key={index}>
-                      {item.Lampiran ? (
-                        // Check if Lampiran is a string before splitting
-                        Array.isArray(item.Lampiran)
-                          ? item.Lampiran.map((link, linkIndex) => (
-                            
-                              <div key={linkIndex}>
-                                <h5 className="mb-3" style={{marginTop:"15px"}}>{`Lampiran ${linkIndex + 1}`}</h5>
-                                <a href={link.trim()} target="_blank" rel="noopener noreferrer" style={{textDecoration:"none"}}>
-                                  {`Lampiran ${linkIndex + 1} ${decode(withID["Nama Kelompok Keahlian"])}`}
-                                </a>
-                              </div>
-                            ))
-                          : typeof item.Lampiran === "string" 
-                            ? item.Lampiran.split(",").map((link, linkIndex) => (
-                                <div key={linkIndex}>
-                                  <h5 className="mb-3">{`Lampiran ${index + 1}`}</h5>
-                                  <a href={link.trim()} target="_blank" rel="noopener noreferrer">
-                                    {`Lampiran ${linkIndex + 1} ${decode(withID["Nama Kelompok Keahlian"])}`}
-                                  </a>
-                                </div>
-                              ))
-                            : <p>Invalid Lampiran format</p> // Handle non-string cases
-                      ) : (
-                        <p>Tidak ada lampiran</p>
-                      )}
+            <form>
+              <div className="card">
+                <div className="card-body p-4">
+                  <div className="row">
+                    <div className="col-lg-6">
+                      <Label title="Nama" data={decode(userData.Nama)} />
                     </div>
-                  ))}
+                    <div className="col-lg-6">
+                      <Label title="Jabatan" data={userData.Role} />
+                    </div>
+                    <div className="col-lg-6 my-3">
+                      <Label
+                        title="Kelompok Keahlian"
+                        data={decode(withID["Nama Kelompok Keahlian"])}
+                      />
+                    </div>
+                    <div className="col-lg-6 my-3">
+                      <Label
+                        title="Status"
+                        data={
+                          withID.Status === "Menunggu Acc"
+                            ? "Menunggu Persetujuan"
+                            : withID.Status
+                        }
+                      />
+                    </div>
+                    <div className="col-lg-12">
+                      <div className="fw-medium mb-2">Lampiran Pendukung</div>
+                      <div className="card">
+                        <div className="card-body p-4">
+                          {detail?.map((item, index) => (
+                            <div key={index}>
+                              {item.Lampiran ? (
+                                Array.isArray(item.Lampiran) ? (
+                                  item.Lampiran.map((link, linkIndex) => (
+                                    <div key={linkIndex}>
+                                      <h5
+                                        className="mb-3"
+                                        style={{ marginTop: "15px" }}
+                                      >{`Lampiran ${linkIndex + 1}`}</h5>
+                                      <a
+                                        href={link.trim()}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        style={{ textDecoration: "none" }}
+                                      >
+                                        {`Lampiran ${linkIndex + 1} ${decode(
+                                          withID["Nama Kelompok Keahlian"]
+                                        )}`}
+                                      </a>
+                                    </div>
+                                  ))
+                                ) : typeof item.Lampiran === "string" ? (
+                                  item.Lampiran.split(",").map(
+                                    (link, linkIndex) => (
+                                      <div key={linkIndex}>
+                                        <h5 className="mb-3">{`Lampiran ${
+                                          index + 1
+                                        }`}</h5>
+                                        <a
+                                          href={link.trim()}
+                                          target="_blank"
+                                          rel="noopener noreferrer"
+                                        >
+                                          {`Lampiran ${linkIndex + 1} ${decode(
+                                            withID["Nama Kelompok Keahlian"]
+                                          )}`}
+                                        </a>
+                                      </div>
+                                    )
+                                  )
+                                ) : (
+                                  <p>Invalid Lampiran format</p>
+                                )
+                              ) : (
+                                <p>Tidak ada lampiran</p>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
-                </div>
               </div>
-            </div>
+            </form>
           </div>
-        </form>
-        </div>
-        {showConfirmation && (
-        <Konfirmasi
-          title={isBackAction ? "Konfirmasi Kembali" : "Konfirmasi Simpan"}
-          pesan={isBackAction ? "Apakah anda ingin kembali?" : "Anda yakin ingin simpan data?"}
-          onYes={handleConfirmYes}
-          onNo={handleConfirmNo}
-        />
-        )}
+          {showConfirmation && (
+            <Konfirmasi
+              title={isBackAction ? "Konfirmasi Kembali" : "Konfirmasi Simpan"}
+              pesan={
+                isBackAction
+                  ? "Apakah anda ingin kembali?"
+                  : "Anda yakin ingin simpan data?"
+              }
+              onYes={handleConfirmYes}
+              onNo={handleConfirmNo}
+            />
+          )}
         </>
       )}
     </>

@@ -1,25 +1,15 @@
 import { useEffect, useRef, useState } from "react";
 import { PAGE_SIZE, API_LINK, ROOT_LINK } from "../../../util/Constants";
-import SweetAlert from "../../../util/SweetAlert";
-import UseFetch from "../../../util/UseFetch";
-import Button from "../../../part/Button";
-import Input from "../../../part/Input";
-import Table from "../../../part/Table";
-import Paging from "../../../part/Paging";
-import Filter from "../../../part/Filter";
-import DropDown from "../../../part/Dropdown";
 import Alert from "../../../part/Alert";
 import Loading from "../../../part/Loading";
 import axios from "axios";
-import AppContext_master from "../master-proses/MasterContext";
 import AppContext_test from "./TestContext";
-import maskotPknow from "../../../../assets/pknowmaskot.png";
 import he from "he";
 import KMS_Rightbar from "../../../part/RightBar";
 import Cookies from "js-cookie";
 import { decryptId } from "../../../util/Encryptor";
 import { decode } from "html-entities";
-import "../../../../index.css"
+import "../../../../index.css";
 
 export default function MasterTestIndex({
   onChangePage,
@@ -32,7 +22,6 @@ export default function MasterTestIndex({
   const [isError, setIsError] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [currentData, setCurrentData] = useState();
-  const [marginRight, setMarginRight] = useState("5vh");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   AppContext_test.refreshPage = "pengenalan";
@@ -53,8 +42,8 @@ export default function MasterTestIndex({
           API_LINK + "Materi/UpdatePoinProgresMateri",
           {
             materiId: AppContext_test.materiId,
-            kry_user : activeUser,
-            tipe: 'Pengenalan'
+            kry_user: activeUser,
+            tipe: "Pengenalan",
           }
         );
         if (response.status === 200) {
@@ -128,7 +117,7 @@ export default function MasterTestIndex({
           if (i < retries - 1) {
             await new Promise((resolve) => setTimeout(resolve, delay));
           } else {
-            throw error; // Throw error if max retries reached
+            throw error;
           }
         }
       }
@@ -142,8 +131,8 @@ export default function MasterTestIndex({
   }, [AppContext_test.materiId]);
 
   useEffect(() => {
-    for(let i = 0; i <= 0 ; i++){
-      updateProgres();  
+    for (let i = 0; i <= 0; i++) {
+      updateProgres();
     }
   }, []);
 
@@ -161,70 +150,64 @@ export default function MasterTestIndex({
   };
 
   useEffect(() => {
-  const handleResize = () => {
-    if (window.innerWidth >= 992) {
-      setIsSidebarOpen(true);
-    } else {
-      setIsSidebarOpen(false);
-    }
-  };
-  window.addEventListener("resize", handleResize);
-  handleResize(); // initial call
-  return () => window.removeEventListener("resize", handleResize);
-}, []);
-
-
+    const handleResize = () => {
+      if (window.innerWidth >= 992) {
+        setIsSidebarOpen(true);
+      } else {
+        setIsSidebarOpen(false);
+      }
+    };
+    window.addEventListener("resize", handleResize);
+    handleResize();
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   return (
     <>
-        <button 
-  className="d-lg-none btn btn-primary mb-3" 
-  onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-  style={{
-    position: 'fixed',
-    top: '100px',
-    right: '15px',
-    zIndex: 1000,
-    color: 'white',
-    fontSize: '20px'
-  }}
->
-  {isSidebarOpen ? '✕' : '☰'}
-</button>
+      <button
+        className="d-lg-none btn btn-primary mb-3"
+        onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+        style={{
+          position: "fixed",
+          top: "100px",
+          right: "15px",
+          zIndex: 1000,
+          color: "white",
+          fontSize: "20px",
+        }}
+      >
+        {isSidebarOpen ? "✕" : "☰"}
+      </button>
 
       <div className="container d-flex">
-        {/* When sidebar is open on mobile */}
         {isSidebarOpen && (
-          <div 
+          <div
             className="d-lg-none"
             style={{
-              position: 'fixed',
+              position: "fixed",
               top: 0,
               left: 0,
               right: 0,
               bottom: 0,
-              backgroundColor: 'rgba(0,0,0,0.5)',
-              zIndex: 999
+              backgroundColor: "rgba(0,0,0,0.5)",
+              zIndex: 999,
             }}
             onClick={() => setIsSidebarOpen(false)}
           />
         )}
-      <div
-  className={`${
-    isSidebarOpen ? "d-block" : "d-none"
-  } d-lg-block`}
-  style={{
-    position: isSidebarOpen ? "fixed" : "relative",
-    zIndex: 999,
-    backgroundColor: "white",
-    height: isSidebarOpen ? "100vh" : "auto",
-    overflowY: "auto",
-    width: isSidebarOpen ? "350px" : "0px",
-    left: isSidebarOpen ? "0" : "auto",
-    top: isSidebarOpen ? "0" : "auto",
-  }}
->
-
+        <div
+          className={`${isSidebarOpen ? "d-block" : "d-none"} d-lg-block`}
+          style={{
+            position: isSidebarOpen ? "fixed" : "relative",
+            zIndex: 999,
+            backgroundColor: "white",
+            height: isSidebarOpen ? "100vh" : "auto",
+            overflowY: "auto",
+            width: isSidebarOpen ? "350px" : "0px",
+            left: isSidebarOpen ? "0" : "auto",
+            top: isSidebarOpen ? "0" : "auto",
+          }}
+        >
           <KMS_Rightbar
             isActivePengenalan={true}
             isActiveForum={false}
@@ -244,16 +227,15 @@ export default function MasterTestIndex({
             isCollapsed={!isSidebarOpen}
           />
         </div>
-  
-      <div
-  className="d-flex flex-column flex-grow-1"
-  style={{
-    marginLeft: window.innerWidth >= 992 ? (isSidebarOpen ? "23%" : "0px") : "0",
-    transition: "margin-left 0.3s",
-  }}
->
 
-
+        <div
+          className="d-flex flex-column flex-grow-1"
+          style={{
+            marginLeft:
+              window.innerWidth >= 992 ? (isSidebarOpen ? "23%" : "0px") : "0",
+            transition: "margin-left 0.3s",
+          }}
+        >
           {isError && (
             <div className="flex-fill">
               <Alert
@@ -280,14 +262,22 @@ export default function MasterTestIndex({
                   <div className="align-items-center mb-3">
                     <h1 style={{ color: "#002B6C" }} className="mb-0">
                       {" "}
-                      {decode(currentData[0].Judul ? currentData[0].Judul : "Judul tidak tersedia")}
+                      {decode(
+                        currentData[0].Judul
+                          ? currentData[0].Judul
+                          : "Judul tidak tersedia"
+                      )}
                     </h1>
                     <br />
                     <h6 className="mb-0" style={{ color: "#002B6C" }}>
-                      Dari {decode(currentData[0].NamaKK)} - {decode(currentData[0].Prodi)}
+                      Dari {decode(currentData[0].NamaKK)} -{" "}
+                      {decode(currentData[0].Prodi)}
                     </h6>
                     <br />
-                    <h6 className="mb-0" style={{ color: "#002B6C", marginTop:"-10px" }}>
+                    <h6
+                      className="mb-0"
+                      style={{ color: "#002B6C", marginTop: "-10px" }}
+                    >
                       Oleh {decode(currentData[0].Nama)} -{" "}
                       {formatDate(currentData[0].Creadate)}
                     </h6>
@@ -307,6 +297,5 @@ export default function MasterTestIndex({
         </div>
       </div>
     </>
-    
   );
 }

@@ -40,19 +40,15 @@ const CardKategoriProgram = ({ onChangePage, kategori }) => {
           text-align: justify;
         }
       `}</style>
-      <div className="card-kategori-program-container"  style={{ width: "33%" }}> 
+      <div className="card-kategori-program-container" style={{ width: "33%" }}>
         <div className="card-kategori-program">
           <div className="card mb-2">
             <div className="card-body">
               <div className="d-flex justify-content-between">
-                <h6
-                  className="card-title"
-                  
-                >
-                  {kategori["Nama Kategori Program"] 
-  ? decode(kategori["Nama Kategori Program"]) 
-  : "Kategori Program tidak tersedia"}
-
+                <h6 className="card-title">
+                  {kategori["Nama Kategori Program"]
+                    ? decode(kategori["Nama Kategori Program"])
+                    : "Kategori Program tidak tersedia"}
                 </h6>
                 <div>
                   <Icon
@@ -76,9 +72,12 @@ const CardKategoriProgram = ({ onChangePage, kategori }) => {
                       overflow: "hidden",
                     }}
                   >
-                    {kategori.Deskripsi.length > MAX_DESCRIPTION_LENGTH && !expandDeskripsi ? (
+                    {kategori.Deskripsi.length > MAX_DESCRIPTION_LENGTH &&
+                    !expandDeskripsi ? (
                       <>
-                        {decode(kategori.Deskripsi.slice(0, MAX_DESCRIPTION_LENGTH)) + " ..."}
+                        {decode(
+                          kategori.Deskripsi.slice(0, MAX_DESCRIPTION_LENGTH)
+                        ) + " ..."}
                         <a
                           className="btn btn-link text-decoration-none p-0"
                           onClick={handleExpandDescription}
@@ -89,9 +88,9 @@ const CardKategoriProgram = ({ onChangePage, kategori }) => {
                       </>
                     ) : (
                       <>
-                        {kategori.Deskripsi 
-      ? decode(kategori.Deskripsi) 
-      : "Deskripsi tidak tersedia"}
+                        {kategori.Deskripsi
+                          ? decode(kategori.Deskripsi)
+                          : "Deskripsi tidak tersedia"}
                         {expandDeskripsi && (
                           <a
                             className="btn btn-link text-decoration-none p-0"
@@ -105,10 +104,28 @@ const CardKategoriProgram = ({ onChangePage, kategori }) => {
                     )}
                   </p>
                 </div>
-               
               </div>
               <div className="d-flex justify-content-end">
-              <button onClick={() => onChangePage("index", AppContext_test.KategoriIdByKK = kategori.Key, AppContext_master.KategoriIdByKK = kategori.Key, kategori={kategori})} style={{border:"none", background:"#0E6EFE", padding:"5px 10px", color:"white", marginTop:"10px", borderRadius:"10px"}}>Lihat Materi</button>
+                <button
+                  onClick={() =>
+                    onChangePage(
+                      "index",
+                      (AppContext_test.KategoriIdByKK = kategori.Key),
+                      (AppContext_master.KategoriIdByKK = kategori.Key),
+                      (kategori = { kategori })
+                    )
+                  }
+                  style={{
+                    border: "none",
+                    background: "#0E6EFE",
+                    padding: "5px 10px",
+                    color: "white",
+                    marginTop: "10px",
+                    borderRadius: "10px",
+                  }}
+                >
+                  Lihat Materi
+                </button>
               </div>
             </div>
           </div>

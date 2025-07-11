@@ -18,7 +18,7 @@ const AksesMateri = lazy(() => import("../page/Materi/master-test/Root"));
 const ClassRepository = lazy(() => import("../page/classRepository/Root"));
 
 const routeList = [
-  { path: "", element: <Login /> },
+  { path: "/", element: <Login /> },
   { path: "beranda_utama", element: <Beranda /> },
   { path: "beranda_prodi", element: <Prodi /> },
   { path: "kelola_kelompok_keahlian", element: <KelolaKK /> },

@@ -1,5 +1,5 @@
 import "../../style/BerandaPengguna.css";
-import "../../style/Beranda.css"
+import "../../style/Beranda.css";
 import maskotBoyGirl from "../../assets/maskotAstraBoyGirl.png";
 import logo from "../../assets/logo.png";
 import perusahaan from "../../assets/perusahaan.png";
@@ -8,12 +8,11 @@ import { useEffect, useRef, useState } from "react";
 import { delay, motion, useAnimation } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 
-// Perbaikan komponen AnimatedSection
 const AnimatedSection = ({ children, delay = 0 }) => {
   const controls = useAnimation();
   const [ref, inView] = useInView({
     threshold: 0.1,
-    triggerOnce: true
+    triggerOnce: true,
   });
 
   useEffect(() => {
@@ -26,16 +25,16 @@ const AnimatedSection = ({ children, delay = 0 }) => {
     visible: {
       opacity: 1,
       y: 0,
-      transition: { 
-        duration: 0.5, 
+      transition: {
+        duration: 0.5,
         delay,
-        ease: "easeOut"
-      }
+        ease: "easeOut",
+      },
     },
     hidden: {
       opacity: 0,
-      y: 50
-    }
+      y: 50,
+    },
   };
 
   return (
@@ -50,7 +49,6 @@ const AnimatedSection = ({ children, delay = 0 }) => {
   );
 };
 
-
 export default function BerandaPengguna({
   backgroundPengguna,
   maskotUser,
@@ -60,131 +58,152 @@ export default function BerandaPengguna({
   marginLeft,
 }) {
   const handleKnowledgeDatabase = () => {
-    window.location.replace("/daftar_pustaka"); 
-}
+    window.location.replace("/daftar_pustaka");
+  };
   return (
     <div>
       <AnimatedSection>
-      <section
-        className="background-beranda"
-        style={{ backgroundImage: `url(${backgroundPengguna})` }}
-      >
-        <div className="ucapanMahasiswa">
-          <h3>Selamat Datang</h3>
-          <h1>Civitas Akademika ASTRAtech!</h1>
-          <p>
-            “Sistem Manajemen Pengetahuan ini akan membantu Anda belajar lebih
-            efisien. Mari kita mulai dengan menjelajahi fitur-fitur yang
-            tersedia dengan mengakses menu yang disediakan.”
-          </p>
-          <button onClick={handleKnowledgeDatabase}>Knowledge Database</button>
-        </div>
-
-        <div
-          className="imgDatang-maskot"
-          style={{
-            paddingTop: paddingTop || "20vh", // Apply dynamic paddingTop, default is 20vh
-            width: width || "27%", // Apply dynamic width, default is 27%
-            marginLeft: marginLeft || "0px", // Ensure full height
-          }}
+        <section
+          className="background-beranda"
+          style={{ backgroundImage: `url(${backgroundPengguna})` }}
         >
-          <img
-            className="maskotMahasiswa"
-            src={maskotUser}
-            alt="Ilustrasi Maskot User"
-            style={{ height: maskotHeight || "100%" }} // Apply dynamic maskot height, default is 100%
-          />
-        </div>
-      </section>
+          <div className="ucapanMahasiswa">
+            <h3>Selamat Datang</h3>
+            <h1>Civitas Akademika ASTRAtech!</h1>
+            <p>
+              “Sistem Manajemen Pengetahuan ini akan membantu Anda belajar lebih
+              efisien. Mari kita mulai dengan menjelajahi fitur-fitur yang
+              tersedia dengan mengakses menu yang disediakan.”
+            </p>
+            <button onClick={handleKnowledgeDatabase}>
+              Knowledge Database
+            </button>
+          </div>
+
+          <div
+            className="imgDatang-maskot"
+            style={{
+              paddingTop: paddingTop || "20vh",
+              width: width || "27%",
+              marginLeft: marginLeft || "0px",
+            }}
+          >
+            <img
+              className="maskotMahasiswa"
+              src={maskotUser}
+              alt="Ilustrasi Maskot User"
+              style={{ height: maskotHeight || "100%" }}
+            />
+          </div>
+        </section>
       </AnimatedSection>
 
       <AnimatedSection delay={0.4}>
-
-            <section className="sec4" style={{ 
-        display: "flex", 
-        flexDirection: "column", 
-        justifyContent: "space-between", 
-      }}>
-        <h4 style={{ textAlign: "center", color: "white", paddingTop: "60px", fontWeight: "bold" }}>
-          Penasaran dengan kampus ASTRAtech?
-        </h4>
-        <p style={{ textAlign: "center", color: "white" }} className="mt-4">
-          ASTRAtech adalah value chain industri untuk penyediaan SDM unggul sekaligus kontribusi
-          sosial mencerdaskan Bangsa. ASTRAtech memiliki banyak program studi yang memenuhi
-          kebutuhan industri untuk melatih peserta didik dalam lingkungan kerja.
-        </p>
-        <div style={{ textAlign: "center" }}>
-          <button
+        <section
+          className="sec4"
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-between",
+          }}
+        >
+          <h4
             style={{
-              border: "none",
-              padding: "15px",
-              borderRadius: "10px",
-              backgroundColor: "white",
-              color: "#0A5EA8",
-              fontWeight: "600",
+              textAlign: "center",
+              color: "white",
+              paddingTop: "60px",
+              fontWeight: "bold",
             }}
           >
-            Tentang ASTRAtech
-          </button>
-        </div>
-        <div style={{ textAlign: "center", marginTop: "auto" }}>
-          <img src={iconAstra} alt="Icon ASTRA" />
-        </div>
-      </section>
+            Penasaran dengan kampus ASTRAtech?
+          </h4>
+          <p style={{ textAlign: "center", color: "white" }} className="mt-4">
+            ASTRAtech adalah value chain industri untuk penyediaan SDM unggul
+            sekaligus kontribusi sosial mencerdaskan Bangsa. ASTRAtech memiliki
+            banyak program studi yang memenuhi kebutuhan industri untuk melatih
+            peserta didik dalam lingkungan kerja.
+          </p>
+          <div style={{ textAlign: "center" }}>
+            <button
+              style={{
+                border: "none",
+                padding: "15px",
+                borderRadius: "10px",
+                backgroundColor: "white",
+                color: "#0A5EA8",
+                fontWeight: "600",
+              }}
+            >
+              Tentang ASTRAtech
+            </button>
+          </div>
+          <div style={{ textAlign: "center", marginTop: "auto" }}>
+            <img src={iconAstra} alt="Icon ASTRA" />
+          </div>
+        </section>
       </AnimatedSection>
       <AnimatedSection delay={0.6}>
-            <section className="sec5 mb-4">
-              <div className="company">
-                <div className="perusahaan">
-                  <h3 style={{ color: "#0A5EA8",  fontWeight: "700" }}>
-                    P-KNOW telah bekerja sama dengan Perusahaan ASTRA yang tersebar diseluruh Indonesia
-                  </h3>
-                  <p>
-                    P-KNOW adalah platform pendidikan teknologi yang diciptakan oleh kampus ASTRAtech
-                    untuk menyediakan konten pembelajaran keterampilan digital dengan metode
-                    “blended-learning”.
-                  </p>
-                  <h4>
-                    Partner Perusahaan yang Bekerja Sama dengan ASTRAtech
-                  </h4>
-                  <img  src={perusahaan} alt="Perusahaan ASTRA" className="cmp_astra" />
-                  <div className="mt-4">
-                    <button
-                      style={{
-                        borderRadius: "10px",
-                        backgroundColor: "#0A5EA8",
-                        color: "white",
-                      }}
-                    >
-                      Lihat Selengkapnya
-                    </button>
-                  </div>
-                </div>
-                <div className="logoAstratech" style={{ marginTop: "90px", marginRight: "100px" }}>
-                  <img src={logo} alt="Logo ASTRAtech" width="300px" />
-                </div>
+        <section className="sec5 mb-4">
+          <div className="company">
+            <div className="perusahaan">
+              <h3 style={{ color: "#0A5EA8", fontWeight: "700" }}>
+                P-KNOW telah bekerja sama dengan Perusahaan ASTRA yang tersebar
+                diseluruh Indonesia
+              </h3>
+              <p>
+                P-KNOW adalah platform pendidikan teknologi yang diciptakan oleh
+                kampus ASTRAtech untuk menyediakan konten pembelajaran
+                keterampilan digital dengan metode “blended-learning”.
+              </p>
+              <h4>Partner Perusahaan yang Bekerja Sama dengan ASTRAtech</h4>
+              <img
+                src={perusahaan}
+                alt="Perusahaan ASTRA"
+                className="cmp_astra"
+              />
+              <div className="mt-4">
+                <button
+                  style={{
+                    borderRadius: "10px",
+                    backgroundColor: "#0A5EA8",
+                    color: "white",
+                  }}
+                >
+                  Lihat Selengkapnya
+                </button>
               </div>
-            </section>
-            </AnimatedSection>
-      
-            <AnimatedSection delay={1.0}>
-            <section className="sec6">
-          <div className="ucapan2">
-                  <h3>Strategic Talent Development</h3>
-                  <h1>Build Your Talent, Expand Your Growth</h1>
-                  <p>
-                      Unlock your organizations full potential through our comprehensive talent development ecosystem. 
-                      We architect customized growth frameworks that align individual capabilities.
-                  </p>
-                  </div>
-                  
-                  <div className="imgMaskot">
-                    <img className="maskot" src={maskotBoyGirl} alt="Ilustrasi Cewek VR" />
-                  </div>
-              
-                </section>
-                </AnimatedSection>
+            </div>
+            <div
+              className="logoAstratech"
+              style={{ marginTop: "90px", marginRight: "100px" }}
+            >
+              <img src={logo} alt="Logo ASTRAtech" width="300px" />
+            </div>
+          </div>
+        </section>
+      </AnimatedSection>
 
+      <AnimatedSection delay={1.0}>
+        <section className="sec6">
+          <div className="ucapan2">
+            <h3>Strategic Talent Development</h3>
+            <h1>Build Your Talent, Expand Your Growth</h1>
+            <p>
+              Unlock your organizations full potential through our comprehensive
+              talent development ecosystem. We architect customized growth
+              frameworks that align individual capabilities.
+            </p>
+          </div>
+
+          <div className="imgMaskot">
+            <img
+              className="maskot"
+              src={maskotBoyGirl}
+              alt="Ilustrasi Cewek VR"
+            />
+          </div>
+        </section>
+      </AnimatedSection>
     </div>
   );
 }

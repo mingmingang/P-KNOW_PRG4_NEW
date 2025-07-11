@@ -1,19 +1,9 @@
 import { useEffect, useRef, useState } from "react";
-import { object, string } from "yup";
 import { API_LINK } from "../../../util/Constants";
-import { validateAllInputs, validateInput } from "../../../util/ValidateForm";
-import SweetAlert from "../../../util/SweetAlert";
-import UseFetch from "../../../util/UseFetch";
-import UploadFile from "../../../util/UploadFile";
 import Button from "../../../part/Button copy";
-import DropDown from "../../../part/Dropdown";
 import Input from "../../../part/Input";
-import FileUpload from "../../../part/FileUpload";
-import Loading from "../../../part/Loading";
-import Alert from "../../../part/Alert";
 import KMS_Sidebar from "../../../part/KMS_SideBar";
 import styled from "styled-components";
-import KMS_Uploader from "../../../part/KMS_Uploader";
 import axios from "axios";
 import AppContext_test from "./TestContext";
 import Cookies from "js-cookie";
@@ -37,8 +27,7 @@ export default function PengerjaanTest({
   const cookie = Cookies.get("activeUser");
   if (cookie) activeUser = JSON.parse(decryptId(cookie)).username;
 
-  const [showSidebar, setShowSidebar] = useState(true);
-  const [errors, setErrors] = useState({});
+
   const [isError, setIsError] = useState({ error: false, message: "" });
   const [isLoading, setIsLoading] = useState(false);
   const [currentData, setCurrentData] = useState([]);
@@ -109,7 +98,6 @@ export default function PengerjaanTest({
     const fetchData = async () => {
       setIsLoading(true);
       try {
-        // Fetch questions data
         const questionResponse = await axios.post(
           API_LINK + "Quiz/GetDataQuestion",
           {
@@ -209,7 +197,7 @@ export default function PengerjaanTest({
                     nilaiJawaban: NilaiJawabanOpsi,
                     jawabanPengguna_value: penggunaJawaban
                       .filter((jawaban) => jawaban.que_soal === Soal && jawaban.que_id === Key)
-                      .map((jawaban) => jawaban.value), // Mengambil nilai dari semua jawaban pengguna
+                      .map((jawaban) => jawaban.value),
                     jawabanPengguna_soal: penggunaJawaban.filter(
                       (jawaban) => jawaban.que_soal === Soal && jawaban.que_id === Key
                     ),
@@ -264,7 +252,7 @@ export default function PengerjaanTest({
       const response = await axios.get(
         `${API_LINK}Upload/GetFile/${encodeURIComponent(namaFile)}`,
         {
-          responseType: "arraybuffer", // Untuk menangani file biner
+          responseType: "arraybuffer",
         }
       );
 
@@ -296,8 +284,8 @@ export default function PengerjaanTest({
   };
 
   const removeHtmlTags = (str) => {
-    const decoded = he.decode(str); // Decode HTML entities seperti &lt; menjadi <
-    return decoded.replace(/<\/?[^>]+(>|$)/g, ''); // Hapus semua tag HTML
+    const decoded = he.decode(str); 
+    return decoded.replace(/<\/?[^>]+(>|$)/g, ''); 
 };
   AppContext_test.durasiTest = 10000;
   
@@ -331,7 +319,6 @@ export default function PengerjaanTest({
                     marginRight: "20px",
                   }}
                 >
-                  {/* Soal */}
                   <div className="mb-3">
                     <h4
                       style={{
@@ -365,39 +352,6 @@ export default function PengerjaanTest({
                   Salah
                 </span>
               )}
-
-
-                      {/* {item.que_tipe === "Pilgan"
-                        ? (() => {
-                            const totalPoints = item.jawabanPengguna_soal
-                              .filter((jawaban) => jawaban.que_id === item.que_id)
-                              .reduce((total, jawaban) => total + (jawaban.ans_nilai || 0), 0);
-                            return totalPoints === 0 ? (
-                              <span
-                                style={{
-                                  fontSize: "16px",
-                                  color: "red",
-                                  marginLeft: "8px",
-                                }}
-                              >
-                                Salah
-                              </span>
-                            ) : null;
-                          })()
-                        : (() => {
-                            const points = item.jawabanPengguna_soal?.ans_nilai || '';
-                            return points === 0 ? (
-                              <span
-                                style={{
-                                  fontSize: "16px",
-                                  color: "red",
-                                  marginLeft: "8px",
-                                }}
-                              >
-                                Salah
-                              </span>
-                            ) : null;
-                          })()} */}
                         </div>
                     
                       </div>
@@ -462,8 +416,8 @@ export default function PengerjaanTest({
                         let backgroundColor1 = "white";
                         
                         if (isSelected) {
-                          borderColor1 = isCorrect ? "#28a745" : "#dc3545"; // Hijau untuk benar, merah untuk salah
-                          backgroundColor1 = isCorrect ? "#e9f7eb" : "#f8d7da"; // Warna background dinamis
+                          borderColor1 = isCorrect ? "#28a745" : "#dc3545"; 
+                          backgroundColor1 = isCorrect ? "#e9f7eb" : "#f8d7da";
                         }
 
                     return (
@@ -497,8 +451,8 @@ export default function PengerjaanTest({
                     let backgroundColor1 = "white";
                     
                     if (isSelected) {
-                      borderColor1 = isCorrect ? "#28a745" : "#dc3545"; // Hijau untuk benar, merah untuk salah
-                      backgroundColor1 = isCorrect ? "#e9f7eb" : "#f8d7da"; // Warna background dinamis
+                      borderColor1 = isCorrect ? "#28a745" : "#dc3545";
+                      backgroundColor1 = isCorrect ? "#e9f7eb" : "#f8d7da";
                     }
                     
                     return (
@@ -510,16 +464,15 @@ export default function PengerjaanTest({
                         <input
                           type="checkbox"
                           checked={isSelected}
-                           // Disable untuk memastikan tidak bisa diubah oleh user
                           style={{
                             marginLeft: "6px",
                             marginRight: "10px",
                             transform: "scale(1.5)",
                             borderColor: borderColor1,
-                            backgroundColor: backgroundColor1, // Warna background checkbox dinamis
-                            width: "20px", // Ukuran checkbox
-                            height: "20px", // Ukuran checkbox
-                            accentColor: isCorrect ? "#28a745" : "#dc3545", // Warna check saat dipilih
+                            backgroundColor: backgroundColor1,
+                            width: "20px",
+                            height: "20px", 
+                            accentColor: isCorrect ? "#28a745" : "#dc3545",
                           }}
                         />
                         <span className="ms-2">{option.value}</span>

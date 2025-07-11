@@ -5,7 +5,6 @@ import UseFetch from "../../../util/UseFetch";
 import "../../../../style/Beranda.css";
 import Button2 from "../../../part/Button copy";
 import "../../../../../src/index.css";
-import ButtonPro from "../../../part/Button copy";
 import CardKK from "../../../part/CardKelompokKeahlian";
 import Alert from "../../../part/Alert";
 import Paging from "../../../part/Paging";
@@ -61,14 +60,6 @@ export default function KK({ onChangePage }) {
   const [isLoading, setIsLoading] = useState(true);
   const [currentData, setCurrentData] = useState(inisialisasiData);
   const [isEmpty, setIsEmpty] = useState(false);
-
-  const [currentFilter, setCurrentFilter] = useState({
-    page: 1,
-    query: "",
-    sort: "[Nama Kelompok Keahlian] asc",
-    status: "",
-    prodi: "",
-  });
   const [currentDataAktif, setCurrentDataAktif] = useState(inisialisasiData);
 
   const [currentFilterAktif, setCurrentFilterAktif] = useState({
@@ -81,7 +72,6 @@ export default function KK({ onChangePage }) {
 
   const searchQuery = useRef();
   const searchFilterSort = useRef();
-  const searchFilterStatus = useRef();
 
   function handleSetCurrentPageAktif(newCurrentPage) {
     setIsLoading(true);
@@ -406,17 +396,6 @@ export default function KK({ onChangePage }) {
               </div>
             </>
           )}
-          {/* <div className="mb-4 d-flex justify-content-center">
-            <div className="d-flex flex-column ">
-              <Paging
-                pageSize={PAGE_SIZE}
-                pageCurrent={currentFilter.page}
-                totalData={currentData[0]?.Count || 0}
-                navigation={handleSetCurrentPage}
-              />
-            </div>
-          </div>
-           */}
         </div>
         </AnimatedSection>
       </main>

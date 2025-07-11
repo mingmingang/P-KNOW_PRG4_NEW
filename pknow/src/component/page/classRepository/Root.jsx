@@ -1,6 +1,6 @@
 import { useState } from "react";
 import MasterClassRepositoryIndex from "./Index";
-import MasterDetailKelas from "../Materi/master-test/DetailKelas";
+import MasterDetailKelas from "./DetailKelas";
 import MasterPublikasiKelas from "./FormPublikasi";
 
 export default function MasterClassRepository() {

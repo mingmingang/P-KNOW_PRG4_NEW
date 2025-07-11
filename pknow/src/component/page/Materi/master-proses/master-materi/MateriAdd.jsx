@@ -24,9 +24,7 @@ export default function MastermateriAdd({ onChangePage }) {
   const [isLoading, setIsLoading] = useState(false);
   const [listKategori, setListKategori] = useState([]);
   const [isFileDisabled, setIsFileDisabled] = useState(false);
-  const [resetStepper, setResetStepper] = useState(0);
   const fileInputRef = useRef(null);
-  const gambarInputRef = useRef(null);
   const vidioInputRef = useRef(null);
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
   const [isBackAction, setIsBackAction] = useState(false);
@@ -57,15 +55,13 @@ export default function MastermateriAdd({ onChangePage }) {
           responseType: "arraybuffer",
         }
       );
-  
+
       const blob = new Blob([response.data], {
         type: response.headers["content-type"],
       });
       const url = URL.createObjectURL(blob);
-  
-      // Cek tipe file
       if (response.headers["content-type"] === "application/pdf") {
-        window.open(url, "_blank"); // Pratinjau PDF
+        window.open(url, "_blank");
       } else {
         const link = document.createElement("a");
         link.href = url;
@@ -77,12 +73,8 @@ export default function MastermateriAdd({ onChangePage }) {
       alert("Tidak dapat menampilkan pratinjau. Silakan unduh file.");
     }
   };
-  
-  
 
   const kategori = AppContext_master.KategoriIdByKK;
-
-  // Referensi ke form data menggunakan useRef
   const formDataRef = useRef({
     mat_id: AppContext_master.dataIDMateri,
     kat_id: AppContext_master.KategoriIdByKK,
@@ -97,7 +89,6 @@ export default function MastermateriAdd({ onChangePage }) {
     createBy: AppContext_test.activeUser,
   });
 
-  // Validasi skema menggunakan Yup
   const userSchema = object({
     mat_id: string(),
     kat_id: string(),
@@ -113,7 +104,6 @@ export default function MastermateriAdd({ onChangePage }) {
     createdBy: string(),
   });
 
-  // const handleGambarChange = () => handleFileChange(gambarInputRef, "jpg,png", 5);
   const handlePdfChange = () =>
     handleFileChange(fileInputRef, "pdf,docx,xlsx,pptx", 10);
   const handleVideoChange = () =>
@@ -142,19 +132,6 @@ export default function MastermateriAdd({ onChangePage }) {
       ...prevErrors,
       [validationError.name]: error,
     }));
-  };
-
-  const fetchDataMateriById = async (id) => {
-    try {
-      const response = await axios.post(
-        API_LINK + "Materi/GetDataMateriById",
-        id
-      );
-      return response.data;
-    } catch (error) {
-      console.error("Terjadi kesalahan saat mengambil data materi:", error);
-      throw error;
-    }
   };
 
   const handleAdd = async (e) => {
@@ -234,7 +211,6 @@ export default function MastermateriAdd({ onChangePage }) {
           .then((response) => {
             const data = response.data;
             if (data[0].hasil === "OK") {
-              // SweetAlert("Sukses", "File Materi berhasil disimpan", "success");
               setIsFileDisabled(false);
               AppContext_master.formSavedMateriFile = true;
               if (typeof Forum === "undefined" || Forum.forumIsi === "") {
@@ -345,34 +321,12 @@ export default function MastermateriAdd({ onChangePage }) {
     };
   }, [kategori]);
 
- 
-  const dataSimpan = AppContext_master.formSavedMateriFile;
-
-  const [activeStep, setActiveStep] = useState(0);
-
-  const handleNext = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep + 1);
-  };
-
-  const handleBack = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep - 1);
-  };
-
-  const handleReset = () => {
-    setActiveStep(0);
-  };
-
   const initialSteps = ["Pengenalan", "Materi", "Forum"];
   const additionalSteps = ["Sharing Expert", "Pre-Test", "Post-Test"];
 
+  const handleStepAdded = (stepName) => {};
 
-  const handleStepAdded = (stepName) => {
-    //console.log("Step ditambahkan:", stepName);
-  };
-
-  const handleStepRemoved = (stepName) => {
-    //console.log("Step dihapus:", stepName);
-  };
+  const handleStepRemoved = (stepName) => {};
 
   const handleStepChange = (stepContent) => {
     onChangePage(stepContent);
@@ -506,15 +460,16 @@ export default function MastermateriAdd({ onChangePage }) {
                   onChangePage(
                     "pengenalanBefore",
                     AppContext_master.MateriForm,
-                    AppContext_master.dataIDMateri, AppContext_master.dataIdSection,
+                    AppContext_master.dataIDMateri,
+                    AppContext_master.dataIdSection,
                     AppContext_master.dataSectionSharing,
                     AppContext_master.dataIdSectionSharing,
                     AppContext_master.dataIdSectionPretest,
                     AppContext_master.dataIdSectionPostTest,
-                    (AppContext_master.dataPretest),
-                    (AppContext_master.dataQuizPretest ),
-                    (AppContext_master.dataPostTest ),
-                    (AppContext_master.dataQuizPostTest),
+                    AppContext_master.dataPretest,
+                    AppContext_master.dataQuizPretest,
+                    AppContext_master.dataPostTest,
+                    AppContext_master.dataQuizPostTest,
                     AppContext_test.ForumForm,
                     AppContext_master.dataTimerQuizPreTest,
                     AppContext_master.dataTimerPostTest

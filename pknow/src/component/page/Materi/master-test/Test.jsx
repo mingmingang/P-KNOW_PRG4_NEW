@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from "react";
-import { useLocation } from "react-router-dom";
 import { object, string } from "yup";
 import { API_LINK, ROOT_LINK } from "../../../util/Constants";
 import { validateAllInputs, validateInput } from "../../../util/ValidateForm";
@@ -7,24 +6,17 @@ import SweetAlert from "../../../util/SweetAlert";
 import UseFetch from "../../../util/UseFetch";
 import UploadFile from "../../../util/UploadFile";
 import Button from "../../../part/Button copy";
-import DropDown from "../../../part/Dropdown";
 import Input from "../../../part/Input";
 import FileUpload from "../../../part/FileUpload";
-import Loading from "../../../part/Loading";
-import Alert from "../../../part/Alert";
 import KMS_Sidebar from "../../../part/KMS_SideBar";
-// import Sidebar from '../../.backbone/SideBar';
 import styled from "styled-components";
-import KMS_Uploader from "../../../part/KMS_Uploader";
 import axios from "axios";
 import Swal from "sweetalert2";
 import AppContext_test from "./TestContext";
-import { RFC_2822 } from "moment/moment";
 import he from "he";
 import Cookies from "js-cookie";
 import { decryptId } from "../../../util/Encryptor";
 import Search from "../../../part/Search";
-import { color } from "framer-motion";
 
 const ButtonContainer = styled.div`
   bottom: 35px;
@@ -39,21 +31,18 @@ export default function PengerjaanTest({
   quizId,
   durasi,
 }) {
-   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const [isMobileView, setIsMobileView] = useState(false);
-   useEffect(() => {
+  useEffect(() => {
     const handleResize = () => {
-      setIsMobileView(window.innerWidth < 992); // 992px is Bootstrap's lg breakpoint
+      setIsMobileView(window.innerWidth < 992);
     };
-    
-    // Initial check
+
     handleResize();
-    
-    // Add event listener
-    window.addEventListener('resize', handleResize);
-    
-    // Cleanup
-    return () => window.removeEventListener('resize', handleResize);
+
+    window.addEventListener("resize", handleResize);
+
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   let activeUser = "";
@@ -75,9 +64,6 @@ export default function PengerjaanTest({
     quizId: quizId,
     status: "Not Reviewed",
     karyawanId: activeUser,
-    // nilai: "",
-    // answers: [],
-    // createdBy: AppContext_test.displayName,
     keterangan: "",
   });
 
@@ -183,14 +169,10 @@ export default function PengerjaanTest({
         });
         return;
       }
-
-      // Simpan file ke state
       setFileAnswers((prev) => ({
         ...prev,
         [`${currentIndex}-${id_question}`]: file,
       }));
-
-      // Panggil handleValueAnswer (jika diperlukan)
       handleValueAnswer(
         "0",
         "",
@@ -261,7 +243,7 @@ export default function PengerjaanTest({
       ans_nilai: item[3],
       trq_id: item[4],
       ans_created_by: item[5],
-      ans_tipe: item[6]
+      ans_tipe: item[6],
     }));
 
     while (!responseSave) {
@@ -329,7 +311,6 @@ export default function PengerjaanTest({
       }
     );
 
-
     if (notifResponse === "ERROR") {
       SweetAlert(
         "Error",
@@ -382,7 +363,6 @@ export default function PengerjaanTest({
   const [selectedOption, setSelectedOption] = useState(null);
   const [answers, setAnswers] = useState([]);
   const [submittedAnswers, setSubmittedAnswers] = useState([]);
-  const [submittedAnswersEssay, setSubmittedAnswersEssay] = useState([]);
 
   useEffect(() => {}, [AppContext_test.arrayAnswerQuiz]);
 
@@ -425,7 +405,7 @@ export default function PengerjaanTest({
                 "0",
                 AppContext_test.dataIdTrQuiz,
                 activeUser,
-                "Praktikum"
+                "Praktikum",
               ];
             } else {
               updatedAnswers.push({
@@ -441,7 +421,7 @@ export default function PengerjaanTest({
                 "0",
                 AppContext_test.dataIdTrQuiz,
                 activeUser,
-                "Praktikum"
+                "Praktikum",
               ]);
             }
           } else {
@@ -469,7 +449,7 @@ export default function PengerjaanTest({
                 "0",
                 AppContext_test.dataIdTrQuiz,
                 activeUser,
-                "Essay"
+                "Essay",
               ]);
             }
           }
@@ -481,18 +461,14 @@ export default function PengerjaanTest({
       );
 
       if (currentData[index - 1]?.options[0]?.cho_tipe === "Jamak") {
-        // Dapatkan jumlah opsi yang benar (maksimum jumlah yang bisa dipilih)
         const maxSelectable = currentData[index - 1]?.options.filter(
           (option) => parseFloat(option.nilai) !== 0
         ).length;
 
-        // Jika opsi yang dipilih sudah mencapai batas maksimum, hentikan proses
         if (selectedAnswersForCurrentQuestion.length >= maxSelectable) {
           const isAlreadySelected = selectedAnswersForCurrentQuestion.some(
             (ans) => ans.answer === answer
           );
-
-          // Jika opsi yang akan dipilih tidak ada dalam opsi yang sudah dipilih, hentikan
           if (!isAlreadySelected) {
             Swal.fire({
               title: "Batas Tercapai",
@@ -503,12 +479,10 @@ export default function PengerjaanTest({
             return;
           }
         }
-        // Jika tipe soal adalah jamak
         const existingAnswerIndex = updatedAnswers.findIndex(
           (ans) => ans.idSoal === idSoal && ans.answer === answer
         );
         if (existingAnswerIndex !== -1) {
-          // Jika sudah ada di state, hapus jawaban
           updatedAnswers.splice(existingAnswerIndex, 1);
           submitAnswer[existingAnswerIndex] = [
             urutan,
@@ -517,10 +491,9 @@ export default function PengerjaanTest({
             nilaiSelected,
             AppContext_test.dataIdTrQuiz,
             activeUser,
-            "Pilgan"
+            "Pilgan",
           ];
         } else {
-          // Jika belum ada di state, tambahkan jawaban
           updatedAnswers.push({ urutan, idSoal, answer, nilaiSelected });
           submitAnswer.push([
             urutan,
@@ -529,11 +502,10 @@ export default function PengerjaanTest({
             nilaiSelected,
             AppContext_test.dataIdTrQuiz,
             activeUser,
-            "Pilgan"
+            "Pilgan",
           ]);
         }
       } else {
-        // Logika untuk pilihan tunggal
         const existingAnswerIndex = updatedAnswers.findIndex(
           (ans) => ans.idSoal === idSoal
         );
@@ -552,7 +524,7 @@ export default function PengerjaanTest({
             nilaiSelected,
             AppContext_test.dataIdTrQuiz,
             activeUser,
-            "Pilgan"
+            "Pilgan",
           ];
         } else {
           updatedAnswers.push({ urutan, idSoal, answer, nilaiSelected });
@@ -563,12 +535,11 @@ export default function PengerjaanTest({
             nilaiSelected,
             AppContext_test.dataIdTrQuiz,
             activeUser,
-            "Pilgan"
+            "Pilgan",
           ]);
         }
       }
     }
-
 
     idSoal = index;
     setAnswers(updatedAnswers);
@@ -689,15 +660,13 @@ export default function PengerjaanTest({
   }, [AppContext_test.quizId]);
 
   const getSubmittedAnswer = (itemId) => {
-    // Cari nilai yang sesuai dalam submittedAnswers
     const answer = submittedAnswers.find((answer) => answer[1] === itemId);
-    // Jika ditemukan, kembalikan nilai yang sesuai, jika tidak kembalikan string kosong
     return answer ? answer[2] : "";
   };
 
   const removeHtmlTags = (str) => {
-    const decoded = he.decode(str); // Decode HTML entities seperti &lt; menjadi <
-    return decoded.replace(/<\/?[^>]+(>|$)/g, ""); // Hapus semua tag HTML
+    const decoded = he.decode(str);
+    return decoded.replace(/<\/?[^>]+(>|$)/g, "");
   };
 
   return (
@@ -709,40 +678,43 @@ export default function PengerjaanTest({
         showInput={false}
       />
 
-       {/* Mobile Hamburger Button */}
       {isMobileView && (
-        <button 
+        <button
           className="btn mb-3"
           onClick={() => setIsMobileSidebarOpen(!isMobileSidebarOpen)}
           style={{
-            position: 'fixed',
-            top: '100px',
-            right: '20px',
+            position: "fixed",
+            top: "100px",
+            right: "20px",
             zIndex: 1000,
-            borderRadius: '10%',
-            width: '100px',
-            height: '50px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            backgroundColor:'#0d6efd',
-            color:"white"
+            borderRadius: "10%",
+            width: "100px",
+            height: "50px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            backgroundColor: "#0d6efd",
+            color: "white",
           }}
         >
-          {isMobileSidebarOpen ? '✕ ' : '☰'}
-         Soal</button>
+          {isMobileSidebarOpen ? "✕ " : "☰"}
+          Soal
+        </button>
       )}
 
-       <div
+      <div
         className="d-flex mt-3"
-        style={{ 
-          marginLeft: isMobileView ? "20px" : "100px", 
-          marginRight: isMobileView ? "20px" : "100px", 
+        style={{
+          marginLeft: isMobileView ? "20px" : "100px",
+          marginRight: isMobileView ? "20px" : "100px",
           height: "100vh",
-          position: 'relative'
+          position: "relative",
         }}
       >
-        <div className="p-3 d-flex" style={{width: isMobileView ? 'auto' : '910px',}}>
+        <div
+          className="p-3 d-flex"
+          style={{ width: isMobileView ? "auto" : "910px" }}
+        >
           <div className="mb-3 d-flex" style={{ overflowX: "auto" }}>
             {currentData.map((item, index) => {
               const key = `${item.question}_${index}`;
@@ -754,7 +726,7 @@ export default function PengerjaanTest({
                       0
                     )
                   : item.type === "Essay" || item.type === "Praktikum"
-                  ? parseFloat(item.point || 0) // Ambil poin langsung dari item.point
+                  ? parseFloat(item.point || 0)
                   : 0;
 
               const currentIndex = index + 1;
@@ -764,11 +736,10 @@ export default function PengerjaanTest({
                   className="mb-3"
                   style={{
                     display: "block",
-               
+
                     marginRight: "20px",
                   }}
                 >
-                  {/* Soal */}
                   <div className="mb-3">
                     <h4
                       style={{
@@ -810,13 +781,12 @@ export default function PengerjaanTest({
                       )}
                   </div>
 
-                  {/* Jawaban */}
                   {item.type === "Praktikum" ? (
                     <FileUpload
                       forInput="jawaban_file"
                       label="Jawaban (.zip)"
-                      formatFile=".zip" // Format file yang diizinkan
-                      hasExisting={getUploadedFile(index + 1, item.id)} // Menampilkan nama file yang dipilih
+                      formatFile=".zip"
+                      hasExisting={getUploadedFile(index + 1, item.id)}
                       onChange={(event) =>
                         handleFileChange(
                           fileInputRef,
@@ -840,54 +810,7 @@ export default function PengerjaanTest({
                       style={{ width: "105vh" }}
                     />
                   ) : (
-                    // <div className="d-flex flex-column">
-                    //   {item.options.map((option, index) => {
-                    //     const isCorrect = option === item.correctAnswer;
-                    //     const isSelected = answers.some(
-                    //       (ans) => ans.idSoal == option.nomorSoal && ans.urutan == option.urutan
-                    //     );
-
-                    //     let borderColor1 = '';
-                    //     let backgroundColor1 = '';
-
-                    //     if (isSelected) {
-                    //       borderColor1 = isCorrect ? '#28a745' : '#dc3545';
-                    //       backgroundColor1 = isCorrect ? '#e9f7eb' : '#ffe3e6';
-                    //     } else if (isCorrect && isSelected) {
-                    //       borderColor1 = '#28a745';
-                    //       backgroundColor1 = '#e9f7eb';
-                    //     }
-
-                    //     return (
-                    //       <div key={option.urutan} className="mt-4 mb-2" style={{ display: "flex", alignItems: "center" }}>
-                    //         <input
-                    //           type="radio"
-                    //           id={`option-${option.urutan}`}
-                    //           name={ `question-${selectedQuestion}`}
-                    //           onChange={() => handleValueAnswer(option.urutan, option.nomorSoal, option.value, option.nilai, currentIndex)}
-                    //           checked={isSelected}
-                    //           style={{ display: "none" }}
-                    //         />
-                    //         <label
-                    //           htmlFor={`option-${option.urutan}`}
-                    //           className={`btn btn-outline-primary ${isSelected ? 'active' : ''}`}
-                    //           style={{
-                    //             width: "40px",
-                    //             height: "40px",
-                    //             display: "flex",
-                    //             alignItems: "center",
-                    //             justifyContent: "center",
-                    //           }}
-                    //         >
-                    //           {String.fromCharCode(65 + index)}
-                    //         </label>
-                    //         <span className="ms-2" style={{ wordWrap: 'break-word', overflowWrap: 'break-word' }}>{option.value}</span>
-                    //       </div>
-                    //     );
-                    //   })}
-                    // </div>
                     <div className="d-flex flex-column">
-                      {/* Keterangan pada jamak, isi jumlah checkbox sesuai opsi yang benar*/}
                       {item.options[0].cho_tipe === "Jamak" && (
                         <div className="">
                           Pilihlah{" "}
@@ -926,7 +849,6 @@ export default function PengerjaanTest({
                             style={{ display: "flex", alignItems: "center" }}
                           >
                             {item.options[0].cho_tipe === "Tunggal" ? (
-                              // Tampilkan Radio Button untuk Tunggal
                               <>
                                 <input
                                   type="radio"
@@ -970,7 +892,6 @@ export default function PengerjaanTest({
                                 </span>
                               </>
                             ) : (
-                              // Tampilkan Checkbox untuk Jamak
                               <>
                                 <input
                                   type="checkbox"
@@ -1025,9 +946,7 @@ export default function PengerjaanTest({
                               : "Selesai"
                           }
                           onClick={selectNextQuestionOrSubmit}
-                          style={
-                            {backgroundColor:"#0d6efd", color:"white"}
-                          }
+                          style={{ backgroundColor: "#0d6efd", color: "white" }}
                         />
                       </ButtonContainer>
                     </div>
@@ -1037,7 +956,7 @@ export default function PengerjaanTest({
             })}
           </div>
 
-         {!isMobileView && (
+          {!isMobileView && (
             <div
               style={{
                 height: "100%",
@@ -1049,20 +968,20 @@ export default function PengerjaanTest({
           )}
         </div>
 
-         {(!isMobileView || isMobileSidebarOpen) && (
-          <div 
+        {(!isMobileView || isMobileSidebarOpen) && (
+          <div
             style={{
-              position: isMobileView ? 'fixed' : 'relative',
-              right: isMobileView ? '0' : 'auto',
-              top: isMobileView ? '0' : 'auto',
-              height: isMobileView ? '100vh' : 'auto',
-              width: isMobileView ? '100%' : 'auto',
-              backgroundColor: isMobileView ? 'white' : 'transparent',
-              paddingTop: isMobileView? '80px':'0px',
-              paddingLeft: isMobileView? '-10px':'0px',
+              position: isMobileView ? "fixed" : "relative",
+              right: isMobileView ? "0" : "auto",
+              top: isMobileView ? "0" : "auto",
+              height: isMobileView ? "100vh" : "auto",
+              width: isMobileView ? "100%" : "auto",
+              backgroundColor: isMobileView ? "white" : "transparent",
+              paddingTop: isMobileView ? "80px" : "0px",
+              paddingLeft: isMobileView ? "-10px" : "0px",
               zIndex: 999,
-              boxShadow: isMobileView ? '-5px 0 15px rgba(0,0,0,0.1)' : 'none',
-              overflowY: 'auto'
+              boxShadow: isMobileView ? "-5px 0 15px rgba(0,0,0,0.1)" : "none",
+              overflowY: "auto",
             }}
           >
             <KMS_Sidebar
@@ -1079,21 +998,20 @@ export default function PengerjaanTest({
           </div>
         )}
 
-         {isMobileView && isMobileSidebarOpen && (
-          <div 
+        {isMobileView && isMobileSidebarOpen && (
+          <div
             style={{
-              position: 'fixed',
+              position: "fixed",
               top: 0,
               left: 0,
               right: 0,
               bottom: 0,
-              backgroundColor: 'rgba(0,0,0,0.5)',
-              zIndex: 998
+              backgroundColor: "rgba(0,0,0,0.5)",
+              zIndex: 998,
             }}
             onClick={() => setIsMobileSidebarOpen(false)}
           />
         )}
-
       </div>
     </>
   );

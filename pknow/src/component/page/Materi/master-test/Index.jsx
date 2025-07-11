@@ -11,15 +11,10 @@ import CardMateri from "../../../part/CardMateri2";
 import UseFetch from "../../../util/UseFetch";
 import { API_LINK, PAGE_SIZE } from "../../../util/Constants";
 import "@fortawesome/fontawesome-free/css/all.css";
-import axios from "axios";
-// import "../../../../index.css";
-import AppContext_master from "../master-proses/MasterContext";
 import AppContext_test from "./TestContext";
-import BackPage from "../../../../assets/backPage.png";
 import Konfirmasi from "../../../part/Konfirmasi";
 import "../../../../index.css";
 import "../../../../style/KelompokKeahlian.css";
-import Search from "../../../part/Search";
 
 const inisialisasiData = [
   {
@@ -48,16 +43,6 @@ const dataFilterSortDate = [
   { Value: "DESC", Text: "Tanggal [↓]" },
 ];
 
-const dataFilterStatus = [
-  { Value: "Aktif", Text: "Aktif" },
-  { Value: "Tidak Aktif", Text: "Tidak Aktif" },
-];
-
-const dataFilterTanggal = [
-  { Value: "[Creadate] ASC", Text: "Tanggal [↑]" },
-  { Value: "[Creadate] DESC", Text: "Tanggal [↓]" },
-];
-
 export default function MasterProsesIndex({ onChangePage, withID, isOpen }) {
   const [isError, setIsError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -75,13 +60,6 @@ export default function MasterProsesIndex({ onChangePage, withID, isOpen }) {
 
   const searchQuery = useRef(null);
   const searchFilterSort = useRef(null);
-  const searchFilterStatus = useRef(null);
-  const searchFilterTanggal = useRef(null);
-
-  const handleGoBack = () => {
-    setIsBackAction(true);
-    setShowConfirmation(true);
-  };
 
   const handleConfirmYes = () => {
     setShowConfirmation(false);
@@ -117,7 +95,6 @@ export default function MasterProsesIndex({ onChangePage, withID, isOpen }) {
             }
           })
           .then(() => setIsLoading(false));
-      } else {
       }
     });
   }
@@ -135,18 +112,10 @@ export default function MasterProsesIndex({ onChangePage, withID, isOpen }) {
     setCurrentFilter((prevFilter) => ({
       ...prevFilter,
       query: searchQuery.current.value,
-      page: 1, // Reset ke halaman pertama
+      page: 1, 
     }));
   }
 
-  function handleStatusChange(event) {
-    const { value } = event.target;
-    setCurrentFilter((prevFilter) => ({
-      ...prevFilter,
-      status: value || "Semua",
-      page: 1, // Reset ke halaman pertama
-    }));
-  }
 
   function handleSortChange(event) {
     const { value } = event.target;
@@ -155,18 +124,7 @@ export default function MasterProsesIndex({ onChangePage, withID, isOpen }) {
       ...prevFilter,
       sort,
       order,
-      page: 1, // Reset ke halaman pertama
-    }));
-  }
-
-  function handleDateChange(event) {
-    const { value } = event.target;
-    const [sort, order] = value.split(" ");
-    setCurrentFilter((prevFilter) => ({
-      ...prevFilter,
-      sort,
-      order,
-      page: 1, // Reset ke halaman pertama
+      page: 1, 
     }));
   }
 
@@ -198,25 +156,6 @@ export default function MasterProsesIndex({ onChangePage, withID, isOpen }) {
             const promises = formattedData.map((value) => {
               const filePromises = [];
 
-              // if (value.Gambar) {
-              //   const gambarPromise = fetch(
-              //     API_LINK + `Upload/GetFile/${value.Gambar}`
-              //   )
-              //     .then((response) => {
-              //       if (!response.ok) {
-              //         throw new Error('HTTP error! status: `${response.status}`');
-              //       }
-              //       value.gbr = value.Gambar;
-              //       value.Gambar = API_LINK + `Upload/GetFile/${value.Gambar}`;
-              //       return value;
-              //     })
-              //     .catch((error) => {
-              //       console.error("Error fetching gambar:", error);
-              //       return value;
-              //     });
-              //   filePromises.push(gambarPromise);
-              // }
-
               return Promise.all(filePromises).then((results) => {
                 const updatedValue = results.reduce(
                   (acc, curr) => ({ ...acc, ...curr }),
@@ -237,7 +176,6 @@ export default function MasterProsesIndex({ onChangePage, withID, isOpen }) {
             setCurrentData([]);
           }
         } catch (error) {
-          // setIsError(true);
           if (i < retries - 1) {
             await new Promise((resolve) => setTimeout(resolve, delay));
           } else {
@@ -322,15 +260,7 @@ export default function MasterProsesIndex({ onChangePage, withID, isOpen }) {
                         defaultValue="[Judul] ASC"
                         onChange={handleSortChange}
                       />
-                      {/* <DropDown
-                        ref={searchFilterStatus}
-                        forInput="ddStatus"
-                        label="Status"
-                        type="semua"
-                        arrData={dataFilterStatus}
-                        defaultValue="Semua"
-                        onChange={handleStatusChange}
-                      /> */}
+                     
                       <DropDown
                         ref={searchFilterSort}
                         forInput="ddUrutTanggal"
@@ -342,7 +272,7 @@ export default function MasterProsesIndex({ onChangePage, withID, isOpen }) {
                           const { value } = e.target;
                           setCurrentFilter((prevFilter) => ({
                             ...prevFilter,
-                            dateOrder: value, // Simpan pilihan ASC atau DESC
+                            dateOrder: value,
                             page: 1,
                           }));
                         }}
@@ -399,15 +329,6 @@ export default function MasterProsesIndex({ onChangePage, withID, isOpen }) {
                   )}
               </div>
             )}
-            {/* {currentData.length > 0 && currentData[0].Count > 10 && (
-              <Paging
-                totalItems={currentData[0].Count}
-                itemsPerPage={10}
-                currentPage={currentFilter.page}
-                onPageChange={handleSetCurrentPage}
-                className="mt-3"
-              />
-            )} */}
             <div className="mb-4 d-flex justify-content-center">
               <div className="d-flex">
                 <Paging

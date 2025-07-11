@@ -1,22 +1,12 @@
 import React, { useState, useEffect, useContext } from "react";
-import Button from "./Button copy";
 import { PAGE_SIZE, API_LINK, ROOT_LINK } from "../util/Constants";
 import Icon from "./Icon";
-import UseFetch from "../util/UseFetch";
 import KMS_ProgressBar from "./ProgressBar";
 import axios from "axios";
-import Loading from "./Loading";
 import Cookies from "js-cookie";
 import AppContext_test from "../page/master-test/TestContext";
 import { decryptId } from "../util/Encryptor";
-import {
-  Dropdown,
-  DropdownToggle,
-  DropdownMenu,
-  DropdownItem,
-} from "reactstrap";
 import "../../App.css";
-import { ProgressBar } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 export default function KMS_Rightbar({
@@ -37,7 +27,7 @@ export default function KMS_Rightbar({
   isActiveMateriPDF = false,
   isActiveMateriVideo = false,
   isActiveSharingVideo = false,
-  isCollapsed: propIsCollapsed
+  isCollapsed: propIsCollapsed,
 }) {
   let activeUser = "";
   const cookie = Cookies.get("activeUser");
@@ -69,7 +59,7 @@ export default function KMS_Rightbar({
   useEffect(() => {
     setShowMainContent_SideBar(isOpen);
   }, [isOpen]);
-  
+
   const isDataReadyTemp = "";
   const materiIdTemp = "";
   const isOpenTemp = true;
@@ -137,9 +127,12 @@ export default function KMS_Rightbar({
   useEffect(() => {
     const fetchMateriData = async () => {
       try {
-        const response = await axios.post(`${API_LINK}Materi/GetDataMateriById`, {
-          materiId: materiId,
-        });
+        const response = await axios.post(
+          `${API_LINK}Materi/GetDataMateriById`,
+          {
+            materiId: materiId,
+          }
+        );
         if (response.data) {
           const { File_pdf, File_video } = response.data[0];
           setShowMateriFile(!!File_pdf);
@@ -152,7 +145,7 @@ export default function KMS_Rightbar({
 
     if (materiId) fetchMateriData();
   }, [materiId]);
-  
+
   useEffect(() => {
     const fetchSections = async () => {
       setIsLoading(true);
@@ -163,12 +156,16 @@ export default function KMS_Rightbar({
         });
         if (response.data) {
           setSections(response.data);
-          const secTypes = response.data.map(section => section.SectionType);
+          const secTypes = response.data.map((section) => section.SectionType);
           setShowPreTest(secTypes.includes("Pre-Test"));
           setShowSharing(secTypes.includes("Sharing Expert"));
           setShowPostTest(secTypes.includes("Post-Test"));
-          const hasExpertFile = response.data.some(section => section.ExpertFile);
-          const hasExpertVideo = response.data.some(section => section.ExpertVideo);
+          const hasExpertFile = response.data.some(
+            (section) => section.ExpertFile
+          );
+          const hasExpertVideo = response.data.some(
+            (section) => section.ExpertVideo
+          );
           setShowSharingExpertFile(hasExpertFile);
           setShowSharingExpertVideo(hasExpertVideo);
         }
@@ -205,7 +202,7 @@ export default function KMS_Rightbar({
     justifyContent: "center",
     alignItems: "center",
     marginRight: "40px",
-    border:"1px solid #0A5EA8",
+    border: "1px solid #0A5EA8",
   };
 
   const progressStyle = {
@@ -282,7 +279,8 @@ export default function KMS_Rightbar({
   const [showMateriOptions, setShowMateriOptions] = useState(false);
 
   const [internalIsCollapsed, setIsCollapsed] = useState(false);
-  const isCollapsed = propIsCollapsed !== undefined ? propIsCollapsed : internalIsCollapsed;
+  const isCollapsed =
+    propIsCollapsed !== undefined ? propIsCollapsed : internalIsCollapsed;
 
   const toggleSidebar = () => {
     if (propIsCollapsed === undefined) {
@@ -352,43 +350,35 @@ export default function KMS_Rightbar({
   return (
     <div
       className="pt-2 overflow-y-auto bg-white"
-      style={{ 
+      style={{
         position: "fixed",
         left: 0,
         top: 0,
         height: "100vh",
         width: isCollapsed ? "60px" : "350px",
         transition: "width 0.3s ease",
-        zIndex: 1000
+        zIndex: 1000,
       }}
     >
-      {/* Collapsed Controls */}
       {isCollapsed ? (
         <div className="ml-3" style={{ marginTop: "100px" }}>
-          
-          <div style={button_listOfLearningStyle} >
-              <Icon
-                name="angle-right"
-                type="Bold"
-                cssClass="btn text-primary mt-1 mr-1"
-                // onClick={handleCombinedClick_close}
-                onClick={toggleSidebar}
-              />
-            </div>
-          
+          <div style={button_listOfLearningStyle}>
+            <Icon
+              name="angle-right"
+              type="Bold"
+              cssClass="btn text-primary mt-1 mr-1"
+              onClick={toggleSidebar}
+            />
+          </div>
         </div>
       ) : (
         <div className="collapseFalse" style={{ marginTop: "100px" }}>
-
           <div style={listOfLearningStyle}>
-            
-           
-            <div style={button_listOfLearningStyle} >
+            <div style={button_listOfLearningStyle}>
               <Icon
                 name="angle-left"
                 type="Bold"
                 cssClass="btn text-primary mt-1 mr-1"
-                // onClick={handleCombinedClick_close}
                 onClick={toggleSidebar}
               />
             </div>
@@ -398,9 +388,9 @@ export default function KMS_Rightbar({
             >
               Daftar Pembelajaran
             </span>
-          </div>    
+          </div>
           <div className="ml-3 mr-3 mb-3">
-            <h5 style={{fontSize:"15px"}}>Progres</h5>
+            <h5 style={{ fontSize: "15px" }}>Progres</h5>
             <div>
               {currentData.map((item) => (
                 <div key={item.Key} className="d-flex">
@@ -409,21 +399,23 @@ export default function KMS_Rightbar({
                     <span style={{ fontSize: "14px", marginLeft: "8px" }}>
                       {item.TotalProgres ?? 0}
                     </span>
-                    <span style={{fontSize: "12px"}}>%</span>
+                    <span style={{ fontSize: "12px" }}>%</span>
                   </div>
                 </div>
               ))}
             </div>
           </div>
-          
-          <hr style={{margin:"10px 17px"}}/>
-          
+
+          <hr style={{ margin: "10px 17px" }} />
+
           <div className="sidebar-content">
             <div className="ml-3 mr-3">
               <button
                 className="buttonRightBar"
                 style={{
-                  backgroundColor: isActivePengenalan ? "#0A5EA8" : "transparent",
+                  backgroundColor: isActivePengenalan
+                    ? "#0A5EA8"
+                    : "transparent",
                   color: isActivePengenalan ? "white" : "black",
                 }}
                 onClick={onClick_Pengenalan}
@@ -431,13 +423,15 @@ export default function KMS_Rightbar({
                 Pengenalan Materi
               </button>
             </div>
-            
+
             {showPreTest && (
               <div className="ml-3 mr-3 mt-3">
                 <button
                   className="buttonRightBar"
                   style={{
-                    backgroundColor: isActivePreTest ? "#0A5EA8" : "transparent",
+                    backgroundColor: isActivePreTest
+                      ? "#0A5EA8"
+                      : "transparent",
                     color: isActivePreTest ? "white" : "black",
                   }}
                   onClick={onClick_Pretest}
@@ -467,7 +461,9 @@ export default function KMS_Rightbar({
                     <button
                       className="buttonRightBar"
                       style={{
-                        backgroundColor: isActiveMateriPDF ? "#0A5EA8" : "transparent",
+                        backgroundColor: isActiveMateriPDF
+                          ? "#0A5EA8"
+                          : "transparent",
                         color: isActiveMateriPDF ? "white" : "black",
                       }}
                       onClick={onClick_materiPDF}
@@ -482,7 +478,9 @@ export default function KMS_Rightbar({
                     <button
                       className="buttonRightBar"
                       style={{
-                        backgroundColor: isActiveMateriVideo ? "#0A5EA8" : "transparent",
+                        backgroundColor: isActiveMateriVideo
+                          ? "#0A5EA8"
+                          : "transparent",
                         color: isActiveMateriVideo ? "white" : "black",
                       }}
                       onClick={onClick_materiVideo}
@@ -499,7 +497,9 @@ export default function KMS_Rightbar({
                 <button
                   className="buttonRightBar"
                   style={{
-                    backgroundColor: isActiveSharing ? "#0A5EA8" : "transparent",
+                    backgroundColor: isActiveSharing
+                      ? "#0A5EA8"
+                      : "transparent",
                     color: isActiveSharing ? "white" : "black",
                   }}
                   onClick={onClick_close}
@@ -508,7 +508,7 @@ export default function KMS_Rightbar({
                 </button>
               </div>
             )}
-            
+
             {showSharingOptions && (
               <>
                 {showSharingExpertFile && (
@@ -516,7 +516,9 @@ export default function KMS_Rightbar({
                     <button
                       className="buttonRightBar"
                       style={{
-                        backgroundColor: isActiveSharingPDF ? "#0A5EA8" : "transparent",
+                        backgroundColor: isActiveSharingPDF
+                          ? "#0A5EA8"
+                          : "transparent",
                         color: isActiveSharingPDF ? "white" : "black",
                       }}
                       onClick={onClick_sharingPDF}
@@ -530,7 +532,9 @@ export default function KMS_Rightbar({
                     <button
                       className="buttonRightBar"
                       style={{
-                        backgroundColor: isActiveSharingVideo ? "#0A5EA8" : "transparent",
+                        backgroundColor: isActiveSharingVideo
+                          ? "#0A5EA8"
+                          : "transparent",
                         color: isActiveSharingVideo ? "white" : "black",
                       }}
                       onClick={onClick_sharingVideo}
@@ -541,13 +545,15 @@ export default function KMS_Rightbar({
                 )}
               </>
             )}
-            
+
             {showPostTest && (
               <div className="ml-3 mr-3 mt-3">
                 <button
                   className="buttonRightBar"
                   style={{
-                    backgroundColor: isActivePostTest ? "#0A5EA8" : "transparent",
+                    backgroundColor: isActivePostTest
+                      ? "#0A5EA8"
+                      : "transparent",
                     color: isActivePostTest ? "white" : "black",
                   }}
                   onClick={onClick_Posttest}

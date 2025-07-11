@@ -1,6 +1,6 @@
 import Button from "./Button copy";
 
-export default function Filter({ children, handleSearch, name = 'Filter' }) {
+export default function Filter({ children, handleSearch, name = "Filter" }) {
   return (
     <>
       <Button
@@ -10,16 +10,20 @@ export default function Filter({ children, handleSearch, name = 'Filter' }) {
         data-bs-toggle="dropdown"
         data-bs-auto-close="outside"
         label="Filter"
-        style={{backgroundColor:"white", color:"black", boxShadow: "0 0 10px rgba(0, 0, 0, 0.223)"}}
+        style={{
+          backgroundColor: "white",
+          color: "black",
+          boxShadow: "0 0 10px rgba(0, 0, 0, 0.223)",
+        }}
       />
       <div className="dropdown-menu p-4" style={{ width: "350px" }}>
         {children}
         <Button
-              classType="primary px-4 d-flex justify-content-end rounded-3"
-              title="Cari"
-              onClick={handleSearch}
-              label={name}
-            />
+          classType="primary px-4 d-flex justify-content-end rounded-3"
+          title="Cari"
+          onClick={handleSearch}
+          label={name}
+        />
       </div>
     </>
   );

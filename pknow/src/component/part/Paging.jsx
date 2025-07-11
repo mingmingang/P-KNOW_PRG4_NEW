@@ -34,11 +34,11 @@ export default function Paging({
     for (let i = 1 + (segmentPage - 1) * 10; i <= endPage; i++) {
       pageButton.push(
         <Button
-    key={"Page" + i}
-    label={i}
-    classType={pageCurrent === i ? "primary" : "custom-button"}
-    onClick={() => navigation(i)}
-  />
+          key={"Page" + i}
+          label={i}
+          classType={pageCurrent === i ? "primary" : "custom-button"}
+          onClick={() => navigation(i)}
+        />
       );
     }
     if (totalPage > 10 && segmentPage < maxSegmentPage) {

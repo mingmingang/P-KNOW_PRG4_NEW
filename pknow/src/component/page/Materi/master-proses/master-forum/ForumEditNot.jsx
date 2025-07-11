@@ -1,39 +1,39 @@
 import { useState, useEffect } from "react";
 import { object, string } from "yup";
 import { validateAllInputs, validateInput } from "../../../util/ValidateForm";
-import SweetAlert from "../../../util/SweetAlert";
 import Button from "../../../part/Button";
 import Input from "../../../part/Input";
 import Loading from "../../../part/Loading";
 import Alert from "../../../part/Alert";
 import UseFetch from "../../../util/UseFetch";
 import { API_LINK } from "../../../util/Constants";
-import AppContext_master from "../MasterContext";
 import AppContext_test from "../../master-test/TestContext";
-import { Editor } from '@tinymce/tinymce-react';
-import Swal from 'sweetalert2';
-import { Stepper, Step, StepLabel } from '@mui/material';
+import { Editor } from "@tinymce/tinymce-react";
+import Swal from "sweetalert2";
+import { Stepper, Step, StepLabel } from "@mui/material";
 
-const steps = ['Materi', 'Pretest', 'Sharing Expert', 'Forum', 'Post Test'];
+const steps = ["Materi", "Pretest", "Sharing Expert", "Forum", "Post Test"];
 
 function getStepContent(stepIndex) {
   switch (stepIndex) {
     case 0:
-      return 'materiAdd';
+      return "materiAdd";
     case 1:
-      return 'pretestAdd';
+      return "pretestAdd";
     case 2:
-      return 'sharingAdd';
+      return "sharingAdd";
     case 3:
-      return 'forumAdd';
+      return "forumAdd";
     case 4:
-      return 'posttestAdd';
+      return "posttestAdd";
     default:
-      return 'Unknown stepIndex';
+      return "Unknown stepIndex";
   }
 }
 const userSchema = object({
-  forumJudul: string().max(100, "maksimum 100 karakter").required("harus diisi"),
+  forumJudul: string()
+    .max(100, "maksimum 100 karakter")
+    .required("harus diisi"),
   forumIsi: string().required("harus diisi"),
 });
 
@@ -43,8 +43,7 @@ export default function MasterForumEditNot({ onChangePage }) {
   const [isLoading, setIsLoading] = useState(false);
   const [isFormDisabled, setIsFormDisabled] = useState(false);
   const [formData, setFormData] = useState({
-    // materiId: AppContext_test.dataIDMateri,
-    materiId:AppContext_test.DetailMateriEdit?.Key || "",
+    materiId: AppContext_test.DetailMateriEdit?.Key || "",
     karyawanId: AppContext_test.activeUser,
     forumJudul: "",
     forumIsi: "",
@@ -65,24 +64,15 @@ export default function MasterForumEditNot({ onChangePage }) {
     }));
   };
 
-  const resetForm = () => {
-    setFormData({
-      materiId:AppContext_test.DetailMateri?.Key || "",
-      karyawanId: AppContext_test.activeUser,
-      forumJudul: "",
-      forumIsi: "",
-      forumStatus: "Aktif",
-      forumCreatedBy: AppContext_test.displayName,
-    });
-    setErrors({});
-    setIsError({ error: false, message: "" });
-  };
-
   const handleAdd = async (e) => {
     e.preventDefault();
 
-    const validationErrors = await validateAllInputs(formData, userSchema, setErrors);
-    const isEmptyData = Object.values(formData).some(value => value === "");
+    const validationErrors = await validateAllInputs(
+      formData,
+      userSchema,
+      setErrors
+    );
+    const isEmptyData = Object.values(formData).some((value) => value === "");
 
     if (isEmptyData) {
       setIsError({
@@ -99,19 +89,25 @@ export default function MasterForumEditNot({ onChangePage }) {
     }
 
     try {
-      const response = await UseFetch(API_LINK + "Forum/SaveDataForum", formData);
+      const response = await UseFetch(
+        API_LINK + "Forum/SaveDataForum",
+        formData
+      );
 
       if (response === "ERROR") {
-        setIsError({ error: true, message: "Terjadi kesalahan: Gagal menyimpan data Sharing." });
+        setIsError({
+          error: true,
+          message: "Terjadi kesalahan: Gagal menyimpan data Sharing.",
+        });
       } else {
         Swal.fire({
-          title: 'Sukses',
-          text: 'Data Forum berhasil disimpan',
-          icon: 'success',
-          confirmButtonText: 'OK',
+          title: "Sukses",
+          text: "Data Forum berhasil disimpan",
+          icon: "success",
+          confirmButtonText: "OK",
         }).then((result) => {
           if (result.isConfirmed) {
-          onChangePage("forumEdit");
+            onChangePage("forumEdit");
           }
         });
       }
@@ -125,8 +121,15 @@ export default function MasterForumEditNot({ onChangePage }) {
   };
 
   useEffect(() => {
-    if (AppContext_test.ForumForm && AppContext_test.ForumForm.current && Object.keys(AppContext_test.ForumForm.current).length > 0) {
-      formData.current = { ...formData.current, ...AppContext_test.ForumForm.current };
+    if (
+      AppContext_test.ForumForm &&
+      AppContext_test.ForumForm.current &&
+      Object.keys(AppContext_test.ForumForm.current).length > 0
+    ) {
+      formData.current = {
+        ...formData.current,
+        ...AppContext_test.ForumForm.current,
+      };
     }
 
     if (AppContext_test.formSavedForum === false) {
@@ -161,7 +164,10 @@ export default function MasterForumEditNot({ onChangePage }) {
         <div>
           <Stepper activeStep={activeStep}>
             {steps.map((label, index) => (
-              <Step key={label} onClick={() => onChangePage(getStepContent(index))}>
+              <Step
+                key={label}
+                onClick={() => onChangePage(getStepContent(index))}
+              >
                 <StepLabel>{label}</StepLabel>
               </Step>
             ))}
@@ -176,8 +182,12 @@ export default function MasterForumEditNot({ onChangePage }) {
                 <Button disabled={activeStep === 0} onClick={handleBack}>
                   Back
                 </Button>
-                <Button variant="contained" color="primary" onClick={handleNext}>
-                  {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={handleNext}
+                >
+                  {activeStep === steps.length - 1 ? "Finish" : "Next"}
                 </Button>
               </div>
             )}
@@ -199,33 +209,37 @@ export default function MasterForumEditNot({ onChangePage }) {
                   onChange={handleInputChange}
                   errorMessage={errors.forumJudul}
                   isRequired
-                  disabled={isFormDisabled } 
+                  disabled={isFormDisabled}
                 />
               </div>
               <div className="col-lg-12">
                 <div className="form-group">
                   <label htmlFor="forumIsi" className="form-label fw-bold">
-                    Isi Forum <span style={{ color: 'Red' }}> *</span>
+                    Isi Forum <span style={{ color: "Red" }}> *</span>
                   </label>
                   <Editor
                     id="forumIsi"
                     value={formData.forumIsi}
-                    onEditorChange={(content) => handleInputChange({ target: { name: 'forumIsi', value: content } })}
-                    apiKey='81ujooza2p3616vb7rdvc0lxphx68fe82f2aqj6qkmbvn6l4'
+                    onEditorChange={(content) =>
+                      handleInputChange({
+                        target: { name: "forumIsi", value: content },
+                      })
+                    }
+                    apiKey="81ujooza2p3616vb7rdvc0lxphx68fe82f2aqj6qkmbvn6l4"
                     init={{
                       height: 300,
                       menubar: false,
                       plugins: [
-                        'advlist autolink lists link image charmap print preview anchor',
-                        'searchreplace visualblocks code fullscreen',
-                        'insertdatetime media table paste code help wordcount'
+                        "advlist autolink lists link image charmap print preview anchor",
+                        "searchreplace visualblocks code fullscreen",
+                        "insertdatetime media table paste code help wordcount",
                       ],
                       toolbar:
-                        'undo redo | formatselect | bold italic backcolor | \
+                        "undo redo | formatselect | bold italic backcolor | \
                         alignleft aligncenter alignright alignjustify | \
-                        bullist numlist outdent indent | removeformat | help'
+                        bullist numlist outdent indent | removeformat | help",
                     }}
-                    disabled={isFormDisabled} 
+                    disabled={isFormDisabled}
                   />
                   {errors.forumIsi && (
                     <div className="invalid-feedback">{errors.forumIsi}</div>

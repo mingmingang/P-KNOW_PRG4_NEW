@@ -1,5 +1,4 @@
 import { useState, createContext, useContext, useEffect } from "react";
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import MasterTestIndex from "./Index";
 import MasterTestPostTest from "./PostTest";
 import MasterTestPreTest from "./PreTest";
@@ -19,7 +18,7 @@ import MasterDetailKelas from "./DetailKelas";
 export default function MasterTest() {
   const [pageMode, setPageMode] = useState("index");
   const [marginRight, setMarginRight] = useState("40vh");
-  const [isDataReady, setIsDataReady] = useState(false); 
+  const [isDataReady, setIsDataReady] = useState(false);
   const [materiId, setMateriId] = useState();
   const [durasi, setDurasi] = useState("");
   const [quizId, setQuizId] = useState("");
@@ -37,7 +36,11 @@ export default function MasterTest() {
   }
 
   useEffect(() => {
-    if (pageMode === "index" || pageMode === "pengerjaantest" || pageMode === "detailtest") {
+    if (
+      pageMode === "index" ||
+      pageMode === "pengerjaantest" ||
+      pageMode === "detailtest"
+    ) {
       setMarginRight("0vh");
       setIsOpen(false);
     } else {
@@ -51,42 +54,36 @@ export default function MasterTest() {
     switch (pageMode) {
       case "kelompokkeahlian":
         return (
-          <MasterTestIndex 
-            onChangePage={handleSetPageMode} 
+          <MasterTestIndex onChangePage={handleSetPageMode} isOpen={isOpen} />
+        );
+      case "index":
+        return (
+          <MasterKelompokKeahlian
+            onChangePage={handleSetPageMode}
             isOpen={isOpen}
           />
         );
-        case "index":
-          return (
-            <MasterKelompokKeahlian 
-              onChangePage={handleSetPageMode} 
-              isOpen={isOpen}
-            />
-          );
-          case "detail":
-          return (
-            <MasterDetail
-              onChangePage={handleSetPageMode} 
-              isOpen={isOpen}
-              withID={dataID}
-            />
-          );
-
-          case "program":
-          return (
-            <MasterProgram
-              onChangePage={handleSetPageMode} 
-              isOpen={isOpen}
-              withID={dataID}
-            />
-          );
-
-          case "detailprogram":
+      case "detail":
         return (
-          <MasterDetailKelas
+          <MasterDetail
             onChangePage={handleSetPageMode}
+            isOpen={isOpen}
             withID={dataID}
           />
+        );
+
+      case "program":
+        return (
+          <MasterProgram
+            onChangePage={handleSetPageMode}
+            isOpen={isOpen}
+            withID={dataID}
+          />
+        );
+
+      case "detailprogram":
+        return (
+          <MasterDetailKelas onChangePage={handleSetPageMode} withID={dataID} />
         );
       case "pengenalan":
         return (
@@ -107,58 +104,39 @@ export default function MasterTest() {
           />
         );
       case "posttest":
-          return <MasterTestPostTest 
-          onChangePage={handleSetPageMode}
-          CheckDataReady={isDataReady}
-          materiId={materiId}
-          isOpen={isOpen}
-           />;
-     
+        return (
+          <MasterTestPostTest
+            onChangePage={handleSetPageMode}
+            CheckDataReady={isDataReady}
+            materiId={materiId}
+            isOpen={isOpen}
+          />
+        );
+
       case "pengerjaantest":
-        return <MasterTestPengerjaanTest 
-          onChangePage={handleSetPageMode} 
-          quizId={quizId}
-          materiId={materiId}
-          quizType={quizType}
-          durasi={durasi}
-        />;
+        return (
+          <MasterTestPengerjaanTest
+            onChangePage={handleSetPageMode}
+            quizId={quizId}
+            materiId={materiId}
+            quizType={quizType}
+            durasi={durasi}
+          />
+        );
       case "detailtest":
         return (
-          <MasterTestDetailTest 
-            onChangePage={handleSetPageMode} 
+          <MasterTestDetailTest
+            onChangePage={handleSetPageMode}
             quizType={quizType}
             materiId={materiId}
             quizId={quizId}
           />
         );
-      // case "hasiltest":
-      //   return (
-      //     <MasterTestHasilTest
-      //       onChangePage={handleSetPageMode}
-      //       CheckDataReady={isDataReady}
-      //       materiId={materiId}
-      //     />
-      //   );
       case "forum":
         return (
-          <MasterTestForum 
-            onChangePage={handleSetPageMode} 
-            isOpen={isOpen}
-          />
+          <MasterTestForum onChangePage={handleSetPageMode} isOpen={isOpen} />
         );
-      // case "materipdf":
-      //   return <MasterTestMateriPDF onChangePage={handleSetPageMode} key={key}/>;
-      // case "materivideo":
-      //   return <MasterTestMateriVideo onChangePage={handleSetPageMode} key={key}/>;
-      // case "sharing":
-      //   return (
-      //     <MasterSharing
-      //       onChangePage={handleSetPageMode}
-      //       CheckDataReady={isDataReady}
-      //       materiId={materiId}
-      //       isOpen={isOpen}
-      //     />
-      //   );
+
       case "materipdf":
         return (
           <MasterTestMateriPDF
@@ -169,15 +147,15 @@ export default function MasterTest() {
           />
         );
 
-        case "materivideo":
-          return (
-            <MasterTestMateriVideo
-              onChangePage={handleSetPageMode}
-              CheckDataReady={isDataReady}
-              materiId={materiId}
-              isOpen={isOpen}
-            />
-          );
+      case "materivideo":
+        return (
+          <MasterTestMateriVideo
+            onChangePage={handleSetPageMode}
+            CheckDataReady={isDataReady}
+            materiId={materiId}
+            isOpen={isOpen}
+          />
+        );
 
       case "sharingPDF":
         return (
@@ -195,14 +173,20 @@ export default function MasterTest() {
             CheckDataReady={isDataReady}
             materiId={materiId}
             isOpen={isOpen}
-        />
-      );
+          />
+        );
     }
   }
 
-    
-
-  function handleSetPageMode(newPageMode, dataReady = false, key = "", isOpen = false, quizType = "", quizKey = "", durasi = "") {
+  function handleSetPageMode(
+    newPageMode,
+    dataReady = false,
+    key = "",
+    isOpen = false,
+    quizType = "",
+    quizKey = "",
+    durasi = ""
+  ) {
     setPageMode(newPageMode);
     setIsDataReady(dataReady);
     setMateriId(key);
@@ -212,23 +196,6 @@ export default function MasterTest() {
     setDurasi(durasi);
     setDataID(dataReady);
   }
-  
 
-
-
-  return (
-  <div style={{ marginRight: "0" }}>
-    {/* <KMS_Rightbar
-      handlePreTestClick_close={handlePreTestClick_close}
-      handlePreTestClick_open={handlePreTestClick_open}
-      isOpen={isOpen}
-      onChangePage={handleSetPageMode}
-      materiId={materiId}
-      refreshKey={refreshKey}
-      setRefreshKey={setRefreshKey}
-    /> */}
-    {getPageMode()}
-  </div>
-  );
-
+  return <div style={{ marginRight: "0" }}>{getPageMode()}</div>;
 }

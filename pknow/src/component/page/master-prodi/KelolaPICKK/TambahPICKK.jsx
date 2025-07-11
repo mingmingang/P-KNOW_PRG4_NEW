@@ -11,7 +11,6 @@ import SweetAlert from "../../../util/SweetAlert";
 import Konfirmasi from "../../../part/Konfirmasi";
 import BackPage from "../../../../assets/backPage.png";
 import FileUpload from "../../../part/FileUpload";
-import UploadFile from "../../../util/UploadFile";
 import Cookies from "js-cookie";
 import { decryptId } from "../../../util/Encryptor";
 import AnimatedSection from "../../../part/AnimatedSection";
@@ -254,19 +253,19 @@ export default function TambahPIC({ onChangePage, withID }) {
                 "success"
               );
               UseFetch(API_LINK + "Utilities/createNotifikasi", {
-                p1: "SENTOPICPKNOW", // Penanda aksi
-                p2: "ID123457", // ID pengajuan
-                p3: "APP59", // Aplikasi
-                p4: "PRODI", // Pengirim
-                p5: activeUser, // CC (not_cc)
-                p6: "PIC KK telah ditetapkan oleh Prodi", // Pesan
-                p7: "Penetapan PIC KK", // Subjek
-                p8: "PIC KK telah berhasil dipilih oleh Prodi", // Body Message
-                p9: "Dari Prodi", // Footer Pesan
-                p10: "0", // Tipe Notifikasi
-                p11: "Jenis Lain", // ID Pengajuan
+                p1: "SENTOPICPKNOW",
+                p2: "ID123457", 
+                p3: "APP59",
+                p4: "PRODI",
+                p5: activeUser,
+                p6: "PIC KK telah ditetapkan oleh Prodi",
+                p7: "Penetapan PIC KK",
+                p8: "PIC KK telah berhasil dipilih oleh Prodi",
+                p9: "Dari Prodi",
+                p10: "0",
+                p11: "Jenis Lain", 
                 p12: activeUser,
-                p13: 'ROL01', // User pembuat notifikasi
+                p13: 'ROL01',
               }).then((data) => {
                 if (data === "ERROR" || data.length === 0) setIsError(true);
                 else {
@@ -285,9 +284,6 @@ export default function TambahPIC({ onChangePage, withID }) {
             "PIC kelompok keahlian berhasil ditambahkan",
             "success"
           );
-
-          
-
         onChangePage("index");
       }
     }
@@ -357,7 +353,7 @@ export default function TambahPIC({ onChangePage, withID }) {
                           }}
                         >
                           <img
-                            src={`${API_LINK}Upload/GetFile/${formDataRef.current.gambar}`} // Use fallback image if no preview available
+                            src={`${API_LINK}Upload/GetFile/${formDataRef.current.gambar}`}
                             alt="No Preview Available"
                             style={{
                               width: "200px",

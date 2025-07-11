@@ -3,14 +3,12 @@ import { object, string } from "yup";
 import { API_LINK } from "../../../util/Constants";
 import { validateAllInputs, validateInput } from "../../../util/ValidateForm";
 import UseFetch from "../../../util/UseFetch";
-import Button from "../../../part/Button copy";
 import Input from "../../../part/Input";
 import Loading from "../../../part/Loading";
 import Alert from "../../../part/Alert";
 import SweetAlert from "../../../util/SweetAlert";
 import BackPage from "../../../../assets/backPage.png";
 import Konfirmasi from "../../../part/Konfirmasi";
-import NoImage from "../../../../assets/NoImage.png";
 import FileUpload from "../../../part/FileUpload";
 import UploadFile from "../../../util/UploadFile";
 import { decode } from "html-entities";
@@ -118,22 +116,16 @@ export default function ProgramEdit({ onChangePage, withID }) {
 
       try {
         let proGambar = "";
-
-        // Tangani upload file jika ada
         if (fileGambarRef.current.files.length > 0) {
           const uploadResults = await Promise.all([
             UploadFile(fileGambarRef.current),
           ]);
           proGambar = uploadResults[0].Hasil;
         }
-
-        // Perbarui data sebelum dikirim
         const updatedFormData = {
           ...formData,
           pro_gambar: proGambar,
         };
-
-        // Kirim data ke API setelah upload selesai
         const data = await UseFetch(
           API_LINK + "Program/EditProgram",
           updatedFormData
@@ -180,7 +172,7 @@ export default function ProgramEdit({ onChangePage, withID }) {
       if (file && file.type.startsWith("image/")) {
         const reader = new FileReader();
         reader.onloadend = () => {
-          setFilePreview(reader.result); // Set the preview
+          setFilePreview(reader.result);
         };
         reader.readAsDataURL(file);
       }
@@ -208,14 +200,12 @@ export default function ProgramEdit({ onChangePage, withID }) {
           <div className="program-edit-container">
             <div className="header-section">
               <div className="d-flex">
-              <button className="back-button" onClick={handleGoBack}>
-                <img src={BackPage} alt="" />
-              </button>
-              <h4 className="page-title program">
-                Edit Program
-              </h4>
+                <button className="back-button" onClick={handleGoBack}>
+                  <img src={BackPage} alt="" />
+                </button>
+                <h4 className="page-title program">Edit Program</h4>
+              </div>
             </div>
-          </div>
           </div>
           <div className="form-container">
             <form onSubmit={handleAdd}>
@@ -252,7 +242,7 @@ export default function ProgramEdit({ onChangePage, withID }) {
                               }}
                             >
                               <img
-                                src={`${API_LINK}Upload/GetFile/${withID.Gambar}`} // Use fallback image if no preview available
+                                src={`${API_LINK}Upload/GetFile/${withID.Gambar}`}
                                 alt="No Preview Available"
                                 style={{
                                   width: "200px",
@@ -297,23 +287,20 @@ export default function ProgramEdit({ onChangePage, withID }) {
                       />
                     </div>
                     <div className="col-lg-12">
-                    
-
-                <Input
-                  type="textarea"
-                   placeholder="Deskripsi/Penjelasan Program"
-                  forInput="deskripsi"
-                  label="Deskripsi/Penjelasan Program"
-                  isRequired
-                  value={
-                    formData && formData.deskripsi
-                      ? decode(formData.deskripsi)
-                      : "Deskripsi tidak tersedia"
-                  }
-                  onChange={handleInputChange}
-                  errorMessage={errors.deskripsi}
-                />
-
+                      <Input
+                        type="textarea"
+                        placeholder="Deskripsi/Penjelasan Program"
+                        forInput="deskripsi"
+                        label="Deskripsi/Penjelasan Program"
+                        isRequired
+                        value={
+                          formData && formData.deskripsi
+                            ? decode(formData.deskripsi)
+                            : "Deskripsi tidak tersedia"
+                        }
+                        onChange={handleInputChange}
+                        errorMessage={errors.deskripsi}
+                      />
                     </div>
                   </div>
                 </div>
@@ -325,9 +312,7 @@ export default function ProgramEdit({ onChangePage, withID }) {
                   >
                     Batalkan
                   </button>
-                  <button className="save-button"
-                    type="submit"
-                  >
+                  <button className="save-button" type="submit">
                     Simpan
                   </button>
                 </div>

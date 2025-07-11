@@ -1,34 +1,38 @@
 import { useEffect, useRef, useState } from "react";
-import { API_LINK } from "../../util/Constants";
+import { API_LINK, APPLICATION_ID } from "../../util/Constants";
 import UseFetch from "../../util/UseFetch";
 import Alert from "../../part/Alert";
 import Cookies from "js-cookie";
 import { decryptId } from "../../util/Encryptor";
 import { decode } from "he";
-import BackPage from "../../../assets/backPage.png";
 import Konfirmasi from "../../part/Konfirmasi";
-import { jsPDF } from 'jspdf';
-import logo from "../../../assets/loginMaskotTMS.png";
+import AppContext_master from "../Materi/master-proses/MasterContext.jsx";
+import AppContext_test from "../Materi/master-test/TestContext.jsx";
+import AnimatedSection from "../../part/AnimatedSection.jsx";
+import pknowMaskot from "../../../assets/pknowmaskot.png";
+
+const inisialisasiData = [
+  {
+    ID: null,
+    Nama: null,
+    "Nomor Telepon": null,
+    Username: null,
+    "Tanggal Klaim": null,
+    Count: 0,
+  },
+];
 
 export default function DetailKelas({ withID, onChangePage }) {
   let activeUser = "";
   const cookie = Cookies.get("activeUser");
   if (cookie) activeUser = JSON.parse(decryptId(cookie)).username;
-  const [activeCategory, setActiveCategory] = useState(null); 
+  const [activeCategory, setActiveCategory] = useState(null);
   const [isError, setIsError] = useState({ error: false, message: "" });
-  const [isLoading, setIsLoading] = useState(true);
   const [listKategoriProgram, setListKategoriProgram] = useState([]);
   const [listMateri, setlistMateri] = useState([]);
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [isBackAction, setIsBackAction] = useState(false);
-
-  const [currentFilter, setCurrentFilter] = useState({
-    page: 1,
-    query: "",
-    sort: "[Nama Program] desc",
-    status: "",
-    KKid: "",
-  });
+  const [currentData, setCurrentData] = useState(inisialisasiData);
 
   const handleGoBack = () => {
     setIsBackAction(true);
@@ -44,7 +48,31 @@ export default function DetailKelas({ withID, onChangePage }) {
     setShowConfirmation(false);
   };
 
+  const [loadingStates, setLoadingStates] = useState({
+    userData: true,
+    programData: true,
+    publikasiData: true,
+    eksternalData: true,
+    kategoriProgram: true,
+  });
 
+  const updateLoadingState = (key, value) => {
+    setLoadingStates((prev) => ({
+      ...prev,
+      [key]: value,
+    }));
+  };
+
+  const [currentDataEksternal, setCurrentDataEksternal] =
+    useState(inisialisasiData);
+
+  const [currentFilterPeserta, setCurrentFilterPeserta] = useState({
+    page: 1,
+    query: "",
+    sort: "[Waktu] desc",
+    app: APPLICATION_ID,
+    status: "Belum Dibaca",
+  });
 
   const getListKategoriProgram = async (filter) => {
     try {
@@ -104,7 +132,6 @@ export default function DetailKelas({ withID, onChangePage }) {
           order: "asc",
           kategori: kategoriKey,
         });
-
         if (data === "ERROR") {
           throw new Error(
             "Terjadi kesalahan: Gagal mengambil daftar kategori program."
@@ -117,7 +144,7 @@ export default function DetailKelas({ withID, onChangePage }) {
           break;
         } else {
           setlistMateri(data);
-          setActiveCategory(kategoriKey); // Set kategori aktif
+          setActiveCategory(kategoriKey);
           break;
         }
       }
@@ -131,335 +158,408 @@ export default function DetailKelas({ withID, onChangePage }) {
     }
   };
 
-  function handleSetCurrentPage(newCurrentPage) {
-    setIsLoading(true);
-    setCurrentFilter((prevFilter) => {
-      return {
-        ...prevFilter,
-        page: newCurrentPage,
-      };
-    });
-  }
-
-
   const toggleCategory = (kategoriKey) => {
-    // Jika kategori yang diklik adalah kategori aktif, tutup (set null).
     if (activeCategory === kategoriKey) {
       setActiveCategory(null);
     } else {
-      // Jika kategori yang diklik berbeda, jadikan kategori aktif.
       setActiveCategory(kategoriKey);
       getDataMateriKategori(kategoriKey);
     }
   };
 
-  const [name, setName] = useState('');
-  const [course, setCourse] = useState('');
-  const [date, setDate] = useState('');
-
-  const generateCertificate = () => {
-    const doc = new jsPDF('landscape');
-    
-    // Set up the certificate layout
-    doc.setFont('poppins', 'bold');
-    doc.setFontSize(28);
-    doc.text('Certificate of Completion', 105, 40, null, null, 'center');
-
-    // Course Info
-    doc.setFontSize(14);
-    doc.text('MySkill E-Learning Course', 105, 55, null, null, 'center');
-    doc.text(`Topic: ${course}`, 105, 70, null, null, 'center');
-    doc.setFontSize(22);
-    doc.text('MICROSOFT EXCEL INTRODUCTION', 105, 90, null, null, 'center');
-
-    // Recipient Info
-    doc.setFontSize(18);
-    doc.text(`This certificate is awarded to:`, 105, 120, null, null, 'center');
-    doc.setFontSize(24);
-    doc.text(name, 105, 140, null, null, 'center');
-    
-    // Date Info
-    doc.setFontSize(12);
-    doc.text(`Date: ${date}`, 105, 170, null, null, 'center');
-
-    // Signature
-    doc.setFontSize(12);
-    doc.text('______________________________', 50, 210); // Signature Line
-    doc.text('Angga Fauzan', 50, 220);
-    doc.text('CEO MySkill', 50, 230);
-
-    // Add Logo (example: replace with actual logo or image)
-    doc.addImage(logo, 'PNG', 15, 15, 30, 30); // Adjust the position and size as needed
-
-    // Save as PDF
-    doc.save('Sertifikat_Penghargaan.pdf');
+  const handleBacaMateri = (book) => {
+    AppContext_test.materiId = book.Key;
+    AppContext_master.materiId = book.Key;
+    AppContext_test.refreshPage += 1;
+    onChangePage("pengenalan", true, book.Key, true);
   };
 
+  useEffect(() => {
+    const fetchEksternalData = async () => {
+      setIsError(false);
+      updateLoadingState("eksternalData", true);
+      try {
+        const data = await UseFetch(
+          API_LINK + "Klaim/GetUserEksKlaimByProgram",
+          { p1: withID.id }
+        );
+
+        if (data === "ERROR") {
+          setIsError(true);
+        } else if (data.length === 0) {
+          setCurrentData(inisialisasiData);
+        } else {
+          const formattedData = data.map((value) => ({
+            ID: value["ext_id"],
+            Nama: value["ext_nama_lengkap"],
+            "Nomor Telepon": value["ext_no_telp"],
+            Username: value["ext_username"],
+            progres: `${Math.round(value["total_progres"] || 0)}%`,
+            skorQuiz: Math.round(value["total_quiz"] || 0),
+            klaim_id: value["klaim_id"],
+            sertifikatStatus: value["klaim_statussertif"],
+            sertifikatFile: value["klaim_filesertif"],
+          }));
+          setCurrentData(formattedData);
+        }
+      } catch {
+        setIsError(true);
+      } finally {
+        updateLoadingState("eksternalData", false);
+      }
+    };
+
+    fetchEksternalData();
+  }, [currentFilterPeserta]);
+
+  console.log("data", currentData);
 
   return (
-    <div className="app-container">
-     <div
-  className="header"
-  style={{
-    height: "400px",
-    width: "100%",
-    padding: "100px 60px",
-    backgroundImage: `linear-gradient(to right, #0A5EA8, rgba(0,0,0,0)), url(${API_LINK}Upload/GetFile/${withID.gambar})`,
-    objectFit:"cover",
-    backgroundSize: "55%", // Gambar hanya mengambil 50% dari tinggi div
-    backgroundRepeat: "no-repeat", // Hindari pengulangan gambar
-    backgroundPosition: "right", // Posisikan gambar di tengah
-    backgroundBlendMode: "overlay", // Satukan gradien dengan gambar
-  }}
->
-  <>
-<div
-    className="background"
-    style={{
-      position: 'absolute',
-      top: "0",
-      left: "0",
-      height: "400px",
-      width: "100%",
-      backgroundImage: `
-        linear-gradient(to right, #0A5EA8, rgba(0,0,0,0)), 
-        linear-gradient(to right, #0A5EA8, #66a2fe)`,
-        padding:"80px 50px 40px 60px",
-      backgroundSize: "47% 100%", // Gradien kiri mengambil 45% lebar
-      backgroundRepeat: "no-repeat",
-    }}
-  >
-    <h4 style={{ color: "white", padding: "30px", paddingBottom: "0px" }}>
-          <button
-            style={{ backgroundColor: "transparent", border: "none" }}
-            onClick={handleGoBack}
-          >
-           <i className="fas fa-arrow-left mr-3" style={{color:"white"}}></i>
-          </button>
-          {withID.title}
-        </h4>
-        <p style={{ paddingLeft: "30px", color: "white" }}>
-          Program Studi : {withID.ProgramStudi}
-        </p>
-        <p
-          style={{
-            paddingLeft: "30px",
-            paddingRight:"40px",
-            color: "white",
-            width: "600px",
-            fontSize: "14px",
-            textAlign:"justify"
-          }}
-        >
-          {decode(withID.desc).substring(0, 300)}{/* Menampilkan 200 huruf pertama */}
-          {withID.desc.length > 300 && "..."}
-        </p>
-
-        <p style={{ paddingLeft: "30px", color: "white", fontWeight:"bold", fontSize:"35px" }}>
-          Rp. 0,00
-        </p>
-
-        </div>
-
-
-</>
-      </div>
-      <div className="" style={{ margin: "40px 100px" }}>
-        <h3 style={{ fontWeight: "500", color: "#0A5EA8" }}>Tentang Kelas</h3>
-        <p
-          style={{
-            textAlign: "justify",
-            marginTop: "20px",
-            lineHeight: "30px",
-          }}
-        >
-          {decode(withID.desc)}
-        </p>
-      </div>
-
-      <div className="" style={{ margin: "40px 100px" }}>
-        <h3 className="mb-4"style={{ fontWeight: "500", color: "#0A5EA8" }}>Materi Kelas</h3>
-
-{listKategoriProgram.length > 0 ? (
-  listKategoriProgram.map((kategori, index) => (
-    <div
-      key={index}
-      className="section"
-      style={{
-        border: "1px solid #ccc",
-        borderRadius: "5px",
-        padding: "10px",
-        marginBottom: "10px",
-      }}
-      onClick={() => toggleCategory(kategori.Key)}
-    >
-      <div
-        className="section-header"
-        style={{
-          fontSize: "18px",
-          fontWeight: "bold",
-          marginBottom: "10px",
-        }}
-      ></div>
-      <p style={{ fontSize: "16px", color: "#555", fontWeight: "bold" }}>
-        <i
-          className={`fas ${
-            activeCategory === kategori.Key ? "fa-chevron-up" : "fa-chevron-down"
-          } mr-3 ml-3`}
-          style={{
-            fontSize: "16px",
-          }}
-        ></i>
-        {kategori["Nama Kategori Program"] || "Tidak ada deskripsi."} <br />
-      </p>
-      {/* Render list materi jika kategori ini aktif */}
-      {activeCategory === kategori.Key && (
+    <AnimatedSection>
+      <div className="app-container">
         <div
+          className="header"
           style={{
-            marginTop: "10px",
-            padding: "10px",
-            borderTop: "1px solid #ccc",
+            width: "100%",
+            padding: "100px 60px",
+            backgroundImage: `linear-gradient(rgb(0, 0, 0), rgba(0, 0, 0, 0)), url(${API_LINK}Upload/GetFile/${withID.gambar})`,
+            objectFit: "cover",
+            backgroundSize: "cover",
+            backgroundRepeat: "no-repeat",
+            backgroundPosition: "right",
           }}
         >
-          
-          {listMateri.length > 0 ? (
-  listMateri
-    .filter((materi) => materi.Status === "Aktif") // Filter materi yang Statusnya 'Aktif'
-    .map((materi, materiIndex) => (
-      <div
-        className="d-flex"
-        key={materiIndex}
-        style={{
-          background: "#f9f9f9",
-          marginBottom: "8px",
-          padding: "8px",
-          borderRadius: "5px",
-        }}
-      >
-        <div className="">
-          <img
-            className="cover-daftar-kk"
-            style={{ borderRadius: "20px" }}
-            height="150"
-            src={`${API_LINK}Upload/GetFile/${materi.Gambar}`}
-            width="300"
-          />
+          <>
+            <div className="background">
+              <h4
+                style={{
+                  color: "white",
+                  paddingBottom: "0px",
+                  textShadow: "2px 2px 4px rgba(0, 0, 0, 0.73)",
+                }}
+              >
+                <button
+                  style={{ backgroundColor: "transparent", border: "none" }}
+                  onClick={handleGoBack}
+                >
+                  <i
+                    className="fas fa-arrow-left mr-3"
+                    style={{
+                      color: "white",
+                      textShadow: "2px 2px 4px rgba(0, 0, 0, 0.73)",
+                    }}
+                  ></i>
+                </button>
+                {decode(withID.title ? withID.title : "")}
+              </h4>
+              <p
+                style={{
+                  color: "white",
+                  textShadow: "2px 2px 4px rgba(0, 0, 0, 0.73)",
+                }}
+              >
+                Program Studi : {decode(withID.ProgramStudi)}
+              </p>
+              <p
+                style={{
+                  color: "white",
+                  fontSize: "14px",
+                  textAlign: "justify",
+                  textShadow: "2px 2px 4px rgba(0, 0, 0, 0.73)",
+                }}
+              >
+                {decode(withID.desc).substring(0, 300)}
+                {withID.desc.length > 300 && "..."}
+              </p>
+
+              <div className="">
+                <button
+                  className="btn btn-outline-primary mt-3"
+                  type="button"
+                  style={{
+                    fontSize: "20px",
+                    marginTop: "-10px",
+                    color: "white",
+                    borderColor: "white",
+                  }}
+                  onClick={() =>
+                    document
+                      .getElementById("materi")
+                      .scrollIntoView({ behavior: "smooth" })
+                  }
+                >
+                  Baca Materi
+                </button>
+              </div>
+            </div>
+          </>
         </div>
-        <div className="ml-3">
+        <div className="container mt-4">
+          <h3 style={{ fontWeight: "500", color: "#0A5EA8" }}>Tentang Kelas</h3>
           <p
+            id="materi"
             style={{
-              fontSize: "24px",
-              fontWeight: "600",
-              color: "#0A5EA8",
-              margin: "0",
-            }}
-          >
-            {materi.Judul || "Judul tidak tersedia"}
-          </p>
-          <p
-            style={{
-              fontSize: "15px",
-              color: "#555",
-              width: "100%",
               textAlign: "justify",
+              marginTop: "20px",
+              lineHeight: "30px",
             }}
           >
-            {materi.Keterangan || "Deskripsi tidak tersedia"}
+            {decode(withID.desc)}
           </p>
         </div>
-      </div>
-    ))
-) : (
-  <Alert
-  type="warning mt-3"
-  message="Tidak ada materi yang tersedia pada kategori ini"
-/>
-)}
 
-        </div>
-      )}
-    </div>
-  ))
-) : (
-  <Alert
-  type="warning mt-3"
-  message="Tidak ada kategori program yang tersedia"
-/>
-)}
-      </div>
-      <>
-      <div style={{ padding: '20px' }}>
-      <h1>Sertifikat Penghargaan Generator</h1>
-      <div style={{ marginBottom: '10px' }}>
-        <label htmlFor="name">Nama Penerima:</label>
-        <input
-          type="text"
-          id="name"
-          placeholder="Masukkan Nama"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          style={{ marginLeft: '10px' }}
-        />
-      </div>
+        <div className="container mb-4">
+          <h3 className="mb-4" style={{ fontWeight: "500", color: "#0A5EA8" }}>
+            Materi Kelas
+          </h3>
 
-      <div style={{ marginBottom: '10px' }}>
-        <label htmlFor="course">Nama Acara/Topik:</label>
-        <input
-          type="text"
-          id="course"
-          placeholder="Masukkan Nama Acara"
-          value={course}
-          onChange={(e) => setCourse(e.target.value)}
-          style={{ marginLeft: '10px' }}
-        />
-      </div>
+          {listKategoriProgram.length > 0 ? (
+            listKategoriProgram.map((kategori, index) => (
+              <div
+                key={index}
+                className="section"
+                style={{
+                  border: "1px solid #ccc",
+                  borderRadius: "5px",
+                  padding: "10px",
+                  marginBottom: "10px",
+                }}
+                onClick={() => toggleCategory(kategori.Key)}
+              >
+                <div
+                  className="section-header"
+                  style={{
+                    fontSize: "18px",
+                    fontWeight: "bold",
+                    marginBottom: "10px",
+                  }}
+                ></div>
+                <p
+                  style={{
+                    fontSize: "16px",
+                    color: "#555",
+                    fontWeight: "bold",
+                  }}
+                >
+                  <i
+                    className={`fas ${
+                      activeCategory === kategori.Key
+                        ? "fa-chevron-up"
+                        : "fa-chevron-down"
+                    } mr-3 ml-3`}
+                    style={{
+                      fontSize: "16px",
+                    }}
+                  ></i>
+                  {decode(
+                    kategori["Nama Kategori Program"]
+                      ? kategori["Nama Kategori Program"]
+                      : "Tidak ada deskripsi."
+                  )}{" "}
+                  <br />
+                </p>
+                {activeCategory === kategori.Key && (
+                  <div
+                    style={{
+                      marginTop: "10px",
+                      padding: "10px",
+                      borderTop: "1px solid #ccc",
+                    }}
+                  >
+                    {listMateri.length > 0 ? (
+                      listMateri
+                        .filter((materi) => materi.Status === "Aktif")
+                        .map((materi, materiIndex) => (
+                          <div
+                            className="d-flex"
+                            key={materiIndex}
+                            style={{
+                              background: "#f9f9f9",
+                              marginBottom: "8px",
+                              padding: "8px",
+                              borderRadius: "5px",
+                            }}
+                          >
+                            <div className="">
+                              <img
+                                className="cover-daftar-kk"
+                                style={{ borderRadius: "20px" }}
+                                height="150"
+                                src={`${API_LINK}Upload/GetFile/${materi.Gambar}`}
+                                width="300"
+                              />
+                            </div>
+                            <div className="ml-3" style={{ width: "120%" }}>
+                              <p
+                                style={{
+                                  fontSize: "24px",
+                                  fontWeight: "600",
+                                  color: "#0A5EA8",
+                                  margin: "0",
+                                }}
+                              >
+                                {decode(
+                                  materi.Judul
+                                    ? materi.Judul
+                                    : "Judul tidak tersedia"
+                                )}
+                              </p>
+                              <p
+                                style={{
+                                  fontSize: "15px",
+                                  color: "#555",
+                                  width: "90%",
+                                  textAlign: "justify",
+                                }}
+                              >
+                                {decode(
+                                  materi.Keterangan
+                                    ? materi.Keterangan
+                                    : "Deskripsi tidak tersedia"
+                                )}
+                              </p>
+                            </div>
+                            <div
+                              className=""
+                              style={{ width: "300px", marginTop: "40px" }}
+                            >
+                              <button
+                                className="btn btn-outline-primary mt-2 ml-2"
+                                type="button"
+                                onClick={() => handleBacaMateri(materi)}
+                              >
+                                Baca Materi
+                              </button>
+                            </div>
+                          </div>
+                        ))
+                    ) : (
+                      <Alert
+                        type="warning mt-3"
+                        message="Tidak ada materi yang tersedia pada kategori ini"
+                      />
+                    )}
+                  </div>
+                )}
+              </div>
+            ))
+          ) : (
+            <Alert
+              type="warning mt-3"
+              message="Tidak ada kategori program yang tersedia"
+            />
+          )}
+          <div className="container mb-4" style={{ marginTop: "10px" }}>
+            <div className="" style={{ display: "flex" }}>
+              <h4
+                style={{
+                  color: "#0A5EA8",
+                  fontWeight: "bold",
+                  fontSize: "30px",
+                  marginTop: "10px",
+                }}
+              >
+                Daftar Peserta Program
+              </h4>
+            </div>
 
-      <div style={{ marginBottom: '10px' }}>
-        <label htmlFor="date">Tanggal:</label>
-        <input
-          type="date"
-          id="date"
-          value={date}
-          onChange={(e) => setDate(e.target.value)}
-          style={{ marginLeft: '10px' }}
-        />
-      </div>
-
-      <button
-        onClick={generateCertificate}
-        style={{
-          padding: '10px 20px',
-          backgroundColor: '#4CAF50',
-          color: 'white',
-          border: 'none',
-          borderRadius: '5px',
-          cursor: 'pointer',
-        }}
-      >
-        Cetak Sertifikat
-      </button>
-    </div>
-      </>
-
-      <>
-        {isError.error && (
-          <div className="flex-fill">
-            <Alert type="danger" message={isError.message} />
+            {currentData[0].ID === null ? (
+              <div className="alert alert-warning mt-3" role="alert">
+                Belum ada peserta yang bergabung.
+              </div>
+            ) : (
+              <div className="card mt-4">
+                <div className="card-body">
+                  <div className="table-responsive">
+                    <table className="table">
+                      <thead>
+                        <tr>
+                          <th style={{ color: "#0A5EA8" }}>No</th>
+                          <th style={{ color: "#0A5EA8" }}>Nama Peserta</th>
+                          <th style={{ color: "#0A5EA8" }}>Progres</th>
+                          <th style={{ color: "#0A5EA8", textAlign: "center" }}>
+                            Skor Quiz
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {currentData.map((participant, index) => (
+                          <tr key={participant.ID}>
+                            <td>{index + 1}</td>
+                            <td>
+                              <div className="d-flex align-items-center">
+                                <img
+                                  src={pknowMaskot}
+                                  alt={participant.Nama}
+                                  className="img-fluid rounded-circle me-3"
+                                  width="45"
+                                />
+                                <div>
+                                  <div>{participant.Nama}</div>
+                                  <small className="text-muted">
+                                    {participant.Username}
+                                  </small>
+                                </div>
+                              </div>
+                            </td>
+                            <td>
+                              <div
+                                className="progress"
+                                style={{ height: "20px" }}
+                              >
+                                <div
+                                  className="progress-bar"
+                                  role="progressbar"
+                                  style={{ width: participant.progres }}
+                                  aria-valuenow={parseInt(participant.progres)}
+                                  aria-valuemin="0"
+                                  aria-valuemax="100"
+                                >
+                                  {participant.progres}
+                                </div>
+                              </div>
+                            </td>
+                            <td style={{ textAlign: "center" }}>
+                              <span
+                                className={`badge ${
+                                  participant.skorQuiz >= 80
+                                    ? "bg-success"
+                                    : "bg-warning"
+                                }`}
+                              >
+                                {participant.skorQuiz}
+                              </span>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
+        </div>
+        <>
+          {isError.error && (
+            <div className="flex-fill">
+              <Alert type="danger" message={isError.message} />
+            </div>
+          )}
+        </>
+        {showConfirmation && (
+          <Konfirmasi
+            title={isBackAction ? "Konfirmasi Kembali" : "Konfirmasi Simpan"}
+            pesan={
+              isBackAction
+                ? "Apakah anda ingin kembali?"
+                : "Anda yakin ingin simpan data?"
+            }
+            onYes={handleConfirmYes}
+            onNo={handleConfirmNo}
+          />
         )}
-      </>
-      {showConfirmation && (
-        <Konfirmasi
-          title={isBackAction ? "Konfirmasi Kembali" : "Konfirmasi Simpan"}
-          pesan={
-            isBackAction
-              ? "Apakah anda ingin kembali?"
-              : "Anda yakin ingin simpan data?"
-          }
-          onYes={handleConfirmYes}
-          onNo={handleConfirmNo}
-        />
-      )}
-    </div>
+      </div>
+    </AnimatedSection>
   );
 }

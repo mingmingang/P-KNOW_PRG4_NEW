@@ -7,17 +7,14 @@ import {
 import SweetAlert from "../../../../util/SweetAlert";
 import Button from "../../../../part/Button copy";
 import Input from "../../../../part/Input";
-import Loading from "../../../../part/Loading";
 import Alert from "../../../../part/Alert";
 import UseFetch from "../../../../util/UseFetch";
 import { API_LINK } from "../../../../util/Constants";
 import AppContext_master from "../MasterContext";
 import AppContext_test from "../../master-test/TestContext";
 import { Editor } from "@tinymce/tinymce-react";
-import { Stepper, Step, StepLabel, Box } from "@mui/material";
 import BackPage from "../../../../../assets/backPage.png";
 import Konfirmasi from "../../../../part/Konfirmasi";
-import axios from "axios";
 import CustomStepper from "../../../../part/Stepp";
 
 const userSchema = object({
@@ -34,8 +31,6 @@ export default function MasterForumAdd({ onChangePage }) {
   const [isFormDisabled, setIsFormDisabled] = useState(false);
   const [isBackAction, setIsBackAction] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
-  const [isSectionAction, setIsSectionAction] = useState(false);
-  const [showConfirmationSection, setShowConfirmationSection] = useState(false);
 
   const [formData, setFormData] = useState({
     materiId: AppContext_master.dataIDMateri,
@@ -45,13 +40,6 @@ export default function MasterForumAdd({ onChangePage }) {
     forumStatus: "Aktif",
   });
 
-  const [dataSection, setDataSection] = useState({
-    materiId: AppContext_master.dataIDMateri,
-    secJudul: "Section Materi " + AppContext_master.dataIDMateri,
-    createdby: AppContext_test.activeUser,
-    secType: "",
-  });
-  
   const handleGoBack = () => {
     setIsBackAction(true);
     setShowConfirmation(true);
@@ -81,25 +69,12 @@ export default function MasterForumAdd({ onChangePage }) {
     }));
   };
 
-  const resetForm = () => {
-    setFormData({
-      materiId: AppContext_test.dataIDMateri,
-      karyawanId: AppContext_test.activeUser,
-      forumJudul: "",
-      forumIsi: "",
-      forumStatus: "Aktif",
-    });
-    setErrors({});
-    setIsError({ error: false, message: "" });
-  };
-
   useEffect(() => {
     setResetStepper((prev) => !prev + 1);
   });
 
   const storedSteps = sessionStorage.getItem("steps");
   const steps = storedSteps ? JSON.parse(storedSteps) : initialSteps;
-
 
   const handleAdd = async (e) => {
     e.preventDefault();
@@ -137,7 +112,6 @@ export default function MasterForumAdd({ onChangePage }) {
         });
       } else {
         if (steps.length == 3) {
-          //SweetAlert("Sukses", "Data Forum berhasil disimpan", "success");
           setIsFormDisabled(false);
           setResetStepper((prev) => !prev + 1);
           AppContext_test.formSavedForum = true;
@@ -155,15 +129,15 @@ export default function MasterForumAdd({ onChangePage }) {
               AppContext_master.MateriForm,
               (AppContext_test.ForumForm = formData),
               AppContext_master.dataIdSection,
-                AppContext_master.dataSectionSharing,
-                AppContext_master.dataIdSectionSharing,
-                AppContext_master.dataIdSectionPretest,
-                (AppContext_master.dataPretest),
-                (AppContext_master.dataQuizPretest ),
-                (AppContext_master.dataPostTest ),
-                (AppContext_master.dataQuizPostTest),
-                AppContext_master.dataTimerQuizPreTest,
-                AppContext_master.dataTimerPostTest
+              AppContext_master.dataSectionSharing,
+              AppContext_master.dataIdSectionSharing,
+              AppContext_master.dataIdSectionPretest,
+              AppContext_master.dataPretest,
+              AppContext_master.dataQuizPretest,
+              AppContext_master.dataPostTest,
+              AppContext_master.dataQuizPostTest,
+              AppContext_master.dataTimerQuizPreTest,
+              AppContext_master.dataTimerPostTest
             );
           }
         }
@@ -180,13 +154,9 @@ export default function MasterForumAdd({ onChangePage }) {
   const initialSteps = ["Pengenalan", "Materi", "Forum"];
   const additionalSteps = ["Sharing Expert", "Pre-Test", "Post-Test"];
 
-  const handleStepAdded = (stepName) => {
-    //console.log("Step ditambahkan:", stepName);
-  };
+  const handleStepAdded = (stepName) => {};
 
-  const handleStepRemoved = (stepName) => {
-    //console.log("Step dihapus:", stepName);
-  };
+  const handleStepRemoved = (stepName) => {};
 
   const handleStepChange = (stepContent) => {
     onChangePage(stepContent);
@@ -195,7 +165,6 @@ export default function MasterForumAdd({ onChangePage }) {
   const [stepPage, setStepPage] = useState([]);
   const handleAllStepContents = (allSteps) => {
     setStepPage(allSteps);
-    //console.log("Semua Step Contents:", allSteps);
   };
 
   const [stepCount, setStepCount] = useState(0);
@@ -203,8 +172,6 @@ export default function MasterForumAdd({ onChangePage }) {
   const handleStepCountChange = (count) => {
     setStepCount(count);
   };
-
-  // if (isLoading) return <Loading />;
 
   return (
     <>
@@ -322,14 +289,15 @@ export default function MasterForumAdd({ onChangePage }) {
                   onChangePage(
                     "materiAdd",
                     (AppContext_test.ForumForm = formData),
-                    AppContext_master.Materi, AppContext_master.dataIdSection,
+                    AppContext_master.Materi,
+                    AppContext_master.dataIdSection,
                     AppContext_master.dataSectionSharing,
                     AppContext_master.dataIdSectionSharing,
                     AppContext_master.dataIdSectionPretest,
-                    (AppContext_master.dataPretest),
-                    (AppContext_master.dataQuizPretest ),
-                    (AppContext_master.dataPostTest ),
-                    (AppContext_master.dataQuizPostTest),
+                    AppContext_master.dataPretest,
+                    AppContext_master.dataQuizPretest,
+                    AppContext_master.dataPostTest,
+                    AppContext_master.dataQuizPostTest,
                     AppContext_master.dataTimerQuizPreTest,
                     AppContext_master.MateriForm,
                     AppContext_master.dataTimerPostTest
@@ -345,11 +313,6 @@ export default function MasterForumAdd({ onChangePage }) {
                 style={{ marginRight: "10px" }}
                 disabled={false}
               />
-              {/* <Button
-            classType="dark ms-3 px-4 py-2"
-            label="Berikutnya"
-            onClick={() => onChangePage("posttestAdd", AppContext_test.ForumForm = formData)}
-          /> */}
             </div>
           </div>
         </div>

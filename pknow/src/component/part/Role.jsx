@@ -1,9 +1,9 @@
 import { Link } from "react-router-dom";
 import "../../style/Login.css";
-import Modal from "./Modal"; // Importing your custom Modal component
-import Button from "./Button"; // Importing the Button component for use within the Modal
+import Modal from "./Modal";
+import Button from "./Button";
 
-export default function Role({ showModal,onClose }) {
+export default function Role({ showModal, onClose }) {
   const modalRef = useRef();
 
   if (showModal) {
@@ -23,11 +23,10 @@ export default function Role({ showModal,onClose }) {
           label="Confirm"
           onClick={() => {
             modalRef.current.close();
-            onClose(); // Closing the modal when the user confirms
+            onClose();
           }}
         />
       }
-    >
-    </Modal>
+    ></Modal>
   );
 }

@@ -297,6 +297,13 @@ export default function DetailAKK({
                 console.log("notidikasi",data)
                 if (data === "ERROR" || data.length === 0) setIsError(true);
                 else{
+                  setCurrentFilter((prevFilter) => ({
+                    ...prevFilter,
+                    query: "",
+                    page: 1,
+                  }));
+                  searchAnggotaQuery.current.value = "";
+                  
                   SweetAlert(
                     "Berhasil",
                     "Notifikasi telah dikirimkan ke Tenaga Pendidik bersangkutan.",

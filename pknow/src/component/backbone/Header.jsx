@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import logo from "../../assets/logoAstratech.png";
 import "../../style/Header.css";
-import Konfirmasi from "../part/Konfirmasi"; // Import your confirmation component
+import Konfirmasi from "../part/Konfirmasi";
 const activeURL = location.protocol + "//" + location.host + location.pathname;
 import { API_LINK, APPLICATION_ID } from "../util/Constants";
 import UseFetch from "../util/UseFetch";
@@ -16,7 +16,7 @@ export default function Header({
   listMenu,
   konfirmasi = "Konfirmasi",
   pesanKonfirmasi = "Apakah Anda yakin ingin keluar?",
-  showUserInfo = true, // Prop to conditionally show/hide user info
+  showUserInfo = true, 
 }) {
   const [activeMenu, setActiveMenu] = useState("beranda");
   const [isProfileDropdownVisible, setProfileDropdownVisible] = useState(false);
@@ -49,19 +49,19 @@ export default function Header({
 
   const handleConfirmYes = () => {
     window.location.replace("/logout");
-    setShowConfirmation(false); // Hide the confirmation dialog
+    setShowConfirmation(false); 
   };
 
   const handleConfirmNo = () => {
-    setShowConfirmation(false); // Just close the confirmation modal
+    setShowConfirmation(false); 
   };
 
   const handleLogoutClick = () => {
-    setShowConfirmation(true); // Show confirmation modal on logout click
+    setShowConfirmation(true); 
   };
 
   const handleNotification = () => {
-    window.location.replace("/notifications"); // Redirect to login page
+    window.location.replace("/notifications");
   };
 
   useEffect(() => {
@@ -93,11 +93,10 @@ export default function Header({
     fetchData();
   }, []);
 
-  const [isNavOpen, setIsNavOpen] = useState(false); // Untuk kontrol nav baru
+  const [isNavOpen, setIsNavOpen] = useState(false); 
 
-  // Toggle untuk nav baru
   const toggleNav = () => {
-    setIsNavOpen(!isNavOpen); // Membuka atau menutup nav baru
+    setIsNavOpen(!isNavOpen);
   };
 
   const closeNav = () => {
@@ -129,13 +128,10 @@ export default function Header({
                       <a
                         href={menu.link}
                         onClick={() => setActiveMenu(menu.head)}
-                        // className={isActive ? "active" : ""}
                       >
                         <div className="menu-item">
-                          {/* Render icon for main menu */}
                           {menu.icon && <i className={menu.icon}></i>}
                           <span>{menu.head}</span>
-                          {/* Render a down-chevron icon if the menu is not "Beranda" */}
                           {menu.head !== "Beranda" &&
                             menu.head !== "Knowledge Database" && (
                               <i
@@ -146,11 +142,9 @@ export default function Header({
                         </div>
                       </a>
 
-                      {/* Render sub-menu if it exists */}
                       {menu.sub && menu.sub.length > 0 && (
                         <ul className="dropdown-content">
                           {menu.sub.map((sub) => {
-                            // Determine the icon class based on sub-menu title
                             const iconClass = iconMapping[sub.title] || "";
 
                             return (
@@ -161,7 +155,6 @@ export default function Header({
                                     setActiveMenu(`${menu.head} - ${sub.title}`)
                                   }
                                 >
-                                  {/* Render the icon if iconClass is set */}
                                   {iconClass && <i className={iconClass}></i>}
                                   <span>{sub.title}</span>
                                 </a>
@@ -179,7 +172,6 @@ export default function Header({
         )}
 
         <div className="profile">
-          {/* Conditionally render user info if showUserInfo is true */}
           {showUserInfo && (
             <>
               <div className="pengguna">
@@ -192,8 +184,8 @@ export default function Header({
 
           <div
             className="fotoprofil"
-            onMouseEnter={() => setProfileDropdownVisible(true)} // Show dropdown on hover
-            onMouseLeave={() => setProfileDropdownVisible(false)} // Hide dropdown when hover ends
+            onMouseEnter={() => setProfileDropdownVisible(true)} 
+            onMouseLeave={() => setProfileDropdownVisible(false)} 
           >
             {showUserInfo && (
               <>
@@ -252,17 +244,13 @@ export default function Header({
             )}
           </div>
         
-        {/* Hamburger Button */}
         {showUserInfo && (
         <div className="hamburger" onClick={toggleNav}>
           <i className={`fas fa-${isNavOpen ? "times" : "bars"}`}></i>{" "}
-          {/* Toggle icon */}
         </div>
         )}
         </div>
       </nav>
-      {/* Tampilkan nav baru jika isNavOpen true */}
-      {/* Tampilkan nav baru jika isNavOpen true */}
       {isNavOpen && (
         <div className="nav-overlay">
           <div className="close-btn" onClick={closeNav}>
@@ -283,10 +271,8 @@ export default function Header({
                         onClick={() => setActiveMenu(menu.head)}
                       >
                         <div className="menu-item">
-                          {/* Render icon for main menu */}
                           {menu.icon && <i className={menu.icon}></i>}
                           <span>{menu.head}</span>
-                          {/* Render a down-chevron icon if the menu has sub-menu */}
                           {menu.sub && menu.sub.length > 0 && (
                             <i
                               className="fas fa-chevron-down ml-2"
@@ -296,11 +282,9 @@ export default function Header({
                         </div>
                       </a>
 
-                      {/* Render sub-menu if it exists */}
                       {menu.sub && menu.sub.length > 0 && (
                         <ul className="dropdown-combobox">
                           {menu.sub.map((sub) => {
-                            // Determine the icon class based on sub-menu title
                             const iconClass = iconMapping[sub.title] || "";
 
                             return (
@@ -311,7 +295,6 @@ export default function Header({
                                     setActiveMenu(`${menu.head} - ${sub.title}`)
                                   }
                                 >
-                                  {/* Render the icon if iconClass is set */}
                                   {iconClass && <i className={iconClass}></i>}
                                   <span>{sub.title}</span>
                                 </a>
@@ -329,13 +312,12 @@ export default function Header({
         </div>
       )}
 
-      {/* Show confirmation dialog if the state is true */}
       {showConfirmation && (
         <Konfirmasi
-          title={konfirmasi} // Pass the title
-          pesan={pesanKonfirmasi} // Pass the message
-          onYes={handleConfirmYes} // Handle Yes click
-          onNo={handleConfirmNo} // Handle No click
+          title={konfirmasi} 
+          pesan={pesanKonfirmasi} 
+          onYes={handleConfirmYes} 
+          onNo={handleConfirmNo} 
         />
       )}
     </div>

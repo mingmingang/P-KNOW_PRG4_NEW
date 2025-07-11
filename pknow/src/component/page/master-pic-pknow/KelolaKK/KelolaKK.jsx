@@ -105,7 +105,6 @@ export default function KelolaKK({ onChangePage }) {
   let activeUser = "";
   const cookie = Cookies.get("activeUser");
   if (cookie) activeUser = JSON.parse(decryptId(cookie)).username;
-
   const [isError, setIsError] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [currentData, setCurrentData] = useState(inisialisasiData);
@@ -151,7 +150,7 @@ export default function KelolaKK({ onChangePage }) {
     status: "Draft",
     prodi: "",
   });
-  const [activeFilterStatus, setActiveFilterStatus] = useState(""); // Default filter status
+  const [activeFilterStatus, setActiveFilterStatus] = useState("");
 
   const searchQuery = useRef();
   const searchFilterSort = useRef();
@@ -193,11 +192,7 @@ export default function KelolaKK({ onChangePage }) {
     const newQuery = searchQuery.current.value;
     const newSort = searchFilterSort.current.value;
     const newStatus = searchFilterStatus.current.value;
-
-    // Perbarui activeFilterStatus
     setActiveFilterStatus(newStatus);
-
-    // Perbarui semua filter dengan nilai baru
     setCurrentFilterDraft((prevFilter) => ({
       ...prevFilter,
       page: 1,
@@ -234,44 +229,6 @@ export default function KelolaKK({ onChangePage }) {
       prodi: "",
     }));
   }
-
-  const getListKK = async () => {
-    setIsEmpty(true);
-    setIsError(false);
-    try {
-      let data = await UseFetch(API_LINK + "KK/GetDataKK", currentFilter);
-      if (data === "ERROR") {
-        throw new Error(
-          "Terjadi kesalahan: Gagal mengambil daftar Kelompok Keahlian."
-        );
-      } else if (data.length === 0) {
-        setCurrentData(data);
-      } else {
-        setIsEmpty(false);
-        const formattedData = data.map((value) => {
-          return {
-            ...value,
-            config: { footer: value.Status },
-            data: {
-              id: value.Key,
-              title: value["Nama Kelompok Keahlian"],
-              prodi: { key: value["Kode Prodi"] || "N/A", nama: value.Prodi },
-              pic: { key: value["Kode Karyawan"], nama: value.PIC },
-              desc: value.Deskripsi,
-              status: value.Status,
-              members: value.Members || [],
-              memberCount: value.Count || 0,
-              gambar: value.Gambar,
-            },
-          };
-        });
-        setCurrentData(formattedData);
-      }
-    } catch (e) {
-      setIsError(true);
-      console.log(e.message);
-    }
-  };
 
   const getListKKAktif = async () => {
     setIsEmpty(true);

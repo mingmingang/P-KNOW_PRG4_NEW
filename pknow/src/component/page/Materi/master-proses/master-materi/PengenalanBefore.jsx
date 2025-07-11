@@ -5,24 +5,18 @@ import {
   validateAllInputs,
   validateInput,
 } from "../../../../util/ValidateForm";
-import SweetAlert from "../../../../util/SweetAlert";
 import UseFetch from "../../../../util/UseFetch";
 import Button from "../../../../part/Button copy";
-import DropDown from "../../../../part/Dropdown";
 import Input from "../../../../part/Input";
 import FileUpload from "../../../../part/FileUpload";
 import UploadFile from "../../../../util/UploadFile";
-import Loading from "../../../../part/Loading";
 import Alert from "../../../../part/Alert";
-// import { Stepper } from 'react-form-stepper';
 import AppContext_master from "../MasterContext";
 import AppContext_test from "../../master-test/TestContext";
 import axios from "axios";
 import { Editor } from "@tinymce/tinymce-react";
-import { Stepper, Step, StepLabel, Box } from "@mui/material";
 import BackPage from "../../../../../assets/backPage.png";
 import Konfirmasi from "../../../../part/Konfirmasi";
-import NoImage from "../../../../../assets/NoImage.png";
 import DOMPurify from "dompurify";
 import CustomStepper from "../../../../part/Stepp";
 const steps2 = ["Pengenalan", "Materi", "Forum", "Tambah Section"];
@@ -33,11 +27,9 @@ export default function PengenalanBefore({ onChangePage }) {
   const [isLoading, setIsLoading] = useState(false);
   const [listKategori, setListKategori] = useState([]);
   const [isFormDisabled, setIsFormDisabled] = useState(false);
-  const [resetStepper, setResetStepper] = useState(0);
   const fileInputRef = useRef(null);
   const gambarInputRef = useRef(null);
   const vidioInputRef = useRef(null);
-  const [isFormSubmitted, setIsFormSubmitted] = useState(false);
   const [isBackAction, setIsBackAction] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
   const fileGambarRef = useRef(null);
@@ -74,7 +66,9 @@ export default function PengenalanBefore({ onChangePage }) {
       });
       const url = URL.createObjectURL(blob);
       window.open(url, "_blank");
-    } catch (error) {}
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const Materi = AppContext_master.MateriForm;
@@ -95,7 +89,6 @@ export default function PengenalanBefore({ onChangePage }) {
     createdby: AppContext_test.activeUser,
   });
 
-  // Validasi skema menggunakan Yup
   const userSchema = object({
     mat_id: string(),
     kat_id: string(),
@@ -113,11 +106,10 @@ export default function PengenalanBefore({ onChangePage }) {
     createdby: string(),
   });
 
-  // Handle input change
   const handleInputChange = async (e) => {
     const { name, value } = e.target;
     if (name === "mat_pengenalan") {
-      const textOnly = value.replace(/<\/?[^>]+(>|$)/g, ""); // Menghapus semua tag HTML
+      const textOnly = value.replace(/<\/?[^>]+(>|$)/g, "");
       formDataRef.current[name] = textOnly;
     } else {
       formDataRef.current[name] = value;
@@ -159,11 +151,10 @@ export default function PengenalanBefore({ onChangePage }) {
 
     if (error) ref.current.value = "";
     else {
-      // Show preview if the file is an image
       if (file && file.type.startsWith("image/")) {
         const reader = new FileReader();
         reader.onloadend = () => {
-          setFilePreview(reader.result); // Set the preview
+          setFilePreview(reader.result);
         };
         reader.readAsDataURL(file);
       }
@@ -188,7 +179,6 @@ export default function PengenalanBefore({ onChangePage }) {
     }
   };
 
-  // Handle form submit
   const handleAdd = async (e) => {
     e.preventDefault();
 
@@ -233,10 +223,10 @@ export default function PengenalanBefore({ onChangePage }) {
                 AppContext_master.dataIdSectionSharing,
                 AppContext_master.dataIdSectionPretest,
                 AppContext_master.dataIdSectionPostTest,
-                (AppContext_master.dataPretest),
-                (AppContext_master.dataQuizPretest ),
-                (AppContext_master.dataPostTest ),
-                (AppContext_master.dataQuizPostTest),
+                AppContext_master.dataPretest,
+                AppContext_master.dataQuizPretest,
+                AppContext_master.dataPostTest,
+                AppContext_master.dataQuizPostTest,
                 AppContext_master.dataTimerQuizPreTest,
                 AppContext_master.dataTimerPostTest
               );
@@ -338,7 +328,7 @@ export default function PengenalanBefore({ onChangePage }) {
       setIsFormDisabled(false);
     }
   }, [AppContext_master.MateriForm, AppContext_master.formSavedMateri]);
-  // Render form
+
   const dataSaved = AppContext_master.formSavedMateri;
 
   const [activeStep, setActiveStep] = useState(0);
@@ -351,17 +341,11 @@ export default function PengenalanBefore({ onChangePage }) {
   const initialSteps = ["Pengenalan", "Materi", "Forum"];
   const additionalSteps = ["Sharing Expert", "Pre-Test", "Post-Test"];
 
-  const handleStepChanges = (index) => {
-    //console.log("Step aktif:", index);
-  };
+  const handleStepChanges = (index) => {};
 
-  const handleStepAdded = (stepName) => {
-    //console.log("Step ditambahkan:", stepName);
-  };
+  const handleStepAdded = (stepName) => {};
 
-  const handleStepRemoved = (stepName) => {
-    //console.log("Step dihapus:", stepName);
-  };
+  const handleStepRemoved = (stepName) => {};
 
   return (
     <>
@@ -514,7 +498,6 @@ export default function PengenalanBefore({ onChangePage }) {
                   onChange={handleInputChange}
                   errorMessage={errors.mat_judul}
                   isRequired
-                  //   disabled={isFormDisabled || dataSaved}
                 />
               </div>
               <div className="col-lg-6">
@@ -527,7 +510,6 @@ export default function PengenalanBefore({ onChangePage }) {
                   onChange={handleInputChange}
                   errorMessage={errors.mat_kata_kunci}
                   isRequired
-                  //   disabled={isFormDisabled || dataSaved}
                 />
               </div>
               <div className="col-lg-12">
@@ -539,7 +521,6 @@ export default function PengenalanBefore({ onChangePage }) {
                   value={formDataRef.current.mat_keterangan}
                   onChange={handleInputChange}
                   errorMessage={errors.mat_keterangan}
-                  //   disabled={isFormDisabled || dataSaved}
                 />
               </div>
               <div className="col-lg-12">
@@ -572,7 +553,6 @@ export default function PengenalanBefore({ onChangePage }) {
                         alignleft aligncenter alignright alignjustify | \
                         bullist numlist outdent indent | removeformat | help",
                     }}
-                    // disabled={isFormDisabled || dataSaved}
                   />
                   {errors.mat_pengenalan && (
                     <div className="invalid-feedback">
@@ -596,14 +576,7 @@ export default function PengenalanBefore({ onChangePage }) {
                 type="submit"
                 label="Berikutnya"
                 style={{ marginRight: "10px" }}
-                // onClick={() => onChangePage("materiAdd", AppContext_master.MateriForm = formDataRef, AppContext_master.count += 1)}
               />
-              {/* <Button
-            classType="dark ms-3 px-4 py-2"
-            label="Berikutnya"
-            onClick={() => onChangePage("materiAdd", AppContext_master.MateriForm = formDataRef, AppContext_master.count += 1)}
-            // isDisabled={!isFormSubmitted}
-          /> */}
             </div>
           </div>
         </div>

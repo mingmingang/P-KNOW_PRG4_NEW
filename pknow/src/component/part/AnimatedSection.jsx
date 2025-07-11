@@ -23,12 +23,12 @@ const AnimatedSection = ({ children, delay = 0, threshold = 0.1 }) => {
       transition: { 
         duration: 0.5, 
         delay,
-        ease: [0.25, 0.1, 0.25, 1] // smoother ease-out
+        ease: [0.25, 0.1, 0.25, 1] 
       }
     },
     hidden: {
       opacity: 0,
-      y: 20 // reduced from 50 for subtler animation
+      y: 20 
     }
   };
 

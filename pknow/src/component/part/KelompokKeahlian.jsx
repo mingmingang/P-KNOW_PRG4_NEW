@@ -32,30 +32,27 @@ export default function KelompokKeahlian({
   useEffect(() => {
     const dropdown = document.querySelector(".dropdown");
     const dropdownMenu = document.querySelector(".dropdown-menu");
-  
-    // Check if both dropdown and dropdownMenu exist
     if (dropdown && dropdownMenu) {
       const handleDropdownClick = (event) => {
-        event.stopPropagation(); // Prevents click from bubbling to document
-        dropdownMenu.classList.toggle("show"); // Toggle visibility
+        event.stopPropagation();
+        dropdownMenu.classList.toggle("show");
       };
-  
+
       const handleClickOutside = (event) => {
         if (!dropdown.contains(event.target)) {
-          dropdownMenu.classList.remove("show"); // Hide if clicked outside
+          dropdownMenu.classList.remove("show");
         }
       };
-  
+
       dropdown.addEventListener("click", handleDropdownClick);
       document.addEventListener("click", handleClickOutside);
-  
+
       return () => {
         dropdown.removeEventListener("click", handleDropdownClick);
         document.removeEventListener("click", handleClickOutside);
       };
     }
   }, []);
-  
 
   return (
     <div className="kelompokKeahlian">
@@ -70,39 +67,38 @@ export default function KelompokKeahlian({
         <div className="d-flex justify-content-between align-items-center mt-4">
           <h3 className="text-xl font-bold text-blue-600">{title}</h3>
           {showDropdown && (
-  <div className="dropdown">
-    <i
-      className="fas fa-ellipsis-h me-4"
-      id="dropdownMenuButton"
-      aria-expanded="false"
-      data-bs-toggle="dropdown"
-    ></i>
-    <ul
-      className="dropdown-menu"
-      aria-labelledby="dropdownMenuButton"
-    >
-      <li>
-        <a className="dropdown-item" href="#edit">
-          <i
-            className="fas fa-edit"
-            style={{ marginRight: "8px", color: "#0A5EA8" }}
-          ></i>
-          <span style={{ color: "#0A5EA8" }}>Edit</span>
-        </a>
-      </li>
-      <li>
-        <a className="dropdown-item" href="#delete">
-          <i
-            className="fas fa-trash-alt"
-            style={{ marginRight: "8px", color: "red" }}
-          ></i>
-          <span style={{ color: "red" }}>Delete</span>
-        </a>
-      </li>
-    </ul>
-  </div>
-)}
-
+            <div className="dropdown">
+              <i
+                className="fas fa-ellipsis-h me-4"
+                id="dropdownMenuButton"
+                aria-expanded="false"
+                data-bs-toggle="dropdown"
+              ></i>
+              <ul
+                className="dropdown-menu"
+                aria-labelledby="dropdownMenuButton"
+              >
+                <li>
+                  <a className="dropdown-item" href="#edit">
+                    <i
+                      className="fas fa-edit"
+                      style={{ marginRight: "8px", color: "#0A5EA8" }}
+                    ></i>
+                    <span style={{ color: "#0A5EA8" }}>Edit</span>
+                  </a>
+                </li>
+                <li>
+                  <a className="dropdown-item" href="#delete">
+                    <i
+                      className="fas fa-trash-alt"
+                      style={{ marginRight: "8px", color: "red" }}
+                    ></i>
+                    <span style={{ color: "red" }}>Delete</span>
+                  </a>
+                </li>
+              </ul>
+            </div>
+          )}
         </div>
 
         <div className="pemilik">

@@ -1,4 +1,3 @@
-import React from "react";
 import { useEffect, useRef, useState } from "react";
 import { motion, useAnimation } from "framer-motion";
 import { useInView } from "react-intersection-observer";
@@ -6,22 +5,15 @@ import Header from "../../backbone/Header";
 import Footer from "../../backbone/Footer";
 import "../../../style/Login.css";
 import logoPknow from "../../../assets/pknow.png";
-import Role from "../../part/Role";
 import Cookies from "js-cookie";
-import ReCAPTCHA from "react-google-recaptcha";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faMinus,
-  faPlus,
-  faDownload,
   faSyncAlt,
 } from "@fortawesome/free-solid-svg-icons";
 import maskot from "../../../assets/loginMaskotTMS.png";
 
 import {
   API_LINK,
-  APPLICATION_ID,
-  APPLICATION_NAME,
   ROOT_LINK,
 } from "../../util/Constants";
 import { validateAllInputs, validateInput } from "../../util/ValidateForm";
@@ -81,15 +73,14 @@ export default function Login() {
   const [isLoading, setIsLoading] = useState(false);
   const [listRole, setListRole] = useState([]);
   const [showModal, setShowModal] = useState(false);
-  const [captchaValue, setCaptchaValue] = useState(null);
-  const [captchaImage, setCaptchaImage] = useState(""); // Captcha URL
+  const [captchaImage, setCaptchaImage] = useState(""); 
 
   const loadCaptcha = () => {
     setCaptchaImage(API_LINK + `Utilities/GetCaptcha?rand=${Math.random()}`);
   };
 
   useEffect(() => {
-    loadCaptcha(); // Muat captcha saat komponen di-mount
+    loadCaptcha(); 
   }, []);
 
   const [captchaNumber, setCaptchaNumber] = useState("");
@@ -104,8 +95,6 @@ export default function Login() {
     generateCaptcha();
   }, []);
 
-  const RECAPTCHA_SITE_KEY = "6Lf3L6MqAAAAAEQMRqr3AcSCUX9vU3hdSk1L4Y-z";
-
   const formDataRef = useRef({
     username: "",
     password: "",
@@ -113,13 +102,11 @@ export default function Login() {
 
   const modalRef = useRef();
 
-  // Validation schema for user inputs
   const userSchema = object({
     username: string().max(50, "Maksimum 50 karakter").required("Harus diisi"),
     password: string().required("Nama Pengguna dan Kata Sandi Wajib Diisi!"),
   });
 
-  // Input change handler with validation
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     const validationError = validateInput(name, value, userSchema);
@@ -130,9 +117,6 @@ export default function Login() {
     }));
   };
 
-  const handleCaptchaChange = (value) => setCaptchaValue(value);
-
-  // Login button click handler
   const handleLoginClick = async (e) => {
     e.preventDefault();
     if (userCaptchaInput.trim() === "") {
@@ -154,7 +138,7 @@ export default function Login() {
       const loginData = {
         username: formDataRef.current.username,
         password: formDataRef.current.password,
-        captcha: userCaptchaInput, // Input CAPTCHA dari pengguna
+        captcha: userCaptchaInput,
       };
 
       try {
@@ -164,7 +148,7 @@ export default function Login() {
             "Content-Type": "application/json",
           },
           body: JSON.stringify(loginData),
-          credentials: "include", // Pastikan session cookie dikirim
+          credentials: "include", 
         });
         const data = await response.json();
         if (data === "ERROR") {

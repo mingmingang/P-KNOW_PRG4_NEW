@@ -10,7 +10,6 @@ import { decryptId } from "../../util/Encryptor";
 import CardClassTraining from "../../part/CardKelasTraining";
 import Paging from "../../part/Paging";
 import "../../../../src/index.css";
-import Table from "../../part/Table";
 import AnimatedSection from "../../part/AnimatedSection";
 
 const inisialisasiData = [
@@ -28,12 +27,7 @@ export default function ClassRepositoryIndex({ onChangePage }) {
   let activeUser = "";
   const cookie = Cookies.get("activeUser");
   if (cookie) activeUser = JSON.parse(decryptId(cookie)).username;
-
-  const cardRefs = useRef([]);
-  const [activeCard, setActiveCard] = useState(null);
   const [isError, setIsError] = useState({ error: false, message: "" });
-
-  // Pisahkan status loading untuk setiap bagian
   const [loadingStates, setLoadingStates] = useState({
     userData: true,
     programData: true,
@@ -41,44 +35,27 @@ export default function ClassRepositoryIndex({ onChangePage }) {
     eksternalData: true,
     kategoriProgram: true,
   });
-
   const [currentData, setCurrentData] = useState(inisialisasiData);
-  const [currentDataEksternal, setCurrentDataEksternal] =
-    useState(inisialisasiData);
   const [currentDataPublikasi, setCurrentDataPublikasi] =
     useState(inisialisasiData);
-  const [listProgram, setListProgram] = useState([]);
-  const [listAnggota, setListAnggota] = useState([]);
-  const [listKategoriProgram, setListKategoriProgram] = useState([]);
   const [currentFilter, setCurrentFilter] = useState({
     page: 1,
     query: "",
     sort: "[Nama Program] desc",
     status: "",
   });
-
-  const [currentFilterPeserta, setCurrentFilterPeserta] = useState({
-    page: 1,
-    query: "",
-    sort: "[Waktu] desc",
-    app: APPLICATION_ID,
-    status: "Belum Dibaca",
-  });
-
   const [currentFilterPublikasi, setCurrentFilterPublikasi] = useState({
     page: 1,
     query: "",
     sort: "[Nama Program] desc",
     status: "",
   });
-
   const [userData, setUserData] = useState({
     Role: "",
     Nama: "",
     kry_id: "",
   });
 
-  // Helper function untuk update loading state
   const updateLoadingState = (key, value) => {
     setLoadingStates((prev) => ({
       ...prev,
@@ -163,40 +140,6 @@ export default function ClassRepositoryIndex({ onChangePage }) {
     }
   };
 
-  const getListKategoriProgram = async (filter) => {
-    updateLoadingState("kategoriProgram", true);
-
-    try {
-      let data = await UseFetch(
-        API_LINK + "KategoriProgram/GetKategoriByProgram",
-        {
-          page: 1,
-          query: "",
-          sort: "[Nama Kategori] asc",
-          status: "",
-          kkeID: filter,
-        }
-      );
-
-      if (data === "ERROR") {
-        throw new Error(
-          "Terjadi kesalahan: Gagal mengambil daftar kategori program."
-        );
-      } else if (data === "data kosong") {
-        setListKategoriProgram([]);
-      } else {
-        setListKategoriProgram(data);
-      }
-    } catch (e) {
-      setIsError({
-        error: true,
-        message: e.message,
-      });
-    } finally {
-      updateLoadingState("kategoriProgram", false);
-    }
-  };
-
   useEffect(() => {
     const fetchData = async () => {
       await getKK();
@@ -221,39 +164,6 @@ export default function ClassRepositoryIndex({ onChangePage }) {
         ...prevFilter,
         page: newCurrentPage,
       };
-    });
-  }
-
-  function handleDelete(id) {
-    setIsError(false);
-
-    SweetAlert(
-      "Konfirmasi Hapus",
-      "Anda yakin ingin <b>menghapus permanen</b> data ini?",
-      "warning",
-      "Hapus"
-    ).then((confirm) => {
-      if (confirm) {
-        updateLoadingState("programData", true);
-        UseFetch(API_LINK + "Program/DeleteProgram", {
-          idProgram: id,
-        })
-          .then((data) => {
-            if (data === "ERROR" || data.length === 0) {
-              setIsError(true);
-            } else if (data[0].hasil === "GAGAL") {
-              setIsError({
-                error: true,
-                message:
-                  "Terjadi kesalahan: Gagal menghapus program karena sudah terdapat Draft Kategori.",
-              });
-            } else {
-              SweetAlert("Sukses", "Data berhasil dihapus.", "success");
-              handleSetCurrentPage(currentFilter.page);
-            }
-          })
-          .finally(() => updateLoadingState("programData", false));
-      }
     });
   }
 
@@ -301,71 +211,6 @@ export default function ClassRepositoryIndex({ onChangePage }) {
     });
   }
 
-  const formatTanggal = (tanggalString) => {
-    if (!tanggalString) return "-";
-
-    const options = {
-      weekday: "long",
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    };
-
-    // Jika tanggal sudah dalam format Date object
-    if (tanggalString instanceof Date) {
-      return new Intl.DateTimeFormat("id-ID", options).format(tanggalString);
-    }
-
-    // Jika tanggal dalam format string
-    const tanggal = new Date(tanggalString);
-
-    // Validasi jika tanggal tidak valid
-    if (isNaN(tanggal.getTime())) {
-      return tanggalString; // Kembalikan aslinya jika tidak bisa diparse
-    }
-
-    return new Intl.DateTimeFormat("id-ID", options).format(tanggal);
-  };
-
-  useEffect(() => {
-    const fetchEksternalData = async () => {
-      setIsError(false);
-      updateLoadingState("eksternalData", true);
-
-      try {
-        const data = await UseFetch(
-          API_LINK + "Klaim/GetUserEksKlaim",
-          currentFilterPeserta
-        );
-
-        if (data === "ERROR") {
-          setIsError(true);
-        } else if (data.length === 0) {
-          setCurrentDataEksternal(inisialisasiData);
-        } else {
-          const formattedData = data.map((value) => ({
-            // ...value,
-            ID: value["ext_id"],
-            Nama: value["ext_nama_lengkap"],
-            "Nomor Telepon": value["ext_no_telp"],
-            Username: value["ext_username"],
-            "Tanggal Klaim": formatTanggal(value["klaim_tanggal"]),
-          }));
-          setCurrentDataEksternal(formattedData);
-        }
-      } catch {
-        setIsError(true);
-      } finally {
-        updateLoadingState("eksternalData", false);
-      }
-    };
-
-    fetchEksternalData();
-  }, [currentFilterPeserta]);
-
-  // Fungsi untuk mengecek apakah semua loading selesai
-  const isLoading = Object.values(loadingStates).some((state) => state);
-
   return (
     <div className="app-container">
       <AnimatedSection>
@@ -378,28 +223,6 @@ export default function ClassRepositoryIndex({ onChangePage }) {
 
       <>
         <AnimatedSection delay={0.3}>
-          <div className="d-flex flex-column">
-            <div className="flex-fill container">
-              <div className="mt-4">
-                <p className="title-kk">Data User Eksternal</p>
-              </div>
-            </div>
-
-            <div className="container">
-              {loadingStates.eksternalData ? (
-                <Loading />
-              ) : (
-                <Table data={currentDataEksternal} />
-              )}
-            </div>
-          </div>
-
-          {isError.error && (
-            <div className="flex-fill">
-              <Alert type="danger" message={isError.message} />
-            </div>
-          )}
-
           <div className="d-flex flex-column">
             <div className="flex-fill container">
               <div className="mt-4">
@@ -478,7 +301,6 @@ export default function ClassRepositoryIndex({ onChangePage }) {
                   </div>
                 </div>
 
-                {/* Only show paging if there's data and filtered data exists */}
                 {currentData[0]?.ID !== null &&
                   currentData.filter(
                     (value) =>

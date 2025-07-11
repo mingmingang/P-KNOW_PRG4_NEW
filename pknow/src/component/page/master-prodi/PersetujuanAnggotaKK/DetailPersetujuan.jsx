@@ -1,27 +1,17 @@
 import Search from "../../../part/Search";
 import { useState, useEffect } from "react";
-import PersetujuanKK from "../../../part/PersetujuanKK";
 import UseFetch from "../../../util/UseFetch";
 import { API_LINK } from "../../../util/Constants";
 import "../../../../style/DetailPersetujuan.css";
 import Button from "../../../part/Button copy";
-import DropDown from "../../../part/Dropdown";
-import Input from "../../../part/Input";
 import Loading from "../../../part/Loading";
 import Alert from "../../../part/Alert";
-import Filter from "../../../part/Filter";
-import Icon from "../../../part/Icon";
 import Label from "../../../part/Label";
 import SweetAlert from "../../../util/SweetAlert";
 import maskotPknow from "../../../../assets/pknowmaskot.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faGraduationCap,
-  faUser,
-  faArrowRight,
-  faPeopleGroup,
-  faClock,
-  faUsers,
 } from "@fortawesome/free-solid-svg-icons";
 import { decode } from "he";
 
@@ -38,7 +28,6 @@ const inisialisasiData = [
 ];
 
 export default function DetailPersetujuan({ onChangePage, withID }) {
-  const [errors, setErrors] = useState({});
   const [isError, setIsError] = useState({ error: false, message: "" });
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({});
@@ -94,7 +83,7 @@ export default function DetailPersetujuan({ onChangePage, withID }) {
     const parser = new DOMParser();
     const decodedString = parser.parseFromString(str, "text/html").body
       .textContent;
-    return decodedString || str; // Jika decoding gagal, gunakan string asli
+    return decodedString || str;
   };
 
   const getListLampiran = async (idAKK) => {
@@ -154,7 +143,6 @@ export default function DetailPersetujuan({ onChangePage, withID }) {
 
   function handleSetStatus(data, status) {
     setIsError(false);
-
     let message;
 
     if (status === "Aktif") message = "Apakah anda yakin ingin menyetujui?";
@@ -250,8 +238,8 @@ export default function DetailPersetujuan({ onChangePage, withID }) {
                         style={{
                           borderRadius: "20px",
                           objectFit: "",
-                          border: "1px solid #ccc", // Border dengan warna abu-abu muda
-                          boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)", // Drop shadow
+                          border: "1px solid #ccc",
+                          boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
                         }}
                       />
                     </div>
@@ -260,7 +248,6 @@ export default function DetailPersetujuan({ onChangePage, withID }) {
                   <div className="card-body">
                     <div className="row pt-2">
                       <div className="col-lg-5">
-                        {/* <p>3 orang baru saja bergabung!</p> */}
                         {listAnggota
                           ?.filter((value) => {
                             return value.Status === "Aktif";
@@ -299,15 +286,6 @@ export default function DetailPersetujuan({ onChangePage, withID }) {
                               </div>
                             </>
                           ))}
-                        {/* <div className="text-end">
-                            <Button
-                              classType="light btn-sm text-primary text-decoration-underline px-3 mt-2"
-                              type="submit"
-                              label="Lihat Semua"
-                              data-bs-toggle="modal"
-                              data-bs-target="#modalAnggota"
-                            />
-                          </div> */}
                       </div>
                     </div>
                   </div>
@@ -511,100 +489,6 @@ export default function DetailPersetujuan({ onChangePage, withID }) {
                 </div>
               </div>
             )}
-
-            {/* <div
-        class="modal fade"
-        id="modalAnggota"
-        tabindex="-1"
-        aria-labelledby="Anggota Kelompok Keahlian"
-        aria-hidden="true"
-      >
-        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h1 class="modal-title fs-5" id="modalAnggotaKK">
-                Anggota Kelompok Keahlian
-              </h1>
-              <button
-                type="button"
-                class="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              ></button>
-            </div>
-            <div class="modal-body">
-              <div className="input-group mb-4">
-                <Input
-                  //   ref={searchQuery}
-                  forInput="pencarianProduk"
-                  placeholder="Cari"
-                />
-                <Button
-                  iconName="search"
-                  classType="primary px-4"
-                  title="Cari"
-                  //   onClick={handleSearch}
-                />
-                <Filter>
-                  <DropDown
-                    // ref={searchFilterSort}
-                    forInput="ddUrut"
-                    label="Urut Berdasarkan"
-                    type="none"
-                    // arrData={dataFilterSort}
-                    defaultValue="[Kode Produk] asc"
-                  />
-                  <DropDown
-                    // ref={searchFilterJenis}
-                    forInput="ddJenis"
-                    label="Jenis Produk"
-                    type="semua"
-                    // arrData={dataFilterJenis}
-                    defaultValue=""
-                  />
-                  <DropDown
-                    // ref={searchFilterStatus}
-                    forInput="ddStatus"
-                    label="Status"
-                    type="none"
-                    // arrData={dataFilterStatus}
-                    defaultValue="Aktif"
-                  />
-                </Filter>
-              </div>
-              {formData.members?.map((pr, index) => (
-                <div className="card-profile mb-3 d-flex shadow-sm">
-                  <p className="mb-0 px-1 py-2 mt-2 me-2 fw-bold text-primary">
-                    {index + 1}
-                  </p>
-                  <div className="bg-primary" style={{ width: "1.5%" }}></div>
-                  <div className="p-1 ps-2 d-flex">
-                    <img
-                      src={pr.imgSource}
-                      alt={pr.name}
-                      className="img-fluid rounded-circle"
-                      width="45"
-                    />
-                    <div className="ps-3">
-                      <p className="mb-0">{pr.name}</p>
-                      <p className="mb-0" style={{ fontSize: "13px" }}>
-                        UPT Manajemen Informatika
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-            <div className="modal-footer">
-              <Button
-                classType="secondary btn-sm px-3 mt-2"
-                type="submit"
-                label="Kelola"
-              />
-            </div>
-          </div>
-        </div>
-      </div> */}
           </>
         </main>
       </div>

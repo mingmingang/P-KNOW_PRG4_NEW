@@ -1,31 +1,21 @@
 import { useState, useEffect } from "react";
 import Button from "../../../part/Button";
-import DropDown from "../../../part/Dropdown";
-import Input from "../../../part/Input";
 import Loading from "../../../part/Loading";
 import Alert from "../../../part/Alert";
-import Filter from "../../../part/Filter";
 import Icon from "../../../part/Icon";
 import { API_LINK } from "../../../util/Constants";
 import UseFetch from "../../../util/UseFetch";
-import NoImage from "../../../../assets/NoImage.png";
 import BackPage from "../../../../assets/backPage.png";
 import Konfirmasi from "../../../part/Konfirmasi";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faGraduationCap,
-  faUser,
-  faArrowRight,
-  faPeopleGroup,
-  faClock,
-  faUsers,
 } from "@fortawesome/free-solid-svg-icons";
 import maskotPknow from "../../../../assets/pknowmaskot.png";
 import { decode } from "he";
 import "../../../../index.css";
 
 export default function KKDetailPublish({ onChangePage, withID }) {
-  const [errors, setErrors] = useState({});
   const [isError, setIsError] = useState({ error: false, message: "" });
   const [isLoading, setIsLoading] = useState(false);
   const [listAnggota, setListAnggota] = useState([]);
@@ -401,45 +391,6 @@ export default function KKDetailPublish({ onChangePage, withID }) {
               ></button>
             </div>
             <div class="modal-body">
-              {/* <div className="input-group mb-4">
-                <Input
-                  //   ref={searchQuery}
-                  forInput="pencarianProduk"
-                  placeholder="Cari"
-                />
-                <Button
-                  iconName="search"
-                  classType="primary px-4"
-                  title="Cari"
-                  //   onClick={handleSearch}
-                />
-                <Filter>
-                  <DropDown
-                    // ref={searchFilterSort}
-                    forInput="ddUrut"
-                    label="Urut Berdasarkan"
-                    type="none"
-                    // arrData={dataFilterSort}
-                    defaultValue="[Kode Produk] asc"
-                  />
-                  <DropDown
-                    // ref={searchFilterJenis}
-                    forInput="ddJenis"
-                    label="Jenis Produk"
-                    type="semua"
-                    // arrData={dataFilterJenis}
-                    defaultValue=""
-                  />
-                  <DropDown
-                    // ref={searchFilterStatus}
-                    forInput="ddStatus"
-                    label="Status"
-                    type="none"
-                    // arrData={dataFilterStatus}
-                    defaultValue="Aktif"
-                  />
-                </Filter>
-              </div> */}
               {listAnggota.length > 0 ? (
                 listAnggota[0].Message ? (
                   <Alert

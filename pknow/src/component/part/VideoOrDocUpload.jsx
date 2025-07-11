@@ -16,7 +16,7 @@ const FileUpload = forwardRef(function FileUpload(
 ) {
   return (
     <>
-      <div className="mb-3" style={{width:"600px"}}>
+      <div className="mb-3" style={{ width: "600px" }}>
         <label htmlFor={forInput} className="form-label fw-bold">
           {label}
           {isRequired ? <span className="text-danger"> *</span> : ""}

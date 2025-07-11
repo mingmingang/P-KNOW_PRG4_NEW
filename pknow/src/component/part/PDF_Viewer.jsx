@@ -7,7 +7,11 @@ import "../../style/PDF_Viewer.css";
 import Loading from "./Loading";
 import { API_LINK } from "../util/Constants";
 
-export default function PDF_Viewer({ pdfFileName, width = "auto", height="auto"}) {
+export default function PDF_Viewer({
+  pdfFileName,
+  width = "auto",
+  height = "auto",
+}) {
   const [isLoading, setIsLoading] = useState(false);
   const [pdfUrl, setPdfUrl] = useState(null);
   const defaultLayoutPluginInstance = defaultLayoutPlugin();
@@ -15,7 +19,7 @@ export default function PDF_Viewer({ pdfFileName, width = "auto", height="auto"}
   useEffect(() => {
     if (pdfFileName) {
       setIsLoading(true);
-      const fileUrl = `${API_LINK}Upload/GetFile/${pdfFileName}`; // Anda bisa mengubah URL ini sesuai kebutuhan
+      const fileUrl = `${API_LINK}Upload/GetFile/${pdfFileName}`;
       setPdfUrl(fileUrl);
       setIsLoading(false);
     }
@@ -23,14 +27,17 @@ export default function PDF_Viewer({ pdfFileName, width = "auto", height="auto"}
 
   return (
     <div className="d-flex flex-column">
-      <div className="flex-fill">
-        {isLoading && <Loading />} {/* Show loading state if needed */}
-      </div>
+      <div className="flex-fill">{isLoading && <Loading />}</div>
       <div className="mt-3">
         {pdfUrl && (
-          <Worker workerUrl={`https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js`}>
-            <div style={{ height: height, borderRadius:'20px', width:width }}>
-              <Viewer fileUrl={pdfUrl} plugins={[defaultLayoutPluginInstance]} />
+          <Worker
+            workerUrl={`https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js`}
+          >
+            <div style={{ height: height, borderRadius: "20px", width: width }}>
+              <Viewer
+                fileUrl={pdfUrl}
+                plugins={[defaultLayoutPluginInstance]}
+              />
             </div>
           </Worker>
         )}

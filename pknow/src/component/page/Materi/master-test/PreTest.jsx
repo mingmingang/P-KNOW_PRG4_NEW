@@ -1,26 +1,16 @@
 import { useEffect, useRef, useState, useContext } from "react";
 import { PAGE_SIZE, API_LINK, ROOT_LINK } from "../../../util/Constants";
-import SweetAlert from "../../../util/SweetAlert";
-import UseFetch from "../../../util/UseFetch";
 import Button from "../../../part/Button copy";
-import Input from "../../../part/Input";
 import Table from "../../../part/Table";
-import Paging from "../../../part/Paging";
-import Filter from "../../../part/Filter";
-import DropDown from "../../../part/Dropdown";
 import Alert from "../../../part/Alert";
 import Loading from "../../../part/Loading";
-// import profilePicture from "../../../../assets/test.jpg";
 import KMS_Rightbar from "../../../part/RightBar";
-// import SideBar from "../../../backbone/SideBar";
-import maskot from "../../../../assets/pknowmaskot.png";
 import Cookies from "js-cookie";
 import { decryptId } from "../../../util/Encryptor";
 import axios from "axios";
 import AppContext_test from "./TestContext";
 import "../../../../style/Table.css";
 import { decode } from "html-entities";
-import { color } from "framer-motion";
 
 export default function MasterTestPreTest({
   onChangePage,
@@ -38,7 +28,7 @@ export default function MasterTestPreTest({
   const [receivedMateriId, setReceivedMateriId] = useState();
   const [sectionData, setSectionData] = useState([]);
   const [error, setError] = useState(null);
-    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   function onStartTest() {
     try {
@@ -89,7 +79,6 @@ export default function MasterTestPreTest({
     }
   }
 
-
   async function updateProgres() {
     let success = false;
     let retryCount = 0;
@@ -101,8 +90,8 @@ export default function MasterTestPreTest({
           API_LINK + "Materi/UpdatePoinProgresMateri",
           {
             materiId: AppContext_test.materiId,
-            kry_user : activeUser,
-            tipe: 'Pre-Test'
+            kry_user: activeUser,
+            tipe: "Pre-Test",
           }
         );
         if (response.status === 200) {
@@ -161,11 +150,11 @@ export default function MasterTestPreTest({
                       }).format(new Date(item["Tanggal Quiz"])),
                       Nilai: item.Status == "Reviewed" ? item.Nilai : "",
                       Keterangan:
-                      item.Status == "Reviewed"
-                        ? item.Nilai > 80
-                          ? "Anda Lulus Kuis"
-                          : "Tidak Lulus Kuis"
-                        : "Sedang direview oleh Tenaga Pendidik",     
+                        item.Status == "Reviewed"
+                          ? item.Nilai > 80
+                            ? "Anda Lulus Kuis"
+                            : "Tidak Lulus Kuis"
+                          : "Sedang direview oleh Tenaga Pendidik",
                       Aksi: item.Status == "Reviewed" ? ["Detail"] : [""],
                       Alignment: [
                         "center",
@@ -293,15 +282,13 @@ export default function MasterTestPreTest({
     const initializeData = async () => {
       try {
         setIsLoading(true);
-        await getListSection(); // Pastikan ID Section diambil
+        await getListSection();
         const quizData = await getQuiz_pretest();
 
         if (quizData) {
           totalSoal = quizData.jumlahSoal;
-          setCurrentData(quizData); // Set currentData lebih awal
+          setCurrentData(quizData);
         }
-
-        // Setelah currentData tersedia, panggil fetchData_pretest
         await fetchData_pretest();
       } catch (error) {
         console.error("Error initializing data:", error);
@@ -344,71 +331,65 @@ export default function MasterTestPreTest({
     }
   }
 
-    useEffect(() => {
-  const handleResize = () => {
-    if (window.innerWidth >= 992) {
-      setIsSidebarOpen(true);
-    } else {
-      setIsSidebarOpen(false);
-    }
-  };
-  window.addEventListener("resize", handleResize);
-  handleResize(); // initial call
-  return () => window.removeEventListener("resize", handleResize);
-}, []);
-
-
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 992) {
+        setIsSidebarOpen(true);
+      } else {
+        setIsSidebarOpen(false);
+      }
+    };
+    window.addEventListener("resize", handleResize);
+    handleResize();
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   return (
     <>
-         <button 
-  className="d-lg-none btn btn-primary mb-3" 
-  onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-  style={{
-    position: 'fixed',
-    top: '100px',
-    right: '15px',
-    zIndex: 1000,
-    color: 'white',
-    fontSize: '20px'
-  }}
->
-  {isSidebarOpen ? '✕' : '☰'}
-</button>
+      <button
+        className="d-lg-none btn btn-primary mb-3"
+        onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+        style={{
+          position: "fixed",
+          top: "100px",
+          right: "15px",
+          zIndex: 1000,
+          color: "white",
+          fontSize: "20px",
+        }}
+      >
+        {isSidebarOpen ? "✕" : "☰"}
+      </button>
 
-     <div className="container d-flex">
-        {/* When sidebar is open on mobile */}
+      <div className="container d-flex">
         {isSidebarOpen && (
-          <div 
+          <div
             className="d-lg-none"
             style={{
-              position: 'fixed',
+              position: "fixed",
               top: 0,
               left: 0,
               right: 0,
               bottom: 0,
-              backgroundColor: 'rgba(0,0,0,0.5)',
-              zIndex: 999
+              backgroundColor: "rgba(0,0,0,0.5)",
+              zIndex: 999,
             }}
             onClick={() => setIsSidebarOpen(false)}
           />
         )}
-      <div
-  className={`${
-    isSidebarOpen ? "d-block" : "d-none"
-  } d-lg-block`}
-  style={{
-    position: isSidebarOpen ? "fixed" : "relative",
-    zIndex: 999,
-    backgroundColor: "white",
-    height: isSidebarOpen ? "100vh" : "auto",
-    overflowY: "auto",
-    width: isSidebarOpen ? "350px" : "0px",
-    left: isSidebarOpen ? "0" : "auto",
-    top: isSidebarOpen ? "0" : "auto",
-  }}
->
-
+        <div
+          className={`${isSidebarOpen ? "d-block" : "d-none"} d-lg-block`}
+          style={{
+            position: isSidebarOpen ? "fixed" : "relative",
+            zIndex: 999,
+            backgroundColor: "white",
+            height: isSidebarOpen ? "100vh" : "auto",
+            overflowY: "auto",
+            width: isSidebarOpen ? "350px" : "0px",
+            left: isSidebarOpen ? "0" : "auto",
+            top: isSidebarOpen ? "0" : "auto",
+          }}
+        >
           <KMS_Rightbar
             isActivePengenalan={false}
             isActiveForum={false}
@@ -426,8 +407,6 @@ export default function MasterTestPreTest({
             handlePreTestClick_open={() => setIsSidebarOpen(true)}
             handlePreTestClick_close={() => setIsSidebarOpen(false)}
             isCollapsed={!isSidebarOpen}
-            // refreshKey={refreshKey}
-            // setRefreshKey={setRefreshKey}
           />
         </div>
         <div className="">
@@ -439,15 +418,19 @@ export default function MasterTestPreTest({
           )}
           {isLoading ? (
             <Loading message="Sedang memuat data..." />
-          ) : currentData ? ( 
-                  <div
-  className="d-flex flex-column flex-grow-1"
-  style={{
-    marginLeft: window.innerWidth >= 992 ? (isSidebarOpen ? "23%" : "0px") : "0",
-    transition: "margin-left 0.3s",
-  }}
->
-
+          ) : currentData ? (
+            <div
+              className="d-flex flex-column flex-grow-1"
+              style={{
+                marginLeft:
+                  window.innerWidth >= 992
+                    ? isSidebarOpen
+                      ? "23%"
+                      : "0px"
+                    : "0",
+                transition: "margin-left 0.3s",
+              }}
+            >
               <div className=" align-items-center mb-5">
                 <div style={{ marginTop: "80px" }}>
                   <div className="d-flex">
@@ -458,17 +441,20 @@ export default function MasterTestPreTest({
                     style={{ color: "#002B6C", fontWeight: "600" }}
                   >
                     {decode(currentData.quizDeskripsi)}
-                  
                   </h2>
                   <br />
-                    <h6 className="mb-0" style={{ color: "#002B6C" }}>
-                      Dari {decode(currentData.NamaKK)} - {decode(currentData.Prodi)}
-                    </h6>
-                    <br />
-                    <h6 className="mb-2" style={{ color: "#002B6C", marginTop:"-10px" }}>
-                      Oleh {decode(currentData.Nama)} -{" "}
-                      {formatDate(currentData.createdDate)}
-                    </h6>
+                  <h6 className="mb-0" style={{ color: "#002B6C" }}>
+                    Dari {decode(currentData.NamaKK)} -{" "}
+                    {decode(currentData.Prodi)}
+                  </h6>
+                  <br />
+                  <h6
+                    className="mb-2"
+                    style={{ color: "#002B6C", marginTop: "-10px" }}
+                  >
+                    Oleh {decode(currentData.Nama)} -{" "}
+                    {formatDate(currentData.createdDate)}
+                  </h6>
                   <p
                     className="mb-3"
                     style={{ textAlign: "justify", width: "98%" }}
@@ -492,8 +478,8 @@ export default function MasterTestPreTest({
                   label="Mulai Pre-Test"
                   onClick={onStartTest}
                   style={{
-                    backgroundColor:"#0d6efd",
-                    color:"white"
+                    backgroundColor: "#0d6efd",
+                    color: "white",
                   }}
                 />
               </div>

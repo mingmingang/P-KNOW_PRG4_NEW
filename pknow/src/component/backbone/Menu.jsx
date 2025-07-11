@@ -52,7 +52,6 @@ export default function Menu({ listMenu }) {
                 {menu["sub"].map((sub) => {
                   if (activeURL === sub["link"]) {
                     setActiveMenu(menu["head"] + " - " + sub["title"]);
-                    //setActiveCollapse("menucollapse" + menu["headkey"]);
                   }
                   return (
                     <a

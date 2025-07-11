@@ -25,39 +25,33 @@ const inisialisasiKK = [
   },
 ];
 
+const inisialisasiData = [
+  {
+    Key: null,
+    No: null,
+    "ID Lampiran": null,
+    Lampiran: null,
+    Karyawan: null,
+    Status: null,
+    Count: 0,
+  },
+];
 
-  const inisialisasiData = [
-    {
-      Key: null,
-      No: null,
-      "ID Lampiran": null,
-      Lampiran: null,
-      Karyawan: null,
-      Status: null,
-      Count: 0,
-    },
-  ];
+const dataFilterSort = [
+  { Value: "[Nama Kelompok Keahlian] asc", Text: "Nama Kelompok Keahlian [↑]" },
+  {
+    Value: "[Nama Kelompok Keahlian] desc",
+    Text: "Nama Kelompok Keahlian  [↓]",
+  },
+];
 
-  const dataFilterSort = [
-    { Value: "[Nama Kelompok Keahlian] asc", Text: "Nama Kelompok Keahlian [↑]" },
-    {
-      Value: "[Nama Kelompok Keahlian] desc",
-      Text: "Nama Kelompok Keahlian  [↓]",
-    },
-  ];
-  
-
-export default function RiwayatPengajuan({onChangePage}) {
-    let activeUser = "";
+export default function RiwayatPengajuan({ onChangePage }) {
+  let activeUser = "";
   const cookie = Cookies.get("activeUser");
   if (cookie) activeUser = JSON.parse(decryptId(cookie)).username;
-
-  const [show, setShow] = useState(false);
   const [isError, setIsError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [dataAktif, setDataAktif] = useState(false);
   const [listKK, setListKK] = useState([]);
-  const [detail, setDetail] = useState(inisialisasiData);
 
   const [userData, setUserData] = useState({
     Role: "",
@@ -74,38 +68,34 @@ export default function RiwayatPengajuan({onChangePage}) {
 
   const searchQuery = useRef();
   const searchFilterSort = useRef();
-  const searchFilterKry = useRef(); 
 
   function handleSearch() {
     if (!currentFilter.kry_id) {
       console.error("kry_id belum diatur. Tidak dapat melanjutkan pencarian.");
       return;
     }
-  
+
     setIsLoading(true);
-  
+
     setCurrentFilter((prevFilter) => ({
       ...prevFilter,
       page: 1,
-      query: searchQuery.current?.value || "", // Gunakan nilai kosong jika undefined
+      query: searchQuery.current?.value || "",
       sort: searchFilterSort.current?.value || "[Nama Kelompok Keahlian] asc",
-      kry_id: currentFilter.kry_id, // Pastikan kry_id digunakan
+      kry_id: currentFilter.kry_id,
     }));
-  
   }
-  
-  
 
   const getUserKryID = async () => {
     setIsLoading(true);
     setIsError((prevError) => ({ ...prevError, error: false }));
-  
+
     try {
       while (true) {
         const data = await UseFetch(API_LINK + "Utilities/GetUserLogin", {
           param: activeUser,
         });
-  
+
         if (data === "ERROR") {
           throw new Error("Terjadi kesalahan: Gagal mengambil daftar prodi.");
         } else if (data.length === 0) {
@@ -113,13 +103,11 @@ export default function RiwayatPengajuan({onChangePage}) {
         } else {
           const user = data[0];
           setUserData(user);
-  
-          // Perbarui filter dengan kry_id dari hasil API
           setCurrentFilter((prevFilter) => ({
             ...prevFilter,
             kry_id: user.kry_id,
           }));
-  
+
           setIsLoading(false);
           break;
         }
@@ -134,7 +122,6 @@ export default function RiwayatPengajuan({onChangePage}) {
       }));
     }
   };
-  
 
   useEffect(() => {
     getUserKryID();
@@ -153,6 +140,8 @@ export default function RiwayatPengajuan({onChangePage}) {
           currentFilter
         );
 
+        console.log("data riwayat", data);
+
         if (data === "ERROR") {
           throw new Error("Terjadi kesalahan: Gagal mengambil daftar prodi.");
         } else if (data === "data kosong") {
@@ -160,7 +149,6 @@ export default function RiwayatPengajuan({onChangePage}) {
           setIsLoading(false);
           break;
         } else {
-         
           setListKK(data);
           setIsLoading(false);
           break;
@@ -180,18 +168,22 @@ export default function RiwayatPengajuan({onChangePage}) {
     getRiwayat();
   }, [currentFilter]);
 
-    return (
-        <div className="app-container">
-            {/* Render Header */}
-            <main>
-            <div className="backSearch">
+  console.log("riwayat", listKK);
+
+  return (
+    <div className="app-container">
+      <main>
+        <div className="backSearch">
           <h1>Riwayat Pengajuan</h1>
           <p>
-          Riwayat Pengajuan akan menampilkan pengajuan anggota keahlia yang anda ajukan, hanya terdapat satu kelompok keahlian yang pengajuannya akan diterima oleh Program Studi.
+            Riwayat Pengajuan akan menampilkan pengajuan anggota keahlia yang
+            anda ajukan, hanya terdapat satu kelompok keahlian yang pengajuannya
+            akan diterima oleh Program Studi.
           </p>
-          {/* <div className="input-wrapper">
+
+          <div className="input-wrapper">
             <div
-              className=""
+              className="cari"
               style={{
                 display: "flex",
                 backgroundColor: "white",
@@ -199,18 +191,16 @@ export default function RiwayatPengajuan({onChangePage}) {
                 height: "40px",
               }}
             >
-             <Input
+              <Input
                 ref={searchQuery}
                 forInput="pencarianKK"
-                placeholder="Cari"
+                placeholder="Cari Riwayat Pengajuan"
                 style={{
                   border: "none",
-
                   height: "40px",
                   borderRadius: "20px",
                 }}
               />
-
               <Button2
                 iconName="search"
                 classType="px-4"
@@ -219,113 +209,102 @@ export default function RiwayatPengajuan({onChangePage}) {
                 style={{ backgroundColor: "transparent", color: "#08549F" }}
               />
             </div>
-          </div> */}
-
-<div className="input-wrapper">
-              <div
-                className="cari"
-                style={{
-                  display: "flex",
-                  backgroundColor: "white",
-                  borderRadius: "20px",
-                  height: "40px",
-                }}
-              >
-                <Input
-                  ref={searchQuery}
-                  forInput="pencarianKK"
-                  placeholder="Cari Riwayat Pengajuan"
-                  style={{
-                    border: "none",
-                    height: "40px",
-                    borderRadius: "20px",
-                  }}
-                />
-                <Button2
-                  iconName="search"
-                  classType="px-4"
-                  title="Cari"
-                  onClick={handleSearch}
-                  style={{ backgroundColor: "transparent", color: "#08549F" }}
-                />
-              </div>
-            </div>
-        </div>
-                 <>
-                 <div className="container">
-      <div className="d-flex flex-column">
-      <div className="navigasi-layout-page">
-          <p className="title-kk">Kelompok Keahlian</p>
-          <div className="left-feature">
-            <div className="status">
-              <table>
-                <tbody>
-                  <tr>
-                    <td>
-                      <i
-                        className="fas fa-circle"
-                        style={{ color: "grey" }}
-                      ></i>
-                    </td>
-                    <td>
-                      <p>Dibatalkan</p>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <i className="fas fa-circle" style={{ color: "#DC3545" }}></i>
-                    </td>
-                    <td>
-                      <p>Ditolak</p>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-
-            <div className="tes" style={{ display: "flex" }}>
-              <div className="">
-                <Filter handleSearch={handleSearch}>
-                <DropDown
-                    ref={searchFilterSort}
-                    forInput="ddUrut"
-                    label="Urut Berdasarkan"
-                    type="none"
-                    arrData={dataFilterSort}
-                    defaultValue="[Nama Kelompok Keahlian] asc"
-                  />
-
-                </Filter>
-              </div>
-              </div>
-              </div>
-              </div>
-              </div>
-          
-          <div className="container">
-            <div className="row mb-4 gx-4">
-            {Array.isArray(listKK) && listKK.length > 0 && listKK[0]?.Message ? (
-              <div className="" style={{marginRight:"120px"}} >
-  <Alert type="warning" message="Tidak ada riwayat.." />
-  </div>
-) : (
- 
- listKK
-    ?.filter((value) => value.Status === "Dibatalkan" || value.Status === "Ditolak")
-    .map((value) => (
-      <CardPengajuanBaru
-        key={value.Key}
-        data={value}
-        onChangePage={onChangePage}
-      />
-    ))
-)}
-            </div>
           </div>
         </div>
-    </>
+        <>
+          <div className="container">
+            <div className="d-flex flex-column">
+              <div className="navigasi-layout-page">
+                <p className="title-kk">Kelompok Keahlian</p>
+                <div className="left-feature">
+                  <div className="status">
+                    <table>
+                      <tbody>
+                        <tr>
+                          <td>
+                            <i
+                              className="fas fa-circle"
+                              style={{ color: "grey" }}
+                            ></i>
+                          </td>
+                          <td>
+                            <p>Dibatalkan</p>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            <i
+                              className="fas fa-circle"
+                              style={{ color: "#DC3545" }}
+                            ></i>
+                          </td>
+                          <td>
+                            <p>Ditolak</p>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
 
-            </main>
-        </div>
-    );
+                  <div className="tes" style={{ display: "flex" }}>
+                    <div className="">
+                      <Filter handleSearch={handleSearch}>
+                        <DropDown
+                          ref={searchFilterSort}
+                          forInput="ddUrut"
+                          label="Urut Berdasarkan"
+                          type="none"
+                          arrData={dataFilterSort}
+                          defaultValue="[Nama Kelompok Keahlian] asc"
+                        />
+                      </Filter>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="container">
+              <div className="row mb-4 gx-4">
+                {(() => {
+                  const filteredList = listKK?.filter(
+                    (value) =>
+                      value.Status === "Dibatalkan" ||
+                      value.Status === "Ditolak"
+                  );
+
+                  if (Array.isArray(listKK) && listKK[0]?.Message) {
+                    return (
+                      <div style={{ marginRight: "120px" }}>
+                        <Alert type="warning" message="Tidak ada riwayat.." />
+                      </div>
+                    );
+                  }
+
+                  if (!filteredList || filteredList.length === 0) {
+                    return (
+                      <div style={{ marginRight: "120px" }}>
+                        <Alert
+                          type="warning"
+                          message="Tidak ada data ditolak atau dibatalkan."
+                        />
+                      </div>
+                    );
+                  }
+
+                  return filteredList.map((value) => (
+                    <CardPengajuanBaru
+                      key={value.Key}
+                      data={value}
+                      onChangePage={onChangePage}
+                    />
+                  ));
+                })()}
+              </div>
+            </div>
+          </div>
+        </>
+      </main>
+    </div>
+  );
 }

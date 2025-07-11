@@ -11,7 +11,7 @@ const FileUpload = forwardRef(function FileUpload(
     isDisabled = false,
     errorMessage,
     hasExisting,
-    maxFileSize = 10, // Default 10 MB
+    maxFileSize = 10,
     ...props
   },
   ref
@@ -43,9 +43,7 @@ const FileUpload = forwardRef(function FileUpload(
               {...props}
               required={isRequired}
             />
-            <sub>
-              Maksimum ukuran berkas adalah {maxFileSize} MB
-            </sub>
+            <sub>Maksimum ukuran berkas adalah {maxFileSize} MB</sub>
             {hasExisting && (
               <sub>
                 <br />
@@ -55,7 +53,7 @@ const FileUpload = forwardRef(function FileUpload(
                   className="text-decoration-none"
                   rel="noopener noreferrer"
                   target="_blank"
-                  download={hasExisting.split('/').pop()}
+                  download={hasExisting.split("/").pop()}
                 >
                   [Unduh Berkas]
                 </a>
@@ -70,7 +68,7 @@ const FileUpload = forwardRef(function FileUpload(
             <br />
             {hasExisting && (
               <a
-              href={FILE_LINK + hasExisting}
+                href={FILE_LINK + hasExisting}
                 className="text-decoration-none"
                 rel="noopener noreferrer"
               >

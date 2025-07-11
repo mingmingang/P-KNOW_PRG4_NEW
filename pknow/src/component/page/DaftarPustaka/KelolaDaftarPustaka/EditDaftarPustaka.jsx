@@ -3,8 +3,6 @@ import { object, string } from "yup";
 import SweetAlert from "../../../util/SweetAlert";
 import UseFetch from "../../../util/UseFetch";
 import UploadFile from "../../../util/UploadFile";
-import Button from "../../../part/Button copy";
-import DropDown from "../../../part/Dropdown";
 import Select2Dropdown from "../../../part/Select2Dropdown";
 import Input from "../../../part/Input";
 import FileUpload from "../../../part/FileUpload";
@@ -18,7 +16,7 @@ import Konfirmasi from "../../../part/Konfirmasi";
 import AppContext_test from "../../master-test/TestContext";
 import { decode } from "he";
 import AnimatedSection from "../../../part/AnimatedSection";
-import "../../../../index.css"
+import "../../../../index.css";
 
 const listKataKunci = [
   { Value: "Alat", Text: "Kat Kunci 1" },
@@ -34,41 +32,35 @@ export default function MasterDaftarPustakaEdit({ onChangePage, withID }) {
   const [listKK, setListKK] = useState([]);
   const [fileExtension, setFileExtension] = useState("");
   const [file, setFile] = useState("");
-  const [isBackAction, setIsBackAction] = useState(false);  
+  const [isBackAction, setIsBackAction] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
 
-  const fileInputRef = useRef(0);
-  const gambarInputRef = useRef(0);
-  
-
   const handleGoBack = () => {
-    setIsBackAction(true);  
-    setShowConfirmation(true);  
+    setIsBackAction(true);
+    setShowConfirmation(true);
   };
 
   const handleConfirmYes = () => {
-    setShowConfirmation(false); 
+    setShowConfirmation(false);
     onChangePage("index", withID);
   };
 
-
   const handleConfirmNo = () => {
-    setShowConfirmation(false);  
+    setShowConfirmation(false);
   };
 
   const [filePreview, setFilePreview] = useState(false);
   const fileGambarRef = useRef(null);
   const fileDocumentRef = useRef(null);
 
-
   const formDataRef = useRef({
     pus_id: withID.Key,
     pus_judul: decode(withID.Judul),
     kke_id: withID.kke_id,
-    pus_file: '',
+    pus_file: "",
     pus_keterangan: decode(withID.Keterangan),
     pus_kata_kunci: withID["Kata Kunci"],
-    pus_gambar: '',
+    pus_gambar: "",
     pus_status: "Aktif",
   });
 
@@ -88,10 +80,10 @@ export default function MasterDaftarPustakaEdit({ onChangePage, withID }) {
       pus_id: withID.Key,
       pus_judul: decode(withID.Judul),
       kke_id: withID["ID KK"],
-      pus_file: '',
+      pus_file: "",
       pus_keterangan: decode(withID.Keterangan),
       pus_kata_kunci: withID["Kata Kunci"],
-      pus_gambar: '',
+      pus_gambar: "",
       pus_status: "Aktif",
     };
     setFilePreview(false);
@@ -132,7 +124,7 @@ export default function MasterDaftarPustakaEdit({ onChangePage, withID }) {
       if (file && file.type.startsWith("image/")) {
         const reader = new FileReader();
         reader.onloadend = () => {
-          setFilePreview(reader.result); // Set the preview
+          setFilePreview(reader.result); 
         };
         reader.readAsDataURL(file);
       }
@@ -174,22 +166,20 @@ export default function MasterDaftarPustakaEdit({ onChangePage, withID }) {
     if (fileExtension === "mp4") {
       AppContext_test.urlMateri = withID.File;
     } else {
-    fetch(
-      API_LINK +
-        `Utilities/Upload/DownloadFile?namaFile=${encodeURIComponent(
-          withID.File
-        )}`
-    )
-      .then((response) => response.blob())
-      .then((blob) => {
-        const url = URL.createObjectURL(blob);
-        setFile(`${API_LINK}Upload/GetFile/${withID.File}`);
-       
-      })
-      .catch((error) => {
-        console.error("Error fetching file:", error);
-      });
-    
+      fetch(
+        API_LINK +
+          `Utilities/Upload/DownloadFile?namaFile=${encodeURIComponent(
+            withID.File
+          )}`
+      )
+        .then((response) => response.blob())
+        .then((blob) => {
+          const url = URL.createObjectURL(blob);
+          setFile(`${API_LINK}Upload/GetFile/${withID.File}`);
+        })
+        .catch((error) => {
+          console.error("Error fetching file:", error);
+        });
     }
   }, [fileExtension]);
 
@@ -207,14 +197,12 @@ export default function MasterDaftarPustakaEdit({ onChangePage, withID }) {
         if (data === "ERROR") {
           throw new Error("Terjadi kesalahan: Gagal mengambil daftar prodi.");
         } else {
-          // Mengubah data menjadi format yang diinginkan
           const formattedData = data.map((item) => ({
             Value: item["Key"],
             Text: decode(item["Nama Kelompok Keahlian"]),
           }));
           setListKK(formattedData);
 
-          // Mencocokkan dengan nama Kelompok Keahlian dari withID
           const matchingItem = formattedData.find(
             (item) => item.Value === withID["ID KK"]
           );
@@ -249,29 +237,28 @@ export default function MasterDaftarPustakaEdit({ onChangePage, withID }) {
         return { ...prevError, error: false };
       });
       setErrors({});
-    
+
       const uploadPromises = [];
 
-   
-    if (fileDocumentRef.current.files.length > 0) {
-      uploadPromises.push(
-        UploadFile(fileDocumentRef.current).then(
-          (data) => (formDataRef.current["pus_file"] = data.Hasil)
-        )
-      );
-    }else {
-          formDataRef.current["pus_file"] = "";
-        }
+      if (fileDocumentRef.current.files.length > 0) {
+        uploadPromises.push(
+          UploadFile(fileDocumentRef.current).then(
+            (data) => (formDataRef.current["pus_file"] = data.Hasil)
+          )
+        );
+      } else {
+        formDataRef.current["pus_file"] = "";
+      }
 
-    if (fileGambarRef.current.files.length > 0) {
-      uploadPromises.push(
-        UploadFile(fileGambarRef.current).then(
-          (data) => (formDataRef.current["pus_gambar"] = data.Hasil)
-        )
-      );
-    } else {    
-    formDataRef.current["pus_gambar"] = "";
-  }
+      if (fileGambarRef.current.files.length > 0) {
+        uploadPromises.push(
+          UploadFile(fileGambarRef.current).then(
+            (data) => (formDataRef.current["pus_gambar"] = data.Hasil)
+          )
+        );
+      } else {
+        formDataRef.current["pus_gambar"] = "";
+      }
 
       Promise.all(uploadPromises).then(() => {
         UseFetch(API_LINK + "Pustaka/UpdateDataPustaka", formDataRef.current)
@@ -298,68 +285,89 @@ export default function MasterDaftarPustakaEdit({ onChangePage, withID }) {
 
   return (
     <>
-    <AnimatedSection>
-      {isError.error && (
-        <div className="flex-fill">
-          <Alert type="danger" message={isError.message} />
+      <AnimatedSection>
+        {isError.error && (
+          <div className="flex-fill">
+            <Alert type="danger" message={isError.message} />
+          </div>
+        )}
+        <div
+          className="container mb-4"
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            marginTop: "100px",
+          }}
+        >
+          <div className="back-and-title" style={{ display: "flex" }}>
+            <button
+              style={{ backgroundColor: "transparent", border: "none" }}
+              onClick={handleGoBack}
+            >
+              <img src={BackPage} alt="" />
+            </button>
+            <h4
+              style={{
+                color: "#0A5EA8",
+                fontWeight: "bold",
+                fontSize: "30px",
+                marginTop: "10px",
+                marginLeft: "20px",
+              }}
+            >
+              Edit Knowledge Database
+            </h4>
+          </div>
         </div>
-      )}
-         <div className="" style={{display:"flex", justifyContent:"space-between", marginTop:"100px"}}>
-            <div className="back-and-title" style={{display:"flex"}}>
-              <button style={{backgroundColor:"transparent", border:"none"}} onClick={handleGoBack}><img src={BackPage} alt="" /></button>
-                <h4 style={{ color:"#0A5EA8", fontWeight:"bold", fontSize:"30px", marginTop:"10px", marginLeft:"20px"}}>Edit Knowledge Database</h4>
-              </div>
-                
-              </div>
-      <form onSubmit={handleAdd}>
-        <div className="container mb-4">
-        <div className="card">
-          <div className="card-body p-4">
-            <div className="row">
-            <div className="col-lg-4 box-image">
-              <div className="file-preview">
-              <div className="preview-img">
-                  {filePreview ? (
-                        <div
-                          style={{
-                            marginTop: "10px",
-                            marginRight: "30px",
-                            marginBottom: "20px",
-                          }}
-                        >
-                          <img
-                            src={filePreview}
-                            alt="Preview"
+        <form onSubmit={handleAdd}>
+          <div className="container mb-4">
+            <div className="card">
+              <div className="card-body p-4">
+                <div className="row">
+                  <div className="col-lg-4 box-image">
+                    <div className="file-preview">
+                      <div className="preview-img">
+                        {filePreview ? (
+                          <div
                             style={{
-                              width: "200px",
-                              height: "auto",
-                              borderRadius: "20px",
+                              marginTop: "10px",
+                              marginRight: "30px",
+                              marginBottom: "20px",
                             }}
-                          />
-                        </div>
-                      ) : (
-                        <div
-                          style={{
-                            marginTop: "10px",
-                            marginRight: "30px",
-                            marginBottom: "20px",
-                          }}
-                        >
-                          <img
-                            src={`${API_LINK}Upload/GetFile/${withID.Gambar}`}// Use fallback image if no preview available
-                            alt="No Preview Available"
+                          >
+                            <img
+                              src={filePreview}
+                              alt="Preview"
+                              style={{
+                                width: "200px",
+                                height: "auto",
+                                borderRadius: "20px",
+                              }}
+                            />
+                          </div>
+                        ) : (
+                          <div
                             style={{
-                              width: "200px",
-                              height: "auto",
-                              borderRadius: "20px",
+                              marginTop: "10px",
+                              marginRight: "30px",
+                              marginBottom: "20px",
                             }}
-                          />
-                        </div>
-                      )}
+                          >
+                            <img
+                              src={`${API_LINK}Upload/GetFile/${withID.Gambar}`} 
+                              alt="No Preview Available"
+                              style={{
+                                width: "200px",
+                                height: "auto",
+                                borderRadius: "20px",
+                              }}
+                            />
+                          </div>
+                        )}
+                      </div>
                     </div>
-              </div>
-              <div className="fileupload">
-              <FileUpload
+                    <div className="fileupload">
+                      <FileUpload
                         forInput="gambarInputref"
                         label="Gambar Daftar Pustaka (.png)"
                         formatFile=".png"
@@ -367,91 +375,95 @@ export default function MasterDaftarPustakaEdit({ onChangePage, withID }) {
                         onChange={() => handleFileChange(fileGambarRef, "png")}
                         errorMessage={errors.pus_gambar}
                       />
+                    </div>
+                  </div>
+                </div>
+                <div className="row">
+                  <div className="col-lg-4">
+                    <Input
+                      type="text"
+                      forInput="pus_judul"
+                      label="Judul / Nama File Pustaka"
+                      isRequired
+                      value={formDataRef.current.pus_judul}
+                      onChange={handleInputChange}
+                      errorMessage={errors.pus_judul}
+                    />
+                  </div>
+                  <div className="col-lg-4">
+                    <Select2Dropdown
+                      forInput="kke_id"
+                      label="Kelompok Keahlian"
+                      arrData={listKK}
+                      isRequired
+                      value={formDataRef.current.kke_id}
+                      onChange={handleInputChange}
+                      errorMessage={errors.kke_id}
+                    />
+                  </div>
+                  <div className="col-lg-4">
+                    {/* Dijadikan text biasa */}
+                    <Input
+                      type="text"
+                      forInput="pus_kata_kunci"
+                      label="Kata Kunci"
+                      isRequired
+                      value={formDataRef.current.pus_kata_kunci}
+                      onChange={handleInputChange}
+                      errorMessage={errors.pus_kata_kunci}
+                    />
+                  </div>
+                  <div className="col-lg-4">
+                    <FileUpload
+                      ref={fileDocumentRef}
+                      forInput="pus_file"
+                      maxFileSize="250"
+                      label="File Pustaka (.pdf, .docx, .xlsx, .pptx, .mp4)"
+                      formatFile=".pdf,.docx,.xlsx,.pptx,.mp4"
+                      onChange={() =>
+                        handleDocumentChange(
+                          fileDocumentRef,
+                          "pdf,docx,xlsx,pptx,mp4",
+                          250
+                        )
+                      }
+                      errorMessage={errors.pus_file}
+                    />
+                  </div>
+
+                  <Label
+                    title={"File Pustaka Sebelumnya"}
+                    data={
+                      file ? (
+                        <a
+                          href={file}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          style={{ textDecoration: "none" }}
+                        >
+                          Tampilkan Berkas
+                        </a>
+                      ) : (
+                        "Tidak ada lampiran"
+                      )
+                    }
+                  />
+
+                  <div className="col-lg-12">
+                    <Input
+                      type="textarea"
+                      forInput="pus_keterangan"
+                      label="Sinopsis / Ringkasan Pustaka"
+                      isRequired
+                      value={formDataRef.current.pus_keterangan}
+                      onChange={handleInputChange}
+                      errorMessage={errors.pus_keterangan}
+                    />
+                  </div>
                 </div>
               </div>
-              </div>
-              <div className="row">
-              <div className="col-lg-4">
-                <Input
-                  type="text"
-                  forInput="pus_judul"
-                  label="Judul / Nama File Pustaka"
-                  isRequired
-                  value={formDataRef.current.pus_judul}
-                  onChange={handleInputChange}
-                  errorMessage={errors.pus_judul}
-                />
-              </div>
-              <div className="col-lg-4">
-                <Select2Dropdown
-                  forInput="kke_id"
-                  label="Kelompok Keahlian"
-                  arrData={listKK}
-                  isRequired
-                  value={formDataRef.current.kke_id}
-                  onChange={handleInputChange}
-                  errorMessage={errors.kke_id}
-                />
-              </div>
-              <div className="col-lg-4">
-                {/* Dijadikan text biasa */}
-                <Input
-                  type="text"
-                  forInput="pus_kata_kunci"
-                  label="Kata Kunci"
-                  isRequired
-                  value={formDataRef.current.pus_kata_kunci}
-                  onChange={handleInputChange}
-                  errorMessage={errors.pus_kata_kunci}
-                />
-              </div>
-              <div className="col-lg-4">
-              <FileUpload
-                  ref={fileDocumentRef}
-                  forInput="pus_file"
-                  maxFileSize="250"
-                  label="File Pustaka (.pdf, .docx, .xlsx, .pptx, .mp4)"
-                  formatFile=".pdf,.docx,.xlsx,.pptx,.mp4"
-                  onChange={() => handleDocumentChange(fileDocumentRef, "pdf,docx,xlsx,pptx,mp4", 250)}
-                  errorMessage={errors.pus_file}
-                />
-              </div>
 
-              <Label
-                  // key={index}
-                  title={"File Pustaka Sebelumnya"}
-                  data={
-                    file ? (
-                      <a
-                        href={file}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        style={{textDecoration:"none"}}
-                      >
-                        Tampilkan Berkas
-                      </a>
-                    ) : (
-                      "Tidak ada lampiran"
-                    )
-                  }
-                />
-              
-              <div className="col-lg-12">
-                <Input
-                  type="textarea"
-                  forInput="pus_keterangan"
-                  label="Sinopsis / Ringkasan Pustaka"
-                  isRequired
-                  value={formDataRef.current.pus_keterangan}
-                  onChange={handleInputChange}
-                  errorMessage={errors.pus_keterangan}
-                />
-              </div>
-            </div>
-          </div>
-         
-
-          <div
+              <div
                 className="d-flex justify-content-end"
                 style={{
                   marginRight: "20px",
@@ -485,18 +497,22 @@ export default function MasterDaftarPustakaEdit({ onChangePage, withID }) {
                   Simpan
                 </button>
               </div>
-        </div>
-        </div>
-      </form>
-      {showConfirmation && (
-        <Konfirmasi
-          title={isBackAction ? "Konfirmasi Kembali" : "Konfirmasi Simpan"}
-          pesan={isBackAction ? "Apakah anda ingin kembali?" : "Anda yakin ingin simpan data?"}
-          onYes={handleConfirmYes}
-          onNo={handleConfirmNo}
-        />
+            </div>
+          </div>
+        </form>
+        {showConfirmation && (
+          <Konfirmasi
+            title={isBackAction ? "Konfirmasi Kembali" : "Konfirmasi Simpan"}
+            pesan={
+              isBackAction
+                ? "Apakah anda ingin kembali?"
+                : "Anda yakin ingin simpan data?"
+            }
+            onYes={handleConfirmYes}
+            onNo={handleConfirmNo}
+          />
         )}
-        </AnimatedSection>
+      </AnimatedSection>
     </>
   );
 }

@@ -3,7 +3,6 @@ import { object, string } from "yup";
 import { API_LINK } from "../../../util/Constants";
 import { validateAllInputs } from "../../../util/ValidateForm";
 import UseFetch from "../../../util/UseFetch";
-import Button from "../../../part/Button copy";
 import Input from "../../../part/Input";
 import Loading from "../../../part/Loading";
 import Alert from "../../../part/Alert";

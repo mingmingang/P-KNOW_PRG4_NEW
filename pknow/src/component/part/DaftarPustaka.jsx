@@ -13,20 +13,20 @@ export default function DataDaftarPustaka({
   statusText,
   ketButton,
   colorCircle,
-  onClick, // Terima onClick sebagai properti
+  onClick,
 }) {
   useEffect(() => {
     const dropdown = document.querySelector(".dropdown");
     const dropdownMenu = document.querySelector(".dropdown-menu");
 
     const handleDropdownClick = (event) => {
-      event.stopPropagation(); // Prevents click from bubbling to document
-      dropdownMenu.classList.toggle("show"); // Toggle visibility
+      event.stopPropagation();
+      dropdownMenu.classList.toggle("show");
     };
 
     const handleClickOutside = (event) => {
       if (!dropdown.contains(event.target)) {
-        dropdownMenu.classList.remove("show"); // Hide if clicked outside
+        dropdownMenu.classList.remove("show");
       }
     };
 
@@ -67,12 +67,6 @@ export default function DataDaftarPustaka({
                   <span style={{ color: "#0A5EA8" }}>Edit</span>
                 </a>
               </li>
-              {/* <li>
-                                <a className="dropdown-item" href="#deactivate">
-                                    <i className="fas fa-ban" style={{ marginRight: '8px', color:'#0A5EA8' }}></i>
-                                    <span style={{color:'#0A5EA8'}}>Nonaktifkan</span>
-                                </a>
-                            </li> */}
               <li>
                 <a className="dropdown-item" href="#delete">
                   <i

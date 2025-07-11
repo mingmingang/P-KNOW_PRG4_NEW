@@ -3,17 +3,10 @@ import { PAGE_SIZE, API_LINK, ROOT_LINK } from "../../util/Constants";
 import SweetAlert from "../../util/SweetAlert";
 import UseFetch from "../../util/UseFetch";
 import Button from "../../part/Button";
-import Input from "../../part/Input";
-import Table from "../../part/Table";
-import Paging from "../../part/Paging";
-import Filter from "../../part/Filter";
-import DropDown from "../../part/Dropdown";
 import Alert from "../../part/Alert";
 import Loading from "../../part/Loading";
 import profilePicture from "../../../assets/tes.jpg";
 import KMS_Rightbar from "../../backbone/KMS_RightBar";
-import SideBar from "../../backbone/SideBar";
-// import KMS_SB_RightBar from '../../backbone/KMS_SB_RightBar';
 
 const inisialisasiData = [
   {
@@ -101,8 +94,7 @@ export default function MasterTestIndex({ onChangePage }) {
     setIsError(false);
     UseFetch(API_LINK + "MasterTest/GetDataTest", currentFilter)
       .then((data) => {
-        if (data === "ERROR")
-          setIsError(false);
+        if (data === "ERROR") setIsError(false);
         else if (data.length === 0) setCurrentData(inisialisasiData);
         else {
           const formattedData = data.map((value) => {
@@ -181,9 +173,7 @@ export default function MasterTestIndex({ onChangePage }) {
           ) : (
             <>
               <div style={{ marginRight: "48vh" }}>
-                <div
-                  className="d-flex align-items-center mb-5"
-                  >
+                <div className="d-flex align-items-center mb-5">
                   <div
                     className="rounded-circle overflow-hidden d-flex justify-content-center align-items-center"
                     style={circleStyle}

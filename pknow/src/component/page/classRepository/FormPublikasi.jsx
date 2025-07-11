@@ -6,13 +6,10 @@ import Alert from "../../part/Alert";
 import Cookies from "js-cookie";
 import { decryptId } from "../../util/Encryptor";
 import { decode } from "he";
-import BackPage from "../../../assets/backPage.png";
 import Konfirmasi from "../../part/Konfirmasi";
 import Select2Dropdown from "../../part/Select2Dropdown";
 import Input from "../../part/Input";
-import FileUpload from "../../part/FileUpload";
 import { validateAllInputs, validateInput } from "../../util/ValidateForm";
-import UploadFile from "../../util/UploadFile";
 import SweetAlert from "../../util/SweetAlert";
 import pemula from "../../../assets/Pemula.png";
 import menengah from "../../../assets/Menengah.png";
@@ -33,15 +30,7 @@ export default function PublikasiKelas({ withID, onChangePage }) {
   const [isBackAction, setIsBackAction] = useState(false);
   const [errors, setErrors] = useState({});
 
-  const [isBerbayar, setIsBerbayar] = useState(false); // Default Gratis
-
-  const [currentFilter, setCurrentFilter] = useState({
-    page: 1,
-    query: "",
-    sort: "[Nama Program] desc",
-    status: "",
-    KKid: "",
-  });
+  const [isBerbayar, setIsBerbayar] = useState(false);
 
   const formDataRef = useRef({
     kke_id: withID.id,
@@ -57,24 +46,23 @@ export default function PublikasiKelas({ withID, onChangePage }) {
   const fileGambarRef = useRef(null);
   const fileDocumentRef = useRef(null);
 
- const userSchema = object({
-  kke_id: string().required("Pilih Terlebih Dahulu"),
-  level_kelas: string().required("Pilih File Pustaka Terlebih Dahulu"),
-  tipe_kelas: string()
-    .max(30, "Maksimal 30 Karakter")
-    .required("Isi Judul Terlebih Dahulu"),
-  metode_pembayaran: string(),
-  virtual_account: string()
-    .max(200, "Maksimal 200 Karakter"),
-  periode: string(),
-  harga_kelas: string()
-    .max(12, "Maksimal 12 Angka")
-    .test(
-      'is-numeric',
-      'Harus berupa angka',
-      (value) => !value || /^\d+$/.test(value.replace(/\./g, ''))
-    ),
-});
+  const userSchema = object({
+    kke_id: string().required("Pilih Terlebih Dahulu"),
+    level_kelas: string().required("Pilih File Pustaka Terlebih Dahulu"),
+    tipe_kelas: string()
+      .max(30, "Maksimal 30 Karakter")
+      .required("Isi Judul Terlebih Dahulu"),
+    metode_pembayaran: string(),
+    virtual_account: string().max(200, "Maksimal 200 Karakter"),
+    periode: string(),
+    harga_kelas: string()
+      .max(12, "Maksimal 12 Angka")
+      .test(
+        "is-numeric",
+        "Harus berupa angka",
+        (value) => !value || /^\d+$/.test(value.replace(/\./g, ""))
+      ),
+  });
 
   const resetForm = () => {
     formDataRef.current = {
@@ -153,7 +141,7 @@ export default function PublikasiKelas({ withID, onChangePage }) {
       if (!data || data.length === 0) {
         throw new Error("Data kosong atau tidak tersedia.");
       } else {
-        setListMetode(data); // Simpan data ke state jika diperlukan
+        setListMetode(data);
       }
     } catch (e) {
       console.log(e.message);
@@ -173,7 +161,7 @@ export default function PublikasiKelas({ withID, onChangePage }) {
       if (!data || data.length === 0) {
         throw new Error("Data kosong atau tidak tersedia.");
       } else {
-        setListKategoriMetode(data); // Simpan data ke state jika diperlukan
+        setListKategoriMetode(data);
       }
     } catch (e) {
       console.log(e.message);
@@ -225,7 +213,7 @@ export default function PublikasiKelas({ withID, onChangePage }) {
           break;
         } else {
           setlistMateri(data);
-          setActiveCategory(kategoriKey); // Set kategori aktif
+          setActiveCategory(kategoriKey);
           break;
         }
       }
@@ -240,266 +228,97 @@ export default function PublikasiKelas({ withID, onChangePage }) {
   };
 
   const toggleCategory = (kategoriKey) => {
-    // Jika kategori yang diklik adalah kategori aktif, tutup (set null).
     if (activeCategory === kategoriKey) {
       setActiveCategory(null);
     } else {
-      // Jika kategori yang diklik berbeda, jadikan kategori aktif.
       setActiveCategory(kategoriKey);
       getDataMateriKategori(kategoriKey);
     }
   };
 
-  const handleFileChange = (ref, extAllowed) => {
-    const { name, value } = ref.current;
-    const file = ref.current.files[0];
-    const fileName = file ? file.name : "";
-    const fileSize = file ? file.size : 0;
-    const fileExt = fileName.split(".").pop().toLowerCase();
-    const validationError = validateInput(name, value, userSchema);
-    let error = "";
-
-    if (fileSize / 1024576 > 10) error = "berkas terlalu besar";
-    else if (!extAllowed.split(",").includes(fileExt))
-      error = "format berkas tidak valid";
-
-    if (error) ref.current.value = "";
-    else {
-      if (file && file.type.startsWith("image/")) {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          setFilePreview(reader.result); // Set the preview
-        };
-        reader.readAsDataURL(file);
-      }
-    }
-
-    setErrors((prevErrors) => ({
-      ...prevErrors,
-      [validationError.name]: error,
-    }));
-  };
-
-  // const handleAdd = async (e) => {
-  //   e.preventDefault();
-
-  //   const validationErrors = await validateAllInputs(
-  //     formDataRef.current,
-  //     userSchema,
-  //     setErrors
-  //   );
-
-  //   if (Object.values(validationErrors).every((error) => !error)) {
-  //     setIsError((prevError) => {
-  //       return { ...prevError, error: false };
-  //     });
-  //     setErrors({});
-      
-  //     try {
-  //       const isGratis = formDataRef.current.tipe_kelas === "gratis";
-
-  //       const data = await UseFetch(
-  //         API_LINK + "Program/PublikasiProgram",
-  //         {
-  //           prg_id : withID.id,
-  //           prg_level : formDataRef.current.level_kelas,
-  //           prg_tipe : formDataRef.current.tipe_kelas,
-  //           prg_pembayaran: isGratis ? null : formDataRef.current.metode_pembayaran,
-  //           prg_harga: isGratis ? null : formDataRef.current.harga_kelas,
-  //           prg_periode : formDataRef.current.periode
-  //         }
-  //       );
-
-  //       if (data === "ERROR") {
-  //         throw new Error("Terjadi kesalahan: Gagal menyimpan data.");
-  //       } else {
-  //         SweetAlert(
-  //           "Sukses",
-  //           "Program berhasil dipublikasikan",
-  //           "success"
-  //         );
-  //         onChangePage("index");
-  //       }
-  //     } catch (error) {
-  //       window.scrollTo(0, 0);
-  //       setIsError((prevError) => ({
-  //         ...prevError,
-  //         error: true,
-  //         message: error.message,
-  //       }));
-  //     } finally {
-  //       setIsLoading(false);
-  //     }
-  //   } else window.scrollTo(0, 0);
-  // };
-
-
   const handleAdd = async (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  const validationErrors = await validateAllInputs(
-    formDataRef.current,
-    userSchema,
-    setErrors
-  );
+    const validationErrors = await validateAllInputs(
+      formDataRef.current,
+      userSchema,
+      setErrors
+    );
 
-  if (Object.values(validationErrors).every((error) => !error)) {
-    setIsError((prevError) => {
-      return { ...prevError, error: false };
-    });
-    setErrors({});
-    
-    try {
-      const isGratis = formDataRef.current.tipe_kelas === "gratis";
+    if (Object.values(validationErrors).every((error) => !error)) {
+      setIsError((prevError) => {
+        return { ...prevError, error: false };
+      });
+      setErrors({});
 
-      // Konversi harga_kelas ke number (pastikan sudah tanpa titik)
-      const hargaKelas = formDataRef.current.harga_kelas 
-        ? parseInt(formDataRef.current.harga_kelas.replace(/\./g, '')) 
-        : null;
+      try {
+        const isGratis = formDataRef.current.tipe_kelas === "gratis";
 
-      const data = await UseFetch(
-        API_LINK + "Program/PublikasiProgram",
-        {
+        const hargaKelas = formDataRef.current.harga_kelas
+          ? parseInt(formDataRef.current.harga_kelas.replace(/\./g, ""))
+          : null;
+
+        const data = await UseFetch(API_LINK + "Program/PublikasiProgram", {
           prg_id: withID.id,
           prg_level: formDataRef.current.level_kelas,
           prg_tipe: formDataRef.current.tipe_kelas,
-          prg_pembayaran: isGratis ? null : formDataRef.current.metode_pembayaran,
+          prg_pembayaran: isGratis
+            ? null
+            : formDataRef.current.metode_pembayaran,
           prg_harga: isGratis ? null : hargaKelas,
-          prg_periode: formDataRef.current.periode
+          prg_periode: formDataRef.current.periode,
+        });
+
+        if (data === "ERROR") {
+          throw new Error("Terjadi kesalahan: Gagal menyimpan data.");
+        } else {
+          SweetAlert("Sukses", "Program berhasil dipublikasikan", "success");
+          onChangePage("index");
         }
-      );
-
-      if (data === "ERROR") {
-        throw new Error("Terjadi kesalahan: Gagal menyimpan data.");
-      } else {
-        SweetAlert(
-          "Sukses",
-          "Program berhasil dipublikasikan",
-          "success"
-        );
-        onChangePage("index");
+      } catch (error) {
+        window.scrollTo(0, 0);
+        setIsError((prevError) => ({
+          ...prevError,
+          error: true,
+          message: error.message,
+        }));
+      } finally {
+        setIsLoading(false);
       }
-    } catch (error) {
-      window.scrollTo(0, 0);
-      setIsError((prevError) => ({
-        ...prevError,
-        error: true,
-        message: error.message,
-      }));
-    } finally {
-      setIsLoading(false);
+    } else window.scrollTo(0, 0);
+  };
+
+  const handleInputChange = async (e) => {
+    const { name, value } = e.target;
+
+    if (name === "tipe_kelas") {
+      setIsBerbayar(value === "berbayar");
     }
-  } else window.scrollTo(0, 0);
-};
 
-  const deskripsiRef = useRef(null);
+    if (name === "harga_kelas") {
+      const numericValue = value.replace(/[^0-9]/g, "");
 
-// const handleInputChange = async (e) => {
-//   const { name, value } = e.target;
+      const formattedValue =
+        numericValue === "" ? "" : Number(numericValue).toLocaleString("id-ID");
 
-//   if (name === "tipe_kelas") {
-//     setIsBerbayar(value === "berbayar");
-//   }
+      formDataRef.current[name] = numericValue;
 
-//   // Khusus untuk field nominal/harga
-//   if (name === "nominal") {
-//     // Hapus semua karakter non-digit
-//     const numericValue = value.replace(/[^0-9]/g, '');
-    
-//     // Format ke format ribuan
-//     const formattedValue = numericValue === '' ? '' : 
-//       Number(numericValue).toLocaleString('id-ID');
-    
-//     // Simpan nilai asli (tanpa format) di formDataRef
-//     formDataRef.current[name] = numericValue;
-    
-//     // Update nilai yang ditampilkan di input dengan format ribuan
-//     e.target.value = formattedValue;
-//   } else {
-//     formDataRef.current[name] = value;
-//   }
-
-//   const validationError = await validateInput(
-//     name, 
-//     name === "nominal" ? formDataRef.current[name] : value, 
-//     userSchema
-//   );
-  
-//   setErrors((prevErrors) => ({
-//     ...prevErrors,
-//     [validationError.name]: validationError.error,
-//   }));
-// };
-
-
-const handleInputChange = async (e) => {
-  const { name, value } = e.target;
-
-  if (name === "tipe_kelas") {
-    setIsBerbayar(value === "berbayar");
-  }
-
-  // Khusus untuk field harga_kelas
-  if (name === "harga_kelas") {
-    // Hapus semua karakter non-digit
-    const numericValue = value.replace(/[^0-9]/g, '');
-    
-    // Format ke format ribuan
-    const formattedValue = numericValue === '' ? '' : 
-      Number(numericValue).toLocaleString('id-ID');
-    
-    // Simpan nilai asli (tanpa format) di formDataRef
-    formDataRef.current[name] = numericValue;
-    
-    // Update nilai yang ditampilkan di input dengan format ribuan
-    e.target.value = formattedValue;
-  } else {
-    formDataRef.current[name] = value;
-  }
-
-  const validationError = await validateInput(
-    name, 
-    name === "harga_kelas" ? formDataRef.current[name] : value, 
-    userSchema
-  );
-  
-  setErrors((prevErrors) => ({
-    ...prevErrors,
-    [name]: validationError.error,
-  }));
-};
-
-  const handleDocumentChange = async (ref, extAllowed, maxFileSize) => {
-    const { name, value } = ref.current;
-    const file = ref.current.files[0];
-    const fileName = file.name;
-    const fileSize = file.size;
-    const fileExt = fileName.split(".").pop();
-    const validationError = await validateInput(name, value, userSchema);
-    let error = "";
-
-    if (fileSize / 1024 / 1024 > maxFileSize) {
-      error = `Berkas terlalu besar, maksimal ${maxFileSize}MB`;
-      SweetAlert("Error", error, "error");
-    } else if (!extAllowed.split(",").includes(fileExt)) {
-      error = "Format berkas tidak valid";
-      SweetAlert("Error", error, "error");
+      e.target.value = formattedValue;
+    } else {
+      formDataRef.current[name] = value;
     }
-    if (error) ref.current.value = "";
 
-    formDataRef.current[name] = fileName;
+    const validationError = await validateInput(
+      name,
+      name === "harga_kelas" ? formDataRef.current[name] : value,
+      userSchema
+    );
 
     setErrors((prevErrors) => ({
       ...prevErrors,
-      [validationError.name]: error,
+      [name]: validationError.error,
     }));
   };
-
-  const metodePembayaranOptions = [
-    { Value: "va", Text: "Virtual Account (BCA, Mandiri, dll.)" },
-    { Value: "ewallet", Text: "E-Wallet (OVO, GoPay, dll.)" },
-    { Value: "bank_transfer", Text: "Transfer Bank (Manual)" },
-  ];
 
   const levelKelasOptions = [
     { Value: "pemula", Text: "Pemula" },
@@ -517,7 +336,7 @@ const handleInputChange = async (e) => {
     { Value: "3", Text: "3 Bulan" },
     { Value: "6", Text: "6 Bulan" },
     { Value: "12", Text: "12 Bulan" },
-    {Value:"9999", Text:"Lifetime"}
+    { Value: "9999", Text: "Lifetime" },
   ];
 
   return (
@@ -543,7 +362,10 @@ const handleInputChange = async (e) => {
         </div>
 
         <form onSubmit={handleAdd}>
-          <div className="card" style={{ margin: "10px 70px", borderRadius:"20px" }}>
+          <div
+            className="card"
+            style={{ margin: "10px 70px", borderRadius: "20px" }}
+          >
             <div className="card-body p-4">
               <div className="row mb-3">
                 <div className="d-flex">
@@ -595,7 +417,7 @@ const handleInputChange = async (e) => {
                           />
                           {option.Value === "pemula" && (
                             <img
-                              src={pemula} // Replace with the correct path or variable for the image
+                              src={pemula}
                               alt="Pemula"
                               style={{
                                 width: "30px",
@@ -606,7 +428,7 @@ const handleInputChange = async (e) => {
                           )}
                           {option.Value === "menengah" && (
                             <img
-                              src={menengah} // Replace with the correct path or variable for the image
+                              src={menengah}
                               alt="Menengah"
                               style={{
                                 width: "30px",
@@ -617,7 +439,7 @@ const handleInputChange = async (e) => {
                           )}
                           {option.Value === "mahir" && (
                             <img
-                              src={mahir} // Replace with the correct path or variable for the image
+                              src={mahir}
                               alt="Mahir"
                               style={{
                                 width: "30px",
@@ -677,7 +499,6 @@ const handleInputChange = async (e) => {
                     </div>
                   </div>
 
-                  {/* Virtual Account */}
                   <div className="row">
                     <div className="">
                       <div className="">
@@ -697,25 +518,32 @@ const handleInputChange = async (e) => {
                   <div className="row">
                     <div className="">
                       <div className="">
-                      <Input
-  type="text"
-  name="harga_kelas" // Pastikan name sesuai dengan formDataRef
-  forInput="harga_kelas"
-  label="Harga Kelas (Rp.)"
-  isRequired={isBerbayar}
-  value={formDataRef.current.harga_kelas ? 
-    Number(formDataRef.current.harga_kelas).toLocaleString('id-ID') : 
-    ''}
-  onChange={handleInputChange}
-  onKeyDown={(e) => {
-    // Hanya izinkan tombol angka, backspace, delete, tab, arrow keys
-    if (!/[0-9]|Backspace|Delete|Tab|ArrowLeft|ArrowRight/.test(e.key)) {
-      e.preventDefault();
-    }
-  }}
-  errorMessage={errors.harga_kelas}
-  placeholder="Masukan Nominal Harga"
-/>
+                        <Input
+                          type="text"
+                          name="harga_kelas" 
+                          forInput="harga_kelas"
+                          label="Harga Kelas (Rp.)"
+                          isRequired={isBerbayar}
+                          value={
+                            formDataRef.current.harga_kelas
+                              ? Number(
+                                  formDataRef.current.harga_kelas
+                                ).toLocaleString("id-ID")
+                              : ""
+                          }
+                          onChange={handleInputChange}
+                          onKeyDown={(e) => {
+                            if (
+                              !/[0-9]|Backspace|Delete|Tab|ArrowLeft|ArrowRight/.test(
+                                e.key
+                              )
+                            ) {
+                              e.preventDefault();
+                            }
+                          }}
+                          errorMessage={errors.harga_kelas}
+                          placeholder="Masukan Nominal Harga"
+                        />
                       </div>
                     </div>
                   </div>
@@ -886,7 +714,7 @@ const handleInputChange = async (e) => {
                   >
                     {listMateri.length > 0 ? (
                       listMateri
-                        .filter((materi) => materi.Status === "Aktif") // Filter materi yang Statusnya 'Aktif'
+                        .filter((materi) => materi.Status === "Aktif") 
                         .map((materi, materiIndex) => (
                           <div
                             className="d-flex"

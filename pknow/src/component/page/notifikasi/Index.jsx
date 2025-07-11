@@ -76,17 +76,16 @@ export default function NotifikasiIndex() {
           }
         );
 
-        // Validasi response data
         if (response.data && response.data.length !== 0) {
           window.location.reload();
           return response.data;
         }
-        return []; // Return array kosong jika data kosong atau undefined
+        return []; 
       } catch (error) {
-        console.error("Error while setting notification read:", error); // Tangkap error
-        setIsError(true); // Set error state
+        console.error("Error while setting notification read:", error);
+        setIsError(true); 
       } finally {
-        setIsLoading(false); // Set loading state selesai
+        setIsLoading(false); 
       }
     }
   }
@@ -141,7 +140,7 @@ export default function NotifikasiIndex() {
             "Semua notifikasi ditandai sudah dibaca",
             "success"
           );
-          handleSetCurrentPage(currentFilter.page); // Refresh data
+          handleSetCurrentPage(currentFilter.page); 
         }
       } catch (e) {
         console.error("Error setting notifications as read:", e);

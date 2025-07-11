@@ -48,7 +48,6 @@ export default function MasterDetailForum({ onChangePage }) {
 
   return (
     <>
-      {/* Tampilkan Stepper */}
       <div>
         <Stepper
           steps={[
@@ -82,8 +81,6 @@ export default function MasterDetailForum({ onChangePage }) {
           }}
         />
       </div>
-
-      {/* Tampilkan data forum jika sudah diambil */}
       <div className="card" style={{ borderColor: "#67ACE9" }}>
         <div className="card-header fw-medium text-white" style={{ backgroundColor: "#67ACE9" }}>
           Detail Forum
@@ -123,7 +120,6 @@ export default function MasterDetailForum({ onChangePage }) {
         </div>
       </div>
 
-      {/* Tampilkan tombol navigasi */}
       <div className="float my-4 mx-1">
         <Button
           classType="btn btn-outline-secondary me-2 px-4 py-2"

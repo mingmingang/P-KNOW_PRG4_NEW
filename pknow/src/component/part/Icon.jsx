@@ -1,9 +1,4 @@
-export default function Icon({
-  type = "Bold",
-  name,
-  cssClass = "",
-  ...props
-}) {
+export default function Icon({ type = "Bold", name, cssClass = "", ...props }) {
   const iconClass =
     "fi fi-" + (type === "Bold" ? "b" : "r") + "r-" + name + " " + cssClass;
 

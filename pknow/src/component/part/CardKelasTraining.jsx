@@ -1,21 +1,11 @@
 import React from "react";
 import Button from "./Button copy";
-import Icon from "./Icon";
 import "../../style/KelompokKeahlian.css";
 import { decode } from "he";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faGraduationCap,
-  faUser,
-  faArrowRight,
-  faPeopleGroup,
-  faClock,
-  faUsers,
-} from "@fortawesome/free-solid-svg-icons";
-import developerImage from "../../assets/developer.png";
+import { faGraduationCap } from "@fortawesome/free-solid-svg-icons";
 import { API_LINK } from "../util/Constants";
 import { useState } from "react";
-import Input from "./Input";
 import Swal from "sweetalert2";
 import UseFetch from "../util/UseFetch";
 
@@ -51,11 +41,11 @@ function CardKelasTraining({
       <div className="d-flex justify-content-end">
         <div style={{ marginLeft: "175px" }}>
           <Button
-            iconName="info" // Cocok untuk "Detail Kelas"
+            iconName="info"
             classType={`${config.className} py-2 mt-3`}
             label="Detail Program"
             onClick={() => onChangePage("detailprogram", data)}
-            style={{ border: "none", width: "200px", marginLeft:"-40px" }}
+            style={{ border: "none", width: "200px", marginLeft: "-40px" }}
           />
         </div>
       </div>
@@ -66,7 +56,7 @@ function CardKelasTraining({
         <div className="d-flex justify-content-between">
           <div>
             <Button
-              iconName="info" // Cocok untuk "Detail Kelas"
+              iconName="info"
               classType={`${config.className} py-2 mt-3`}
               label="Detail Kelas"
               onClick={() => onChangePage("detail", data)}
@@ -75,7 +65,7 @@ function CardKelasTraining({
           </div>
           <div className="ml-4">
             <Button
-              iconName="upload" // Cocok untuk "Publikasi Kelas"
+              iconName="upload"
               classType={`${config.className} py-2 mt-3`}
               label="Publikasi Kelas"
               onClick={() => onChangePage("publikasi", data)}
@@ -89,7 +79,7 @@ function CardKelasTraining({
         <div className="d-flex justify-content-between">
           <div>
             <Button
-              iconName="info" // Cocok untuk "Detail Kelas"
+              iconName="info"
               classType={`${config.className} py-2 mt-3`}
               label="Detail Kelas"
               onClick={() => onChangePage("detail", data)}
@@ -98,7 +88,7 @@ function CardKelasTraining({
           </div>
           <div className="ml-4">
             <Button
-              iconName="ban" // Cocok untuk "Batal Publikasi Kelas"
+              iconName="ban"
               classType={`${config.className} py-2 mt-3`}
               label="Batal Publikasi"
               onClick={() => {
@@ -155,7 +145,6 @@ function CardKelasTraining({
         />
 
         <div className="row">
-
           <div className="d-flex justify-content-between align-items-center mt-2 ml-3">
             <h3
               className="text-xl font-bold text-blue-600 "
@@ -188,85 +177,88 @@ function CardKelasTraining({
         </div>
         {data.cek === "dapat akses" ? (
           <div className="pemilik">
-    <div className="prodi" style={{ fontSize: "14px", color: "#4D4D4D" }}>
-    <i
-      className="fas fa-user"
-      style={{ fontSize: "20px", paddingLeft: "5px" }}
-    ></i>
-    <p
-      className="700 ml-3"
-      style={{
-        marginLeft: "15px",
-        width: "100%",
-        fontSize: "14px",
-        color: "#4D4D4D",
-      }}
-    >
-    {data.PIC}
-    </p>
-  </div>
-  </div>
- 
-) : (
-  <div className="pemilik">
-    <div className="prodi" style={{ fontSize: "14px", color: "#4D4D4D" }}>
-      <i
-        className="fas fa-tag"
-        style={{ fontSize: "20px", paddingLeft: "5px" }}
-      ></i>
-      <p
-        className="700 ml-3"
-        style={{
-          marginLeft: "15px",
-          width: "100%",
-          fontSize: "14px",
-          color: "#4D4D4D",
-        }}
-      >
-        {data.publikasi && data.publikasi === "Terpublikasi" ? (
-          data.harga && data.harga > 0 ? (
             <div
-              style={{
-                color: "red",
-                fontWeight: "bold",
-              }}
+              className="prodi"
+              style={{ fontSize: "14px", color: "#4D4D4D" }}
             >
-              Rp.{" "}
-              {new Intl.NumberFormat("id-ID", {
-                style: "currency",
-                currency: "IDR",
-              })
-                .format(data.harga)
-                .replace("Rp", "")
-                .trim()}
+              <i
+                className="fas fa-user"
+                style={{ fontSize: "20px", paddingLeft: "5px" }}
+              ></i>
+              <p
+                className="700 ml-3"
+                style={{
+                  marginLeft: "15px",
+                  width: "100%",
+                  fontSize: "14px",
+                  color: "#4D4D4D",
+                }}
+              >
+                {data.PIC}
+              </p>
             </div>
-          ) : (
-            <div
-              style={{
-                color: "green",
-                fontWeight: "bold",
-              }}
-            >
-              Gratis
-            </div>
-          )
+          </div>
         ) : (
-          <div
-            style={{
-              color: "orange",
-              fontWeight: "bold",
-            }}
-          >
-            Belum Dipublikasi
+          <div className="pemilik">
+            <div
+              className="prodi"
+              style={{ fontSize: "14px", color: "#4D4D4D" }}
+            >
+              <i
+                className="fas fa-tag"
+                style={{ fontSize: "20px", paddingLeft: "5px" }}
+              ></i>
+              <p
+                className="700 ml-3"
+                style={{
+                  marginLeft: "15px",
+                  width: "100%",
+                  fontSize: "14px",
+                  color: "#4D4D4D",
+                }}
+              >
+                {data.publikasi && data.publikasi === "Terpublikasi" ? (
+                  data.harga && data.harga > 0 ? (
+                    <div
+                      style={{
+                        color: "red",
+                        fontWeight: "bold",
+                      }}
+                    >
+                      Rp.{" "}
+                      {new Intl.NumberFormat("id-ID", {
+                        style: "currency",
+                        currency: "IDR",
+                      })
+                        .format(data.harga)
+                        .replace("Rp", "")
+                        .trim()}
+                    </div>
+                  ) : (
+                    <div
+                      style={{
+                        color: "green",
+                        fontWeight: "bold",
+                      }}
+                    >
+                      Gratis
+                    </div>
+                  )
+                ) : (
+                  <div
+                    style={{
+                      color: "orange",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    Belum Dipublikasi
+                  </div>
+                )}
+              </p>
+            </div>
           </div>
         )}
-      </p>
-    </div>
-  </div>
-)}
 
-       
-       
         <div
           className="deskripsi-container "
           style={{ alignItems: "center", width: "100%" }}

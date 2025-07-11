@@ -40,7 +40,9 @@ const CardKategoriProgram = ({
             <h6 className="card-title">
               {index}
               {". "}
-              {data["Nama Kategori"] ? decode(data["Nama Kategori"]) : "Kategori tidak tersedia"}
+              {data["Nama Kategori"]
+                ? decode(data["Nama Kategori"])
+                : "Kategori tidak tersedia"}
             </h6>
             <div className="materi-count">
               <Icon
@@ -53,47 +55,49 @@ const CardKategoriProgram = ({
           </div>
           <div className="description-container d-flex mt-2">
             <div className="me-2 bg-primary ps-1"></div>
-             <div className="description-text">
-                  <p
-                    className="mb-0"
-                    style={{
-                      WebkitLineClamp: 2,
-                      WebkitBoxOrient: "vertical",
-                      maxHeight: expandDeskripsi ? "none" : "75px",
-                      overflow: "hidden",
-                      textAlign:"justify"
-                    }}
-                  >
-                   {data.Deskripsi && data.Deskripsi.length > MAX_DESCRIPTION_LENGTH && !expandDeskripsi ? (
-                      <>
-                        {decode(data.Deskripsi.slice(0, MAX_DESCRIPTION_LENGTH)) +
+            <div className="description-text">
+              <p
+                className="mb-0"
+                style={{
+                  WebkitLineClamp: 2,
+                  WebkitBoxOrient: "vertical",
+                  maxHeight: expandDeskripsi ? "none" : "75px",
+                  overflow: "hidden",
+                  textAlign: "justify",
+                }}
+              >
+                {data.Deskripsi &&
+                data.Deskripsi.length > MAX_DESCRIPTION_LENGTH &&
+                !expandDeskripsi ? (
+                  <>
+                    {decode(data.Deskripsi.slice(0, MAX_DESCRIPTION_LENGTH)) +
                       " ..."}
-                        <a
-                          className="btn btn-link text-decoration-none p-0"
-                          onClick={handleExpandDescription}
-                          style={{ fontSize: "12px", textAlign:"justify" }}
-                        >
-                          Baca Selengkapnya <Icon name={"caret-down"} />
-                        </a>
-                      </>
-                    ) : (
-                      <>
-                        {data.Deskripsi
+                    <a
+                      className="btn btn-link text-decoration-none p-0"
+                      onClick={handleExpandDescription}
+                      style={{ fontSize: "12px", textAlign: "justify" }}
+                    >
+                      Baca Selengkapnya <Icon name={"caret-down"} />
+                    </a>
+                  </>
+                ) : (
+                  <>
+                    {data.Deskripsi
                       ? decode(data.Deskripsi)
                       : "Deskripsi tidak tersedia"}
-                        {expandDeskripsi && (
-                          <a
-                            className="btn btn-link text-decoration-none p-0"
-                            onClick={handleExpandDescription}
-                            style={{ fontSize: "12px", textAlign:"justify" }}
-                          >
-                            Tutup <Icon name={"caret-up"} />
-                          </a>
-                        )}
-                      </>
+                    {expandDeskripsi && (
+                      <a
+                        className="btn btn-link text-decoration-none p-0"
+                        onClick={handleExpandDescription}
+                        style={{ fontSize: "12px", textAlign: "justify" }}
+                      >
+                        Tutup <Icon name={"caret-up"} />
+                      </a>
                     )}
-                  </p>
-                </div>
+                  </>
+                )}
+              </p>
+            </div>
           </div>
           {data.Status === "Draft" ? (
             <div className="draft-icon d-flex justify-content-end mt-3">
@@ -122,23 +126,36 @@ const CardKategoriProgram = ({
           ) : (
             <div className="d-flex justify-content-end">
               <div className="lihat-materi d-flex justify-content-end">
-              <button onClick={() => onChangePage("materi", AppContext_test.KategoriIdByKK = data.Key, AppContext_master.KategoriIdByKK = data.Key, data={data})} style={{border:"none", background:"#0E6EFE", padding:"5px 10px", color:"white", marginTop:"10px", borderRadius:"10px"}}>Lihat Materi</button>
+                <button
+                  onClick={() =>
+                    onChangePage(
+                      "materi",
+                      (AppContext_test.KategoriIdByKK = data.Key),
+                      (AppContext_master.KategoriIdByKK = data.Key),
+                      (data = { data })
+                    )
+                  }
+                  style={{
+                    border: "none",
+                    background: "#0E6EFE",
+                    padding: "5px 10px",
+                    color: "white",
+                    marginTop: "10px",
+                    borderRadius: "10px",
+                  }}
+                >
+                  Lihat Materi
+                </button>
               </div>
               <div className="mt-3">
-              <Icon
-                name="edit"
-                type="Bold"
-                cssClass="btn px-2 py-0 text-primary"
-                title="Ubah data"
-                onClick={() => onChangePage("editKategori", data)}
-              />
+                <Icon
+                  name="edit"
+                  type="Bold"
+                  cssClass="btn px-2 py-0 text-primary"
+                  title="Ubah data"
+                  onClick={() => onChangePage("editKategori", data)}
+                />
               </div>
-              {/* <Icon
-                name="check"
-                type="Bold"
-                cssClass="btn px-2 py-0 text-primary"
-                title="Sudah di Publikasi"
-              /> */}
               <div
                 class="form-check form-switch py-0 ms-2 mt-3"
                 style={{ width: "fit-content" }}

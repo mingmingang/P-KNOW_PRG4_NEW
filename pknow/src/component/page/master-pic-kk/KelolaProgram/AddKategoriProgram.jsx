@@ -4,8 +4,6 @@ import { API_LINK } from "../../../util/Constants";
 import { validateAllInputs, validateInput } from "../../../util/ValidateForm";
 import SweetAlert from "../../../util/SweetAlert";
 import UseFetch from "../../../util/UseFetch";
-import Button from "../../../part/Button copy";
-import DropDown from "../../../part/Dropdown";
 import Input from "../../../part/Input";
 import Loading from "../../../part/Loading";
 import Alert from "../../../part/Alert";

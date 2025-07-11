@@ -5,21 +5,16 @@ import {
   validateAllInputs,
   validateInput,
 } from "../../../../util/ValidateForm";
-import SweetAlert from "../../../../util/SweetAlert";
 import UseFetch from "../../../../util/UseFetch";
 import Button from "../../../../part/Button copy";
-import DropDown from "../../../../part/Dropdown";
 import Input from "../../../../part/Input";
 import FileUpload from "../../../../part/FileUpload";
 import UploadFile from "../../../../util/UploadFile";
-import Loading from "../../../../part/Loading";
 import Alert from "../../../../part/Alert";
-// import { Stepper } from 'react-form-stepper';
 import AppContext_master from "../MasterContext";
 import AppContext_test from "../../master-test/TestContext";
 import axios from "axios";
 import { Editor } from "@tinymce/tinymce-react";
-import { Stepper, Step, StepLabel, Box } from "@mui/material";
 import BackPage from "../../../../../assets/backPage.png";
 import Konfirmasi from "../../../../part/Konfirmasi";
 import NoImage from "../../../../../assets/NoImage.png";
@@ -49,11 +44,9 @@ export default function Pengenalan({ onChangePage }) {
   const [isLoading, setIsLoading] = useState(false);
   const [listKategori, setListKategori] = useState([]);
   const [isFormDisabled, setIsFormDisabled] = useState(false);
-  const [resetStepper, setResetStepper] = useState(0);
   const fileInputRef = useRef(null);
   const gambarInputRef = useRef(null);
   const vidioInputRef = useRef(null);
-  const [isFormSubmitted, setIsFormSubmitted] = useState(false);
   const [isBackAction, setIsBackAction] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
   const fileGambarRef = useRef(null);
@@ -90,7 +83,9 @@ export default function Pengenalan({ onChangePage }) {
       });
       const url = URL.createObjectURL(blob);
       window.open(url, "_blank");
-    } catch (error) {}
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const kategori = AppContext_master.KategoriIdByKK;
@@ -108,7 +103,6 @@ export default function Pengenalan({ onChangePage }) {
     createdby: AppContext_test.activeUser,
   });
 
-  // Validasi skema menggunakan Yup
   const userSchema = object({
     kat_id: string(),
     mat_judul: string().required("Judul materi harus diisi"),
@@ -125,11 +119,10 @@ export default function Pengenalan({ onChangePage }) {
     createdby: string(),
   });
 
-  // Handle input change
   const handleInputChange = async (e) => {
     const { name, value } = e.target;
     if (name === "mat_pengenalan") {
-      const textOnly = value.replace(/<\/?[^>]+(>|$)/g, ""); // Menghapus semua tag HTML
+      const textOnly = value.replace(/<\/?[^>]+(>|$)/g, "");
       formDataRef.current[name] = textOnly;
     } else {
       formDataRef.current[name] = value;
@@ -171,11 +164,10 @@ export default function Pengenalan({ onChangePage }) {
 
     if (error) ref.current.value = "";
     else {
-      // Show preview if the file is an image
       if (file && file.type.startsWith("image/")) {
         const reader = new FileReader();
         reader.onloadend = () => {
-          setFilePreview(reader.result); // Set the preview
+          setFilePreview(reader.result);
         };
         reader.readAsDataURL(file);
       }
@@ -200,7 +192,6 @@ export default function Pengenalan({ onChangePage }) {
     }
   };
 
-  // Handle form submit
   const handleAdd = async (e) => {
     e.preventDefault();
 
@@ -209,8 +200,6 @@ export default function Pengenalan({ onChangePage }) {
       userSchema,
       setErrors
     );
-
-    console.log("dataaa",formDataRef.current )
 
     if (Object.values(validationErrors).every((error) => !error)) {
       setIsLoading(true);
@@ -248,10 +237,10 @@ export default function Pengenalan({ onChangePage }) {
                 AppContext_master.dataIdSectionSharing,
                 AppContext_master.dataIdSectionPretest,
                 AppContext_master.dataIdSectionPostTest,
-                (AppContext_master.dataPretest),
-                (AppContext_master.dataQuizPretest ),
-                (AppContext_master.dataPostTest ),
-                (AppContext_master.dataQuizPostTest),
+                AppContext_master.dataPretest,
+                AppContext_master.dataQuizPretest,
+                AppContext_master.dataPostTest,
+                AppContext_master.dataQuizPostTest,
                 AppContext_master.dataTimerPostTest
               );
             } else {
@@ -352,8 +341,7 @@ export default function Pengenalan({ onChangePage }) {
       setIsFormDisabled(false);
     }
   }, [AppContext_master.MateriForm, AppContext_master.formSavedMateri]);
-  
-  // Render form
+
   const dataSaved = AppContext_master.formSavedMateri;
 
   const [activeStep, setActiveStep] = useState(0);
@@ -363,19 +351,14 @@ export default function Pengenalan({ onChangePage }) {
     onChangePage(stepContent);
   };
 
-  // if (isLoading) return <Loading />;
   const initialSteps = ["Pengenalan", "Materi", "Forum"];
   const additionalSteps = ["Sharing Expert", "Pre-Test", "Post-Test"];
 
   const handleStepChanges = (index) => {};
 
-  const handleStepAdded = (stepName) => {
-   // console.log("Step ditambahkan:", stepName);
-  };
+  const handleStepAdded = (stepName) => {};
 
-  const handleStepRemoved = (stepName) => {
-    //console.log("Step dihapus:", stepName);
-  };
+  const handleStepRemoved = (stepName) => {};
 
   return (
     <>

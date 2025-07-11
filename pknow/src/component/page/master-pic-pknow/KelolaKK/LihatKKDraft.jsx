@@ -1,26 +1,15 @@
 import { useEffect, useRef, useState } from "react";
 import { motion, useAnimation } from "framer-motion";
 import { useInView } from "react-intersection-observer";
-import Button from "../../../part/Button";
-import DropDown from "../../../part/Dropdown";
-import Input from "../../../part/Input";
 import Loading from "../../../part/Loading";
 import Alert from "../../../part/Alert";
-import Filter from "../../../part/Filter";
-import Icon from "../../../part/Icon";
 import { API_LINK } from "../../../util/Constants";
 import UseFetch from "../../../util/UseFetch";
-import NoImage from "../../../../assets/NoImage.png";
 import BackPage from "../../../../assets/backPage.png";
 import Konfirmasi from "../../../part/Konfirmasi";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faGraduationCap,
-  faUser,
-  faArrowRight,
-  faPeopleGroup,
-  faClock,
-  faUsers,
 } from "@fortawesome/free-solid-svg-icons";
 import { decode } from "he";
 
@@ -66,7 +55,6 @@ const AnimatedSection = ({ children, delay = 0 }) => {
 
 
 export default function KKDetailDraft({ onChangePage, withID }) {
-  const [errors, setErrors] = useState({});
   const [isError, setIsError] = useState({ error: false, message: "" });
   const [isLoading, setIsLoading] = useState(false);
   const [listAnggota, setListAnggota] = useState([]);
@@ -192,11 +180,10 @@ export default function KKDetailDraft({ onChangePage, withID }) {
               } catch (e) {
                 console.log(e.message);
                 setIsError({ error: true, message: e.message });
-                return { ...program, kategori: [] }; // Handle error case by returning program with empty kategori
+                return { ...program, kategori: [] };
               }
             })
           );
-
           setListProgram(updatedListProgram);
           setIsLoading(false);
           break;
