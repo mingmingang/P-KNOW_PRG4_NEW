@@ -15,6 +15,9 @@ import "../../../../style/Search.css";
 import Cookies from "js-cookie";
 import { decryptId } from "../../../util/Encryptor";
 import AnimatedSection from "../../../part/AnimatedSection"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faChevronLeft, faChevronRight } from "@fortawesome/free-solid-svg-icons";
+
 
 const dataFilterSort = [
   { Value: "[Nama Kelompok Keahlian] asc", Text: "Nama Kelompok Keahlian [↑]" },
@@ -61,6 +64,15 @@ export default function KK({ onChangePage }) {
   const [currentData, setCurrentData] = useState(inisialisasiData);
   const [isEmpty, setIsEmpty] = useState(false);
   const [currentDataAktif, setCurrentDataAktif] = useState(inisialisasiData);
+
+  const scrollContainerRef = useRef(null);
+  const scrollLeft = () => {
+    scrollContainerRef.current?.scrollBy({ left: -300, behavior: "smooth" });
+  };
+
+  const scrollRight = () => {
+    scrollContainerRef.current?.scrollBy({ left: 300, behavior: "smooth" });
+  };
 
   const [currentFilterAktif, setCurrentFilterAktif] = useState({
     page: 1,
@@ -298,45 +310,85 @@ export default function KK({ onChangePage }) {
             </div>
           </div>
           </div>
-
-          <div className="container">
-            <div
-              style={{
-                display: "flex",
-                gap: "15px",
-                marginBottom: "20px",
-                overflowX: "auto",
-                whiteSpace: "nowrap",
-                width: "100%",
-              }}
-              className="scroll-container mt-3"
-            >
-              {tabList.map(({ label, value }) => (
-                <div key={value}>
-                  <button
-                    onClick={() => handleTabChange(value)}
-                    style={{
-                      padding: "10px 20px",
-                      borderRadius: "5px",
-                      backgroundColor:
-                        activeTab === value ? "#0A5EA8" : "#E9ECEF",
-                      color: activeTab === value ? "#fff" : "#333",
-                      border: "none",
-                      cursor: "pointer",
-                      minWidth: value === "" ? "200px" : "400px",
-                      maxWidth: value === "" ? "200px" : "600px",
-                      height: "40px",
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                    }}
-                  >
-                    {label}
-                  </button>
+            <div className="container">
+              <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+              <button
+                onClick={scrollLeft}
+                style={{
+                  border: "none",
+                  backgroundColor: "#0A5EA8",
+                  borderRadius: "100%",
+                  width: "40px",
+                  height: "40px",
+                  fontSize: "18px",
+                  color: "#fff",
+                  cursor: "pointer",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <FontAwesomeIcon icon={faChevronLeft} />
+              </button>
+                <div
+                  ref={scrollContainerRef}
+                  style={{
+                    display: "flex",
+                    gap: "15px",
+                    marginBottom: "20px",
+                    overflowX: "auto",
+                    whiteSpace: "nowrap",
+                    width: "100%",
+                    scrollbarWidth: "none",
+                  }}
+                  className="scroll-container mt-3"
+                >
+                  {tabList.map(({ label, value }) => (
+                    <div key={value}>
+                      <button
+                        onClick={() => handleTabChange(value)}
+                        style={{
+                          padding: "10px 20px",
+                          borderRadius: "5px",
+                          backgroundColor:
+                            activeTab === value ? "#0A5EA8" : "#E9ECEF",
+                          color: activeTab === value ? "#fff" : "#333",
+                          border: "none",
+                          cursor: "pointer",
+                          minWidth: value === "" ? "200px" : "400px",
+                          maxWidth: value === "" ? "200px" : "600px",
+                          height: "40px",
+                          display: "flex",
+                          justifyContent: "center",
+                          alignItems: "center",
+                        }}
+                      >
+                        {label}
+                      </button>
+                    </div>
+                  ))}
                 </div>
-              ))}
+
+                <button
+                  onClick={scrollRight}
+                  style={{
+                    border: "none",
+                    backgroundColor: "#0A5EA8",
+                    borderRadius: "100%",
+                    width: "40px",
+                    height: "40px",
+                    fontSize: "18px",
+                    color: "#fff",
+                    cursor: "pointer",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <FontAwesomeIcon icon={faChevronRight} />
+                </button>
+              </div>
             </div>
-          </div>
         </div>
 
         <div className="container">
