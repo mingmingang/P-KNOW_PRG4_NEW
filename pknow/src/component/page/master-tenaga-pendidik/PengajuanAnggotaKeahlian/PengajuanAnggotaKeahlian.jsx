@@ -1,18 +1,29 @@
 import React from "react";
 import { useEffect, useRef, useState } from "react";
 import UseFetch from "../../../util/UseFetch";
+import Button from "../../../part/Button copy";
 import Input from "../../../part/Input";
 import Filter from "../../../part/Filter";
 import DropDown from "../../../part/Dropdown";
 import { API_LINK } from "../../../util/Constants";
 import Cookies from "js-cookie";
 import { decryptId } from "../../../util/Encryptor";
+import Label from "../../../part/Label";
 import CardPengajuanBaru from "../../../part/CardPengajuanBaru";
 import Alert from "../../../part/Alert";
 import "../../../../index.css";
+import Search from "../../../part/Search";
 import Button2 from "../../../part/Button copy";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faGraduationCap, faUser } from "@fortawesome/free-solid-svg-icons";
+import {
+  faGraduationCap,
+  faUser,
+  faArrowRight,
+  faPeopleGroup,
+  faClock,
+  faUsers,
+} from "@fortawesome/free-solid-svg-icons";
+import { decode } from "he";
 import "../../../../../src/index.css";
 
 const inisialisasiData = [
@@ -64,6 +75,28 @@ export default function PengajuanKelompokKeahlian({ onChangePage }) {
     });
   }
 
+  async function pencaharian() {
+    setIsLoading(true);
+    try {
+      const data = await UseFetch(API_LINK + "PengajuanKK/GetAnggotaKK", {
+        ...currentFilter,
+        query: searchQuery.current.value,
+      });
+
+      if (data && data.length > 0) {
+        setListKK(data);
+      } else {
+        setListKK([]);
+      }
+    } catch (error) {
+      console.error("Error during search:", error);
+      setListKK([]);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  const [show, setShow] = useState(false);
   const [isError, setIsError] = useState(false);
   const [dataAktif, setDataAktif] = useState(false);
   const [listKK, setListKK] = useState(inisialisasiKK);
@@ -119,16 +152,18 @@ export default function PengajuanKelompokKeahlian({ onChangePage }) {
   }, []);
 
   const filterUniqueKK = (data) => {
-    let waitingAccCount = 0;
+    let waitingAccCount = 0; // Hitung jumlah entri "Menunggu Acc"
     const uniqueKK = data.reduce((acc, current) => {
       const existing = acc.find((item) => item["ID KK"] === current["ID KK"]);
 
       if (!existing) {
+        // Tambahkan jika belum ada
         acc.push(current);
         if (current.Status === "Menunggu Acc") {
           waitingAccCount++;
         }
       } else {
+        // Prioritaskan "Aktif" di atas status lainnya
         if (current.Status === "Aktif") {
           acc = acc.map((item) =>
             item["ID KK"] === current["ID KK"] ? current : item
@@ -138,6 +173,7 @@ export default function PengajuanKelompokKeahlian({ onChangePage }) {
           existing.Status !== "Aktif" &&
           waitingAccCount < 2
         ) {
+          // Ganti dengan "Menunggu Acc" jika belum mencapai batas
           acc = acc.map((item) =>
             item["ID KK"] === current["ID KK"] ? current : item
           );
@@ -174,11 +210,16 @@ export default function PengajuanKelompokKeahlian({ onChangePage }) {
             }
             return value;
           });
+
+          // Filter data untuk memastikan keunikan dan maksimal 2 "Menunggu Acc"
           const uniqueData = filterUniqueKK(formattedData);
 
+          // Hitung status "Menunggu Acc"
           const waitingCount = uniqueData.filter(
             (value) => value.Status === "Menunggu Acc"
           ).length;
+
+          // Atur status menjadi "None" jika lebih dari 2 "Menunggu Acc"
           const finalData = uniqueData.map((value) => {
             if (waitingCount === 2 && value.Status !== "Menunggu Acc") {
               return { ...value, Status: "None" };
@@ -226,7 +267,7 @@ export default function PengajuanKelompokKeahlian({ onChangePage }) {
     const parser = new DOMParser();
     const decodedString = parser.parseFromString(str, "text/html").body
       .textContent;
-    return decodedString || str;
+    return decodedString || str; // Jika decoding gagal, gunakan string asli
   };
 
   const getLampiran = async () => {
@@ -248,12 +289,18 @@ export default function PengajuanKelompokKeahlian({ onChangePage }) {
         const updatedData = data.map((item) => {
           if (item.Lampiran) {
             try {
+              // Decode HTML entities sebelum parsing JSON
               const cleanedLampiran = decodeHtmlEntities(item.Lampiran);
+
+              // Parse JSON string
               const parsedLampiran = JSON.parse(cleanedLampiran);
+
+              // Proses setiap file di dalam parsedLampiran
               const fileUrls = parsedLampiran.map((file) => {
                 return `${API_LINK}Upload/GetFile/${file.pus_file}`;
               });
 
+              // Tambahkan fileUrls ke objek item
               return { ...item, Lampiran: fileUrls };
             } catch (err) {
               console.error("Gagal mem-parse JSON Lampiran:", err);

@@ -85,7 +85,7 @@ function CardMateri({
                   <div>
                     <h3
                       className="text-xl font-bold text-blue-600 mt-3"
-                      style={{ fontSize: "20px", textAlign: "justify", cursor:"pointer" }}
+                      style={{ fontSize: "20px", textAlign: "justify", cursor:"pointer", marginLeft:"20px" }}
                       onClick={() => handleBacaMateri(book)}
                     >
                       {book?.Judul ? decode(book.Judul) : "Judul tidak tersedia"}

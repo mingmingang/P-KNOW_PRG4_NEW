@@ -14,7 +14,6 @@ import Alert from "../../../../part/Alert";
 import AppContext_master from "../MasterContext";
 import AppContext_test from "../../master-test/TestContext";
 import axios from "axios";
-import { Editor } from "@tinymce/tinymce-react";
 import BackPage from "../../../../../assets/backPage.png";
 import Konfirmasi from "../../../../part/Konfirmasi";
 import NoImage from "../../../../../assets/NoImage.png";
@@ -22,6 +21,7 @@ import DOMPurify from "dompurify";
 import CustomStepper from "../../../../part/Stepp";
 const steps2 = ["Pengenalan", "Materi", "Forum", "Tambah Section"];
 import { decode } from "he";
+import Editor from "../../../../part/CKEditor";
 
 function getStepContent(stepIndex) {
   switch (stepIndex) {
@@ -549,39 +549,23 @@ export default function Pengenalan({ onChangePage }) {
                     Pengenalan Materi <span style={{ color: "Red" }}> *</span>
                   </label>
                   <Editor
-                    id="mat_pengenalan"
                     value={formDataRef.current.mat_pengenalan}
-                    onEditorChange={(content) =>
+                    onChange={(content) => {
                       handleInputChange({
-                        target: { name: "mat_pengenalan", value: content },
-                      })
-                    }
-                    apiKey="81ujooza2p3616vb7rdvc0lxphx68fe82f2aqj6qkmbvn6l4"
-                    init={{
-                      height: 300,
-                      menubar: false,
-                      plugins: [
-                        "advlist autolink lists link image charmap print preview anchor",
-                        "searchreplace visualblocks code fullscreen",
-                        "insertdatetime media table paste code help wordcount",
-                      ],
-                      toolbar:
-                        "undo redo | formatselect | bold italic backcolor | \
-                        alignleft aligncenter alignright alignjustify | \
-                        bullist numlist outdent indent | removeformat | help",
+                        target: {
+                          name: "mat_pengenalan",
+                          value: content,
+                        },
+                      });
                     }}
                     disabled={isFormDisabled || dataSaved}
                   />
+
                   {errors.mat_pengenalan && (
-                    <div className="invalid-feedback">
+                    <div className="invalid-feedback d-block">
                       {errors.mat_pengenalan}
                     </div>
                   )}
-                  <div
-                    dangerouslySetInnerHTML={{
-                      __html: DOMPurify.sanitize(formDataRef.mat_pengenalan),
-                    }}
-                  ></div>
                 </div>
               </div>
             </div>

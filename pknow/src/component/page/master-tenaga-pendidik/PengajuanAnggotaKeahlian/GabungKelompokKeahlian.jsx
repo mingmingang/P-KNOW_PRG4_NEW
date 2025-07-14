@@ -101,6 +101,16 @@ export default function PengajuanAdd({ onChangePage, withID }) {
     });
   };
 
+  const handleInputChange = async (e) => {
+    const { name, value } = e.target;
+    const validationError = await validateInput(name, value, userSchema);
+    formDataRef.current[name] = value;
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      [validationError.name]: validationError.error,
+    }));
+  };
+
   const getUserKryID = async () => {
     setIsError((prevError) => ({ ...prevError, error: false }));
 
@@ -271,19 +281,19 @@ export default function PengajuanAdd({ onChangePage, withID }) {
                 "success"
               );
               UseFetch(API_LINK + "Utilities/createNotifikasi", {
-                p1: "SENTTOPRODI", 
-                p2: "ID123458", 
-                p3: "APP59",
-                p4: "TENAGA PENDIDIK",
-                p5: formDataRef.current.creaby, 
-                p6: "Terdapat Pengajuan Anggota Kelompok Keahlian", 
-                p7: "Persetujuan Anggota KK", 
-                p8: "Tenaga Pendidik Menunggu Persetujuan Anggota Kelompok Keahlian", 
-                p9: "Dari Tenaga Pendidik", 
-                p10: "0", 
-                p11: "Jenis Lain", 
-                p12: formDataRef.current.creaby, 
-                p13: "ROL02",
+                p1: "SENTTOPRODI", // Penanda aksi
+                p2: "ID123458", // ID pengajuan
+                p3: "APP59", // Aplikasi
+                p4: "TENAGA PENDIDIK", // Pengirim
+                p5: formDataRef.current.creaby, // CC (not_cc)
+                p6: "Terdapat Pengajuan Anggota Kelompok Keahlian", // Pesan
+                p7: "Persetujuan Anggota KK", // Subjek
+                p8: "Tenaga Pendidik Menunggu Persetujuan Anggota Kelompok Keahlian", // Body Message
+                p9: "Dari Tenaga Pendidik", // Footer Pesan
+                p10: "0", // Tipe Notifikasi
+                p11: "Jenis Lain", // ID Pengajuan
+                p12: formDataRef.current.creaby, // Pembuat notifikasi
+                p13: "ROL02", // User pembuat notifikasi
                 p14: withID["Kode Prodi"],
               }).then((data) => {
                 if (data === "ERROR" || data.length === 0) {
@@ -297,6 +307,7 @@ export default function PengajuanAdd({ onChangePage, withID }) {
                   );
                 }
               });
+
               window.location.reload();
             }
           } catch (error) {
@@ -362,6 +373,8 @@ export default function PengajuanAdd({ onChangePage, withID }) {
                             type="info fw-bold"
                             message="Notes: Lampiran dapat berupa Sertifikat Keahlian, Surat Tugas, atau Berkas Lainnya yang berkaitan"
                           />
+
+                          {/* Header Format Penamaan + Button Tambah */}
                           <div className="lampiran-header">
                             <div>
                               <p className="mb-1 fw-semibold">
@@ -381,6 +394,7 @@ export default function PengajuanAdd({ onChangePage, withID }) {
                             />
                           </div>
 
+                          {/* Daftar Lampiran */}
                           {lampiranCount > 0 &&
                             [...Array(lampiranCount)].map((_, index) => (
                               <div className="lampiran-item" key={index}>
@@ -425,13 +439,17 @@ export default function PengajuanAdd({ onChangePage, withID }) {
                                   </div>
                                 </div>
                                 <div className="lampiran-action">
-                                  <button
-                                    type="button"
-                                    className="btn btn-danger btn-sm"
+                                  <Button
+                                    iconName="trash"
+                                    className="btn p-0" // Hapus class btn-danger dan gunakan p-0 untuk menghilangkan padding
+                                    style={{
+                                      color: "#dc3545", // Warna merah Bootstrap
+                                      background: "none", // Hapus background
+                                      border: "none", // Hapus border
+                                      fontSize: "1.1rem", // Ukuran ikon
+                                    }}
                                     onClick={() => handleHapusLampiran(index)}
-                                  >
-                                    Hapus
-                                  </button>
+                                  />
                                 </div>
                               </div>
                             ))}

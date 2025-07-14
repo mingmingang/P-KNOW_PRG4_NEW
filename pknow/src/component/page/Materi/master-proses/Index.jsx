@@ -10,7 +10,7 @@ import Loading from "../../../part/Loading";
 import CardMateri from "../../../part/CardMateri2";
 import UseFetch from "../../../util/UseFetch";
 import { API_LINK } from "../../../util/Constants";
-import '@fortawesome/fontawesome-free/css/all.css';
+import "@fortawesome/fontawesome-free/css/all.css";
 import "../../../../style/Materi.css";
 import "../../../../index.css";
 import AppContext_test from "./MasterContext";
@@ -61,31 +61,29 @@ export default function MasterProsesIndex({ onChangePage }) {
   const [currentData, setCurrentData] = useState(inisialisasiData);
   const [listKategori, setListKategori] = useState([]);
   const [showConfirmation, setShowConfirmation] = useState(false);
-  const [isBackAction, setIsBackAction] = useState(false);  
+  const [isBackAction, setIsBackAction] = useState(false);
   const [currentFilter, setCurrentFilter] = useState({
     page: 1,
     status: "Semua",
     query: "",
     sort: "Judul",
     order: "asc",
-    kategori:AppContext_test.KategoriIdByKK,
+    kategori: AppContext_test.KategoriIdByKK,
   });
 
   const handleGoBack = () => {
-    setIsBackAction(true);  
-    setShowConfirmation(true);  
+    setIsBackAction(true);
+    setShowConfirmation(true);
   };
 
   const handleConfirmYes = () => {
-    setShowConfirmation(false); 
+    setShowConfirmation(false);
     onChangePage("kk");
   };
 
-
   const handleConfirmNo = () => {
-    setShowConfirmation(false);  
+    setShowConfirmation(false);
   };
-
 
   const searchQuery = useRef(null);
   const searchFilterSort = useRef(null);
@@ -98,7 +96,7 @@ export default function MasterProsesIndex({ onChangePage }) {
       "Konfirmasi",
       "Apakah Anda yakin ingin mengubah status data Materi?",
       "warning",
-      "Ya",
+      "Ya"
     ).then((confirmed) => {
       if (confirmed) {
         UseFetch(API_LINK + "Materi/setStatusMateri", {
@@ -116,10 +114,9 @@ export default function MasterProsesIndex({ onChangePage }) {
             }
           })
           .then(() => setIsLoading(false));
-      } 
+      }
     });
   }
-
 
   function handleDelete(id) {
     setIsError(false);
@@ -128,18 +125,19 @@ export default function MasterProsesIndex({ onChangePage }) {
       "Konfirmasi",
       "Apakah Anda yakin ingin menghapus Materi dari Kategori ini?",
       "warning",
-      "Ya",
+      "Ya"
     ).then((confirmed) => {
       if (confirmed) {
         UseFetch(API_LINK + "Materi/DeleteMateri", {
           mat_id: id,
         })
           .then((data) => {
-            if (data === null) SweetAlert(
-              "Gagal",
-              "Materi ini berelasi dengan data yang lain",
-              "error"
-            );
+            if (data === null)
+              SweetAlert(
+                "Gagal",
+                "Materi ini berelasi dengan data yang lain",
+                "error"
+              );
             else {
               SweetAlert(
                 "Sukses",
@@ -150,7 +148,7 @@ export default function MasterProsesIndex({ onChangePage }) {
             }
           })
           .then(() => setIsLoading(false));
-      } 
+      }
     });
   }
 
@@ -159,19 +157,21 @@ export default function MasterProsesIndex({ onChangePage }) {
   const fetchDataKategori = async (retries = 3, delay = 1000) => {
     for (let i = 0; i < retries; i++) {
       try {
-        const data = await UseFetch(API_LINK + "Program/GetKategoriKKById", { kategori });
-        const mappedData = data.map(item => ({
+        const data = await UseFetch(API_LINK + "Program/GetKategoriKKById", {
+          kategori,
+        });
+        const mappedData = data.map((item) => ({
           value: item.Key,
           label: item["Nama Kategori"],
           deskripsi: item.Deskripsi,
           idKK: item.idKK,
-          namaKK: item.namaKK
+          namaKK: item.namaKK,
         }));
         return mappedData;
       } catch (error) {
         console.error("Error fetching kategori data:", error);
         if (i < retries - 1) {
-          await new Promise(resolve => setTimeout(resolve, delay));
+          await new Promise((resolve) => setTimeout(resolve, delay));
         } else {
           throw error;
         }
@@ -183,7 +183,7 @@ export default function MasterProsesIndex({ onChangePage }) {
     let isMounted = true;
 
     const fetchData = async () => {
-      setIsError({ error: false, message: '' });
+      setIsError({ error: false, message: "" });
       setIsLoading(true);
       try {
         const data = await fetchDataKategori();
@@ -445,130 +445,151 @@ export default function MasterProsesIndex({ onChangePage }) {
   }, [currentFilter]);
 
   const handleButtonClick = () => {
-    AppContext_test2.sharingExpertPDF = '';
-    AppContext_test2.sharingExpertVideo = '';
-    AppContext_test2.materiVideo = '';
-    AppContext_test2.materiPdf = '';
-    AppContext_test2.materiGambar = ''; 
-    onChangePage("pengenalanAdd"); 
+    AppContext_test2.sharingExpertPDF = "";
+    AppContext_test2.sharingExpertVideo = "";
+    AppContext_test2.materiVideo = "";
+    AppContext_test2.materiPdf = "";
+    AppContext_test2.materiGambar = "";
+    onChangePage("pengenalanAdd");
   };
 
   if (isLoading) return <Loading />;
-  
-  return (
-    isLoading ? (
-      <Loading />
-    ) : (
-      <>
+
+  return isLoading ? (
+    <Loading />
+  ) : (
+    <>
+      <div className="">
         <div className="">
-          <div className="">
-            {isError && (
-              <div className="flex-fill">
-                <Alert
-                  type="warning"
-                  message="Terjadi kesalahan: Gagal mengambil data materi."
-                />
-              </div>
-            )}
-            
-             <div className="backSearch">
-          <h1>{listKategori.length > 0
+          {isError && (
+            <div className="flex-fill">
+              <Alert
+                type="warning"
+                message="Terjadi kesalahan: Gagal mengambil data materi."
+              />
+            </div>
+          )}
+
+          <div className="backSearch">
+            <h1>
+              {listKategori.length > 0
                 ? decode(
                     listKategori.find(
                       (item) => item.value === AppContext_test.KategoriIdByKK
                     )?.label || "Label tidak tersedia"
                   )
-                : "Label tidak tersedia"}</h1>
-          <p>
-          {listKategori.length > 0
-  ? decode(
-      (listKategori.find((item) => item.value === AppContext_test.KategoriIdByKK)?.deskripsi || "Deskripsi tidak tersedia").slice(0, 200)
-    ) + "..."
-  : "Deskripsi tidak tersedia"}
-
-          </p>
-          <div className="input-wrapper">
-            <div
-              className=""
-              style={{
-                width: "700px",
-                display: "flex",
-                backgroundColor: "white",
-                borderRadius: "20px",
-                height: "40px",
-              }}
-            >
-              <Input
-                ref={searchQueryRef}
-                forInput="pencarianKK"
-                placeholder="Cari Materi"
-                style={{
-                  border: "none",
-                  width: "680px",
-                  height: "40px",
-                  borderRadius: "20px",
-                }}
-              />
-              <Button
-                iconName="search"
-                classType="px-4"
-                title="Cari"
-                onClick={handleSearch}
-                style={{ backgroundColor: "transparent", color: "#08549F" }}
-              />
-            </div>
-          </div>
-        </div>  
-
-      <div className="container">
-        <div className="navigasi-layout-page">
-          <p className="title-kk" style={{fontSize:"20px"}}> <button style={{backgroundColor:"transparent", border:"none", marginRight:"10px"}} onClick={handleGoBack}><img src={BackPage} width="50px" alt="" /></button>Kelola Materi / Program / Kategori <span style={{fontWeight:"bold"}}>{listKategori.length > 0
-                  ? decode(
+                : "Label tidak tersedia"}
+            </h1>
+            <p>
+              {listKategori.length > 0
+                ? decode(
+                    (
                       listKategori.find(
                         (item) => item.value === AppContext_test.KategoriIdByKK
-                      )?.label || "Kategori tidak tersedia"
-                    )
-                  : "Kategori tidak tersedia"}</span></p>
-          <div className="left-feature">
-            <div className="tes" style={{ display: "flex" }}>
-              <div className="mr-2">
-              <Filter handleSearch={handleFilter}>
-              <DropDown
-                      ref={searchFilterSortRef}
-                      forInput="ddUrut"
-                      label="Urut Berdasarkan"
-                      type="none"
-                      arrData={dataFilterSort}
-                      defaultValue="[Judul] ASC"
-                      // onChange={handleSortChange}
-                    />
-                    <DropDown
-                      ref={searchFilterStatusRef}
-                      forInput="ddStatus"
-                      label="Status"
-                      type="none"
-                      arrData={dataFilterStatus}
-                      defaultValue="Semua"
-                      // onChange={handleStatusChange}
-                    />
-                </Filter>
+                      )?.deskripsi || "Deskripsi tidak tersedia"
+                    ).slice(0, 200)
+                  ) + "..."
+                : "Deskripsi tidak tersedia"}
+            </p>
+            <div className="input-wrapper">
+              <div
+                className=""
+                style={{
+                  width: "700px",
+                  display: "flex",
+                  backgroundColor: "white",
+                  borderRadius: "20px",
+                  height: "40px",
+                }}
+              >
+                <Input
+                  ref={searchQueryRef}
+                  forInput="pencarianKK"
+                  placeholder="Cari Materi"
+                  style={{
+                    border: "none",
+                    width: "680px",
+                    height: "40px",
+                    borderRadius: "20px",
+                  }}
+                />
+                <Button
+                  iconName="search"
+                  classType="px-4"
+                  title="Cari"
+                  onClick={handleSearch}
+                  style={{ backgroundColor: "transparent", color: "#08549F" }}
+                />
               </div>
-              {activeUser !== "ROL05" && (
-  <div className="">
-    <Button
-      iconName="add"
-      classType="primary py-2 rounded-4"
-      title="Tambah Materi"
-      label="Tambah Materi"
-      onClick={handleButtonClick}
-    />
-  </div>
-)}
             </div>
           </div>
-        </div>
-        </div>
-            <div className="mt-1">
+
+          <div className="container">
+            <div className="navigasi-layout-page">
+              <p className="title-kk" style={{ fontSize: "20px" }}>
+                {" "}
+                <button
+                  style={{
+                    backgroundColor: "transparent",
+                    border: "none",
+                    marginRight: "10px",
+                  }}
+                  onClick={handleGoBack}
+                >
+                  <img src={BackPage} width="50px" alt="" />
+                </button>
+                Kelola Materi / Program / Kategori{" "}
+                <span style={{ fontWeight: "bold" }}>
+                  {listKategori.length > 0
+                    ? decode(
+                        listKategori.find(
+                          (item) =>
+                            item.value === AppContext_test.KategoriIdByKK
+                        )?.label || "Kategori tidak tersedia"
+                      )
+                    : "Kategori tidak tersedia"}
+                </span>
+              </p>
+              <div className="left-feature">
+                <div className="tes" style={{ display: "flex" }}>
+                  <div className="mr-2">
+                    <Filter handleSearch={handleFilter}>
+                      <DropDown
+                        ref={searchFilterSortRef}
+                        forInput="ddUrut"
+                        label="Urut Berdasarkan"
+                        type="none"
+                        arrData={dataFilterSort}
+                        defaultValue="[Judul] ASC"
+                        // onChange={handleSortChange}
+                      />
+                      <DropDown
+                        ref={searchFilterStatusRef}
+                        forInput="ddStatus"
+                        label="Status"
+                        type="none"
+                        arrData={dataFilterStatus}
+                        defaultValue="Semua"
+                        // onChange={handleStatusChange}
+                      />
+                    </Filter>
+                  </div>
+                  {activeUser !== "ROL05" && (
+                    <div className="">
+                      <Button
+                        iconName="add"
+                        classType="primary py-2 rounded-4"
+                        title="Tambah Materi"
+                        label="Tambah Materi"
+                        onClick={handleButtonClick}
+                      />
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="mt-1">
             {isEmpty ? (
               <div className="" style={{ margin: "10px 70px" }}>
                 <Alert
@@ -588,21 +609,22 @@ export default function MasterProsesIndex({ onChangePage }) {
                 onBacaMateri={onChangePage}
               />
             )}
-
-              </div>
-            </div>
-
           </div>
+        </div>
+      </div>
 
-        {showConfirmation && (
+      {showConfirmation && (
         <Konfirmasi
           title={isBackAction ? "Konfirmasi Kembali" : "Konfirmasi Simpan"}
-          pesan={isBackAction ? "Apakah anda ingin kembali?" : "Anda yakin ingin simpan data?"}
+          pesan={
+            isBackAction
+              ? "Apakah anda ingin kembali?"
+              : "Anda yakin ingin simpan data?"
+          }
           onYes={handleConfirmYes}
           onNo={handleConfirmNo}
         />
-        )}
-        </>
-    )
+      )}
+    </>
   );
 }

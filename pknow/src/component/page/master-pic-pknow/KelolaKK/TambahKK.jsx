@@ -16,6 +16,8 @@ import NoImage from "../../../../assets/NoImage.png";
 import BackPage from "../../../../assets/backPage.png";
 import Konfirmasi from "../../../part/Konfirmasi";
 import "../../../../index.css";
+import ReactQuill from "react-quill";
+import 'react-quill/dist/quill.snow.css';
 
 const AnimatedSection = ({ children, delay = 0 }) => {
   const controls = useAnimation();
@@ -462,6 +464,11 @@ export default function TambahKK({ onChangePage }) {
                           disabled={!formDataRef.current.programStudi}
                         />
                       </div>
+                       {/* <div>
+      <div className="flex justify-center items-center h-[10rem]">
+      </div>
+      <ReactQuill theme='snow'/>
+    </div> */}
                     </div>
                   </div>
                   <div

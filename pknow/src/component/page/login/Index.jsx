@@ -7,15 +7,10 @@ import "../../../style/Login.css";
 import logoPknow from "../../../assets/pknow.png";
 import Cookies from "js-cookie";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faSyncAlt,
-} from "@fortawesome/free-solid-svg-icons";
+import { faSyncAlt } from "@fortawesome/free-solid-svg-icons";
 import maskot from "../../../assets/loginMaskotTMS.png";
 
-import {
-  API_LINK,
-  ROOT_LINK,
-} from "../../util/Constants";
+import { API_LINK, ROOT_LINK } from "../../util/Constants";
 import { validateAllInputs, validateInput } from "../../util/ValidateForm";
 import { encryptId } from "../../util/Encryptor";
 import UseFetch from "../../util/UseFetch";
@@ -29,7 +24,7 @@ const AnimatedSection = ({ children, delay = 0 }) => {
   const controls = useAnimation();
   const [ref, inView] = useInView({
     threshold: 0.1,
-    triggerOnce: true
+    triggerOnce: true,
   });
 
   useEffect(() => {
@@ -42,16 +37,16 @@ const AnimatedSection = ({ children, delay = 0 }) => {
     visible: {
       opacity: 1,
       y: 0,
-      transition: { 
-        duration: 0.5, 
+      transition: {
+        duration: 0.5,
         delay,
-        ease: "easeOut"
-      }
+        ease: "easeOut",
+      },
     },
     hidden: {
       opacity: 0,
-      y: 50
-    }
+      y: 50,
+    },
   };
 
   return (
@@ -66,28 +61,27 @@ const AnimatedSection = ({ children, delay = 0 }) => {
   );
 };
 
-
 export default function Login() {
   const [errors, setErrors] = useState({});
   const [isError, setIsError] = useState({ error: false, message: "" });
   const [isLoading, setIsLoading] = useState(false);
   const [listRole, setListRole] = useState([]);
   const [showModal, setShowModal] = useState(false);
-  const [captchaImage, setCaptchaImage] = useState(""); 
+  const [captchaImage, setCaptchaImage] = useState("");
 
   const loadCaptcha = () => {
     setCaptchaImage(API_LINK + `Utilities/GetCaptcha?rand=${Math.random()}`);
   };
 
   useEffect(() => {
-    loadCaptcha(); 
+    loadCaptcha();
   }, []);
 
   const [captchaNumber, setCaptchaNumber] = useState("");
   const [userCaptchaInput, setUserCaptchaInput] = useState("");
 
   const generateCaptcha = () => {
-    const randomNumber = Math.floor(1000 + Math.random() * 9000); 
+    const randomNumber = Math.floor(1000 + Math.random() * 9000);
     setCaptchaNumber(randomNumber.toString());
   };
 
@@ -148,7 +142,7 @@ export default function Login() {
             "Content-Type": "application/json",
           },
           body: JSON.stringify(loginData),
-          credentials: "include", 
+          credentials: "include",
         });
         const data = await response.json();
         if (data === "ERROR") {
@@ -194,7 +188,7 @@ export default function Login() {
         username: formDataRef.current.username,
         role: role,
         nama: nama,
-        prodi : prodi
+        prodi: prodi,
       });
 
       if (token === "ERROR") {
@@ -209,13 +203,17 @@ export default function Login() {
         role: role,
         nama: nama,
         peran: peran,
-        prodi : prodi,
+        prodi: prodi,
         lastLogin: null,
       };
 
       let user = encryptId(JSON.stringify(userInfo));
 
-      Cookies.set("activeUser", user, { expires: 1 });
+      const OneHourFromNow = new Date(
+        new Date().getTime() + 60 * 60 * 1000
+      );
+
+      Cookies.set("activeUser", user, { expires: OneHourFromNow });
 
       if (
         userInfo.peran === "PIC P-KNOW" ||
@@ -226,7 +224,7 @@ export default function Login() {
       } else if (userInfo.peran === "Program Studi") {
         window.location.href = ROOT_LINK + "beranda_prodi";
       } else if (userInfo.peran === "Tenaga Kependidikan") {
-        window.location.href = ROOT_LINK +  "beranda_tenaga_kependidikan";
+        window.location.href = ROOT_LINK + "beranda_tenaga_kependidikan";
       } else if (userInfo.peran === "Mahasiswa") {
         window.location.href = ROOT_LINK + "beranda_mahasiswa";
       }
@@ -245,7 +243,6 @@ export default function Login() {
     window.location.href = "/";
   } else {
     return (
-
       <div>
         {isLoading && <Loading />}
         {isError.error && (
@@ -256,125 +253,130 @@ export default function Login() {
 
         <Header showUserInfo={false} />
         <AnimatedSection>
-        <main>
-          <section className="login-background">
-            <div className="login-container">
-              <div className="maskotlogin mr-5" style={{ color: "#0A5EA8", marginLeft:"-30px" }}>
-                <h2
-                  className="fw-bold"
-                  style={{ width: "750px", textAlign: "center" }}
+          <main>
+            <section className="login-background">
+              <div className="login-container">
+                <div
+                  className="maskotlogin mr-5"
+                  style={{ color: "#0A5EA8", marginLeft: "-30px" }}
                 >
-                  Mulai langkah awal pembelajaranmu dengan P-KNOW
-                </h2>
-                <img src={maskot} alt="" width="750px" />
-              </div>
-
-              <div className="login-box">
-                <img
-                  src={logoPknow}
-                  className="pknow"
-                  alt="Logo ASTRAtech"
-                  title="Logo ASTRAtech"
-                  width="290px"
-                  height="43px"
-                />
-                <form className="login-form" onSubmit={handleLoginClick}>
-                  <Input
-                    type="text"
-                    forInput="username"
-                    placeholder="Nama Pengguna"
-                    isRequired
-                    value={formDataRef.current.username}
-                    onChange={handleInputChange}
-                    style={{ marginTop: "20px" }}
-                  />
-                  <Input
-                    type="password"
-                    forInput="password"
-                    placeholder="Kata Sandi"
-                    isRequired
-                    value={formDataRef.current.password}
-                    onChange={handleInputChange}
-                    errorMessage={errors.password}
-                    style={{ marginTop: "20px" }}
-                  />
-
-                  <div className="mt-4">
-                    <p style={{ textAlign: "left" }}>
-                      Captcha <span style={{ color: "red" }}>*</span>
-                    </p>
-                  </div>
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      marginTop: "5px",
-                    }}
+                  <h2
+                    className="fw-bold"
+                    style={{ width: "750px", textAlign: "center" }}
                   >
-                    <img
-                      src={captchaImage}
-                      alt="Captcha"
-                      style={{ height: "50px", marginRight: "10px" }}
+                    Mulai langkah awal pembelajaranmu dengan P-KNOW
+                  </h2>
+                  <img src={maskot} alt="" width="750px" />
+                </div>
+
+                <div className="login-box">
+                  <img
+                    src={logoPknow}
+                    className="pknow"
+                    alt="Logo ASTRAtech"
+                    title="Logo ASTRAtech"
+                    width="290px"
+                    height="43px"
+                  />
+                  <form className="login-form" onSubmit={handleLoginClick}>
+                    <Input
+                      type="text"
+                      forInput="username"
+                      placeholder="Nama Pengguna"
+                      isRequired
+                      value={formDataRef.current.username}
+                      onChange={handleInputChange}
+                      style={{ marginTop: "20px" }}
+                    />
+                    <Input
+                      type="password"
+                      forInput="password"
+                      placeholder="Kata Sandi"
+                      isRequired
+                      value={formDataRef.current.password}
+                      onChange={handleInputChange}
+                      errorMessage={errors.password}
+                      style={{ marginTop: "20px" }}
                     />
 
-                    <div className="d-flex">
-                      <div className="ml-3">
-                        <input
-                          type="text"
-                          placeholder="Masukkan Captcha"
-                          value={userCaptchaInput}
-                          onChange={(e) => setUserCaptchaInput(e.target.value)}
-                          required
-                          style={{
-                            width: "100%",
-                            padding: "10px",
-                            borderRadius: "5px 0px 0px 5px",
-                            border: "1px solid #ccc",
-                            height: "44px",
-                          }}
-                        />
-                      </div>
-                      <div className="">
-                        <button
-                          type="button"
-                          onClick={loadCaptcha}
-                          style={{
-                            padding: "10px",
-                            width: "50px",
-                            border: "none",
-                            backgroundColor: "#0A5EA8",
-                            borderRadius: "0px 5px 5px 0px",
-                            cursor: "pointer",
-                            color: "white",
-                          }}
-                        >
-                          <FontAwesomeIcon icon={faSyncAlt} />
-                        </button>
+                    <div className="mt-4">
+                      <p style={{ textAlign: "left" }}>
+                        Captcha <span style={{ color: "red" }}>*</span>
+                      </p>
+                    </div>
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        marginTop: "5px",
+                      }}
+                    >
+                      <img
+                        src={captchaImage}
+                        alt="Captcha"
+                        style={{ height: "50px", marginRight: "10px" }}
+                      />
+
+                      <div className="d-flex">
+                        <div className="ml-3">
+                          <input
+                            type="text"
+                            placeholder="Masukkan Captcha"
+                            value={userCaptchaInput}
+                            onChange={(e) =>
+                              setUserCaptchaInput(e.target.value)
+                            }
+                            required
+                            style={{
+                              width: "100%",
+                              padding: "10px",
+                              borderRadius: "5px 0px 0px 5px",
+                              border: "1px solid #ccc",
+                              height: "44px",
+                            }}
+                          />
+                        </div>
+                        <div className="">
+                          <button
+                            type="button"
+                            onClick={loadCaptcha}
+                            style={{
+                              padding: "10px",
+                              width: "50px",
+                              border: "none",
+                              backgroundColor: "#0A5EA8",
+                              borderRadius: "0px 5px 5px 0px",
+                              cursor: "pointer",
+                              color: "white",
+                            }}
+                          >
+                            <FontAwesomeIcon icon={faSyncAlt} />
+                          </button>
+                        </div>
                       </div>
                     </div>
-                  </div>
 
-                  <button
-                    className="login-button"
-                    style={{
-                      border: "none",
-                      width: "100%",
-                      backgroundColor: "#0E6DFE",
-                      height: "40px",
-                      color: "white",
-                      marginTop: "20px",
-                      borderRadius: "10px",
-                    }}
-                    type="submit"
-                    label="MASUK"
-                  >
-                    Masuk
-                  </button>
-                </form>
+                    <button
+                      className="login-button"
+                      style={{
+                        border: "none",
+                        width: "100%",
+                        backgroundColor: "#0E6DFE",
+                        height: "40px",
+                        color: "white",
+                        marginTop: "20px",
+                        borderRadius: "10px",
+                      }}
+                      type="submit"
+                      label="MASUK"
+                    >
+                      Masuk
+                    </button>
+                  </form>
+                </div>
               </div>
-            </div>
-          </section>
-        </main>
+            </section>
+          </main>
         </AnimatedSection>
         <Footer />
 
@@ -389,7 +391,12 @@ export default function Login() {
                   type="button"
                   className="list-group-item list-group-item-action"
                   onClick={() =>
-                    handleLoginWithRole(value.RoleID, value.Nama, value.Role, value.Pro_ID)
+                    handleLoginWithRole(
+                      value.RoleID,
+                      value.Nama,
+                      value.Role,
+                      value.Pro_ID
+                    )
                   }
                 >
                   Masuk sebagai {value.Role}
@@ -400,7 +407,12 @@ export default function Login() {
                   id={`role-${index}`}
                   style={{ cursor: "pointer", width: "20px" }}
                   onClick={() =>
-                    handleLoginWithRole(value.RoleID, value.Nama, value.Role, value.Pro_ID)
+                    handleLoginWithRole(
+                      value.RoleID,
+                      value.Nama,
+                      value.Role,
+                      value.Pro_ID
+                    )
                   }
                 />
               </div>

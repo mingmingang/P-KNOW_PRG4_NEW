@@ -298,6 +298,7 @@ export default function KKEdit({ onChangePage, withID }) {
                 fontSize: "30px",
                 marginTop: "10px",
                 marginLeft: "20px",
+                marginBottom:"40px"
               }}
             >
               Edit Kelompok Keahlian
@@ -420,7 +421,7 @@ export default function KKEdit({ onChangePage, withID }) {
                       {currentPIC.key && (
                         <div className="mt-2">
                           <small>
-                            PIC Terpilih: <strong>{currentPIC.nama}</strong>
+                            PIC saat ini: <strong>{currentPIC.nama}</strong>
                             {isPICChanged && (
                               <span
                                 style={{ color: "orange", marginLeft: "10px" }}
