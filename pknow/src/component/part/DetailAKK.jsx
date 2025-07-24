@@ -269,7 +269,7 @@ export default function DetailAKK({
     ).then((confirm) => {
       if (confirm) {
         setIsLoading(true);
-        UseFetch(API_LINK + "AnggotaKK/TambahAnggotaByPIC", {
+         UseFetch(API_LINK + "AnggotaKK/TambahAnggotaByPIC", {
           idAkk: formDataRef.current.key,
           kry: id,
         })
