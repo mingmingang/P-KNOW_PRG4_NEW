@@ -492,23 +492,14 @@ export default function MasterProsesIndex({ onChangePage }) {
                 : "Deskripsi tidak tersedia"}
             </p>
             <div className="input-wrapper">
-              <div
-                className=""
-                style={{
-                  width: "700px",
-                  display: "flex",
-                  backgroundColor: "white",
-                  borderRadius: "20px",
-                  height: "40px",
-                }}
-              >
+              <div>
                 <Input
                   ref={searchQueryRef}
                   forInput="pencarianKK"
                   placeholder="Cari Materi"
                   style={{
                     border: "none",
-                    width: "680px",
+                    width: "700px",
                     height: "40px",
                     borderRadius: "20px",
                   }}

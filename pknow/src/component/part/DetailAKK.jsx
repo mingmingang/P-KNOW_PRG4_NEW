@@ -1,6 +1,11 @@
 import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faGraduationCap, faUser, faCaretDown, faCaretUp } from "@fortawesome/free-solid-svg-icons"; // Import dropdown icons
+import {
+  faGraduationCap,
+  faUser,
+  faCaretDown,
+  faCaretUp,
+} from "@fortawesome/free-solid-svg-icons"; // Import dropdown icons
 import Button from "./Button copy";
 import "../../style/DetailAKK.css";
 import Konfirmasi from "./Konfirmasi"; // Import Konfirmasi component
@@ -20,23 +25,19 @@ import Cookies from "js-cookie";
 import { decryptId } from "../util/Encryptor";
 import { decode } from "he";
 
-export default function DetailAKK({
-  prodi,
-  onChangePage,
-  withID
-}) {
+export default function DetailAKK({ prodi, onChangePage, withID }) {
   let activeUser = "";
   const cookie = Cookies.get("activeUser");
   if (cookie) activeUser = JSON.parse(decryptId(cookie)).username;
-  
+
   const [konfirmasi, setKonfirmasi] = useState("");
   const [pesanKonfirmasi, setPesanKonfirmasi] = useState("");
   const [actionType, setActionType] = useState(null);
   const [selectedAnggota, setSelectedAnggota] = useState(null);
-  const [expandedKategori, setExpandedKategori] = useState({}); 
-  const [expandedDescription, setExpandedDescription] = useState({}); 
+  const [expandedKategori, setExpandedKategori] = useState({});
+  const [expandedDescription, setExpandedDescription] = useState({});
   const [showConfirmation, setShowConfirmation] = useState(false);
-  const [isBackAction, setIsBackAction] = useState(false);  
+  const [isBackAction, setIsBackAction] = useState(false);
   const [errors, setErrors] = useState({});
   const [isError, setIsError] = useState({ error: false, message: "" });
   const [isLoading, setIsLoading] = useState(false);
@@ -55,18 +56,17 @@ export default function DetailAKK({
   });
 
   const handleGoBack = () => {
-    setIsBackAction(true);  
-    setShowConfirmation(true);  
+    setIsBackAction(true);
+    setShowConfirmation(true);
   };
 
   const handleConfirmYesBack = () => {
-    setShowConfirmation(false); 
+    setShowConfirmation(false);
     onChangePage("index");
   };
 
-
   const handleConfirmNoBack = () => {
-    setShowConfirmation(false);  
+    setShowConfirmation(false);
   };
 
   const [currentDosenFilter, setCurrentDosenFilter] = useState({
@@ -137,7 +137,6 @@ export default function DetailAKK({
       }));
     }
   };
-
 
   const getListProdi = async () => {
     setIsLoadingProdi(true);
@@ -223,7 +222,6 @@ export default function DetailAKK({
     console.log(JSON.stringify(listAnggota));
   });
 
-
   useEffect(() => {
     setIsLoading(isLoadingProdi || isLoadingAnggota || isLoadingDosen);
   }, [isLoadingProdi, isLoadingAnggota, isLoadingDosen]);
@@ -258,7 +256,6 @@ export default function DetailAKK({
     });
   };
 
-  
   const handleTambahAnggota = (id) => () => {
     setIsError(false);
     SweetAlert(
@@ -269,48 +266,47 @@ export default function DetailAKK({
     ).then((confirm) => {
       if (confirm) {
         setIsLoading(true);
-         UseFetch(API_LINK + "AnggotaKK/TambahAnggotaByPIC", {
+        UseFetch(API_LINK + "AnggotaKK/TambahAnggotaByPIC", {
           idAkk: formDataRef.current.key,
           kry: id,
         })
           .then((data) => {
-            console.log("testt",data);
             if (data === "ERROR" || data.length === 0) setIsError(true);
             else {
-              console.log("simiii")
+              console.log("simiii");
               UseFetch(API_LINK + "Utilities/createNotifikasi", {
-                p1 : 'SENTTOTENAGAPENDIDIK',
-                p2 : 'ID12346',
-                p3 : 'APP59',
-                p4 : 'PIC P-KNOW',
-                p5 :  activeUser,
-                p6 : 'Anda terpilih sebagai anggota Kelompok Keahlian yang dipilih langsung oleh PIC P-KNOW',
-                p7 : 'Notifikasi Anggota Kelompok Keahlian',
-                p8 : 'Dimohon kepada pihak program studi untuk memilih salah satu PIC KK yang dapat mengampu kelompok keahlian',
-                p9 : 'Dari PIC P-KNOW',
-                p10 : '0',
-                p11 : 'Jenis Lain',
-                p12 :  activeUser,
-                p13 : 'ROL03',
-                p14:  id,
+                p1: "SENTTOTENAGAPENDIDIK",
+                p2: "ID12346",
+                p3: "APP59",
+                p4: "PIC P-KNOW",
+                p5: activeUser,
+                p6: "Anda terpilih sebagai anggota Kelompok Keahlian yang dipilih langsung oleh PIC P-KNOW",
+                p7: "Notifikasi Anggota Kelompok Keahlian",
+                p8: "Dimohon kepada pihak program studi untuk memilih salah satu PIC KK yang dapat mengampu kelompok keahlian",
+                p9: "Dari PIC P-KNOW",
+                p10: "0",
+                p11: "Jenis Lain",
+                p12: activeUser,
+                p13: "ROL03",
+                p14: id,
               }).then((data) => {
-                console.log("notidikasi",data)
+                console.log("notidikasi", data);
                 if (data === "ERROR" || data.length === 0) setIsError(true);
-                else{
+                else {
                   setCurrentFilter((prevFilter) => ({
                     ...prevFilter,
                     query: "",
                     page: 1,
                   }));
                   searchAnggotaQuery.current.value = "";
-                  
+
                   SweetAlert(
                     "Berhasil",
                     "Notifikasi telah dikirimkan ke Tenaga Pendidik bersangkutan.",
                     "success"
                   );
                 }
-              }); 
+              });
               SweetAlert(
                 "Berhasil",
                 "Karyawan telah ditambahkan ke Anggota Keahlian.",
@@ -340,15 +336,33 @@ export default function DetailAKK({
 
   return (
     <>
-     <div className="back-and-title" style={{display:"flex", marginLeft:"80px", marginTop:"100px"}}>
-      <button style={{backgroundColor:"transparent", border:"none"}} onClick={handleGoBack}><img src={BackPage} alt="" /></button>
-                <h4 style={{ color:"#0A5EA8", fontWeight:"bold", fontSize:"30px", marginTop:"10px", marginLeft:"20px"}}>Kelompok Keahlian</h4>
-              </div>
+      <div
+        className="back-and-title"
+        style={{ display: "flex", marginLeft: "80px", marginTop: "100px" }}
+      >
+        <button
+          style={{ backgroundColor: "transparent", border: "none" }}
+          onClick={handleGoBack}
+        >
+          <img src={BackPage} alt="" />
+        </button>
+        <h4
+          style={{
+            color: "#0A5EA8",
+            fontWeight: "bold",
+            fontSize: "30px",
+            marginTop: "10px",
+            marginLeft: "20px",
+          }}
+        >
+          Kelompok Keahlian
+        </h4>
+      </div>
       <div className="content-container">
         <div className="information-kelompok-keahlian">
           <div className="informasi-kk">
             <h1 className="title">{decode(withID.title)}</h1>
-            <div className="prodi" style={{marginBottom:"-20px"}}>
+            <div className="prodi" style={{ marginBottom: "-20px" }}>
               <FontAwesomeIcon
                 icon={faGraduationCap}
                 style={{ fontSize: "1.5rem", marginRight: "-5px" }}
@@ -357,8 +371,15 @@ export default function DetailAKK({
                 {withID.prodi.nama}
               </p>
             </div>
-            <p className="about" style={{fontSize:"22px"}}>Tentang Kelompok Keahlian</p>
-            <p className="deskripsi" style={{fontSize:"17px", width:"500px"}}>{decode(withID.desc)}</p>
+            <p className="about" style={{ fontSize: "22px" }}>
+              Tentang Kelompok Keahlian
+            </p>
+            <p
+              className="deskripsi"
+              style={{ fontSize: "17px", width: "500px" }}
+            >
+              {decode(withID.desc)}
+            </p>
             <div className="userProdi">
               <FontAwesomeIcon
                 icon={faUser}
@@ -369,217 +390,265 @@ export default function DetailAKK({
               </p>
             </div>
           </div>
-            <div className="col-lg-5 mt-2">
-  <img className="detail-kk img-fluid"
-    src={`${API_LINK}Upload/GetFile/${withID.gambar}`} 
-    alt="" 
-    style={{ width:"500px", height: "60%", objectFit: "cover" }} 
-  />
-</div>
+          <div className="col-lg-5 mt-2">
+            <img
+              className="detail-kk img-fluid"
+              src={`${API_LINK}Upload/GetFile/${withID.gambar}`}
+              alt=""
+              style={{ width: "500px", height: "60%", objectFit: "cover" }}
+            />
+          </div>
         </div>
         <>
-      {isError.error && (
-        <div className="flex-fill">
-          <Alert type="danger" message={isError.message} />
-        </div>
-      )}
-      {isLoading ? (
-        <Loading />
+          {isError.error && (
+            <div className="flex-fill">
+              <Alert type="danger" message={isError.message} />
+            </div>
+          )}
+          {isLoading ? (
+            <Loading />
+          ) : (
+            <div className="d-flex flex-column" style={{ marginLeft: "-20px" }}>
+              <div className="flex-fill">
+                <div className="container">
+                  <div className="row pt-2">
+                    <div className="col-lg-7 px-4">
+                      <div
+                        className="card"
+                        style={{
+                          marginBottom: "18px",
+                          border: "none",
+                          boxShadow: "0px 0px 8px rgba(0, 0, 0, 0.1)", // Gray shadow
+                          borderRadius: "15px", // Rounded corners
+                        }}
+                      >
+                        <div
+                          className="fw-bold ml-3 mt-4"
+                          style={{ fontSize: "22px", color: "#0A5EA8" }}
+                        >
+                          Daftar Anggota
+                        </div>
+                       <div className="card-body">
+  <div className="input-group mb-3">
+    <Input
+      ref={searchAnggotaQuery}
+      forInput="pencarianProduk"
+      placeholder="Cari"
+    />
+    <Button
+      iconName="search"
+      classType="primary"
+      title="Cari"
+      onClick={handleAnggotaSearch}
+      style={{
+        height: "38px",
+        marginTop: "0px",
+        backgroundColor: "#0A5EA8",
+        border: "none",
+      }}
+    />
+  </div>
+
+  {/* Scrollable Container Start */}
+  <div
+    style={{
+      maxHeight: "500px", // Atur sesuai kebutuhan
+      overflowY: "auto",
+      paddingRight: "6px", // Agar scroll tidak terlalu nempel ke konten
+    }}
+  >
+    {listAnggota.length > 0 ? (
+      listAnggota[0].Message ? (
+        <p>Tidak Ada Anggota Aktif</p>
       ) : (
-        <div className="d-flex flex-column" style={{marginLeft:"-20px"}}>
-          <div className="flex-fill">
-            <div className="container">
-              <div className="row pt-2">
-                <div className="col-lg-7 px-4">
-                  <div className="card" style={{
-                              marginBottom: "18px",
-                              border: "none",
-                              boxShadow: "0px 0px 8px rgba(0, 0, 0, 0.1)", // Gray shadow
-                              borderRadius: "15px" // Rounded corners
-                            }}>
-                    <div className="fw-bold ml-3 mt-4" style={{fontSize:"22px", color:"#0A5EA8"}}>
-                      Daftar Anggota
-                    </div>
-                    <div className="card-body">
-                      {/* <h3 className="mb-2 fw-semibold">
-                        {formDataRef.current.nama}
-                      </h3>
-                      <h6 className="fw-semibold">
-                        <span
-                          className="bg-primary me-2"
-                          style={{ padding: "2px" }}
-                        ></span>
-                        {formDataRef.current.programStudi}
-                      </h6>
-                      <div className="pt-2 ps-2">
-                        <Icon
-                          name="user"
-                          cssClass="p-0 ps-1 text-dark"
-                          title="PIC Kelompok Keahlian"
-                        />{" "}
-                        <span>PIC : {formDataRef.current.personInCharge}</span>
-                      </div>
-                      <hr className="mb-0" style={{ opacity: "0.2" }} />
-                      <p className="pt-2">{formDataRef.current.deskripsi}</p>
-                      <hr style={{ opacity: "0.2" }} />
-                      <h6 className="fw-semibold mt-4">Daftar Anggota</h6> */}
-                      <div className="input-group mb-3">
-                        <Input
-                          ref={searchAnggotaQuery}
-                          forInput="pencarianProduk"
-                          placeholder="Cari"
-                        />
-                        <Button
-                          iconName="search"
-                          classType="primary"
-                          title="Cari"
-                          onClick={handleAnggotaSearch}
-                          style={{height:"38px", marginTop:"0px", backgroundColor:"#0A5EA8", border:"none"}}
-                        />
-                      </div>
-                      {listAnggota.length > 0 ? (
-                        listAnggota[0].Message ? (
-                          <p>Tidak Ada Anggota Aktif</p>
-                        ) : (
-                          listAnggota.map((ag, index) => (
-                            <div
-                              className="card-profile mb-3 d-flex justify-content-between shadow-sm rounded-3"
-                              key={ag.Key}
-                            >
-                              <div className="d-flex w-100">
-                                <p className="mb-0 px-1 py-2 mt-2 me-2 fw-bold ml-3" style={{color:"#0A5EA8"}}>
-                                  {index + 1}
-                                </p>
-                                
-                                <div className="p-1 ps-2 d-flex">
-                                  <img
-                                    src={pknowmaskot}
-                                    alt={ag["Nama Anggota"]}
-                                    className="img-fluid rounded-circle"
-                                    width="45"
-                                  />
-                                  <div className="ps-3" style={{color:"#0A5EA8"}}>
-                                    <p className="mb-0 fw-bold">{ag["Nama Anggota"]}</p>
-                                    <p
-                                      className="mb-0 fw-semibold"
-                                      style={{ fontSize: "13px" }}
-                                    >
-                                      {ag.Prodi}
-                                    </p>
-                                  </div>
-                                </div>
-                              </div>
-                              <div className="d-flex align-items-center">
-                                <Icon
-                                  name="trash"
-                                  type="Bold"
-                                  cssClass="btn px-2 py-0 mr-2"
-                                  style={{color:"red"}}
-                                  title="Hapus Anggota"
-                                  onClick={handleDelete(ag.Key)}
-                                />
-                              </div>
-                            </div>
-                          ))
-                        )
-                      ) : (
-                        <p>Tidak Ada Anggota Aktif</p>
-                      )}
-                    </div>
-                  </div>
+        listAnggota.map((ag, index) => (
+          <div
+            className="card-profile mb-3 d-flex justify-content-between shadow-sm rounded-3"
+            key={ag.Key}
+          >
+            <div className="d-flex w-100">
+              <p
+                className="mb-0 px-1 py-2 mt-2 me-2 fw-bold ml-3"
+                style={{ color: "#0A5EA8" }}
+              >
+                {index + 1}
+              </p>
+
+              <div className="p-1 ps-2 d-flex">
+                <img
+                  src={pknowmaskot}
+                  alt={ag["Nama Anggota"]}
+                  className="img-fluid rounded-circle"
+                  width="45"
+                />
+                <div
+                  className="ps-3"
+                  style={{ color: "#0A5EA8" }}
+                >
+                  <p className="mb-0 fw-bold">
+                    {ag["Nama Anggota"]}
+                  </p>
+                  <p
+                    className="mb-0 fw-semibold"
+                    style={{ fontSize: "13px" }}
+                  >
+                    {ag.Prodi}
+                  </p>
                 </div>
-                <div className="col-lg-5">
-                  <div className="card" style={{
-                              border: "none",
-                              boxShadow: "0px 0px 8px rgba(0, 0, 0, 0.1)", // Gray shadow
-                              borderRadius: "15px" // Rounded corners
-                            }}>
-                    <div className="d-flex" style={{justifyContent:"space-between"}}>
-                      <div className="fw-bold ml-3 mt-4" style={{fontSize:"22px", color:"#0A5EA8", width:"500px", }} >
-                      Tambah Anggota
-                      </div>
-                      <div className=" mt-3 mr-3">
-                        <Filter name="Urutkan">
-                          <DropDown
-                            forInput="ddProdi"
-                            label="Program Studi"
-                            type="semua"
-                            defaultValue=""
-                            arrData={listProdi}
-                            onChange={handleProdiChange}
-                          />
-                        </Filter>
+              </div>
+            </div>
+            <div className="d-flex align-items-center">
+              <Icon
+                name="trash"
+                type="Bold"
+                cssClass="btn px-2 py-0 mr-2"
+                style={{ color: "red" }}
+                title="Hapus Anggota"
+                onClick={handleDelete(ag.Key)}
+              />
+            </div>
+          </div>
+        ))
+      )
+    ) : (
+      <p>Tidak Ada Anggota Aktif</p>
+    )}
+  </div>
+  {/* Scrollable Container End */}
+</div>
+
                       </div>
                     </div>
-                    <div className="card-body">
-                      
-                      {filteredDosen.map((value) => (
-                        <div key={value.Key}>
-                          <h6 className="fw-semibold mb-3" >{value.Text}</h6>
-                          <div className="card-profile mb-4 d-flex justify-content-between shadow-sm" style={{border: "none",
-                              boxShadow: "0px 0px 20px rgba(0, 0, 0, 0.1)", // Gray shadow
-                              borderRadius: "15px"}}>
-                            <div className="d-flex w-100">
-                              <div className="p-1 ps-2 d-flex">
-                                <img
-                                  src={pknowmaskot}
-                                  alt={value["Nama Karyawan"]}
-                                  className="img-fluid rounded-circle"
-                                  width="45"
-                                  style={{width:"50px", height:"50px", objectFit:"cover"}}
-                                />
-                                <div className="ps-3">
-                                  <p className="mb-0" style={{color:"#0A5EA8", fontWeight:"bold"}}>
-                                    {value["Nama Karyawan"]}
-                                  </p>
-                                  <p
-                                    className="mb-0"
-                                    style={{ fontSize: "13px", color:"#0A5EA8", fontWeight:"600" }}
-                                  >
-                                    {value.Prodi}
-                                  </p>
-                                </div>
-                              </div>
-                            </div>
-                            <div className="d-flex align-items-center">
-                              <Icon
-                                name="plus"
-                                type="Bold"
-                                cssClass="btn px-2 py-1 text-primary"
-                                title="Tambah Menjadi Anggota"
-                                onClick={handleTambahAnggota(value.Key)}
-                                style={{
-                                  backgroundColor:"rgba(0, 0, 0, 0.05)",
-                                  marginRight:"20px",
-                                  padding:"50px",
-                                  fontWeight:"bold"
-                                }}
+                    <div className="col-lg-5">
+                      <div
+                        className="card"
+                        style={{
+                          border: "none",
+                          boxShadow: "0px 0px 8px rgba(0, 0, 0, 0.1)", // Gray shadow
+                          borderRadius: "15px", // Rounded corners
+                        }}
+                      >
+                        <div
+                          className="d-flex"
+                          style={{ justifyContent: "space-between" }}
+                        >
+                          <div
+                            className="fw-bold ml-3 mt-4"
+                            style={{
+                              fontSize: "22px",
+                              color: "#0A5EA8",
+                              width: "500px",
+                            }}
+                          >
+                            Tambah Anggota
+                          </div>
+                          <div className=" mt-3 mr-3">
+                            <Filter name="Urutkan">
+                              <DropDown
+                                forInput="ddProdi"
+                                label="Program Studi"
+                                type="semua"
+                                defaultValue=""
+                                arrData={listProdi}
+                                onChange={handleProdiChange}
                               />
-                            </div>
+                            </Filter>
                           </div>
                         </div>
-                      ))}
+                        <div
+                          className="card-body"
+                          style={{
+                            maxHeight: "500px", // Atur tinggi maksimum sesuai kebutuhan
+                            overflowY: "auto", // Scroll vertical jika melebihi maxHeight
+                          }}
+                        >
+                          {filteredDosen.map((value) => (
+                            <div key={value.Key}>
+                              <h6 className="fw-semibold mb-3">{value.Text}</h6>
+                              <div
+                                className="card-profile mb-4 d-flex justify-content-between shadow-sm"
+                                style={{
+                                  border: "none",
+                                  boxShadow: "0px 0px 20px rgba(0, 0, 0, 0.1)",
+                                  borderRadius: "15px",
+                                }}
+                              >
+                                <div className="d-flex w-100">
+                                  <div className="p-1 ps-2 d-flex">
+                                    <img
+                                      src={pknowmaskot}
+                                      alt={value["Nama Karyawan"]}
+                                      className="img-fluid rounded-circle"
+                                      width="45"
+                                      style={{
+                                        width: "50px",
+                                        height: "50px",
+                                        objectFit: "cover",
+                                      }}
+                                    />
+                                    <div className="ps-3">
+                                      <p
+                                        className="mb-0"
+                                        style={{
+                                          color: "#0A5EA8",
+                                          fontWeight: "bold",
+                                        }}
+                                      >
+                                        {value["Nama Karyawan"]}
+                                      </p>
+                                      <p
+                                        className="mb-0"
+                                        style={{
+                                          fontSize: "13px",
+                                          color: "#0A5EA8",
+                                          fontWeight: "600",
+                                        }}
+                                      >
+                                        {value.Prodi}
+                                      </p>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div className="d-flex align-items-center">
+                                  <Icon
+                                    name="plus"
+                                    type="Bold"
+                                    cssClass="btn px-2 py-1 text-primary"
+                                    title="Tambah Menjadi Anggota"
+                                    onClick={handleTambahAnggota(value.Key)}
+                                    style={{
+                                      backgroundColor: "rgba(0, 0, 0, 0.05)",
+                                      marginRight: "20px",
+                                      padding: "50px",
+                                      fontWeight: "bold",
+                                    }}
+                                  />
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-      )}
-    </>
-
-
-
+          )}
+        </>
       </div>
-     {showConfirmation && (
+      {showConfirmation && (
         <Konfirmasi
           title={isBackAction ? "Konfirmasi Kembali" : "Konfirmasi Simpan"}
-          pesan={isBackAction ? "Apakah anda ingin kembali?" : "Anda yakin ingin simpan data?"}
+          pesan={
+            isBackAction
+              ? "Apakah anda ingin kembali?"
+              : "Anda yakin ingin simpan data?"
+          }
           onYes={handleConfirmYesBack}
           onNo={handleConfirmNoBack}
         />
-        )}
+      )}
     </>
   );
 }

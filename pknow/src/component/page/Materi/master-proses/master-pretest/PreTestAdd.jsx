@@ -15,7 +15,7 @@ import { API_LINK } from "../../../../util/Constants";
 import FileUpload from "../../../../part/FileUpload";
 import uploadFile from "../../../../util/UploadImageQuiz";
 import Swal from "sweetalert2";
-import { Editor } from "@tinymce/tinymce-react";
+import Editor from "../../../../part/CKEditor";
 import AppContext_master from "../MasterContext";
 import AppContext_test from "../../master-test/TestContext";
 import Konfirmasi from "../../../../part/Konfirmasi";
@@ -45,6 +45,7 @@ export default function MasterPreTestAdd({ onChangePage }) {
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [filePreview, setFilePreview] = useState(false);
   const [filePreviews, setFilePreviews] = useState({});
+    const [isFormDisabled, setIsFormDisabled] = useState(false);
 
   const [dataSection, setDataSection] = useState({
     materiId: AppContext_master.dataIDMateri,
@@ -1587,31 +1588,16 @@ export default function MasterPreTestAdd({ onChangePage }) {
                         <Editor
                           id={`pertanyaan_${index}`}
                           value={question.text}
-                          onEditorChange={(content) => {
+                          onChange={(content) => {
                             const updatedFormContent = [...formContent];
                             updatedFormContent[index].text = content;
                             setFormContent(updatedFormContent);
-
-                            // Update formQuestion.soal
                             setFormQuestion((prevFormQuestion) => ({
                               ...prevFormQuestion,
                               soal: content,
                             }));
                           }}
-                          apiKey="444kasui9s3azxih6ix4chynoxmhw6y1urkpmfhufvrbernz"
-                          init={{
-                            height: 300,
-                            menubar: false,
-                            plugins: [
-                              "advlist autolink lists link image charmap print preview anchor",
-                              "searchreplace visualblocks code fullscreen",
-                              "insertdatetime media table paste code help wordcount",
-                            ],
-                            toolbar:
-                              "undo redo | formatselect | bold italic backcolor | " +
-                              "alignleft aligncenter alignright alignjustify | " +
-                              "bullist numlist outdent indent | removeformat | help",
-                          }}
+                          disabled={isFormDisabled}
                         />
                       </div>
 

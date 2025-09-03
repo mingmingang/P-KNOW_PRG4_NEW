@@ -55,7 +55,7 @@ const CardKategoriProgram = ({
           </div>
           <div className="description-container d-flex mt-2">
             <div className="me-2 bg-primary ps-1"></div>
-            <div className="description-text">
+            <div className="">
               <p
                 className="mb-0"
                 style={{

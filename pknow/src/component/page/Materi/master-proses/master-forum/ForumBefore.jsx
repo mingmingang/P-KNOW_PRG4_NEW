@@ -11,7 +11,7 @@ import UseFetch from "../../../../util/UseFetch";
 import { API_LINK } from "../../../../util/Constants";
 import AppContext_master from "../MasterContext";
 import AppContext_test from "../../master-test/TestContext";
-import { Editor } from "@tinymce/tinymce-react";
+import Editor from "../../../../part/CKEditor";
 import BackPage from "../../../../../assets/backPage.png";
 import Konfirmasi from "../../../../part/Konfirmasi";
 import CustomStepper from "../../../../part/Stepp";
@@ -244,31 +244,22 @@ export default function MasterForumBefore({ onChangePage }) {
                     Isi Forum <span style={{ color: "Red" }}> *</span>
                   </label>
                   <Editor
-                    id="forumIsi"
                     value={formData.forumIsi}
-                    onEditorChange={(content) =>
+                    onChange={(content) => {
                       handleInputChange({
-                        target: { name: "forumIsi", value: content },
-                      })
-                    }
-                    apiKey="81ujooza2p3616vb7rdvc0lxphx68fe82f2aqj6qkmbvn6l4"
-                    init={{
-                      height: 300,
-                      menubar: false,
-                      plugins: [
-                        "advlist autolink lists link image charmap print preview anchor",
-                        "searchreplace visualblocks code fullscreen",
-                        "insertdatetime media table paste code help wordcount",
-                      ],
-                      toolbar:
-                        "undo redo | formatselect | bold italic backcolor | \
-                        alignleft aligncenter alignright alignjustify | \
-                        bullist numlist outdent indent | removeformat | help",
+                        target: {
+                          name: "forumIsi",
+                          value: content,
+                        },
+                      });
                     }}
                     disabled={isFormDisabled}
                   />
+
                   {errors.forumIsi && (
-                    <div className="invalid-feedback">{errors.forumIsi}</div>
+                    <div className="invalid-feedback d-block">
+                      {errors.forumIsi}
+                    </div>
                   )}
                 </div>
               </div>

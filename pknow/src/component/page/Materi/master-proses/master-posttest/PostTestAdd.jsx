@@ -12,7 +12,7 @@ import {
 import { API_LINK } from "../../../../util/Constants";
 import FileUpload from "../../../../part/FileUpload";
 import Swal from "sweetalert2";
-import { Editor } from "@tinymce/tinymce-react";
+import Editor from "../../../../part/CKEditor";
 import AppContext_master from "../MasterContext";
 import AppContext_test from "../../master-test/TestContext";
 import Konfirmasi from "../../../../part/Konfirmasi";
@@ -38,6 +38,7 @@ export default function MasterPostTestAdd({ onChangePage }) {
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const [resetStepper, setResetStepper] = useState(0);
   const [filePreviews, setFilePreviews] = useState({});
+  const [isFormDisabled, setIsFormDisabled] = useState(false);
 
   const [dataSection, setDataSection] = useState({
     materiId: AppContext_master.dataIDMateri,
@@ -1577,7 +1578,7 @@ export default function MasterPostTestAdd({ onChangePage }) {
                         <Editor
                           id={`pertanyaan_${index}`}
                           value={question.text}
-                          onEditorChange={(content) => {
+                          onChange={(content) => {
                             const updatedFormContent = [...formContent];
                             updatedFormContent[index].text = content;
                             setFormContent(updatedFormContent);
@@ -1586,20 +1587,7 @@ export default function MasterPostTestAdd({ onChangePage }) {
                               soal: content,
                             }));
                           }}
-                          apiKey="81ujooza2p3616vb7rdvc0lxphx68fe82f2aqj6qkmbvn6l4"
-                          init={{
-                            height: 300,
-                            menubar: false,
-                            plugins: [
-                              "advlist autolink lists link image charmap print preview anchor",
-                              "searchreplace visualblocks code fullscreen",
-                              "insertdatetime media table paste code help wordcount",
-                            ],
-                            toolbar:
-                              "undo redo | formatselect | bold italic backcolor | " +
-                              "alignleft aligncenter alignright alignjustify | " +
-                              "bullist numlist outdent indent | removeformat | help",
-                          }}
+                          disabled={isFormDisabled}
                         />
                       </div>
                       {(question.type === "Essay" ||

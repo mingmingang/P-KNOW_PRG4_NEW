@@ -13,7 +13,7 @@ import FileUpload from "../../../../part/FileUpload";
 import Alert from "../../../../part/Alert";
 import uploadFile from "../../../../util/UploadFile";
 import AppContext_master from "../MasterContext";
-import { Editor } from "@tinymce/tinymce-react";
+import Editor from "../../../../part/CKEditor";
 import AppContext_test from "../../master-test/TestContext";
 import { Stepper, Step, StepLabel, Box } from "@mui/material";
 import BackPage from "../../../../../assets/backPage.png";
@@ -94,6 +94,7 @@ export default function PengenalanEdit({ onChangePage }) {
   const [listKategori, setListKategori] = useState([]);
   const [isBackAction, setIsBackAction] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
+  const [isFormDisabled, setIsFormDisabled] = useState(false);
 
   const kategori = AppContext_test.KategoriIdByKK;
   const Materi = AppContext_test.DetailMateriEdit;
@@ -465,30 +466,19 @@ export default function PengenalanEdit({ onChangePage }) {
                     Pengenalan Materi <span style={{ color: "Red" }}> *</span>
                   </label>
                   <Editor
-                    id="mat_pengenalan"
                     value={formDataRef.current.mat_pengenalan}
-                    onEditorChange={(content) =>
+                    onChange={(content) => {
                       handleInputChange({
-                        target: { name: "mat_pengenalan", value: content },
-                      })
-                    }
-                    apiKey="81ujooza2p3616vb7rdvc0lxphx68fe82f2aqj6qkmbvn6l4"
-                    init={{
-                      height: 300,
-                      menubar: false,
-                      plugins: [
-                        "advlist autolink lists link image charmap print preview anchor",
-                        "searchreplace visualblocks code fullscreen",
-                        "insertdatetime media table paste code help wordcount",
-                      ],
-                      toolbar:
-                        "undo redo | formatselect | bold italic backcolor | \
-                        alignleft aligncenter alignright alignjustify | \
-                        bullist numlist outdent indent | removeformat | help",
+                        target: {
+                          name: "mat_pengenalan",
+                          value: content,
+                        },
+                      });
                     }}
+                    disabled={isFormDisabled}
                   />
                   {errors.mat_pengenalan && (
-                    <div className="invalid-feedback">
+                    <div className="invalid-feedback d-block">
                       {errors.mat_pengenalan}
                     </div>
                   )}

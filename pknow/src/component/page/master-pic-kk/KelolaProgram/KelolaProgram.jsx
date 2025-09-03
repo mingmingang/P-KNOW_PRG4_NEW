@@ -193,11 +193,13 @@ export default function ProgramIndex({ onChangePage }) {
           {
             page: 1,
             query: "",
-            sort: "[Nama Kategori] asc",
+            sort: "[Key] asc",
             status: "",
             kkeID: filter,
           }
         );
+
+        console.log("dataanyee", data)
 
         if (data === "ERROR") {
           throw new Error(
@@ -488,9 +490,9 @@ export default function ProgramIndex({ onChangePage }) {
                                   onChangePage("detailPublish", currentData)
                                 }
                                 style={{
-                                  background: "white",
+                                
                                   color: "#0A5EA8",
-                                  boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.2)",
+                                
                                 }}
                               />
                             </div>

@@ -177,10 +177,10 @@ export default function KelolaAKK({ onChangePage }) {
     { label: "Manajemen Informatika", value: "3" },
     { label: "Mesin Otomotif", value: "4" },
     { label: "Mekatronika", value: "5" },
-    { label: "Teknologi Konstruksi Bangunan Gedung", value: "6" },
-    { label: "Teknologi Rekayasa Pemeliharaan Alat Berat", value: "7" },
-    { label: "Teknologi Rekayasa Logistik", value: "8" },
-    { label: "Teknologi Rekayasa Perangkat Lunak", value: "9" },
+    { label: "Teknologi Konstruksi Bangunan Gedung", value: "10" },
+    { label: "Teknologi Rekayasa Pemeliharaan Alat Berat", value: "11" },
+    { label: "Teknologi Rekayasa Logistik", value: "12" },
+    { label: "Teknologi Rekayasa Perangkat Lunak", value: "13" },
   ];
 
   const handleTabChange = (value) => {

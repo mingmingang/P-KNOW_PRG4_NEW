@@ -156,7 +156,7 @@ export default function PengajuanDetail({ onChangePage, withID }) {
       ) : (
         <>
           <div
-            className=""
+            className="container mb-4"
             style={{
               display: "flex",
               justifyContent: "space-between",

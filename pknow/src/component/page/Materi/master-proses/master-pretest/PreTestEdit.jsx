@@ -12,7 +12,7 @@ import {
 import { API_LINK } from "../../../../util/Constants";
 import FileUpload from "../../../../part/FileUpload";
 import uploadFile from "../../../../util/UploadImageQuiz";
-import { Editor } from "@tinymce/tinymce-react";
+import Editor from "../../../../part/CKEditor";
 import Swal from "sweetalert2";
 import AppContext_master from "../../master-test/TestContext";
 import AppContext_test from "../../master-test/TestContext";
@@ -102,6 +102,7 @@ export default function MasterPreTestEdit({ onChangePage, withID }) {
   const [selectedFile, setSelectedFile] = useState(null);
   const [timer, setTimer] = useState("");
   const [deletedChoices, setDeletedChoices] = useState([]);
+  const [isFormDisabled, setIsFormDisabled] = useState(false);
 
   let activeUser = "";
   const cookie = Cookies.get("activeUser");
@@ -345,7 +346,7 @@ export default function MasterPreTestEdit({ onChangePage, withID }) {
               // Tambahkan pertanyaan baru
               formattedQuestions[question.Key] = {
                 type: question.TipeSoal,
-                text: question.Soal,
+                text: decode(question.Soal),
                 options: question.TipeSoal === "Pilgan" ? [] : [],
                 jenis: question.TipePilihan, // Tambahkan properti jenis
                 gambar: question.Gambar || "",
@@ -1388,33 +1389,18 @@ export default function MasterPreTestEdit({ onChangePage, withID }) {
                             Pertanyaan <span style={{ color: "Red" }}> *</span>
                           </label>
                           <Editor
-                            forInput={"pertanyaan_${index}"}
-                            value={removeHtmlTags(question.text)}
-                            onEditorChange={(content) => {
+                            id={`pertanyaan_${index}`}
+                            value={question.text || ""}
+                            onChange={(content) => {
                               const updatedFormContent = [...formContent];
                               updatedFormContent[index].text = content;
                               setFormContent(updatedFormContent);
-
-                              // Update formQuestion.soal
                               setFormQuestion((prevFormQuestion) => ({
                                 ...prevFormQuestion,
                                 soal: content,
                               }));
                             }}
-                            apiKey="81ujooza2p3616vb7rdvc0lxphx68fe82f2aqj6qkmbvn6l4"
-                            init={{
-                              height: 300,
-                              menubar: false,
-                              plugins: [
-                                "advlist autolink lists link image charmap print preview anchor",
-                                "searchreplace visualblocks code fullscreen",
-                                "insertdatetime media table paste code help wordcount",
-                              ],
-                              toolbar:
-                                "undo redo | formatselect | bold italic backcolor | " +
-                                "alignleft aligncenter alignright alignjustify | " +
-                                "bullist numlist outdent indent | removeformat | help",
-                            }}
+                            disabled={isFormDisabled}
                           />
                         </div>
 

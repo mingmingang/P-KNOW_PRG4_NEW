@@ -9,7 +9,7 @@ import Alert from "../../../../part/Alert";
 import axios from "axios";
 import { API_LINK } from "../../../../util/Constants";
 import UseFetch from "../../../../util/UseFetch";
-import { Editor } from "@tinymce/tinymce-react";
+import Editor from "../../../../part/CKEditor";
 import AppContext_master from "../MasterContext";
 import AppContext_test from "../../master-test/TestContext";
 const userSchema = object({
@@ -108,7 +108,7 @@ export default function MasterForumEdit({ onChangePage }) {
   const Materi = AppContext_master.MateriForm;
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [isBackAction, setIsBackAction] = useState(false);
-
+const [isFormDisabled, setIsFormDisabled] = useState(false);
   const handleGoBack = () => {
     setIsBackAction(true);
     setShowConfirmation(true);
@@ -315,28 +315,22 @@ export default function MasterForumEdit({ onChangePage }) {
                       Isi Forum <span style={{ color: "Red" }}> *</span>
                     </label>
                     <Editor
-                      id="forumIsi"
                       value={formData.forumIsi}
-                      onEditorChange={(content) =>
-                        setFormData({ ...formData, forumIsi: content })
-                      }
-                      apiKey="81ujooza2p3616vb7rdvc0lxphx68fe82f2aqj6qkmbvn6l4"
-                      init={{
-                        height: 300,
-                        menubar: false,
-                        plugins: [
-                          "advlist autolink lists link image charmap print preview anchor",
-                          "searchreplace visualblocks code fullscreen",
-                          "insertdatetime media table paste code help wordcount",
-                        ],
-                        toolbar:
-                          "undo redo | formatselect | bold italic backcolor | \
-                          alignleft aligncenter alignright alignjustify | \
-                          bullist numlist outdent indent | removeformat | help",
+                      onChange={(content) => {
+                        handleInputChange({
+                          target: {
+                            name: "forumIsi",
+                            value: content,
+                          },
+                        });
                       }}
+                      disabled={isFormDisabled}
                     />
+
                     {errors.forumIsi && (
-                      <div className="invalid-feedback">{errors.forumIsi}</div>
+                      <div className="invalid-feedback d-block">
+                        {errors.forumIsi}
+                      </div>
                     )}
                   </div>
                 </div>

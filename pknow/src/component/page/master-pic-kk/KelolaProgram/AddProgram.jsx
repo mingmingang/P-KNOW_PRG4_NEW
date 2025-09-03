@@ -210,7 +210,7 @@ export default function ProgramAdd({ onChangePage, withID }) {
                 <span className="draft-badge badge text-bg-dark ">Draft</span>
               </div>
             </div>
-            <div className="form-container">
+            <div className="mb-4">
               <form onSubmit={handleAdd}>
                 <div className="card tambah-program">
                   <div className="card-body p-4">

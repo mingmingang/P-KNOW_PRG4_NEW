@@ -63,7 +63,7 @@ const CardProgram = ({
               <>
                 {decode(data.Deskripsi.slice(0, MAX_DESCRIPTION_LENGTH)) +
                   " ..."}
-                <a className="read-more-link" onClick={handleExpandDescription}>
+                <a className="read-more-link" style={{cursor:"pointer"}} onClick={handleExpandDescription}>
                   Baca Selengkapnya <Icon name={"caret-down"} />
                 </a>
               </>
@@ -76,6 +76,7 @@ const CardProgram = ({
                   <a
                     className="read-more-link"
                     onClick={handleExpandDescription}
+                    style={{cursor:"pointer"}}
                   >
                     Tutup <Icon name={"caret-up"} />
                   </a>

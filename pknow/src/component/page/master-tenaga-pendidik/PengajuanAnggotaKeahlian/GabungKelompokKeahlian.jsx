@@ -236,7 +236,7 @@ export default function PengajuanAdd({ onChangePage, withID }) {
                     console.log(
                       `File ${index + 1} berhasil diunggah:`,
                       data.Hasil
-                    ); // Debugging
+                    );
                     formDataRef.current.lampirans.push({
                       pus_file: data.Hasil,
                     });
@@ -281,19 +281,19 @@ export default function PengajuanAdd({ onChangePage, withID }) {
                 "success"
               );
               UseFetch(API_LINK + "Utilities/createNotifikasi", {
-                p1: "SENTTOPRODI", // Penanda aksi
-                p2: "ID123458", // ID pengajuan
-                p3: "APP59", // Aplikasi
-                p4: "TENAGA PENDIDIK", // Pengirim
-                p5: formDataRef.current.creaby, // CC (not_cc)
-                p6: "Terdapat Pengajuan Anggota Kelompok Keahlian", // Pesan
-                p7: "Persetujuan Anggota KK", // Subjek
-                p8: "Tenaga Pendidik Menunggu Persetujuan Anggota Kelompok Keahlian", // Body Message
-                p9: "Dari Tenaga Pendidik", // Footer Pesan
-                p10: "0", // Tipe Notifikasi
-                p11: "Jenis Lain", // ID Pengajuan
-                p12: formDataRef.current.creaby, // Pembuat notifikasi
-                p13: "ROL02", // User pembuat notifikasi
+                p1: "SENTTOPRODI",
+                p2: "ID123458",
+                p3: "APP59",
+                p4: "TENAGA PENDIDIK",
+                p5: formDataRef.current.creaby,
+                p6: "Terdapat Pengajuan Anggota Kelompok Keahlian",
+                p7: "Persetujuan Anggota KK",
+                p8: "Tenaga Pendidik Menunggu Persetujuan Anggota Kelompok Keahlian",
+                p9: "Dari Tenaga Pendidik",
+                p10: "0",
+                p11: "Jenis Lain",
+                p12: formDataRef.current.creaby,
+                p13: "ROL02",
                 p14: withID["Kode Prodi"],
               }).then((data) => {
                 if (data === "ERROR" || data.length === 0) {
@@ -440,13 +440,14 @@ export default function PengajuanAdd({ onChangePage, withID }) {
                                 </div>
                                 <div className="lampiran-action">
                                   <Button
-                                    iconName="trash"
-                                    className="btn p-0" // Hapus class btn-danger dan gunakan p-0 untuk menghilangkan padding
+                                    iconName="cross"
+                                    className="btn p-0"
                                     style={{
-                                      color: "#dc3545", // Warna merah Bootstrap
-                                      background: "none", // Hapus background
-                                      border: "none", // Hapus border
-                                      fontSize: "1.1rem", // Ukuran ikon
+                                      marginTop: "25px",
+                                      color: "#dc3545",
+                                      background: "none",
+                                      border: "none",
+                                      fontSize: "1.1rem",
                                     }}
                                     onClick={() => handleHapusLampiran(index)}
                                   />

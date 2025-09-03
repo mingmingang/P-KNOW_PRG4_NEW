@@ -11,7 +11,7 @@ import {
 } from "../../../../util/ValidateForm";
 import { API_LINK } from "../../../../util/Constants";
 import FileUpload from "../../../../part/FileUpload";
-import { Editor } from "@tinymce/tinymce-react";
+import Editor from "../../../../part/CKEditor";
 import Swal from "sweetalert2";
 import AppContext_master from "../../master-test/TestContext";
 import AppContext_test from "../../master-test/TestContext";
@@ -104,7 +104,7 @@ export default function MasterPostTestEditNot({ onChangePage, withID }) {
   const [resetStepper, setResetStepper] = useState(0);
   const [isBackAction, setIsBackAction] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
-
+const [isFormDisabled, setIsFormDisabled] = useState(false);
   const handleGoBack = () => {
     setIsBackAction(true);
     setShowConfirmation(true);
@@ -1146,7 +1146,7 @@ export default function MasterPostTestEditNot({ onChangePage, withID }) {
                         <Editor
                           id={`pertanyaan_${index}`}
                           value={question.text}
-                          onEditorChange={(content) => {
+                          onChange={(content) => {
                             const updatedFormContent = [...formContent];
                             updatedFormContent[index].text = content;
                             setFormContent(updatedFormContent);
@@ -1155,20 +1155,7 @@ export default function MasterPostTestEditNot({ onChangePage, withID }) {
                               soal: content,
                             }));
                           }}
-                          apiKey="81ujooza2p3616vb7rdvc0lxphx68fe82f2aqj6qkmbvn6l4"
-                          init={{
-                            height: 300,
-                            menubar: false,
-                            plugins: [
-                              "advlist autolink lists link image charmap print preview anchor",
-                              "searchreplace visualblocks code fullscreen",
-                              "insertdatetime media table paste code help wordcount",
-                            ],
-                            toolbar:
-                              "undo redo | formatselect | bold italic backcolor | " +
-                              "alignleft aligncenter alignright alignjustify | " +
-                              "bullist numlist outdent indent | removeformat | help",
-                          }}
+                          disabled={isFormDisabled}
                         />
                       </div>
                       {(question.type === "Essay" ||

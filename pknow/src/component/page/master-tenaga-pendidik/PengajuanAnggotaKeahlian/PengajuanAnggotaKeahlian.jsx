@@ -25,6 +25,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { decode } from "he";
 import "../../../../../src/index.css";
+import "../../../../style/Search.css";
 
 const inisialisasiData = [
   {

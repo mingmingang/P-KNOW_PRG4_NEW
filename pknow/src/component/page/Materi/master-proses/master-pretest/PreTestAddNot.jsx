@@ -10,7 +10,7 @@ import { API_LINK } from "../../../util/Constants";
 import FileUpload from "../../../part/FileUpload";
 import uploadFile from "../../../util/UploadImageQuiz";
 import Swal from 'sweetalert2';
-import { Editor } from '@tinymce/tinymce-react';
+import Editor from "../../../../part/CKEditor";
 import AppContext_master from "../MasterContext";
 import AppContext_test from "../../master-test/TestContext";
 import { Stepper, Step, StepLabel } from '@mui/material';
@@ -42,6 +42,7 @@ export default function MasterPreTestAdd({ onChangePage }) {
   const [selectedFile, setSelectedFile] = useState(null);
   const [timer, setTimer] = useState('');
   const gambarInputRef = useRef(null);
+  const [isFormDisabled, setIsFormDisabled] = useState(false);
   
   const [resetStepper, setResetStepper] = useState(0);
   const handleChange = (name, value) => {
@@ -956,34 +957,19 @@ export default function MasterPreTestAdd({ onChangePage }) {
                       Pertanyaan <span style={{color:"Red"}}> *</span>
                       </label>
                         <Editor
-                        id={`pertanyaan_${index}`}
-                        value={question.text}
-                        onEditorChange={(content) => {
-                          const updatedFormContent = [...formContent];
-                          updatedFormContent[index].text = content;
-                          setFormContent(updatedFormContent);
-
-                          // Update formQuestion.soal
-                          setFormQuestion((prevFormQuestion) => ({
-                            ...prevFormQuestion,
-                            soal: content,
-                          }));
-                        }}
-                        apiKey="81ujooza2p3616vb7rdvc0lxphx68fe82f2aqj6qkmbvn6l4"
-                        init={{
-                          height: 300,
-                          menubar: false,
-                          plugins: [
-                            'advlist autolink lists link image charmap print preview anchor',
-                            'searchreplace visualblocks code fullscreen',
-                            'insertdatetime media table paste code help wordcount',
-                          ],
-                          toolbar:
-                            'undo redo | formatselect | bold italic backcolor | ' +
-                            'alignleft aligncenter alignright alignjustify | ' +
-                            'bullist numlist outdent indent | removeformat | help',
-                        }}
-                      />
+                          id={`pertanyaan_${index}`}
+                          value={question.text}
+                          onChange={(content) => {
+                            const updatedFormContent = [...formContent];
+                            updatedFormContent[index].text = content;
+                            setFormContent(updatedFormContent);
+                            setFormQuestion((prevFormQuestion) => ({
+                              ...prevFormQuestion,
+                              soal: content,
+                            }));
+                          }}
+                          disabled={isFormDisabled}
+                        />
                       </div>
 
                       {/* Tampilkan tombol gambar dan PDF hanya jika type = Essay */}

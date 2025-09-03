@@ -176,8 +176,8 @@ export default function KKDetailProgram({ onChangePage, withID }) {
           <Alert type="danger" message={isError.message} />
         </div>
       )}
-      <div className="detail-kk-pickk">
-        <div className="container-detail-kk back-and-title">
+      <div className=" container detail-kk-pickk">
+        <div className="container container-detail-kk back-and-title">
           <button
             style={{ backgroundColor: "transparent", border: "none" }}
             onClick={handleGoBack}
