@@ -210,6 +210,50 @@ nav {
   display: block; /* Full clickable area */
 }
 
+/* Pastikan parent dari pseudo-element (<a>) memiliki position relative */
+.menu-center > li > a {
+  position: relative;
+  /* Beri sedikit ruang di bawah agar garis tidak menempel pada teks */
+  padding-bottom: 10px; 
+  /* Hapus text-decoration default jika ada */
+  text-decoration: none; 
+}
+
+/* Ini adalah style untuk garis bawahnya */
+.menu-center > li.active > a::after {
+  content: ''; /* Wajib ada untuk pseudo-element */
+  position: absolute;
+  bottom: 0; /* Letakkan di paling bawah dari elemen <a> */
+  left: 0;
+  width: 100%; /* Lebar garis sama dengan lebar elemen <a> */
+  height: 3px; /* Ketebalan garis */
+  background-color: rgb(10, 94, 168); /* Warna garis, sesuaikan dengan tema Anda */
+  border-radius: 2px; /* Membuat ujung garis sedikit melengkung */
+  
+  /* Animasi halus saat muncul (opsional) */
+  animation: growUnderline 0.3s ease-out forwards; 
+}
+
+/* Animasi untuk garis bawah (opsional) */
+@keyframes growUnderline {
+  from {
+    width: 0%;
+    left: 50%; /* Mulai dari tengah */
+  }
+  to {
+    width: 100%;
+    left: 0;
+  }
+}
+
+
+/* --- (Opsional) Style untuk item sub-menu yang aktif --- */
+.dropdown-content li.active-sub a {
+  background-color: #f0f5fa; /* Warna latar belakang highlight */
+  color: rgb(10, 94, 168); /* Warna teks menjadi lebih gelap/berbeda */
+  font-weight: 600; /* Membuat teks menjadi tebal */
+}
+
 /* Responsive design */
 @media (max-width: 1024px) {
   /* Menu Styling for Tablets and Below */

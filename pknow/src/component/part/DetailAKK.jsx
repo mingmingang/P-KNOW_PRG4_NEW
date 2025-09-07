@@ -5,10 +5,10 @@ import {
   faUser,
   faCaretDown,
   faCaretUp,
-} from "@fortawesome/free-solid-svg-icons"; // Import dropdown icons
+} from "@fortawesome/free-solid-svg-icons";
 import Button from "./Button copy";
 import "../../style/DetailAKK.css";
-import Konfirmasi from "./Konfirmasi"; // Import Konfirmasi component
+import Konfirmasi from "./Konfirmasi";
 import { API_LINK } from "../util/Constants";
 import BackPage from "../../assets/backPage.png";
 import { useEffect, useRef } from "react";
@@ -428,95 +428,93 @@ export default function DetailAKK({ prodi, onChangePage, withID }) {
                         >
                           Daftar Anggota
                         </div>
-                       <div className="card-body">
-  <div className="input-group mb-3">
-    <Input
-      ref={searchAnggotaQuery}
-      forInput="pencarianProduk"
-      placeholder="Cari"
-    />
-    <Button
-      iconName="search"
-      classType="primary"
-      title="Cari"
-      onClick={handleAnggotaSearch}
-      style={{
-        height: "38px",
-        marginTop: "0px",
-        backgroundColor: "#0A5EA8",
-        border: "none",
-      }}
-    />
-  </div>
+                        <div className="card-body">
+                          <div className="input-group mb-3">
+                            <Input
+                              ref={searchAnggotaQuery}
+                              forInput="pencarianProduk"
+                              placeholder="Cari"
+                            />
+                            <Button
+                              iconName="search"
+                              classType="primary"
+                              title="Cari"
+                              onClick={handleAnggotaSearch}
+                              style={{
+                                height: "38px",
+                                marginTop: "0px",
+                                backgroundColor: "#0A5EA8",
+                                border: "none",
+                              }}
+                            />
+                          </div>
 
-  {/* Scrollable Container Start */}
-  <div
-    style={{
-      maxHeight: "500px", // Atur sesuai kebutuhan
-      overflowY: "auto",
-      paddingRight: "6px", // Agar scroll tidak terlalu nempel ke konten
-    }}
-  >
-    {listAnggota.length > 0 ? (
-      listAnggota[0].Message ? (
-        <p>Tidak Ada Anggota Aktif</p>
-      ) : (
-        listAnggota.map((ag, index) => (
-          <div
-            className="card-profile mb-3 d-flex justify-content-between shadow-sm rounded-3"
-            key={ag.Key}
-          >
-            <div className="d-flex w-100">
-              <p
-                className="mb-0 px-1 py-2 mt-2 me-2 fw-bold ml-3"
-                style={{ color: "#0A5EA8" }}
-              >
-                {index + 1}
-              </p>
+                          {/* Scrollable Container Start */}
+                          <div
+                            style={{
+                              maxHeight: "420px", // Atur sesuai kebutuhan
+                              overflowY: "auto",
+                              paddingRight: "6px", // Agar scroll tidak terlalu nempel ke konten
+                            }}
+                          >
+                            {listAnggota.length > 0 ? (
+                              listAnggota[0].Message ? (
+                                <p>Tidak Ada Anggota Aktif</p>
+                              ) : (
+                                listAnggota.map((ag, index) => (
+                                  <div
+                                    className="card-profile mb-3 d-flex justify-content-between shadow-sm rounded-3"
+                                    key={ag.Key}
+                                  >
+                                    <div className="d-flex w-100">
+                                      <p
+                                        className="mb-0 px-1 py-2 mt-2 me-2 fw-bold ml-3"
+                                        style={{ color: "#0A5EA8" }}
+                                      >
+                                        {index + 1}
+                                      </p>
 
-              <div className="p-1 ps-2 d-flex">
-                <img
-                  src={pknowmaskot}
-                  alt={ag["Nama Anggota"]}
-                  className="img-fluid rounded-circle"
-                  width="45"
-                />
-                <div
-                  className="ps-3"
-                  style={{ color: "#0A5EA8" }}
-                >
-                  <p className="mb-0 fw-bold">
-                    {ag["Nama Anggota"]}
-                  </p>
-                  <p
-                    className="mb-0 fw-semibold"
-                    style={{ fontSize: "13px" }}
-                  >
-                    {ag.Prodi}
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div className="d-flex align-items-center">
-              <Icon
-                name="trash"
-                type="Bold"
-                cssClass="btn px-2 py-0 mr-2"
-                style={{ color: "red" }}
-                title="Hapus Anggota"
-                onClick={handleDelete(ag.Key)}
-              />
-            </div>
-          </div>
-        ))
-      )
-    ) : (
-      <p>Tidak Ada Anggota Aktif</p>
-    )}
-  </div>
-  {/* Scrollable Container End */}
-</div>
-
+                                      <div className="p-1 ps-2 d-flex">
+                                        <img
+                                          src={pknowmaskot}
+                                          alt={ag["Nama Anggota"]}
+                                          className="img-fluid rounded-circle"
+                                          width="45"
+                                        />
+                                        <div
+                                          className="ps-3"
+                                          style={{ color: "#0A5EA8" }}
+                                        >
+                                          <p className="mb-0 fw-bold">
+                                            {ag["Nama Anggota"]}
+                                          </p>
+                                          <p
+                                            className="mb-0 fw-semibold"
+                                            style={{ fontSize: "13px" }}
+                                          >
+                                            {ag.Prodi}
+                                          </p>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div className="d-flex align-items-center">
+                                      <Icon
+                                        name="trash"
+                                        type="Bold"
+                                        cssClass="btn px-2 py-0 mr-2"
+                                        style={{ color: "red" }}
+                                        title="Hapus Anggota"
+                                        onClick={handleDelete(ag.Key)}
+                                      />
+                                    </div>
+                                  </div>
+                                ))
+                              )
+                            ) : (
+                              <p>Tidak Ada Anggota Aktif</p>
+                            )}
+                          </div>
+                        </div>
                       </div>
                     </div>
                     <div className="col-lg-5">
@@ -558,8 +556,8 @@ export default function DetailAKK({ prodi, onChangePage, withID }) {
                         <div
                           className="card-body"
                           style={{
-                            maxHeight: "500px", // Atur tinggi maksimum sesuai kebutuhan
-                            overflowY: "auto", // Scroll vertical jika melebihi maxHeight
+                            maxHeight: "500px",
+                            overflowY: "auto",
                           }}
                         >
                           {filteredDosen.map((value) => (

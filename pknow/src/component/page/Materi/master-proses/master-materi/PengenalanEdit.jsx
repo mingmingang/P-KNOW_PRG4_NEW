@@ -368,14 +368,14 @@ export default function PengenalanEdit({ onChangePage }) {
                 </div>
                 <div className="file-upload">
                   <FileUpload
-                    forInput="gambarMateri"
-                    label="Gambar Materi (.png)"
-                    formatFile=".png"
-                    ref={fileGambarRef}
-                    onChange={() => handleFileChange(fileGambarRef, "png")}
-                    errorMessage={errors.gambar}
-                    isRequired={false}
-                  />
+                forInput="gambarMateri"
+                label="Gambar Materi (.jpg, .png)"
+                formatFile=".jpg,.png"
+                ref={fileGambarRef}
+                onChange={() => handleFileChange(fileGambarRef, "png,jpg")}
+                errorMessage={errors.gambar}
+                isRequired={true}
+              />
                 </div>
               </div>
               <div className="col-lg-6">

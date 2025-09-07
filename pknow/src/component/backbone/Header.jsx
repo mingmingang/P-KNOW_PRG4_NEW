@@ -3,8 +3,14 @@ import logo from "../../assets/logoAstratech.png";
 import "../../style/Header.css";
 import Konfirmasi from "../part/Konfirmasi";
 const activeURL = location.protocol + "//" + location.host + location.pathname;
-import { API_LINK, APPLICATION_ID } from "../util/Constants";
+import {
+  API_LINK,
+  APPLICATION_ID,
+  BASE_ROUTE,
+  ROOT_LINK,
+} from "../util/Constants";
 import UseFetch from "../util/UseFetch";
+import { useLocation } from "react-router-dom";
 
 function setActiveMenu(menu) {
   active_menu = menu;
@@ -16,13 +22,12 @@ export default function Header({
   listMenu,
   konfirmasi = "Konfirmasi",
   pesanKonfirmasi = "Apakah Anda yakin ingin keluar?",
-  showUserInfo = true, 
+  showUserInfo = true,
 }) {
   const [activeMenu, setActiveMenu] = useState("beranda");
   const [isProfileDropdownVisible, setProfileDropdownVisible] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [countNotifikasi, setCountNotifikasi] = useState("");
-  // Icon mapping for sub-menu items
   const iconMapping = {
     "Kelola Kelompok Keahlian": "fas fa-cogs",
     "Kelola Anggota": "fas fa-users",
@@ -38,6 +43,10 @@ export default function Header({
     "LJ Create": "fas fa-book-open",
   };
 
+  const location = useLocation();
+  const activeURL =
+    ROOT_LINK + location.pathname.replace(BASE_ROUTE, "").substring(1);
+
   const getInitials = (name) => {
     if (!name) return "";
     const parts = name.split(" ");
@@ -49,19 +58,22 @@ export default function Header({
 
   const handleConfirmYes = () => {
     window.location.replace("/logout");
-    setShowConfirmation(false); 
+    setShowConfirmation(false);
   };
 
   const handleConfirmNo = () => {
-    setShowConfirmation(false); 
+    setShowConfirmation(false);
   };
 
   const handleLogoutClick = () => {
-    setShowConfirmation(true); 
+    setShowConfirmation(true);
   };
 
   const handleNotification = () => {
     window.location.replace("/notifications");
+  };
+  const handleSSO = () => {
+    window.location.replace("/halaman_sso");
   };
 
   useEffect(() => {
@@ -93,7 +105,7 @@ export default function Header({
     fetchData();
   }, []);
 
-  const [isNavOpen, setIsNavOpen] = useState(false); 
+  const [isNavOpen, setIsNavOpen] = useState(false);
 
   const toggleNav = () => {
     setIsNavOpen(!isNavOpen);
@@ -107,12 +119,7 @@ export default function Header({
     <div>
       <nav>
         <div className="logo">
-          <img
-            src={logo}
-            alt="Logo ASTRAtech"
-            title="Logo ASTRAtech"
-           
-          />
+          <img src={logo} alt="Logo ASTRAtech" title="Logo ASTRAtech" />
         </div>
 
         {showMenu && (
@@ -121,7 +128,11 @@ export default function Header({
               <ul className="menu-center">
                 {listMenu.map((menu) => {
                   if (menu.isHidden) return null;
-                  const isActive = activeURL === menu.link;
+
+                  const isParentActive = activeURL === menu.link;
+                  const isChildActive =
+                    menu.sub && menu.sub.some((sub) => activeURL === sub.link);
+                  const isActive = isParentActive || isChildActive;
 
                   return (
                     <li key={menu.headkey} className={isActive ? "active" : ""}>
@@ -132,13 +143,12 @@ export default function Header({
                         <div className="menu-item">
                           {menu.icon && <i className={menu.icon}></i>}
                           <span>{menu.head}</span>
-                          {menu.head !== "Beranda" &&
-                            menu.head !== "Knowledge Database" && (
-                              <i
-                                className="fas fa-chevron-down"
-                                aria-hidden="true"
-                              ></i>
-                            )}
+                          {menu.sub && menu.sub.length > 0 && (
+                            <i
+                              className="fas fa-chevron-down"
+                              aria-hidden="true"
+                            ></i>
+                          )}
                         </div>
                       </a>
 
@@ -146,9 +156,13 @@ export default function Header({
                         <ul className="dropdown-content">
                           {menu.sub.map((sub) => {
                             const iconClass = iconMapping[sub.title] || "";
+                            const isSubActive = activeURL === sub.link;
 
                             return (
-                              <li key={sub.link}>
+                              <li
+                                key={sub.link}
+                                className={isSubActive ? "active-sub" : ""}
+                              >
                                 <a
                                   href={sub.link}
                                   onClick={() =>
@@ -184,8 +198,8 @@ export default function Header({
 
           <div
             className="fotoprofil"
-            onMouseEnter={() => setProfileDropdownVisible(true)} 
-            onMouseLeave={() => setProfileDropdownVisible(false)} 
+            onMouseEnter={() => setProfileDropdownVisible(true)}
+            onMouseLeave={() => setProfileDropdownVisible(false)}
           >
             {showUserInfo && (
               <>
@@ -206,9 +220,13 @@ export default function Header({
                       justifyContent: "center",
                       alignItems: "center",
                       margin: "0 auto 10px",
+                      position: "relative",
                     }}
                   >
                     {getInitials(userProfile.name)}
+                    {countNotifikasi > 0 && (
+                      <span className="notification-badge"></span>
+                    )}
                   </div>
                 )}
               </>
@@ -223,8 +241,19 @@ export default function Header({
                     <i className="fas fa-bell" style={{ color: "#0A5EA8" }}></i>{" "}
                     <span style={{ color: "#0A5EA8" }}>
                       Notifikasi{" "}
-                      <span className="notif">{countNotifikasi}</span>
+                      {countNotifikasi > 0 && (
+                        <span className="notif">{countNotifikasi}</span>
+                      )}
                     </span>
+                  </span>
+                </li>
+                <li>
+                  <span onClick={handleSSO} style={{ cursor: "pointer" }}>
+                    <i
+                      className="fas fa-home"
+                      style={{ color: "#0A5EA8", marginLeft: "-4px" }}
+                    ></i>{" "}
+                    <span style={{ color: "#0A5EA8" }}>Halaman SSO</span>
                   </span>
                 </li>
                 <li>
@@ -243,12 +272,12 @@ export default function Header({
               </ul>
             )}
           </div>
-        
-        {showUserInfo && (
-        <div className="hamburger" onClick={toggleNav}>
-          <i className={`fas fa-${isNavOpen ? "times" : "bars"}`}></i>{" "}
-        </div>
-        )}
+
+          {showUserInfo && (
+            <div className="hamburger" onClick={toggleNav}>
+              <i className={`fas fa-${isNavOpen ? "times" : "bars"}`}></i>{" "}
+            </div>
+          )}
         </div>
       </nav>
       {isNavOpen && (
@@ -314,10 +343,10 @@ export default function Header({
 
       {showConfirmation && (
         <Konfirmasi
-          title={konfirmasi} 
-          pesan={pesanKonfirmasi} 
-          onYes={handleConfirmYes} 
-          onNo={handleConfirmNo} 
+          title={konfirmasi}
+          pesan={pesanKonfirmasi}
+          onYes={handleConfirmYes}
+          onNo={handleConfirmNo}
         />
       )}
     </div>

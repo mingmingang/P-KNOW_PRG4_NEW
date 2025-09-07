@@ -158,7 +158,7 @@ export default function KKDetailProgram({ onChangePage, withID }) {
         key: withID.Key,
         nama: withID["Nama Kelompok Keahlian"],
         programStudi: withID["Prodi"],
-        personInCharge: withID["PIC Name"],
+        personInCharge: withID["PIC"],
         deskripsi: withID["Deskripsi"],
         status: withID["Status"],
       });
@@ -176,8 +176,8 @@ export default function KKDetailProgram({ onChangePage, withID }) {
           <Alert type="danger" message={isError.message} />
         </div>
       )}
-      <div className=" container detail-kk-pickk">
-        <div className="container container-detail-kk back-and-title">
+      <div className="detail-kk-pickk">
+        <div className="container d-flex">
           <button
             style={{ backgroundColor: "transparent", border: "none" }}
             onClick={handleGoBack}
@@ -241,7 +241,7 @@ export default function KKDetailProgram({ onChangePage, withID }) {
                   <p>Tidak Ada Anggota Aktif</p>
                 ) : (
                   <div>
-                    {listAnggota.map((ag, index) => (
+                    {listAnggota.slice(0, 3).map((ag, index) => (
                       <div
                         className="card-profile mb-3 d-flex justify-content-between shadow-sm rounded-3"
                         key={ag.Key}
@@ -334,17 +334,27 @@ export default function KKDetailProgram({ onChangePage, withID }) {
                       Daftar Kategori Program
                     </p>
                     <div className="row row-cols-3">
-                      {data.kategori.map((kat, indexKat) => (
-                        <>
-                          <div className="col">
+                      {data.kategori.map((kat, indexKat) => {
+                        let deskripsiSingkat = "Deskripsi tidak tersedia";
+
+                        if (kat && kat.Deskripsi) {
+                          const deskripsiLengkap = decode(kat.Deskripsi);
+
+                          if (deskripsiLengkap.length > 150) {
+                            deskripsiSingkat =
+                              deskripsiLengkap.slice(0, 150) + "...";
+                          } else {
+                            deskripsiSingkat = deskripsiLengkap;
+                          }
+                        }
+                        return (
+                          <div className="col" key={indexKat}>
+                            {" "}
                             <div className="card card-kategori-program mt-3">
                               <div className="card-body">
                                 <div className="d-flex justify-content-between">
                                   <h6 className="card-title">
-                                    {index + 1}
-                                    {"-"}
-                                    {indexKat + 1}
-                                    {". "}
+                                    {index + 1}-{indexKat + 1}.{" "}
                                     {kat && kat["Nama Kategori"]
                                       ? decode(kat["Nama Kategori"])
                                       : "Nama Kategori tidak tersedia"}
@@ -356,19 +366,14 @@ export default function KKDetailProgram({ onChangePage, withID }) {
                                     className="card-subtitle"
                                     style={{ textAlign: "justify" }}
                                   >
-                                    {kat && kat.Deskripsi
-                                      ? decode(kat.Deskripsi).length > 150
-                                        ? decode(kat.Deskripsi).slice(0, 150) +
-                                          "..."
-                                        : decode(kat.Deskripsi)
-                                      : "Deskripsi tidak tersedia"}
+                                    {deskripsiSingkat}{" "}
                                   </p>
                                 </div>
                               </div>
                             </div>
                           </div>
-                        </>
-                      ))}
+                        );
+                      })}
                     </div>
                   </div>
                 </div>

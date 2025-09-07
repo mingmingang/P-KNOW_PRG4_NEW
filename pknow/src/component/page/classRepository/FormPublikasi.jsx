@@ -703,7 +703,6 @@ export default function PublikasiKelas({ withID, onChangePage }) {
                   {kategori["Nama Kategori Program"] || "Tidak ada deskripsi."}{" "}
                   <br />
                 </p>
-                {/* Render list materi jika kategori ini aktif */}
                 {activeCategory === kategori.Key && (
                   <div
                     style={{

@@ -16,8 +16,6 @@ import NoImage from "../../../../assets/NoImage.png";
 import BackPage from "../../../../assets/backPage.png";
 import Konfirmasi from "../../../part/Konfirmasi";
 import "../../../../index.css";
-import ReactQuill from "react-quill";
-import 'react-quill/dist/quill.snow.css';
 
 const AnimatedSection = ({ children, delay = 0 }) => {
   const controls = useAnimation();
@@ -261,15 +259,25 @@ export default function TambahKK({ onChangePage }) {
           formDataRef.current
         );
 
-        if (data === "ERROR") {
-          throw new Error("Terjadi kesalahan: Gagal menyimpan data program.");
-        } else {
+        if (data[0].hasil === "ERROR") {
+          SweetAlert(
+            "Gagal",
+            "Nama Kelompok Keahlian telah dipakai, Silahkan gunakkan Nama Kelompok Keahlian lainnya",
+            "error"
+          );
+        } else if (data[0].hasil === "OK") {
           SweetAlert(
             "Sukses",
             "Data kelompok keahlian berhasil disimpan",
             "success"
           );
           onChangePage("index");
+        } else {
+          SweetAlert(
+            "Error",
+            "Terjadi kesalahan: Gagal menyimpan data program.",
+            "error"
+          );
         }
       } catch (error) {
         window.scrollTo(0, 0);
@@ -394,11 +402,11 @@ export default function TambahKK({ onChangePage }) {
                         <div className="file-upload">
                           <FileUpload
                             forInput="gambarAlatMesin"
-                            label="Gambar Kelompok Keahlian (.png)"
-                            formatFile=".png"
+                            label="Gambar Kelompok Keahlian (.png/.jpg)"
+                            formatFile=".png, .jpg"
                             ref={fileGambarRef}
                             onChange={() =>
-                              handleFileChange(fileGambarRef, "png")
+                              handleFileChange(fileGambarRef, "png,jpg")
                             }
                             errorMessage={errors.gambar}
                             isRequired={true}
@@ -464,11 +472,6 @@ export default function TambahKK({ onChangePage }) {
                           disabled={!formDataRef.current.programStudi}
                         />
                       </div>
-                       {/* <div>
-      <div className="flex justify-center items-center h-[10rem]">
-      </div>
-      <ReactQuill theme='snow'/>
-    </div> */}
                     </div>
                   </div>
                   <div

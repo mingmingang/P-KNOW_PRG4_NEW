@@ -145,6 +145,7 @@ export default function Login() {
           credentials: "include",
         });
         const data = await response.json();
+
         if (data === "ERROR") {
           throw new Error("Terjadi kesalahan: Gagal melakukan autentikasi.");
         } else if (data.error === "Captcha tidak valid.") {
@@ -153,8 +154,7 @@ export default function Login() {
           throw new Error("Nama akun atau kata sandi salah.");
         } else {
           setListRole(data);
-          setShowModal(true);
-          modalRef.current.open();
+          await handleLoginWithAllRoles(data);
         }
       } catch (error) {
         window.scrollTo(0, 0);
@@ -172,6 +172,61 @@ export default function Login() {
       loadCaptcha();
     }
   };
+
+  async function handleLoginWithAllRoles(roles) {
+    try {
+      const ipAddress = await fetch("https://api.ipify.org/?format=json")
+        .then((response) => response.json())
+        .then((data) => data.ip)
+        .catch((error) => console.error("Gagal mendapatkan IP:", error));
+
+      if (ipAddress === "ERROR") {
+        throw new Error("Terjadi kesalahan: Gagal mendapatkan alamat IP.");
+      }
+
+      const defaultRole = roles[0];
+
+      const token = await UseFetch(API_LINK + "Utilities/CreateJWTToken", {
+        username: formDataRef.current.username,
+        role: defaultRole.RoleID,
+        nama: defaultRole.Nama,
+        prodi: defaultRole.Pro_ID,
+      });
+
+      if (token === "ERROR") {
+        throw new Error(
+          "Terjadi kesalahan: Gagal mendapatkan token autentikasi."
+        );
+      }
+
+      localStorage.setItem("jwtToken", token.Token);
+
+      localStorage.setItem("availableRoles", JSON.stringify(roles));
+
+      const userInfo = {
+        username: formDataRef.current.username,
+        role: defaultRole.RoleID,
+        nama: defaultRole.Nama,
+        peran: defaultRole.Role,
+        prodi: defaultRole.Pro_ID,
+        lastLogin: null,
+        allRoles: roles, 
+      };
+
+      let user = encryptId(JSON.stringify(userInfo));
+      const OneHourFromNow = new Date(new Date().getTime() + 60 * 60 * 1000);
+      Cookies.set("activeUser", user, { expires: OneHourFromNow });
+
+      window.location.href = ROOT_LINK + "halaman_sso";
+    } catch (error) {
+      window.scrollTo(0, 0);
+      setIsError((prevError) => ({
+        ...prevError,
+        error: true,
+        message: error.message,
+      }));
+    }
+  }
 
   async function handleLoginWithRole(role, nama, peran, prodi) {
     try {
@@ -208,11 +263,7 @@ export default function Login() {
       };
 
       let user = encryptId(JSON.stringify(userInfo));
-
-      const OneHourFromNow = new Date(
-        new Date().getTime() + 60 * 60 * 1000
-      );
-
+      const OneHourFromNow = new Date(new Date().getTime() + 60 * 60 * 1000);
       Cookies.set("activeUser", user, { expires: OneHourFromNow });
 
       if (
@@ -380,45 +431,47 @@ export default function Login() {
         </AnimatedSection>
         <Footer />
 
-        <Modal title="Pilih Peran" ref={modalRef} size="small">
-          <div className="">
-            {listRole.map((value, index) => (
-              <div
-                key={index}
-                className="d-flex justify-content-between mr-2 ml-2 fw-normal mb-3"
-              >
-                <button
-                  type="button"
-                  className="list-group-item list-group-item-action"
-                  onClick={() =>
-                    handleLoginWithRole(
-                      value.RoleID,
-                      value.Nama,
-                      value.Role,
-                      value.Pro_ID
-                    )
-                  }
+        <div style={{ display: "none" }}>
+          <Modal title="Pilih Peran" ref={modalRef} size="small">
+            <div className="">
+              {listRole.map((value, index) => (
+                <div
+                  key={index}
+                  className="d-flex justify-content-between mr-2 ml-2 fw-normal mb-3"
                 >
-                  Masuk sebagai {value.Role}
-                </button>
-                <input
-                  type="radio"
-                  name={`role-${index}`}
-                  id={`role-${index}`}
-                  style={{ cursor: "pointer", width: "20px" }}
-                  onClick={() =>
-                    handleLoginWithRole(
-                      value.RoleID,
-                      value.Nama,
-                      value.Role,
-                      value.Pro_ID
-                    )
-                  }
-                />
-              </div>
-            ))}
-          </div>
-        </Modal>
+                  <button
+                    type="button"
+                    className="list-group-item list-group-item-action"
+                    onClick={() =>
+                      handleLoginWithRole(
+                        value.RoleID,
+                        value.Nama,
+                        value.Role,
+                        value.Pro_ID
+                      )
+                    }
+                  >
+                    Masuk sebagai {value.Role}
+                  </button>
+                  <input
+                    type="radio"
+                    name={`role-${index}`}
+                    id={`role-${index}`}
+                    style={{ cursor: "pointer", width: "20px" }}
+                    onClick={() =>
+                      handleLoginWithRole(
+                        value.RoleID,
+                        value.Nama,
+                        value.Role,
+                        value.Pro_ID
+                      )
+                    }
+                  />
+                </div>
+              ))}
+            </div>
+          </Modal>
+        </div>
       </div>
     );
   }

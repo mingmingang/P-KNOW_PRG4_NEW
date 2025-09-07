@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import Button from "../../../part/Button";
+import Button from "../../../part/Button copy";
 import Loading from "../../../part/Loading";
 import Alert from "../../../part/Alert";
 import Icon from "../../../part/Icon";
@@ -267,44 +267,45 @@ export default function KKDetailPublish({ onChangePage, withID }) {
                     />
                   ) : (
                     <div>
-                      {listAnggota.map((ag, index) => (
-                        <div
-                          className="card-profile mb-3 mt-3 d-flex justify-content-between shadow-sm rounded-4"
-                          key={ag.Key}
-                        >
-                          <div className="d-flex w-100">
-                            <p className="mb-0 px-1 py-2 mt-2 me-2 fw-bold text-primary ml-4">
-                              {index + 1}
-                            </p>
-
-                            <div className="p-1 ps-2 d-flex">
-                              <img
-                                src={maskotPknow}
-                                alt={ag["Nama Anggota"]}
-                                className="img-fluid rounded-circle"
-                                width="45"
-                              />
-                              <div
-                                className="ps-3"
-                                style={{ color: "#0A5EA8" }}
-                              >
-                                <p className="mb-0 fw-bold">
-                                  {ag["Nama Anggota"]}
-                                </p>
-                                <p
-                                  className="mb-0"
-                                  style={{ fontSize: "13px" }}
+                      <div>
+                        {listAnggota.slice(0, 3).map((ag, index) => (
+                          <div
+                            className="card-profile mb-3 mt-3 d-flex justify-content-between shadow-sm rounded-4"
+                            key={ag.Key}
+                          >
+                            <div className="d-flex w-100">
+                              <p className="mb-0 px-1 py-2 mt-2 me-2 fw-bold text-primary ml-4">
+                                {index + 1}
+                              </p>
+                              <div className="p-1 ps-2 d-flex">
+                                <img
+                                  src={maskotPknow}
+                                  alt={ag["Nama Anggota"]}
+                                  className="img-fluid rounded-circle"
+                                  width="45"
+                                />
+                                <div
+                                  className="ps-3"
+                                  style={{ color: "#0A5EA8" }}
                                 >
-                                  {ag.Prodi}
-                                </p>
+                                  <p className="mb-0 fw-bold">
+                                    {ag["Nama Anggota"]}
+                                  </p>
+                                  <p
+                                    className="mb-0"
+                                    style={{ fontSize: "13px" }}
+                                  >
+                                    {ag.Prodi}
+                                  </p>
+                                </div>
                               </div>
                             </div>
                           </div>
-                        </div>
-                      ))}
+                        ))}
+                      </div>
                       <div className="text-end">
                         <Button
-                          classType="light btn-sm text-primary text-decoration-underline px-3 mt-2"
+                          classType="primary btn-sm text-decoration-none px-3 mt-2"
                           type="submit"
                           label="Lihat Semua"
                           data-bs-toggle="modal"
@@ -334,7 +335,7 @@ export default function KKDetailPublish({ onChangePage, withID }) {
                 listProgram.map((data, index) => (
                   <div
                     key={data.Key}
-                    className="card card-program mt-3 border-secondary"
+                    className="card card-program mt-3 border-secondary mb-4"
                   >
                     <div className="card-body d-flex justify-content-between align-items-center border-bottom border-secondary">
                       <p className="fw-medium mb-0" style={{ width: "20%" }}>
@@ -356,17 +357,22 @@ export default function KKDetailPublish({ onChangePage, withID }) {
                         Daftar Kategori Program
                       </p>
                       <div className="row row-cols-3">
-                        {data.kategori.map((kat, indexKat) => (
-                          <>
-                            <div className="col">
+                        {data.kategori.map((kat, indexKat) => {
+                          const deskripsiLengkap = decode(kat.Deskripsi) || "";
+                          const maxLength = 150;
+
+                          const deskripsiSingkat =
+                            deskripsiLengkap.length > maxLength
+                              ? `${deskripsiLengkap.substring(0, maxLength)}...`
+                              : deskripsiLengkap;
+
+                          return (
+                            <div className="col" key={kat.id || indexKat}>
                               <div className="card card-kategori-program mt-3">
                                 <div className="card-body">
                                   <div className="d-flex justify-content-between">
                                     <h6 className="card-title">
-                                      {index + 1}
-                                      {"-"}
-                                      {indexKat + 1}
-                                      {". "}
+                                      {index + 1}-{indexKat + 1}.{" "}
                                       {decode(kat["Nama Kategori"])}
                                     </h6>
                                     <div>
@@ -386,20 +392,18 @@ export default function KKDetailPublish({ onChangePage, withID }) {
                                       className="card-subtitle"
                                       style={{
                                         textAlign: "justify",
-                                        maxHeight: "100px",
-                                        overflow: "hidden",
-                                        textOverflow: "ellipsis",
                                         wordBreak: "break-word",
                                       }}
+                                      title={deskripsiLengkap}
                                     >
-                                      {decode(kat.Deskripsi)}
+                                      {deskripsiSingkat}
                                     </p>
                                   </div>
                                 </div>
                               </div>
                             </div>
-                          </>
-                        ))}
+                          );
+                        })}
                       </div>
                     </div>
                   </div>
@@ -411,33 +415,33 @@ export default function KKDetailPublish({ onChangePage, withID }) {
           </div>
         </div>
         <div className="float-end my-4 mx-1">
-          <Button
+          {/* <Button
             classType="secondary me-2 px-4 py-2"
             label="Kembali"
             onClick={() => onChangePage("index")}
-          />
+          /> */}
         </div>
         <div
-          class="modal fade"
+          className="modal fade"
           id="modalAnggota"
-          tabindex="-1"
+          tabIndex={-1}
           aria-labelledby="Anggota Kelompok Keahlian"
           aria-hidden="true"
         >
-          <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h1 class="modal-title fs-5" id="modalAnggotaKK">
+          <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h1 className="modal-title fs-5" id="modalAnggotaKK">
                   Anggota Kelompok Keahlian
                 </h1>
                 <button
                   type="button"
-                  class="btn-close"
+                  className="btn-close"
                   data-bs-dismiss="modal"
                   aria-label="Close"
                 ></button>
               </div>
-              <div class="modal-body">
+              <div className="modal-body">
                 {listAnggota.length > 0 ? (
                   listAnggota[0].Message ? (
                     <Alert
@@ -460,7 +464,7 @@ export default function KKDetailPublish({ onChangePage, withID }) {
                           ></div>
                           <div className="p-1 ps-2 d-flex">
                             <img
-                              src="https://t4.ftcdn.net/jpg/02/15/84/43/360_F_215844325_ttX9YiIIyeaR7Ne6EaLLjMAmy4GvPC69.jpg"
+                              src={maskotPknow}
                               alt={ag["Nama Anggota"]}
                               className="img-fluid rounded-circle"
                               width="45"

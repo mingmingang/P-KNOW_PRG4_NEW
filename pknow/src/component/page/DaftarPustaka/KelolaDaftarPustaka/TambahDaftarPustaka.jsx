@@ -14,7 +14,7 @@ import BackPage from "../../../../assets/backPage.png";
 import Konfirmasi from "../../../part/Konfirmasi";
 import { decode } from "he";
 import AnimatedSection from "../../../part/AnimatedSection";
-import "../../../../index.css"
+import "../../../../index.css";
 
 export default function MasterDaftarPustakaAdd({ onChangePage, withID }) {
   const [errors, setErrors] = useState({});
@@ -76,7 +76,7 @@ export default function MasterDaftarPustakaAdd({ onChangePage, withID }) {
       pus_kata_kunci: "",
       pus_gambar: "",
       pus_status: "Aktif",
-      kke_id:""
+      kke_id: "",
     };
     setFilePreview(false);
     setErrors({});
@@ -293,223 +293,225 @@ export default function MasterDaftarPustakaAdd({ onChangePage, withID }) {
 
   return (
     <>
-    <AnimatedSection>
-      {isError.error && (
-        <div className="flex-fill">
-          <Alert type="danger" message={isError.message} />
+      <AnimatedSection>
+        {isError.error && (
+          <div className="flex-fill">
+            <Alert type="danger" message={isError.message} />
+          </div>
+        )}
+        <div
+          className="container mb-3"
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            marginTop: "100px",
+          }}
+        >
+          <div className="" style={{ display: "flex" }}>
+            <button
+              style={{ backgroundColor: "transparent", border: "none" }}
+              onClick={handleGoBack}
+            >
+              <img src={BackPage} alt="" />
+            </button>
+            <h4
+              style={{
+                color: "#0A5EA8",
+                fontWeight: "bold",
+                fontSize: "30px",
+                marginTop: "10px",
+                marginLeft: "20px",
+              }}
+            >
+              Tambah Knowledge Database
+            </h4>
+          </div>
+          <div className="ket-draft">
+            <span className="badge text-bg-dark " style={{ fontSize: "16px" }}>
+              Draft
+            </span>
+          </div>
         </div>
-      )}
-      <div
-        className="container mb-3"
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          marginTop: "100px",
-        }}
-      >
-        <div className="" style={{ display: "flex" }}>
-          <button
-            style={{ backgroundColor: "transparent", border: "none" }}
-            onClick={handleGoBack}
-          >
-            <img src={BackPage} alt="" />
-          </button>
-          <h4
-            style={{
-              color: "#0A5EA8",
-              fontWeight: "bold",
-              fontSize: "30px",
-              marginTop: "10px",
-              marginLeft: "20px",
-            }}
-          >
-            Tambah Knowledge Database
-          </h4>
-        </div>
-        <div className="ket-draft">
-          <span className="badge text-bg-dark " style={{ fontSize: "16px" }}>
-            Draft
-          </span>
-        </div>
-      </div>
-      <form onSubmit={handleAdd}>
-        <div className="container mb-4">
-        <div className="card" >
-          <div className="card-body p-4">
-            <div className="row">
-              <div className="col-lg-4 box-image" >
-                <div className="file-preview">
-                  <div className="preview-img">
-                    {filePreview ? (
-                      <div
-                        style={{
-                          marginTop: "10px",
-                          marginRight: "30px",
-                          marginBottom: "20px",
-                        }}
-                      >
-                        <img
-                          src={filePreview}
-                          alt="Preview"
-                          style={{
-                            width: "200px",
-                            height: "auto",
-                            borderRadius: "20px",
-                          }}
-                        />
+        <form onSubmit={handleAdd}>
+          <div className="container mb-4">
+            <div className="card">
+              <div className="card-body p-4">
+                <div className="row">
+                  <div className="col-lg-4 box-image">
+                    <div className="file-preview">
+                      <div className="preview-img">
+                        {filePreview ? (
+                          <div
+                            style={{
+                              marginTop: "10px",
+                              marginRight: "30px",
+                              marginBottom: "20px",
+                            }}
+                          >
+                            <img
+                              src={filePreview}
+                              alt="Preview"
+                              style={{
+                                width: "200px",
+                                height: "auto",
+                                borderRadius: "20px",
+                              }}
+                            />
+                          </div>
+                        ) : (
+                          <div
+                            style={{
+                              marginTop: "10px",
+                              marginRight: "30px",
+                              marginBottom: "20px",
+                            }}
+                          >
+                            <img
+                              src={NoImage}
+                              alt="No Preview Available"
+                              style={{
+                                width: "200px",
+                                height: "auto",
+                                borderRadius: "20px",
+                              }}
+                            />
+                          </div>
+                        )}
                       </div>
-                    ) : (
-                      <div
-                        style={{
-                          marginTop: "10px",
-                          marginRight: "30px",
-                          marginBottom: "20px",
-                        }}
-                      >
-                        <img
-                          src={NoImage}
-                          alt="No Preview Available"
-                          style={{
-                            width: "200px",
-                            height: "auto",
-                            borderRadius: "20px",
-                          }}
-                        />
-                      </div>
-                    )}
+                    </div>
+                    <div className="fileupload">
+                      <FileUpload
+                        forInput="gambarInputref"
+                        label="Gambar Daftar Pustaka (.jpg/.png)"
+                        formatFile=".png, .jpg"
+                        ref={fileGambarRef}
+                        onChange={() =>
+                          handleFileChange(fileGambarRef, "png,jpg")
+                        }
+                        errorMessage={errors.pus_gambar}
+                        isRequired={true}
+                      />
+                    </div>
                   </div>
                 </div>
-                <div className="fileupload">
-                  <FileUpload
-                    forInput="gambarInputref"
-                    label="Gambar Daftar Pustaka (.png)"
-                    formatFile=".png"
-                    ref={fileGambarRef}
-                    onChange={() => handleFileChange(fileGambarRef, "png")}
-                    errorMessage={errors.pus_gambar}
-                    isRequired={true}
-                  />
+                <div className="row">
+                  <div className="col-lg-4">
+                    <Input
+                      type="text"
+                      placeholder="Masukan Judul Pustaka"
+                      forInput="pus_judul"
+                      label="Judul / Nama File Pustaka"
+                      isRequired
+                      value={formDataRef.current.pus_judul}
+                      onChange={handleInputChange}
+                      errorMessage={errors.pus_judul}
+                    />
+                  </div>
+                  <div className="col-lg-4">
+                    <Select2Dropdown
+                      forInput="kke_id"
+                      label="Kelompok Keahlian"
+                      arrData={listKK}
+                      isRequired
+                      value={formDataRef.current.kke_id}
+                      onChange={handleInputChange}
+                      errorMessage={errors.kke_id}
+                    />
+                  </div>
+                  <div className="col-lg-4">
+                    <Input
+                      type="text"
+                      forInput="pus_kata_kunci"
+                      label="Kata Kunci"
+                      isRequired
+                      value={formDataRef.current.pus_kata_kunci}
+                      onChange={handleInputChange}
+                      errorMessage={errors.pus_kata_kunci}
+                      placeholder="Masukan Kata Kunci"
+                    />
+                  </div>
+                  <div className="col-lg-4">
+                    <FileUpload
+                      ref={fileDocumentRef}
+                      forInput="pus_file"
+                      maxFileSize="250"
+                      label="File Pustaka (.pdf, .docx, .xlsx, .pptx, .mp4)"
+                      formatFile=".pdf,.docx,.xlsx,.pptx,.mp4"
+                      onChange={() =>
+                        handleDocumentChange(
+                          fileDocumentRef,
+                          "pdf,docx,xlsx,pptx,mp4",
+                          250
+                        )
+                      }
+                      errorMessage={errors.pus_file}
+                      isRequired
+                    />
+                  </div>
+
+                  <div className="col-lg-12">
+                    <Input
+                      type="textarea"
+                      forInput="pus_keterangan"
+                      label="Sinopsis / Ringkasan Pustaka"
+                      isRequired
+                      value={formDataRef.current.pus_keterangan}
+                      onChange={handleInputChange}
+                      errorMessage={errors.pus_keterangan}
+                    />
+                  </div>
                 </div>
               </div>
-            </div>
-            <div className="row">
-              <div className="col-lg-4">
-                <Input
-                  type="text"
-                  placeholder="Masukan Judul Pustaka"
-                  forInput="pus_judul"
-                  label="Judul / Nama File Pustaka"
-                  isRequired
-                  value={formDataRef.current.pus_judul}
-                  onChange={handleInputChange}
-                  errorMessage={errors.pus_judul}
-                />
-              </div>
-              <div className="col-lg-4">
-                <Select2Dropdown
-                  forInput="kke_id"
-                  label="Kelompok Keahlian"
-                  arrData={listKK}
-                  isRequired
-                  value={formDataRef.current.kke_id}
-                  onChange={handleInputChange}
-                  errorMessage={errors.kke_id}
-                />
-              </div>
-              <div className="col-lg-4">
-                <Input
-                  type="text"
-                  forInput="pus_kata_kunci"
-                  label="Kata Kunci"
-                  isRequired
-                  value={formDataRef.current.pus_kata_kunci}
-                  onChange={handleInputChange}
-                  errorMessage={errors.pus_kata_kunci}
-                  placeholder="Masukan Kata Kunci"
-                />
-              </div>
-              <div className="col-lg-4">
-                <FileUpload
-                  ref={fileDocumentRef}
-                  forInput="pus_file"
-                  maxFileSize="250"
-                  label="File Pustaka (.pdf, .docx, .xlsx, .pptx, .mp4)"
-                  formatFile=".pdf,.docx,.xlsx,.pptx,.mp4"
-                  onChange={() =>
-                    handleDocumentChange(
-                      fileDocumentRef,
-                      "pdf,docx,xlsx,pptx,mp4",
-                      250
-                    )
-                  }
-                  errorMessage={errors.pus_file}
-                  isRequired
-                />
-              </div>
 
-              <div className="col-lg-12">
-              <Input
-                  type="textarea"
-                  forInput="pus_keterangan"
-                  label="Sinopsis / Ringkasan Pustaka"
-                  isRequired
-                  value={formDataRef.current.pus_keterangan}
-                  onChange={handleInputChange}
-                  errorMessage={errors.pus_keterangan}
-                />
+              <div
+                className="d-flex justify-content-end"
+                style={{
+                  marginRight: "20px",
+                  marginTop: "-10px",
+                  marginBottom: "20px",
+                }}
+              >
+                <button
+                  className="btn btn-secondary btn-sm"
+                  type="button"
+                  onClick={resetForm}
+                  style={{
+                    marginRight: "10px",
+                    padding: "5px 15px",
+                    fontWeight: "bold",
+                    borderRadius: "10px",
+                  }}
+                >
+                  Batalkan
+                </button>
+                <button
+                  className="btn btn-primary btn-sm"
+                  type="submit"
+                  style={{
+                    marginRight: "10px",
+                    padding: "5px 20px",
+                    fontWeight: "bold",
+                    borderRadius: "10px",
+                  }}
+                >
+                  Simpan
+                </button>
               </div>
             </div>
           </div>
-
-          <div
-            className="d-flex justify-content-end"
-            style={{
-              marginRight: "20px",
-              marginTop: "-10px",
-              marginBottom: "20px",
-            }}
-          >
-            <button
-              className="btn btn-secondary btn-sm"
-              type="button"
-              onClick={resetForm}
-              style={{
-                marginRight: "10px",
-                padding: "5px 15px",
-                fontWeight: "bold",
-                borderRadius: "10px",
-              }}
-            >
-              Batalkan
-            </button>
-            <button
-              className="btn btn-primary btn-sm"
-              type="submit"
-              style={{
-                marginRight: "10px",
-                padding: "5px 20px",
-                fontWeight: "bold",
-                borderRadius: "10px",
-              }}
-            >
-              Simpan
-            </button>
-          </div>
-        </div>
-        </div>
-      </form>
-      {showConfirmation && (
-        <Konfirmasi
-          title={isBackAction ? "Konfirmasi Kembali" : "Konfirmasi Simpan"}
-          pesan={
-            isBackAction
-              ? "Apakah anda ingin kembali?"
-              : "Anda yakin ingin simpan data?"
-          }
-          onYes={handleConfirmYes}
-          onNo={handleConfirmNo}
-        />
-      )}
+        </form>
+        {showConfirmation && (
+          <Konfirmasi
+            title={isBackAction ? "Konfirmasi Kembali" : "Konfirmasi Simpan"}
+            pesan={
+              isBackAction
+                ? "Apakah anda ingin kembali?"
+                : "Anda yakin ingin simpan data?"
+            }
+            onYes={handleConfirmYes}
+            onNo={handleConfirmNo}
+          />
+        )}
       </AnimatedSection>
     </>
   );

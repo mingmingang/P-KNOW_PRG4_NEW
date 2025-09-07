@@ -55,7 +55,7 @@ const CardKategoriProgram = ({
           </div>
           <div className="description-container d-flex mt-2">
             <div className="me-2 bg-primary ps-1"></div>
-            <div className="">
+            <div className="description-text">
               <p
                 className="mb-0"
                 style={{
@@ -119,7 +119,7 @@ const CardKategoriProgram = ({
                 name="paper-plane"
                 type="Bold"
                 cssClass="btn px-1 py-0 text-primary"
-                title="Publikasi mata kuliah"
+                title="Publikasi Kategori Program"
                 onClick={() => handleStatusChange(data, "Aktif")}
               />
             </div>

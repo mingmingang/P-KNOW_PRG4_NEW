@@ -369,10 +369,12 @@ export default function MasterDaftarPustakaEdit({ onChangePage, withID }) {
                     <div className="fileupload">
                       <FileUpload
                         forInput="gambarInputref"
-                        label="Gambar Daftar Pustaka (.png)"
-                        formatFile=".png"
+                        label="Gambar Daftar Pustaka (.jpg/.png)"
+                        formatFile=".png, .jpg"
                         ref={fileGambarRef}
-                        onChange={() => handleFileChange(fileGambarRef, "png")}
+                        onChange={() =>
+                          handleFileChange(fileGambarRef, "png,jpg")
+                        }
                         errorMessage={errors.pus_gambar}
                       />
                     </div>

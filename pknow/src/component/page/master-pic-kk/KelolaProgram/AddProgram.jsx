@@ -198,7 +198,7 @@ export default function ProgramAdd({ onChangePage, withID }) {
         <Loading />
       ) : (
         <>
-          <div className="program-add-container">
+          <div className="container" style={{marginTop:"100px"}}>
             <div className="header-section add-pro">
               <div className="back-and-title add-pro">
                 <button className="back-button" onClick={handleGoBack}>
@@ -210,7 +210,7 @@ export default function ProgramAdd({ onChangePage, withID }) {
                 <span className="draft-badge badge text-bg-dark ">Draft</span>
               </div>
             </div>
-            <div className="mb-4">
+            <div className="container mb-4">
               <form onSubmit={handleAdd}>
                 <div className="card tambah-program">
                   <div className="card-body p-4">
@@ -250,13 +250,13 @@ export default function ProgramAdd({ onChangePage, withID }) {
                           </div>
                         </div>
                         <div className="fileupload">
-                          <FileUpload
+                           <FileUpload
                             forInput="gambarInputref"
-                            label="Gambar Program (.png)"
-                            formatFile=".png"
+                            label="Gambar Program (.jpg/.png)"
+                             formatFile=".png, .jpg"
                             ref={fileGambarRef}
                             onChange={() =>
-                              handleFileChange(fileGambarRef, "png")
+                              handleFileChange(fileGambarRef, "png,jpg")
                             }
                             errorMessage={errors.pro_gambar}
                             isRequired={true}

@@ -193,13 +193,11 @@ export default function ProgramIndex({ onChangePage }) {
           {
             page: 1,
             query: "",
-            sort: "[Key] asc",
+            sort: "[Nama Kategori] asc",
             status: "",
             kkeID: filter,
           }
         );
-
-        console.log("dataanyee", data)
 
         if (data === "ERROR") {
           throw new Error(
@@ -368,19 +366,24 @@ export default function ProgramIndex({ onChangePage }) {
           status: status,
         })
           .then((data) => {
-            if (data === "ERROR" || data.length === 0) setIsError(true);
-            else if (data[0].hasil === "ERROR PROGRAM DRAFT") {
-              setIsError({
-                error: true,
-                message:
-                  "Terjadi kesalahan: Gagal publikasi Kategori karena Program masih berstatus Draft.",
-              });
+            if (data === "ERROR" || data.length === 0) {
+              SweetAlert(
+                "Gagal",
+                "Data tidak ditemukan atau terjadi kesalahan.",
+                "error"
+              );
+            } else if (data[0].hasil === "ERROR PROGRAM DRAFT") {
+              SweetAlert(
+                "Gagal Publikasi",
+                "Gagal mempublikasikan Kategori karena Program masih berstatus Draft.",
+                "error"
+              );
             } else if (data[0].hasil === "ERROR PROGRAM TIDAK AKTIF") {
-              setIsError({
-                error: true,
-                message:
-                  "Terjadi kesalahan: Gagal mengaktifkan Kategori karena Program berstatus Tidak aktif.",
-              });
+              SweetAlert(
+                "Gagal Aktivasi",
+                "Gagal mengaktifkan Kategori karena Program berstatus Tidak aktif.",
+                "error"
+              );
             } else {
               let message;
               if (status === "Tidak Aktif") {
@@ -399,7 +402,7 @@ export default function ProgramIndex({ onChangePage }) {
   }
 
   return (
-    <div lassName="header-container">
+    <div className="header-container">
       <Search
         title="Kelola Program"
         description="ASTRAtech memiliki banyak program studi, di dalam program studi terdapat kelompok keahlian yang biasa disebut dengan Kelompok Keahlian."
@@ -432,7 +435,7 @@ export default function ProgramIndex({ onChangePage }) {
                       }}
                     >
                       <div className="card-body p-0 program">
-                        <div className="card-body px-3">
+                        <div>
                           <div className="d-flex justify-content-between align-items-center">
                             <h6 className="card-programtitle mb-0 d-flex flex-wrap align-items-center">
                               <span className="d-flex align-items-center me-3 ">
@@ -490,9 +493,8 @@ export default function ProgramIndex({ onChangePage }) {
                                   onChangePage("detailPublish", currentData)
                                 }
                                 style={{
-                                
-                                  color: "#0A5EA8",
-                                
+                                  background: "white",
+                                  color: "#0A5EA8"
                                 }}
                               />
                             </div>

@@ -351,16 +351,14 @@ export default function KKEdit({ onChangePage, withID }) {
                       </div>
                       <div className="file-upload">
                         <FileUpload
-                          forInput="gambarKelompokKeahlian"
-                          label="Gambar Kelompok Keahlian (.png)"
-                          formatFile=".png"
-                          ref={fileGambarRef}
-                          onChange={() =>
-                            handleFileChange(fileGambarRef, "png")
-                          }
-                          errorMessage={errors.gambar}
-                          isRequired={false}
-                        />
+                        forInput="gambarAlatMesin"
+                        label="Gambar Kelompok Keahlian (.jpg/.png)"
+                        formatFile=".png, .jpg"
+                        ref={fileGambarRef}
+                        onChange={() => handleFileChange(fileGambarRef, "png,jpg")}
+                        errorMessage={errors.gambar}
+                        isRequired={true}
+                      />
                       </div>
                     </div>
                     <div className="col-lg-12">

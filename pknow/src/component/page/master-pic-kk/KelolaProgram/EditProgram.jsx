@@ -257,11 +257,11 @@ export default function ProgramEdit({ onChangePage, withID }) {
                       <div className="fileupload">
                         <FileUpload
                           forInput="gambarInputref"
-                          label="Gambar Program (.png)"
-                          formatFile=".png"
+                          label="Gambar Program (.jpg/.png)"
+                          formatFile=".png, .jpg"
                           ref={fileGambarRef}
                           onChange={() =>
-                            handleFileChange(fileGambarRef, "png")
+                            handleFileChange(fileGambarRef, "png,jpg")
                           }
                           errorMessage={errors.pro_gambar}
                           isRequired={false}

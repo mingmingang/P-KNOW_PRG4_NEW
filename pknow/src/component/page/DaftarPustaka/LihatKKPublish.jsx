@@ -381,26 +381,26 @@ export default function KKDetailPublish({ onChangePage, withID }) {
         />
       </div>
       <div
-        class="modal fade"
+        className="modal fade"
         id="modalAnggota"
         tabindex="-1"
         aria-labelledby="Anggota Kelompok Keahlian"
         aria-hidden="true"
       >
-        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h1 class="modal-title fs-5" id="modalAnggotaKK">
+        <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h1 className="modal-title fs-5" id="modalAnggotaKK">
                 Anggota Kelompok Keahlian
               </h1>
               <button
                 type="button"
-                class="btn-close"
+                className="btn-close"
                 data-bs-dismiss="modal"
                 aria-label="Close"
               ></button>
             </div>
-            <div class="modal-body">
+            <div className="modal-body">
               {listAnggota.length > 0 ? (
                 listAnggota[0].Message ? (
                   <Alert
