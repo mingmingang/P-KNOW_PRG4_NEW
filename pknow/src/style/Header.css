@@ -56,13 +56,40 @@ nav {
     margin: "0 auto 10px";
   }
   
-  .notif {
-      background: "red";
-      border-radius: "50%";
-      padding-left: "5px";
-      padding-right: "5px";
-      color: "white";
-  }
+ .notif {
+  background-color: #dc3545; /* Warna merah (Bootstrap danger color) */
+  color: white;             /* Teks warna putih */
+  border-radius: 50%;       /* Membuatnya menjadi lingkaran */
+  padding: 2px 7px;         /* Memberi sedikit ruang di dalam lingkaran */
+  font-size: 0.75rem;       /* Ukuran font lebih kecil agar pas */
+  font-weight: bold;
+  
+  /* Opsional: agar ukuran minimal tetap terjaga jika angkanya 1 digit */
+  min-width: 22px;
+  display: inline-block;
+  text-align: center;
+  vertical-align: middle;   /* Posisi vertikal agar lebih rapi */
+  margin-left: 4px;         /* Jarak dari teks "Notifikasi" */
+}
+
+.notification-badge {
+  /* Positioning */
+  position: absolute;       /* Membuatnya bisa diatur posisinya relatif terhadap induk */
+  top: 4px;                 /* Jarak dari atas */
+  right: 4px;               /* Jarak dari kanan */
+
+  /* Ukuran */
+  width: 15px;
+  height: 15px;
+
+  /* Tampilan */
+  background-color: #dc3545;  /* Warna merah cerah */
+  border-radius: 50%;       /* Membuatnya menjadi lingkaran sempurna */
+  border: 2px solid white;    /* (Sangat direkomendasikan) Memberi batas putih agar lebih 'pop' */
+
+  /* Agar tidak ada isi seperti angka atau teks */
+  display: block;
+}
   
 /* Center menu styling */
 .menu {

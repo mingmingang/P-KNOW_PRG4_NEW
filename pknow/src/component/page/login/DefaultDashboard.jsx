@@ -18,10 +18,12 @@ export default function DefaultDashboard() {
 
   useEffect(() => {
     const userCookie = Cookies.get("activeUser");
+  
 
     if (userCookie) {
       try {
         const userInfo = JSON.parse(decryptId(userCookie));
+        console.log("userInfo", userInfo)
         setCurrentUserInfo(userInfo);
 
         const storedRoles = localStorage.getItem("availableRoles");
@@ -77,9 +79,12 @@ export default function DefaultDashboard() {
   };
 
   const handleRoleSelection = async (selectedRole) => {
+     const user = Cookies.get("activeUser");
+      const userInfo = JSON.parse(decryptId(user));
+  
     try {
       const token = await UseFetch(API_LINK + "Utilities/CreateJWTToken", {
-        username: currentUserInfo.username,
+        username: userInfo.username,
         role: selectedRole.RoleID,
         nama: selectedRole.Nama,
         prodi: selectedRole.Pro_ID,
