@@ -41,13 +41,14 @@ export default function DefaultDashboard() {
           if (modalRef.current) {
             modalRef.current.open();
           }
-        } else if (roles.length === 0) {
-        } else if (roles.length === 0) {
+        }  else if (roles.length === 0) {
           handleRoleSelection(roles[0]);
         } else {
           window.location.href = "/login";
         }
-      } catch (error) {
+      }
+    }
+      catch (error) {
         console.error("Error parsing user data:", error);
         window.location.href = "/login";
       } finally {

@@ -68,7 +68,6 @@ export default function Pengenalan({ onChangePage }) {
     try {
       namaFile = namaFile.trim();
 
-      // Using UseFetch instead of axios
       const data = await UseFetch(`${API_LINK}Utilities/Upload/DownloadFile`, {
         namaFile: namaFile,
       });
@@ -77,8 +76,6 @@ export default function Pengenalan({ onChangePage }) {
         throw new Error("Gagal mengunduh file");
       }
 
-      // Create blob URL and open file
-      // Note: Adjust this based on how UseFetch handles binary data
       const blob = new Blob([data], {
         type: "application/octet-stream",
       });
@@ -223,7 +220,6 @@ export default function Pengenalan({ onChangePage }) {
       try {
         await Promise.all(uploadPromises);
 
-        // Using UseFetch instead of axios
         const data = await UseFetch(
           API_LINK + "Materi/SaveDataMateri",
           formDataRef.current

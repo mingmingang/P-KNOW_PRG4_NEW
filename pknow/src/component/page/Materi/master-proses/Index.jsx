@@ -334,7 +334,6 @@ export default function MasterProsesIndex({ onChangePage }) {
               filePromises.push(videoPromise);
             }
 
-            // Fetch PDF
             if (value.File_pdf) {
               const pdfPromise = fetch(
                 API_LINK +

@@ -280,7 +280,7 @@ export default function ProgramEdit({ onChangePage, withID }) {
                         value={
                           formData && formData.nama
                             ? decode(formData.nama)
-                            : "Nama tidak tersedia"
+                            : ""
                         }
                         onChange={handleInputChange}
                         errorMessage={errors.nama}
@@ -296,7 +296,7 @@ export default function ProgramEdit({ onChangePage, withID }) {
                         value={
                           formData && formData.deskripsi
                             ? decode(formData.deskripsi)
-                            : "Deskripsi tidak tersedia"
+                            : ""
                         }
                         onChange={handleInputChange}
                         errorMessage={errors.deskripsi}

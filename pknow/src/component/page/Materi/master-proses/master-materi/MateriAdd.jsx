@@ -49,8 +49,6 @@ export default function MastermateriAdd({ onChangePage }) {
   const previewFile = async (namaFile) => {
     try {
       namaFile = namaFile.trim();
-
-      // Using UseFetch instead of axios
       const data = await UseFetch(`${API_LINK}Upload/GetFile/${namaFile}`, {
         method: "GET",
         headers: {
@@ -62,15 +60,12 @@ export default function MastermateriAdd({ onChangePage }) {
         throw new Error("Gagal mengambil file");
       }
 
-      // Create blob URL and handle file preview/download
-      // Note: UseFetch might return different format, adjust accordingly
       const blob = new Blob([data], {
         type: "application/octet-stream",
       });
 
       const url = URL.createObjectURL(blob);
 
-      // Try to determine if it's PDF based on filename
       if (namaFile.toLowerCase().endsWith(".pdf")) {
         window.open(url, "_blank");
       } else {
@@ -224,7 +219,6 @@ export default function MastermateriAdd({ onChangePage }) {
             }
           }
 
-          // Replace axios with UseFetch
           return UseFetch(
             API_LINK + "Materi/UpdateSaveDataMateri",
             formDataRef.current

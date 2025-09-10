@@ -108,7 +108,7 @@ export default function MasterForumEdit({ onChangePage }) {
   const Materi = AppContext_master.MateriForm;
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [isBackAction, setIsBackAction] = useState(false);
-const [isFormDisabled, setIsFormDisabled] = useState(false);
+  const [isFormDisabled, setIsFormDisabled] = useState(false);
   const handleGoBack = () => {
     setIsBackAction(true);
     setShowConfirmation(true);
@@ -191,22 +191,34 @@ const [isFormDisabled, setIsFormDisabled] = useState(false);
       setIsLoading(true);
       setIsError({ error: false, message: "" });
       setErrors({});
+    } else {
+      return;
     }
 
     try {
-      const response = await axios.post(API_LINK + "Forum/EditDataForum", {
-        p1: Materi.Key,
-        p2: formData.forumJudul,
-        p3: formData.forumIsi,
-        p4: activeUser,
-      });
-      if (response.status === 200) {
+      const response = await UseFetch(
+        API_LINK + "Forum/EditDataForum",
+        {
+          p1: Materi.Key,
+          p2: formData.forumJudul,
+          p3: formData.forumIsi,
+          p4: activeUser, 
+        }
+     
+      );
+
+      if (response !== "ERROR") {
         SweetAlert("Berhasil", "Data forum berhasil diubah!", "success");
       } else {
-        throw new Error("Gagal untuk menyimpan data forum");
+        throw new Error(
+          "Gagal menyimpan data forum. Respons dari server tidak valid."
+        );
       }
     } catch (error) {
-      setIsError(true);
+      setIsError({
+        error: true,
+        message: error.message || "Terjadi kesalahan saat menyimpan data.",
+      });
       console.error("Error saving forum data:", error);
     } finally {
       setIsLoading(false);

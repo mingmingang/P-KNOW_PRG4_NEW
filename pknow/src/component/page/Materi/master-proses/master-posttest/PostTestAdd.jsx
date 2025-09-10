@@ -4,7 +4,6 @@ import { object, string } from "yup";
 import Input from "../../../../part/Input";
 import Loading from "../../../../part/Loading";
 import * as XLSX from "xlsx";
-import axios from "axios";
 import {
   validateAllInputs,
   validateInput,
@@ -20,6 +19,7 @@ import BackPage from "../../../../../assets/backPage.png";
 import CustomStepper from "../../../../part/Stepp";
 import Cookies from "js-cookie";
 import { decryptId } from "../../../../util/Encryptor";
+import UseFetch from "../../../../util/UseFetch";
 
 export default function MasterPostTestAdd({ onChangePage }) {
   let activeUser = "";
@@ -304,35 +304,31 @@ export default function MasterPostTestAdd({ onChangePage }) {
 
     if (typeof AppContext_master.dataIdSectionPostTest === "undefined") {
       try {
-        const sectionResponse = await axios.post(
+        const sectionResponse = await UseFetch(
           API_LINK + "Section/CreateSection",
           dataSection
         );
-        const sectionData = sectionResponse.data;
 
-        if (sectionData[0]?.hasil === "OK") {
-          const sectionId = sectionData[0].newID;
+        if (sectionResponse !== "ERROR" && sectionResponse[0]?.hasil === "OK") {
+          const sectionId = sectionResponse[0].newID;
           AppContext_master.dataIdSectionPostTest = sectionId;
           formData.timer = convertTimeToSeconds(timer);
           AppContext_master.dataTimerPostTest = formData.timer;
 
-          const quizResponse = await axios.post(
-            API_LINK + "Quiz/SaveDataQuiz",
-            {
-              materiId: AppContext_master.dataIDMateri,
-              sec_id: sectionId,
-              quizDeskripsi: formData.quizDeskripsi,
-              quizTipe: "Posttest",
-              tanggalAwal: "",
-              tanggalAkhir: "",
-              timer: formData.timer,
-              status: "Aktif",
-              createdby: activeUser,
-              type: "Post-Test",
-            }
-          );
+          const quizResponse = await UseFetch(API_LINK + "Quiz/SaveDataQuiz", {
+            materiId: AppContext_master.dataIDMateri,
+            sec_id: sectionId,
+            quizDeskripsi: formData.quizDeskripsi,
+            quizTipe: "Posttest",
+            tanggalAwal: "",
+            tanggalAkhir: "",
+            timer: formData.timer,
+            status: "Aktif",
+            createdby: activeUser,
+            type: "Post-Test",
+          });
 
-          if (quizResponse.data.length === 0) {
+          if (quizResponse === "ERROR" || quizResponse.length === 0) {
             Swal.fire({
               title: "Gagal!",
               text: "Data yang dimasukkan tidak valid atau kurang",
@@ -344,6 +340,7 @@ export default function MasterPostTestAdd({ onChangePage }) {
 
           const quizId = quizResponse.data[0].hasil;
           formData.sec_id = quizResponse.data[0].hasil;
+
           for (const question of formContent) {
             const formQuestion = {
               quizId: quizId,
@@ -380,11 +377,15 @@ export default function MasterPostTestAdd({ onChangePage }) {
 
             try {
               await Promise.all(uploadPromises);
-              const questionResponse = await axios.post(
+              const questionResponse = await UseFetch(
                 API_LINK + "Question/SaveDataQuestion",
                 formQuestion
               );
-              if (questionResponse.data.length === 0) {
+
+              if (
+                questionResponse === "ERROR" ||
+                questionResponse.length === 0
+              ) {
                 Swal.fire({
                   title: "Gagal!",
                   text: "Data yang dimasukkan tidak valid atau kurang",
@@ -407,13 +408,16 @@ export default function MasterPostTestAdd({ onChangePage }) {
                   quecreatedby: activeUser,
                 };
 
-                try {
-                  const answerResponse = await axios.post(
-                    API_LINK + "Choice/SaveDataChoice",
-                    answerData
+                const answerResponse = await UseFetch(
+                  API_LINK + "Choice/SaveDataChoice",
+                  answerData
+                );
+                if (answerResponse === "ERROR") {
+                  // Cukup cek error, tidak perlu try/catch
+                  console.error(
+                    "Gagal menyimpan jawaban Essay:",
+                    "Respons tidak valid"
                   );
-                } catch (error) {
-                  console.error("Gagal menyimpan jawaban Essay:", error);
                   Swal.fire({
                     title: "Gagal!",
                     text: "Data yang dimasukkan tidak valid atau kurang",
@@ -436,15 +440,15 @@ export default function MasterPostTestAdd({ onChangePage }) {
                       question.jenis === "Tunggal" ? "Tunggal" : "Jamak",
                   };
 
-                  try {
-                    const answerResponse = await axios.post(
-                      API_LINK + "Choice/SaveDataChoice",
-                      answerData
-                    );
-                  } catch (error) {
+                  const answerResponse = await UseFetch(
+                    API_LINK + "Choice/SaveDataChoice",
+                    answerData
+                  );
+                  if (answerResponse === "ERROR") {
+                    // Cukup cek error, tidak perlu try/catch
                     console.error(
                       "Gagal menyimpan jawaban multiple choice:",
-                      error
+                      "Respons tidak valid"
                     );
                     Swal.fire({
                       title: "Gagal!",
@@ -567,12 +571,12 @@ export default function MasterPostTestAdd({ onChangePage }) {
       };
 
       try {
-        const quizResponse = await axios.post(
+        const quizResponse = await UseFetch(
           API_LINK + "Quiz/UpdateDataQuiz",
           quizPayload
         );
 
-        if (!quizResponse.data.length) {
+        if (quizResponse === "ERROR" || !quizResponse.length) {
           Swal.fire({
             title: "Error!",
             text: "Gagal menyimpan quiz.",
@@ -584,10 +588,9 @@ export default function MasterPostTestAdd({ onChangePage }) {
 
         const quizId = quizPayload.quizId;
 
-        const deleteQuestion = await axios.post(
-          API_LINK + "Question/DeleteQuestionByIdQuiz",
-          { p1: quizId }
-        );
+        await UseFetch(API_LINK + "Question/DeleteQuestionByIdQuiz", {
+          p1: quizId,
+        });
 
         for (const question of formContent) {
           const formQuestion = {
@@ -625,12 +628,12 @@ export default function MasterPostTestAdd({ onChangePage }) {
 
           try {
             await Promise.all(uploadPromises);
-            const questionResponse = await axios.post(
+            const questionResponse = await UseFetch(
               API_LINK + "Question/SaveDataQuestion",
               formQuestion
             );
 
-            if (questionResponse.data.length === 0) {
+            if (questionResponse === "ERROR" || questionResponse.length === 0) {
               Swal.fire({
                 title: "Gagal!",
                 text: "Data yang dimasukkan tidak valid atau kurang",
@@ -653,13 +656,16 @@ export default function MasterPostTestAdd({ onChangePage }) {
                 quecreatedby: activeUser,
               };
 
-              try {
-                const answerResponse = await axios.post(
-                  API_LINK + "Choice/SaveDataChoice",
-                  answerData
+              const answerResponse = await UseFetch(
+                API_LINK + "Choice/SaveDataChoice",
+                answerData
+              );
+              if (answerResponse === "ERROR") {
+                // Cukup cek error, tidak perlu try/catch
+                console.error(
+                  "Gagal menyimpan jawaban Essay:",
+                  "Respons tidak valid"
                 );
-              } catch (error) {
-                console.error("Gagal menyimpan jawaban Essay:", error);
                 Swal.fire({
                   title: "Gagal!",
                   text: "Data yang dimasukkan tidak valid atau kurang",
@@ -678,15 +684,15 @@ export default function MasterPostTestAdd({ onChangePage }) {
                   cho_tipe: question.jenis === "Tunggal" ? "Tunggal" : "Jamak",
                 };
 
-                try {
-                  const answerResponse = await axios.post(
-                    API_LINK + "Choice/SaveDataChoice",
-                    answerData
-                  );
-                } catch (error) {
+                const answerResponse = await UseFetch(
+                  API_LINK + "Choice/SaveDataChoice",
+                  answerData
+                );
+                if (answerResponse === "ERROR") {
+                  // Cukup cek error, tidak perlu try/catch
                   console.error(
                     "Gagal menyimpan jawaban multiple choice:",
-                    error
+                    "Respons tidak valid"
                   );
                   Swal.fire({
                     title: "Gagal!",
@@ -949,21 +955,13 @@ export default function MasterPostTestAdd({ onChangePage }) {
     formData.append("file", file);
 
     try {
-      const response = await axios.post(
-        `${API_LINK}Upload/UploadFile`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      const response = await UseFetch(`${API_LINK}Upload/UploadFile`, formData);
 
-      if (response.status === 200 && response.data) {
-        return response.data;
-      } else {
-        throw new Error("Upload file gagal.");
+      if (response === "ERROR" || !response) {
+        throw new Error("Upload file gagal. Respons server tidak valid.");
       }
+
+      return response;
     } catch (error) {
       console.error("Error in uploadFile function:", error);
       throw error;

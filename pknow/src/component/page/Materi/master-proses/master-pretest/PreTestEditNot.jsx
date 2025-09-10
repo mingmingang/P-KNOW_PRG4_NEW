@@ -4,10 +4,9 @@ import { object, string } from "yup";
 import Input from "../../../../part/Input";
 import Loading from "../../../../part/Loading";
 import * as XLSX from "xlsx";
-import axios from "axios";
 import {
-    validateAllInputs,
-    validateInput,
+  validateAllInputs,
+  validateInput,
 } from "../../../../util/ValidateForm";
 import { API_LINK } from "../../../../util/Constants";
 import FileUpload from "../../../../part/FileUpload";
@@ -23,6 +22,7 @@ import BackPage from "../../../../../assets/backPage.png";
 import Konfirmasi from "../../../../part/Konfirmasi";
 import NoImage from "../../../../../assets/NoImage.png";
 import UploadFile from "../../../../util/UploadFile";
+import UseFetch from "../../../../util/UseFetch";
 
 const steps = [
   "Pengenalan",
@@ -36,19 +36,19 @@ const steps = [
 function getStepContent(stepIndex) {
   switch (stepIndex) {
     case 0:
-      return 'pengenalanEdit';
+      return "pengenalanEdit";
     case 1:
-      return 'materiEdit';
+      return "materiEdit";
     case 2:
-      return 'forumEdit';
-      case 3:
-      return 'sharingEdit';
+      return "forumEdit";
+    case 3:
+      return "sharingEdit";
     case 4:
-      return 'pretestEdit';
-      case 5:
-      return 'posttestEdit';
+      return "pretestEdit";
+    case 5:
+      return "posttestEdit";
     default:
-      return 'Unknown stepIndex';
+      return "Unknown stepIndex";
   }
 }
 
@@ -92,8 +92,6 @@ function CustomStepper({ activeStep, steps, onChangePage, getStepContent }) {
   );
 }
 
-
-
 export default function MasterPreTestEditNot({ onChangePage, withID }) {
   const [formContent, setFormContent] = useState([]);
   let activeUser = "";
@@ -109,7 +107,7 @@ export default function MasterPreTestEditNot({ onChangePage, withID }) {
   const [resetStepper, setResetStepper] = useState(0);
   const [isBackAction, setIsBackAction] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
-    const [isFormDisabled, setIsFormDisabled] = useState(false);
+  const [isFormDisabled, setIsFormDisabled] = useState(false);
   const Materi = AppContext_master.MateriForm;
 
   const handleGoBack = () => {
@@ -166,7 +164,6 @@ export default function MasterPreTestEditNot({ onChangePage, withID }) {
     setFormContent([...formContent, newQuestion]);
     setSelectedOptions([...selectedOptions, ""]);
   };
-
 
   const [formQuestion, setFormQuestion] = useState({
     quizId: "",
@@ -241,11 +238,14 @@ export default function MasterPreTestEditNot({ onChangePage, withID }) {
     });
   };
 
-
   const handleAddOption = (index) => {
     const updatedFormContent = [...formContent];
     if (updatedFormContent[index].type === "Pilgan") {
-      updatedFormContent[index].options.push({ label: "", value: "", point: 0 });
+      updatedFormContent[index].options.push({
+        label: "",
+        value: "",
+        point: 0,
+      });
       setFormContent(updatedFormContent);
     }
   };
@@ -285,27 +285,22 @@ export default function MasterPreTestEditNot({ onChangePage, withID }) {
     formData.append("file", file);
 
     try {
-      const response = await axios.post(
+      const responseData = await UseFetch(
         `${API_LINK}Upload/UploadFile`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
+        formData
       );
 
-      if (response.status === 200 && response.data) {
-        return response.data; // Pastikan ini berisi newFileName
-      } else {
-        throw new Error("Upload file gagal.");
+      if (responseData === "ERROR") {
+        throw new Error("Upload file gagal, respons server error.");
       }
+
+      return responseData;
     } catch (error) {
       console.error("Error in uploadFile function:", error);
+
       throw error;
     }
   };
-
 
   const handleFileChange = async (e, index) => {
     const file = e.target.files[0];
@@ -313,7 +308,7 @@ export default function MasterPreTestEditNot({ onChangePage, withID }) {
 
     const allowedExtensions = ["jpg", "jpeg", "png"];
     const fileExtension = file.name.split(".").pop().toLowerCase();
-    const maxSizeInMB = 10; 
+    const maxSizeInMB = 10;
 
     if (!allowedExtensions.includes(fileExtension)) {
       Swal.fire({
@@ -362,57 +357,60 @@ export default function MasterPreTestEditNot({ onChangePage, withID }) {
     secType: "",
   });
 
-
   const handleAdd = async (e) => {
     e.preventDefault();
 
     formData.timer = convertTimeToSeconds(timer);
 
     const validationErrors = await validateAllInputs(
-        formData,
-        userSchema,
-        setErrors
+      formData,
+      userSchema,
+      setErrors
     );
 
     if (Object.keys(validationErrors).length > 0) {
-        setErrors(validationErrors);
-        Swal.fire({
-            title: "Gagal!",
-            text: "Pastikan semua data terisi dengan benar!",
-            icon: "error",
-            confirmButtonText: "OK",
-        });
+      setErrors(validationErrors);
+      Swal.fire({
+        title: "Gagal!",
+        text: "Pastikan semua data terisi dengan benar!",
+        icon: "error",
+        confirmButtonText: "OK",
+      });
 
-        return;
+      return;
     }
 
-    // Validasi total skor
     const totalQuestionPoint = formContent.reduce((total, question) => {
-        if (question.type !== "Pilgan") {
-            total += parseInt(question.point);
-        }
-        return total;
+      if (question.type !== "Pilgan") {
+        total += parseInt(question.point);
+      }
+      return total;
     }, 0);
 
     const totalOptionPoint = formContent.reduce((total, question) => {
-        if (question.type === "Pilgan") {
-            return total + question.options.reduce(
-                (optionTotal, option) => optionTotal + parseInt(option.point || 0),
-                0
-            );
-        }
-        return total;
+      if (question.type === "Pilgan") {
+        return (
+          total +
+          question.options.reduce(
+            (optionTotal, option) => optionTotal + parseInt(option.point || 0),
+            0
+          )
+        );
+      }
+      return total;
     }, 0);
 
     if (totalQuestionPoint + totalOptionPoint !== 100) {
-        setResetStepper((prev) => !prev + 1);
-        Swal.fire({
-            title: "Gagal!",
-            text: `Total skor harus berjumlah 100. Saat ini skor berjumlah: ${totalQuestionPoint + totalOptionPoint}`,
-            icon: "error",
-            confirmButtonText: "OK",
-        });
-        return;
+      setResetStepper((prev) => !prev + 1);
+      Swal.fire({
+        title: "Gagal!",
+        text: `Total skor harus berjumlah 100. Saat ini skor berjumlah: ${
+          totalQuestionPoint + totalOptionPoint
+        }`,
+        icon: "error",
+        confirmButtonText: "OK",
+      });
+      return;
     }
 
     if (hours === "00" && minutes === "00") {
@@ -422,193 +420,139 @@ export default function MasterPreTestEditNot({ onChangePage, withID }) {
         icon: "error",
         confirmButtonText: "OK",
       });
-      return; // Pastikan return menghentikan eksekusi jika durasi invalid
+      return;
     }
 
     try {
-        // Step 1: Create Section
-        const sectionResponse = await axios.post(API_LINK + "Section/CreateSection", dataSection);
-        const sectionData = sectionResponse.data;
 
-        if (sectionData[0]?.hasil === "OK") {
-            const sectionId = sectionData[0].newID;
+      const sectionResponse = await UseFetch(
+        API_LINK + "Section/CreateSection",
+        dataSection
+      );
+      if (sectionResponse === "ERROR" || sectionResponse[0]?.hasil !== "OK") {
+        throw new Error(
+          "Terjadi kesalahan saat membuat data Section Pre-test."
+        );
+      }
+      const sectionId = sectionResponse[0].newID;
 
-            AppContext_master.dataIdSectionPretest = sectionId;
-            formData.timer = convertTimeToSeconds(timer);
+      AppContext_master.dataIdSectionPretest = sectionId; // Update context
+      const quizPayload = {
+        materiId: Materi.Key,
+        sec_id: sectionId,
+        quizDeskripsi: formData.quizDeskripsi,
+        quizTipe: "Pretest",
+        tanggalAwal: "",
+        tanggalAkhir: "",
+        timer: formData.timer,
+        status: "Aktif",
+        createdby: activeUser,
+        type: "Pre-Test",
+      };
+      const quizResponse = await UseFetch(
+        API_LINK + "Quiz/SaveDataQuiz",
+        quizPayload
+      );
+      if (quizResponse === "ERROR" || !quizResponse.length) {
+        throw new Error("Gagal menyimpan data utama quiz.");
+      }
+      const quizId = quizResponse[0].hasil;
 
-            const quizResponse = await axios.post(API_LINK + "Quiz/SaveDataQuiz", {
-                materiId: Materi.Key,
-                sec_id: sectionId, // Menggunakan nilai yang baru dibuat
-                quizDeskripsi: formData.quizDeskripsi,
-                quizTipe: "Pretest",
-                tanggalAwal: "",
-                tanggalAkhir: "",
-                timer: formData.timer,
-                status: "Aktif",
-                createdby: activeUser,
-                type: "Pre-Test",
-            });
+      for (const question of formContent) {
+        let finalImageUrl = question.gambar ?? "";
 
-            if (quizResponse.data.length === 0) {
-                Swal.fire({
-                    title: "Gagal!",
-                    text: "Data yang dimasukkan tidak valid atau kurang",
-                    icon: "error",
-                    confirmButtonText: "OK",
-                });
-                return;
-            }
-
-            const quizId = quizResponse.data[0].hasil;
-
-            // Step 3: Save Questions and Answers
-            for (const question of formContent) {
-                const formQuestion = {
-                    quizId: quizId,
-                    soal: question.text,
-                    tipeQuestion: question.type,
-                    gambar: question.gambar ?? "",
-                    status: "Aktif",
-                    quecreatedby: activeUser,
-                    point: question.point,
-                };
-
-                const uploadPromises = [];
-                if (question.type === "Essay" || question.type === "Praktikum") {
-                  if (question.selectedFile) {
-                    try {
-                      const uploadResult = await uploadFile(question.selectedFile);
-                      formQuestion.gambar = uploadResult.Hasil;
-                    } catch (uploadError) {
-                      console.error("Gagal mengunggah gambar:", uploadError);
-                      Swal.fire({
-                        title: "Gagal!",
-                        text: `Gagal mengunggah gambar untuk pertanyaan: ${question.text}`,
-                        icon: "error",
-                        confirmButtonText: "OK",
-                      });
-                      return;
-                    }
-                  } else {
-                    formQuestion.gambar = "";
-                  }
-                } else if (question.type === "Pilgan") {
-                  formQuestion.gambar= "";
-                }
-
-                try {
-                  await Promise.all(uploadPromises);
-                  const questionResponse = await axios.post(
-                    API_LINK + "Question/SaveDataQuestion",
-                    formQuestion
-                  );
-                  if (questionResponse.data.length === 0) {
-                    Swal.fire({
-                      title: "Gagal!",
-                      text: "Data yang dimasukkan tidak valid atau kurang",
-                      icon: "error",
-                      confirmButtonText: "OK",
-                    });
-                    return;
-                  }
-        
-                  const questionId = questionResponse.data[0].hasil;
-        
-                  if (question.type === "Essay" || question.type === "Praktikum") {
-                    const answerData = {
-                      urutanChoice: "",
-                      answerText: question.correctAnswer ? question.correctAnswer : "0",
-                      questionId: questionId,
-                      nilaiChoice: question.point,
-                      quecreatedby: activeUser,
-                    };
-        
-                    try {
-                      const answerResponse = await axios.post(
-                        API_LINK + "Choice/SaveDataChoice",
-                        answerData
-                      );
-                    } catch (error) {
-                      console.error("Gagal menyimpan jawaban Essay:", error);
-                      Swal.fire({
-                        title: "Gagal!",
-                        text: "Data yang dimasukkan tidak valid atau kurang",
-                        icon: "error",
-                        confirmButtonText: "OK",
-                      });
-                    }
-                  } else if (question.type === "Pilgan") {
-                    for (const [optionIndex, option] of question.options.entries()) {
-                      const answerData = {
-                        urutanChoice: optionIndex + 1,
-                        answerText: option.label,
-                        questionId: questionId,
-                        nilaiChoice: option.point || 0,
-                        quecreatedby: activeUser,
-                        cho_tipe: question.jenis === "Tunggal" ? "Tunggal" : "Jamak",
-                      };
-        
-                      try {
-                        const answerResponse = await axios.post(
-                          API_LINK + "Choice/SaveDataChoice",
-                          answerData
-                        );
-                      } catch (error) {
-                        console.error(
-                          "Gagal menyimpan jawaban multiple choice:",
-                          error
-                        );
-                        Swal.fire({
-                          title: "Gagal!",
-                          text: "Data yang dimasukkan tidak valid atau kurang",
-                          icon: "error",
-                          confirmButtonText: "OK",
-                        });
-                      }
-                    }
-                  }
-                  setResetStepper((prev) => !prev + 1);
-                } catch (error) {
-                  console.error("Gagal menyimpan pertanyaan:", error);
-                  Swal.fire({
-                    title: "Gagal!",
-                    text: "Data yang dimasukkan tidak valid atau kurang",
-                    icon: "error",
-                    confirmButtonText: "OK",
-                  });
-                }
-              }
-              Swal.fire({
-                title: "Berhasil!",
-                text: "Pretest berhasil ditambahkan",
-                icon: "success",
-                confirmButtonText: "OK",
-            }).then(() => {
-                setFormContent([]);
-                setSelectedOptions([]);
-                setErrors({});
-                setTimer("");
-                setIsButtonDisabled(true);
-                window.location.reload();
-            });
-        } else {
-            Swal.fire({
-                title: "Gagal!",
-                text: "Terjadi kesalahan saat menyimpan data Section.",
-                icon: "error",
-                confirmButtonText: "OK",
-            });
+        if (
+          (question.type === "Essay" || question.type === "Praktikum") &&
+          question.selectedFile
+        ) {
+          const uploadResult = await uploadFile(question.selectedFile); // Asumsi 'uploadFile' sudah direfaktor
+          if (uploadResult === "ERROR" || !uploadResult.Hasil) {
+            throw new Error(
+              `Gagal mengunggah file untuk pertanyaan: ${question.text}`
+            );
+          }
+          finalImageUrl = uploadResult.Hasil;
         }
+
+        const formQuestion = {
+          quizId: quizId,
+          soal: question.text,
+          tipeQuestion: question.type,
+          gambar: finalImageUrl,
+          status: "Aktif",
+          quecreatedby: activeUser,
+          point: question.point,
+        };
+
+        const questionResponse = await UseFetch(
+          API_LINK + "Question/SaveDataQuestion",
+          formQuestion
+        );
+        if (questionResponse === "ERROR" || !questionResponse.length) {
+          throw new Error(`Gagal menyimpan pertanyaan: ${question.text}`);
+        }
+        const questionId = questionResponse[0].hasil;
+
+        if (question.type === "Essay" || question.type === "Praktikum") {
+          const answerData = {
+            urutanChoice: "",
+            answerText: question.correctAnswer || "0",
+            questionId: questionId,
+            nilaiChoice: question.point,
+            quecreatedby: activeUser,
+          };
+          const answerResponse = await UseFetch(
+            API_LINK + "Choice/SaveDataChoice",
+            answerData
+          );
+          if (answerResponse === "ERROR") {
+            throw new Error(
+              "Gagal menyimpan jawaban untuk pertanyaan Essay/Praktikum."
+            );
+          }
+        } else if (question.type === "Pilgan") {
+          for (const [optionIndex, option] of question.options.entries()) {
+            const answerData = {
+              urutanChoice: optionIndex + 1,
+              answerText: option.label,
+              questionId: questionId,
+              nilaiChoice: option.point || 0,
+              quecreatedby: activeUser,
+              cho_tipe: question.jenis === "Tunggal" ? "Tunggal" : "Jamak",
+            };
+            const answerResponse = await UseFetch(
+              API_LINK + "Choice/SaveDataChoice",
+              answerData
+            );
+            if (answerResponse === "ERROR") {
+              throw new Error(`Gagal menyimpan pilihan: ${option.label}`);
+            }
+          }
+        }
+      }
+      Swal.fire({
+        title: "Berhasil!",
+        text: "Pretest berhasil ditambahkan",
+        icon: "success",
+        confirmButtonText: "OK",
+      }).then(() => {
+        setFormContent([]);
+        setSelectedOptions([]);
+        setErrors({});
+        setTimer("");
+        setIsButtonDisabled(true);
+        window.location.reload();
+      });
     } catch (error) {
-        console.error("Gagal menyimpan data:", error);
-        Swal.fire({
-            title: "Gagal!",
-            text: "Terjadi kesalahan saat menyimpan data.",
-            icon: "error",
-            confirmButtonText: "OK",
-        });
+      console.error("Gagal menyimpan data:", error);
+      Swal.fire({
+        title: "Gagal!",
+        text: "Terjadi kesalahan saat menyimpan data.",
+        icon: "error",
+        confirmButtonText: "OK",
+      });
     }
-};
+  };
 
   const handleOptionLabelChange = (e, questionIndex, optionIndex) => {
     const { value } = e.target;
@@ -620,12 +564,11 @@ export default function MasterPreTestEditNot({ onChangePage, withID }) {
     });
   };
 
-
   const handleOptionChange = (e, questionIndex, optionIndex) => {
     const { checked } = e.target;
     const updatedFormContent = [...formContent];
     const question = updatedFormContent[questionIndex];
-  
+
     // Perbarui opsi berdasarkan apakah "Tunggal" atau "Jamak"
     if (question.jenis === "Tunggal") {
       // Reset semua opsi lain jika tipe Tunggal
@@ -642,7 +585,6 @@ export default function MasterPreTestEditNot({ onChangePage, withID }) {
     }
     setFormContent(updatedFormContent);
   };
-
 
   const handleChangeQuestion = (index) => {
     const updatedFormContent = [...formContent];
@@ -743,7 +685,6 @@ export default function MasterPreTestEditNot({ onChangePage, withID }) {
 
     setFormContent((prevQuestions) => [...prevQuestions, ...questions]);
   };
-  
 
   const handleFileExcel = (event) => {
     const file = event.target.files[0];
@@ -812,15 +753,16 @@ export default function MasterPreTestEditNot({ onChangePage, withID }) {
   const handleOptionPointChange = (e, questionIndex, optionIndex) => {
     const { value } = e.target;
     const updatedFormContent = [...formContent];
-  
+
     // Update poin hanya jika opsi dipilih
     if (updatedFormContent[questionIndex].options[optionIndex].isChecked) {
-      updatedFormContent[questionIndex].options[optionIndex].point = parseInt(value, 10);
+      updatedFormContent[questionIndex].options[optionIndex].point = parseInt(
+        value,
+        10
+      );
     }
     setFormContent(updatedFormContent);
   };
-
-
 
   const handleInputChange = async (e) => {
     const { name, value } = e.target;
@@ -853,32 +795,30 @@ export default function MasterPreTestEditNot({ onChangePage, withID }) {
     setMinutes(e.target.value);
   };
 
-
-
   if (isLoading) return <Loading />;
 
   const handlePageChange = (content) => {
     onChangePage(content);
-};
+  };
 
-const validateTotalPoints = () => {
-  const totalPoints = formContent.reduce((total, question) => {
-    if (["Essay", "Praktikum"].includes(question.type)) {
-      return total + parseInt(question.point || 0, 10);
-    } else if (question.type === "Pilgan") {
-      return (
-        total +
-        question.options.reduce(
-          (optTotal, opt) => optTotal + parseInt(opt.point || 0, 10),
-          0
-        )
-      );
-    }
-    return total;
-  }, 0);
+  const validateTotalPoints = () => {
+    const totalPoints = formContent.reduce((total, question) => {
+      if (["Essay", "Praktikum"].includes(question.type)) {
+        return total + parseInt(question.point || 0, 10);
+      } else if (question.type === "Pilgan") {
+        return (
+          total +
+          question.options.reduce(
+            (optTotal, opt) => optTotal + parseInt(opt.point || 0, 10),
+            0
+          )
+        );
+      }
+      return total;
+    }, 0);
 
-  return totalPoints;
-};
+    return totalPoints;
+  };
 
   return (
     <>
@@ -951,7 +891,7 @@ const validateTotalPoints = () => {
         </div>
       </div>
       <form id="myForm" onSubmit={handleAdd}>
-      <div>
+        <div>
           <CustomStepper
             activeStep={4}
             steps={steps}
@@ -1183,40 +1123,40 @@ const validateTotalPoints = () => {
                       {(question.type === "Essay" ||
                         question.type === "Praktikum") && (
                         <div className="d-flex flex-column w-100">
-                        <FileUpload
-                                forInput={`fileInput_${index}`}
-                                formatFile=".jpg,.jpeg,.png"
-                                label={
-                                  <span className="file-upload-label">
-                                    Gambar (.jpg, .jpeg, .png)
-                                  </span>
-                                }
-                                onChange={(e) => handleFileChange(e, index)}
-                                hasExisting={formContent[index]?.img || null}
-                                style={{ fontSize: "12px" }}
-                              />
+                          <FileUpload
+                            forInput={`fileInput_${index}`}
+                            formatFile=".jpg,.jpeg,.png"
+                            label={
+                              <span className="file-upload-label">
+                                Gambar (.jpg, .jpeg, .png)
+                              </span>
+                            }
+                            onChange={(e) => handleFileChange(e, index)}
+                            hasExisting={formContent[index]?.img || null}
+                            style={{ fontSize: "12px" }}
+                          />
 
-                              {/* Tampilkan preview gambar jika ada gambar yang dipilih */}
-                              {question.previewUrl && (
-                                <div
-                                  style={{
-                                    maxWidth: "300px",
-                                    maxHeight: "300px",
-                                    overflow: "hidden",
-                                    borderRadius:"20px"
-                                  }}
-                                >
-                                  <img
-                                    src={question.previewUrl}
-                                    alt=""
-                                    style={{
-                                      width: "100%",
-                                      height: "auto",
-                                      objectFit: "contain",
-                                    }}
-                                  />
-                                </div>
-                              )}
+                          {/* Tampilkan preview gambar jika ada gambar yang dipilih */}
+                          {question.previewUrl && (
+                            <div
+                              style={{
+                                maxWidth: "300px",
+                                maxHeight: "300px",
+                                overflow: "hidden",
+                                borderRadius: "20px",
+                              }}
+                            >
+                              <img
+                                src={question.previewUrl}
+                                alt=""
+                                style={{
+                                  width: "100%",
+                                  height: "auto",
+                                  objectFit: "contain",
+                                }}
+                              />
+                            </div>
+                          )}
 
                           <div className="mt-2">
                             <Input
@@ -1263,12 +1203,18 @@ const validateTotalPoints = () => {
                               >
                                 {/* Input Radio atau Checkbox berdasarkan jenis Pilihan */}
                                 <input
-                                  type={question.jenis === "Tunggal" ? "radio" : "checkbox"}
+                                  type={
+                                    question.jenis === "Tunggal"
+                                      ? "radio"
+                                      : "checkbox"
+                                  }
                                   id={`option_${index}_${optionIndex}`}
                                   name={`option_${index}`}
                                   value={option.value}
                                   checked={!!option.isChecked}
-                                  onChange={(e) => handleOptionChange(e, index, optionIndex)}
+                                  onChange={(e) =>
+                                    handleOptionChange(e, index, optionIndex)
+                                  }
                                   style={{ marginRight: "10px" }}
                                 />
 
@@ -1291,7 +1237,7 @@ const validateTotalPoints = () => {
                                     border: "1px solid grey",
                                   }}
                                 />
-                                 <Button
+                                <Button
                                   iconName="delete"
                                   classType="btn-sm ms-2 px-2 py-1"
                                   onClick={() =>
@@ -1322,7 +1268,6 @@ const validateTotalPoints = () => {
                                 )}
 
                                 {/* Tombol Hapus Opsi */}
-                               
                               </div>
                             ))}
 
@@ -1376,33 +1321,45 @@ const validateTotalPoints = () => {
           </div>
           <div className="d-flex justify-content-between my-4 mx-1 mt-0">
             <div className="ml-4">
-            <Button
-                        classType="outline-secondary me-2 px-4 py-2"
-                        label="Sebelumnya"
-                        onClick={() => onChangePage("sharingEdit", AppContext_test.ForumForm, AppContext_master.MateriForm , AppContext_master.count += 1)}
-                      />
+              <Button
+                classType="outline-secondary me-2 px-4 py-2"
+                label="Sebelumnya"
+                onClick={() =>
+                  onChangePage(
+                    "sharingEdit",
+                    AppContext_test.ForumForm,
+                    AppContext_master.MateriForm,
+                    (AppContext_master.count += 1)
+                  )
+                }
+              />
             </div>
-            <div className="d-flex mr-4" >
-            <Button
-                            classType="primary ms-2 px-4 py-2"
-                            type="submit"
-                            label="Simpan"
-                            onClick={handleAdd}
-                        />
-                      <Button
-                        classType="primary ms-3 px-4 py-2"
-                        label="Berikutnya"
-                        onClick={() => onChangePage("posttestEdit", AppContext_master.MateriForm, AppContext_master.count += 1)}
-                      />
-                      </div>
+            <div className="d-flex mr-4">
+              <Button
+                classType="primary ms-2 px-4 py-2"
+                type="submit"
+                label="Simpan"
+                onClick={handleAdd}
+              />
+              <Button
+                classType="primary ms-3 px-4 py-2"
+                label="Berikutnya"
+                onClick={() =>
+                  onChangePage(
+                    "posttestEdit",
+                    AppContext_master.MateriForm,
+                    (AppContext_master.count += 1)
+                  )
+                }
+              />
+            </div>
           </div>
         </div>
       </form>
 
       <div className="total-score-container">
-          Total Skor: {validateTotalPoints()}
-        </div>
-
+        Total Skor: {validateTotalPoints()}
+      </div>
 
       {showConfirmation && (
         <Konfirmasi

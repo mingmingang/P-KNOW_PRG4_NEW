@@ -378,7 +378,7 @@ const handlePageChange = (content) => {
               </div>
             </div>
           </div>
-          <div className="ml-4">
+          <div className="d-flex ml-4 mb-4 justify-content-between">
             <Button
             classType="outline-secondary me-2 px-4 py-2"
             label="Sebelumnya"
@@ -395,11 +395,12 @@ const handlePageChange = (content) => {
               </div>
           
           <Button
-            classType="dark ms-3 px-4 py-2"
+            classType="dark ms-3 px-4 py-2 mr-4"
             label="Berikutnya"
             onClick={() => onChangePage("pretestEdit", AppContext_test.ForumForm, AppContext_master.MateriForm)}
           />
           </div>
+
           </div>
         </div>
         {showConfirmation && (

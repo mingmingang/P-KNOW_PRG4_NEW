@@ -51,23 +51,23 @@ export default function PengenalanBefore({ onChangePage }) {
   const previewFile = async (namaFile) => {
     try {
       namaFile = namaFile.trim();
-      const response = await axios.get(
-        `${API_LINK}Utilities/Upload/DownloadFile`,
-        {
-          params: {
-            namaFile,
-          },
-          responseType: "arraybuffer",
-        }
-      );
 
-      const blob = new Blob([response.data], {
-        type: response.headers["content-type"],
+      const data = await UseFetch(`${API_LINK}Utilities/Upload/DownloadFile`, {
+        namaFile: namaFile,
       });
+
+      if (data === "ERROR") {
+        throw new Error("Gagal mengunduh file");
+      }
+
+      const blob = new Blob([data], {
+        type: "application/octet-stream",
+      });
+
       const url = URL.createObjectURL(blob);
       window.open(url, "_blank");
     } catch (error) {
-      console.log(error);
+      console.error("Error previewing file:", error);
     }
   };
 
@@ -168,16 +168,20 @@ export default function PengenalanBefore({ onChangePage }) {
 
   const fetchDataMateriById = async (id) => {
     try {
-      const response = await axios.post(
-        API_LINK + "Materi/GetDataMateriById",
-        id
-      );
-      return response.data;
+      const data = await UseFetch(API_LINK + "Materi/GetDataMateriById", id);
+
+      if (data === "ERROR") {
+        throw new Error("Gagal mengambil data materi");
+      }
+
+      return data;
     } catch (error) {
       console.error("Terjadi kesalahan saat mengambil data materi:", error);
       throw error;
     }
   };
+
+
 
   const handleAdd = async (e) => {
     e.preventDefault();
@@ -205,60 +209,56 @@ export default function PengenalanBefore({ onChangePage }) {
 
       try {
         await Promise.all(uploadPromises);
-        axios
-          .post(API_LINK + "Materi/UpdateDataMateri", formDataRef.current)
-          .then((response) => {
-            const data = response.data;
-            if (data[0].hasil === "OK") {
-              setIsFormDisabled(false);
-              AppContext_master.formSavedMateri = false;
-              onChangePage(
-                "materiAdd",
-                (AppContext_master.MateriForm = formDataRef),
-                (AppContext_master.count += 1),
-                AppContext_master.dataIDMateri,
-                AppContext_test.ForumForm,
-                AppContext_master.dataIdSection,
-                AppContext_master.dataSectionSharing,
-                AppContext_master.dataIdSectionSharing,
-                AppContext_master.dataIdSectionPretest,
-                AppContext_master.dataIdSectionPostTest,
-                AppContext_master.dataPretest,
-                AppContext_master.dataQuizPretest,
-                AppContext_master.dataPostTest,
-                AppContext_master.dataQuizPostTest,
-                AppContext_master.dataTimerQuizPreTest,
-                AppContext_master.dataTimerPostTest
-              );
-            } else {
-              setIsError((prevError) => ({
-                ...prevError,
-                error: true,
-                message: "Terjadi kesalahan: Gagal menyimpan data Materi.",
-              }));
-            }
-          })
-          .catch((error) => {
-            console.error("Terjadi kesalahan:", error);
-            setIsError((prevError) => ({
-              ...prevError,
-              error: true,
-              message: "Terjadi kesalahan: " + error.message,
-            }));
-          })
-          .finally(() => setIsLoading(false));
+
+        const data = await UseFetch(
+          API_LINK + "Materi/SaveDataMateri",
+          formDataRef.current
+        );
+
+        if (data === "ERROR") {
+          throw new Error("Gagal menyimpan data Materi");
+        }
+
+        if (data && data.length > 0 && data[0].hasil === "OK") {
+          AppContext_master.dataIDMateri = data[0].newID;
+          setIsFormDisabled(false);
+          AppContext_master.formSavedMateri = true;
+          onChangePage(
+            "materiAdd",
+            (AppContext_master.MateriForm = formDataRef.current),
+            (AppContext_master.count += 1),
+            AppContext_master.dataIDMateri,
+            AppContext_test.ForumForm,
+            AppContext_master.dataIdSection,
+            AppContext_master.dataSectionSharing,
+            AppContext_master.dataIdSectionSharing,
+            AppContext_master.dataIdSectionPretest,
+            AppContext_master.dataIdSectionPostTest,
+            AppContext_master.dataPretest,
+            AppContext_master.dataQuizPretest,
+            AppContext_master.dataPostTest,
+            AppContext_master.dataQuizPostTest,
+            AppContext_master.dataTimerPostTest
+          );
+        } else {
+          throw new Error("Response tidak valid dari server");
+        }
       } catch (error) {
+        console.error("Terjadi kesalahan:", error);
         window.scrollTo(0, 0);
         setIsError((prevError) => ({
           ...prevError,
           error: true,
-          message: error.message,
+          message: "Terjadi kesalahan: " + error.message,
         }));
       } finally {
         setIsLoading(false);
       }
-    } else window.scrollTo(0, 0);
+    } else {
+      window.scrollTo(0, 0);
+    }
   };
+
 
   const fetchDataKategori = async (retries = 3, delay = 1000) => {
     for (let i = 0; i < retries; i++) {

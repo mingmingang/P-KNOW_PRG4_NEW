@@ -14,11 +14,9 @@ import AppContext_test from "../master-test/TestContext";
 import Search from "../../../part/Search";
 
 export default function SubKKIndex({ onChangePage }) {
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [isError, setIsError] = useState({ error: false, message: "" });
   const [listKK, setListKK] = useState([]);
-
-  console.log("tesss", AppContext_test.activeUser);
 
   const getKKAndPrograms = async (retries = 3, delay = 1000) => {
     for (let i = 0; i < retries; i++) {
@@ -124,30 +122,25 @@ export default function SubKKIndex({ onChangePage }) {
     }
   };
 
-  const isDataReadyTemp = "";
-  const materiIdTemp = "";
-  const isOpenTemp = true;
-
   useEffect(() => {
     let isMounted = true;
 
     const fetchData = async () => {
-      setIsError(false);
-      setIsLoading(true);
       try {
-        const data = await getKKAndPrograms(); // Call the updated function
+        const data = await getKKAndPrograms();
         if (isMounted) {
-          setListKK(data); // Update listKK state
+          // Tidak perlu set listKK lagi jika getKKAndPrograms sudah melakukannya
+          // setListKK(data);
         }
       } catch (error) {
         if (isMounted) {
-          setIsError(true);
+          setIsError({
+            error: true,
+            message: error.message || "Gagal memuat data. Silakan coba lagi.",
+          });
+          setIsLoading(false); 
         }
         console.error("Fetch error:", error);
-      } finally {
-        if (isMounted) {
-          setIsLoading(false);
-        }
       }
     };
 
@@ -166,8 +159,13 @@ export default function SubKKIndex({ onChangePage }) {
         showInput={false}
       />
       {isError.error && <Alert type="danger" message={isError.message} />}
+      
       <div className="d-flex flex-column">
-        {listKK.length === 0 ? (
+        {isLoading ? (
+          <div className="my-5">
+            <Loading />
+          </div>
+        ) : listKK.length === 0 ? (
           <div className="mx-5 my-5">
             <Alert
               type="warning"

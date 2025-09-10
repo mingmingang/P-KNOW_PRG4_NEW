@@ -4,7 +4,6 @@ import { object, string } from "yup";
 import Input from "../../../../part/Input";
 import Loading from "../../../../part/Loading";
 import * as XLSX from "xlsx";
-import axios from "axios";
 import {
   validateAllInputs,
   validateInput,
@@ -24,6 +23,7 @@ import BackPage from "../../../../../assets/backPage.png";
 import Konfirmasi from "../../../../part/Konfirmasi";
 import "../../../../../index.css";
 import { decode } from "he";
+import UseFetch from "../../../../util/UseFetch";
 
 const steps = [
   "Pengenalan",
@@ -107,7 +107,7 @@ export default function MasterPreTestEdit({ onChangePage, withID }) {
   let activeUser = "";
   const cookie = Cookies.get("activeUser");
   if (cookie) activeUser = JSON.parse(decryptId(cookie)).username;
-  
+
   const [formData, setFormData] = useState({
     quizId: "",
     materiId: "",
@@ -192,8 +192,7 @@ export default function MasterPreTestEdit({ onChangePage, withID }) {
 
   const hasTest = Materi.Pretest !== null && Materi.Pretest !== "";
 
-  useEffect(() => {
-  }, [Materi, hasTest]);
+  useEffect(() => {}, [Materi, hasTest]);
 
   const handleJenisTypeChange = (e, questionIndex) => {
     const { value } = e.target; // Ambil jenis baru (Tunggal/Jamak)
@@ -246,12 +245,12 @@ export default function MasterPreTestEdit({ onChangePage, withID }) {
     });
   };
 
-
-
   async function fetchSectionAndQuizData() {
     setIsLoading(true);
+    setIsError({ error: false, message: "" });
+
     try {
-      const sectionResponse = await axios.post(
+      const sectionResponse = await UseFetch(
         API_LINK + "Section/GetDataSectionByMateri",
         {
           p1: Materi.Key,
@@ -259,27 +258,26 @@ export default function MasterPreTestEdit({ onChangePage, withID }) {
           p3: "Aktif",
         }
       );
-      const sectionData = sectionResponse.data;
 
-      if (sectionData.length === 0) {
+      if (sectionResponse === "ERROR" || sectionResponse.length === 0) {
         throw new Error("Section data not found.");
       }
 
-      const sectionId = sectionData[0].SectionId;
-      // Fetch quiz data using sectionId
-      const quizResponse = await axios.post(
+      const sectionId = sectionResponse[0].SectionId;
+
+      const quizResponse = await UseFetch(
         API_LINK + "Quiz/GetDataQuizByIdSection",
         {
           secId: sectionId,
         }
       );
-      const quizData = quizResponse.data;
 
-      if (quizData.length === 0) {
+      if (quizResponse === "ERROR" || quizResponse.length === 0) {
         throw new Error("Quiz data not found.");
       }
 
-      // Process quiz data
+      const quizData = quizResponse;
+
       const convertedData = {
         ...quizData[0],
         tanggalAwal: quizData[0]?.tanggalAwal
@@ -293,31 +291,30 @@ export default function MasterPreTestEdit({ onChangePage, withID }) {
       setTimer(
         quizData[0]?.timer ? convertSecondsToTimeFormat(quizData[0].timer) : ""
       );
-      
+
       setFormData(convertedData);
     } catch (error) {
       console.error("Error:", error.message);
-      setIsError((prevError) => ({
-        ...prevError,
+      setIsError({
         error: true,
         message: error.message,
-      }));
+      });
     } finally {
       setIsLoading(false);
     }
   }
 
-  // Call the combined function when the component mounts
   useEffect(() => {
     fetchSectionAndQuizData();
   }, []);
 
   const getDataQuestion = async () => {
     setIsLoading(true);
+    setIsError({ error: false, message: "" });
 
     try {
       while (true) {
-        const { data } = await axios.post(API_LINK + "Quiz/GetDataQuestion", {
+        const data = await UseFetch(API_LINK + "Quiz/GetDataQuestion", {
           quiId: formData.quizId,
         });
 
@@ -330,7 +327,6 @@ export default function MasterPreTestEdit({ onChangePage, withID }) {
           const filePromises = [];
 
           data.forEach((question) => {
-            // Jika pertanyaan sudah ada di formattedQuestions, tambahkan opsi baru
             if (question.Key in formattedQuestions) {
               if (question.TipeSoal === "Pilgan") {
                 formattedQuestions[question.Key].options.push({
@@ -343,12 +339,11 @@ export default function MasterPreTestEdit({ onChangePage, withID }) {
                 });
               }
             } else {
-              // Tambahkan pertanyaan baru
               formattedQuestions[question.Key] = {
                 type: question.TipeSoal,
                 text: decode(question.Soal),
                 options: question.TipeSoal === "Pilgan" ? [] : [],
-                jenis: question.TipePilihan, // Tambahkan properti jenis
+                jenis: question.TipePilihan,
                 gambar: question.Gambar || "",
                 img: question.Gambar || "",
                 point: question.NilaiJawaban,
@@ -369,36 +364,29 @@ export default function MasterPreTestEdit({ onChangePage, withID }) {
                   isChecked: !!question.NilaiJawabanOpsi,
                 });
               }
-            }
 
-            // Jika ada gambar, fetch gambar
-            if (question.Gambar) {
-              const gambarPromise = fetch(
-                `${API_LINK}Utilities/DownloadFile?namaFile=${encodeURIComponent(
-                  question.Gambar
-                )}`
-              )
-                .then((response) => {
-                  if (!response.ok) {
-                    throw new Error(
-                      `Error fetching gambar: ${response.status} ${response.statusText}`
-                    );
-                  }
-                  return response.blob();
-                })
-                .then((blob) => {
-                  const url = URL.createObjectURL(blob);
-                  formattedQuestions[question.Key].gambar = url;
-                })
-                .catch((error) => {
-                  console.error("Error fetching gambar:", error.message);
-                });
+              if (question.Gambar) {
+                const gambarPromise = UseFetch(
+                  `${API_LINK}Utilities/DownloadFile`,
+                  { namaFile: question.Gambar },
+                  "GET",
+                  "blob"
+                )
+                  .then((response) => {
+                    if (response !== "ERROR" && response.blob) {
+                      const url = URL.createObjectURL(response.blob);
+                      formattedQuestions[question.Key].gambar = url;
+                    }
+                  })
+                  .catch((error) => {
+                    console.error("Error fetching gambar:", error.message);
+                  });
 
-              filePromises.push(gambarPromise);
+                filePromises.push(gambarPromise);
+              }
             }
           });
 
-          // Tambahkan setelah forEach selesai memproses data pertanyaan
           Object.keys(formattedQuestions).forEach((key) => {
             if (formattedQuestions[key].options.length > 0) {
               formattedQuestions[key].options.sort(
@@ -408,6 +396,7 @@ export default function MasterPreTestEdit({ onChangePage, withID }) {
           });
 
           await Promise.all(filePromises);
+
           const formattedQuestionsArray = Object.values(formattedQuestions);
           setFormContent(formattedQuestionsArray);
           setIsLoading(false);
@@ -417,11 +406,10 @@ export default function MasterPreTestEdit({ onChangePage, withID }) {
     } catch (e) {
       setIsLoading(false);
       console.log(e.message);
-      setIsError((prevError) => ({
-        ...prevError,
+      setIsError({
         error: true,
         message: e.message,
-      }));
+      });
     }
   };
 
@@ -435,7 +423,6 @@ export default function MasterPreTestEdit({ onChangePage, withID }) {
   const handlePointChange = (e, index) => {
     const { value } = e.target;
 
-    // Update point pada formContent
     const updatedFormContent = [...formContent];
     updatedFormContent[index].point = value;
     setFormContent(updatedFormContent);
@@ -487,8 +474,6 @@ export default function MasterPreTestEdit({ onChangePage, withID }) {
     setFormContent(updatedFormContent);
   };
 
-
-
   const handleFileExcel = (event) => {
     const file = event.target.files[0];
 
@@ -523,32 +508,32 @@ export default function MasterPreTestEdit({ onChangePage, withID }) {
     setSelectedOptions([...selectedOptions, ""]);
   };
 
-  // Baru untuk handleQuestionTypeChange
   const handleQuestionTypeChange = async (e, index) => {
-    const newType = e.target.value; // Tipe baru
-    const questionId = formContent[index].key; // ID soal
+    const newType = e.target.value;
+    const questionId = formContent[index].key;
 
-    // Perbarui tipe soal di state frontend
     const updatedFormContent = [...formContent];
     updatedFormContent[index].type = newType;
 
     if (newType === "Pilgan") {
-      // Set default jenis ke Tunggal jika tipe diubah ke Pilgan
       updatedFormContent[index].jenis = "Tunggal";
-      updatedFormContent[index].options = []; // Reset opsi
+      updatedFormContent[index].options = [];
     }
 
     setFormContent(updatedFormContent);
 
     try {
-      // Kirim request untuk memanggil stored procedure
-      const response = await axios.post(API_LINK + "Question/SetTypeQuestion", {
-        p1: questionId, // ID soal
-        p2: newType, // Tipe baru
+      const response = await UseFetch(API_LINK + "Question/SetTypeQuestion", {
+        p1: questionId,
+        p2: newType,
       });
+
+      if (response === "ERROR") {
+        throw new Error("Respons dari server tidak valid.");
+      }
     } catch (error) {
       console.error("Gagal memperbarui tipe soal:", error.message);
-      Swal.fire("Error", "Gagal memperbarui tipe soal.", "error");
+      Swal.fire("Error", "Gagal memperbarui tipe soal di server.", "error");
     }
   };
 
@@ -561,13 +546,12 @@ export default function MasterPreTestEdit({ onChangePage, withID }) {
       label: "",
       value: "",
       point: 0,
-      isChecked: false, // Default to unchecked
+      isChecked: false,
     };
 
     question.options.push(newOption);
     setFormContent(updatedFormContent);
   };
-
 
   const handleOptionLabelChange = (e, questionIndex, optionIndex) => {
     const { value } = e.target;
@@ -601,7 +585,6 @@ export default function MasterPreTestEdit({ onChangePage, withID }) {
     }
     setFormContent(updatedFormContent);
   };
-
 
   const handleDuplicateQuestion = (index) => {
     const questionToDuplicate = { ...formContent[index] };
@@ -642,7 +625,7 @@ export default function MasterPreTestEdit({ onChangePage, withID }) {
 
   const handleDeleteQuestion = (index) => {
     const question = formContent[index];
-    const questionId = question.key; // Pastikan key adalah question ID
+    const questionId = question.key;
 
     Swal.fire({
       title: "Apakah Anda yakin?",
@@ -654,25 +637,35 @@ export default function MasterPreTestEdit({ onChangePage, withID }) {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          // Jika pertanyaan adalah Pilihan Ganda, hapus semua opsi terkait terlebih dahulu
-          if (question.type === "Pilgan") {
-            for (const choice of question.options) {
-              if (choice.id) {
-                await deleteChoiceAPI(choice.id);
-              }
+          if (question.type === "Pilgan" && question.options) {
+            // Buat array of promises untuk menghapus semua opsi secara paralel
+            const deleteChoicePromises = question.options
+              .filter((choice) => choice.id) // Hanya hapus opsi yang sudah ada di DB
+              .map((choice) =>
+                UseFetch(API_LINK + "Choice/DeleteChoice", { p1: choice.id })
+              );
+
+            const results = await Promise.all(deleteChoicePromises);
+
+            if (results.some((res) => res === "ERROR")) {
+              throw new Error("Gagal menghapus salah satu opsi pertanyaan.");
             }
           }
 
-          // Panggil API untuk menghapus pertanyaan
-          const response = await axios.post(
+          const responseData = await UseFetch(
             API_LINK + "Question/DeleteQuestion",
             {
               p1: questionId,
             }
           );
 
-          // Periksa apakah penghapusan berhasil
-          if (response.data === null) {
+          if (responseData === "ERROR") {
+            throw new Error(
+              "Terjadi kesalahan pada server saat menghapus pertanyaan."
+            );
+          }
+
+          if (responseData === null) {
             Swal.fire({
               title: "Gagal Dihapus!",
               text: "Pertanyaan tidak dapat dihapus karena telah dijawab pada pengerjaan Pre-Test.",
@@ -682,9 +675,7 @@ export default function MasterPreTestEdit({ onChangePage, withID }) {
             return;
           }
 
-          // Jika berhasil, lanjutkan penghapusan dari state lokal
-          const updatedFormContent = [...formContent];
-          updatedFormContent.splice(index, 1);
+          const updatedFormContent = formContent.filter((_, i) => i !== index);
           setFormContent(updatedFormContent);
 
           Swal.fire(
@@ -696,7 +687,8 @@ export default function MasterPreTestEdit({ onChangePage, withID }) {
           console.error("Gagal menghapus pertanyaan:", error.message);
           Swal.fire({
             title: "Gagal!",
-            text: "Terjadi kesalahan saat menghapus pertanyaan.",
+            text:
+              error.message || "Terjadi kesalahan saat menghapus pertanyaan.",
             icon: "error",
             confirmButtonText: "OK",
           });
@@ -707,18 +699,29 @@ export default function MasterPreTestEdit({ onChangePage, withID }) {
 
   const deleteChoiceAPI = async (choiceId) => {
     try {
-      const response = await axios.post(API_LINK + "Choice/DeleteChoice", {
+      const response = await UseFetch(API_LINK + "Choice/DeleteChoice", {
         p1: choiceId,
       });
+
+      if (response === "ERROR") {
+        console.error(
+          `Gagal menghapus pilihan dengan ID: ${choiceId} dari server.`
+        );
+      }
+
+      return response;
     } catch (error) {
-      console.error("Error deleting choice:", error);
+      console.error(
+        "Terjadi error tak terduga saat memanggil deleteChoiceAPI:",
+        error
+      );
+      return "ERROR";
     }
   };
 
   const parseExcelData = (data) => {
     const questions = data
       .map((row, index) => {
-        // Skip header row (index 0) and the row di bawahnya (index 1)
         if (index < 2) return null;
 
         const options = row[3] ? row[3].split(",") : []; // Pilihan Jawaban
@@ -759,27 +762,21 @@ export default function MasterPreTestEdit({ onChangePage, withID }) {
     setFormContent((prevQuestions) => [...prevQuestions, ...questions]);
   };
 
-
   const uploadFile = async (file) => {
     const formData = new FormData();
     formData.append("file", file);
 
     try {
-      const response = await axios.post(
+      const responseData = await UseFetch(
         `${API_LINK}Upload/UploadFile`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
+        formData
       );
 
-      if (response.status === 200 && response.data) {
-        return response.data; // Pastikan ini berisi `newFileName`
-      } else {
+      if (responseData === "ERROR") {
         throw new Error("Upload file gagal.");
       }
+
+      return responseData;
     } catch (error) {
       console.error("Error in uploadFile function:", error);
       throw error;
@@ -826,7 +823,6 @@ export default function MasterPreTestEdit({ onChangePage, withID }) {
       const updatedFormContent = [...formContent];
       updatedFormContent[index] = {
         ...updatedFormContent[index],
-        // selectedFile: file, // Simpan file baru
         gambar: fileName, // Nama file baru dari server
         previewUrl: URL.createObjectURL(file), // URL untuk preview
       };
@@ -836,7 +832,6 @@ export default function MasterPreTestEdit({ onChangePage, withID }) {
       console.error("Error uploading file:", error);
     }
   };
-
 
   const [isSaving, setIsSaving] = useState(false);
 
@@ -858,7 +853,6 @@ export default function MasterPreTestEdit({ onChangePage, withID }) {
 
     return totalPoints;
   };
-
 
   const handleUploadFile = () => {
     if (selectedFile) {
@@ -903,39 +897,9 @@ export default function MasterPreTestEdit({ onChangePage, withID }) {
           icon: "error",
           confirmButtonText: "OK",
         });
-        return; 
-      }
-
-      // **1. Update Data Quiz**
-      const quizPayload = {
-        quizId: formData.quizId,
-        materiId: formData.materiId,
-        quizJudul: formData.quizJudul,
-        quizDeskripsi: formData.quizDeskripsi,
-        quizTipe: formData.quizTipe,
-        tanggalAwal: formData.tanggalAwal,
-        tanggalAkhir: formData.tanggalAkhir,
-        timer: formData.timer, // Pastikan timer dalam format detik
-        status: "Aktif",
-        modifby: activeUser,
-      };
-
-      const quizResponse = await axios.post(
-        API_LINK + "Quiz/UpdateDataQuiz",
-        quizPayload
-      );
-
-      if (!quizResponse.data.length) {
-        Swal.fire({
-          title: "Error!",
-          text: "Gagal menyimpan quiz.",
-          icon: "error",
-          confirmButtonText: "OK",
-        });
-        setIsSaving(false);
         return;
       }
-      // Validasi total poin
+
       const totalPoints = validateTotalPoints();
       if (totalPoints !== 100) {
         Swal.fire({
@@ -944,109 +908,117 @@ export default function MasterPreTestEdit({ onChangePage, withID }) {
           icon: "error",
           confirmButtonText: "OK",
         });
-        setIsSaving(false);
         return;
       }
 
-      // **1. Hapus pilihan lama yang ada di deletedChoices**
-      for (const choiceId of deletedChoices) {
-        try {
-          await deleteChoiceAPI(choiceId);
-        } catch (error) {
-          console.error(
-            `Gagal menghapus pilihan dengan ID ${choiceId}:`,
-            error
-          );
-        }
+      const quizPayload = {
+        quizId: formData.quizId,
+        materiId: formData.materiId,
+        quizJudul: formData.quizJudul,
+        quizDeskripsi: formData.quizDeskripsi,
+        quizTipe: formData.quizTipe,
+        tanggalAwal: formData.tanggalAwal,
+        tanggalAkhir: formData.tanggalAkhir,
+        timer: formData.timer,
+        status: "Aktif",
+        modifby: activeUser,
+      };
+
+      const quizResponse = await UseFetch(
+        API_LINK + "Quiz/UpdateDataQuiz",
+        quizPayload
+      );
+
+      // Menangani error dari UseFetch
+      if (quizResponse === "ERROR" || !quizResponse.length) {
+        throw new Error("Gagal menyimpan data utama quiz.");
       }
 
-      // **2. Simpan pertanyaan dan pilihan baru**
-      for (const question of formContent) {
-        let payload;
-
-        const isBlobUrl = question.gambar?.startsWith("blob:") || false;
-        const finalGambar = isBlobUrl ? question.img : question.gambar;
-        if (!question.key) {
-          // Parameter untuk CREATE
-          payload = {
-            p1: formData.quizId, // ID Quiz
-            p2: question.text, // Soal
-            p3: question.type, // Tipe Soal
-            p4: finalGambar || "",
-            p5: "Aktif", // Status
-            p6: activeUser, // Created By
-            p7: question.point || 0, // Poin
-          };
-          // Panggil API Create
-          const response = await axios.post(
-            API_LINK + "Question/SaveDataQuestion",
-            payload
+      // **2. Hapus pilihan lama yang ada di deletedChoices**
+      for (const choiceId of deletedChoices) {
+        const deleteResult = await deleteChoiceAPI(choiceId);
+        if (deleteResult === "ERROR") {
+          // Jika gagal, log error dan lanjutkan atau hentikan proses
+          console.warn(
+            `Gagal menghapus pilihan dengan ID ${choiceId}, proses akan dilanjutkan.`
           );
-          const newQuestionId = response.data?.[0]?.hasil;
-
-          if (!newQuestionId) throw new Error("Failed to save question.");
-          question.key = newQuestionId; // Simpan ID setelah create
-        } else {
-          // Parameter untuk UPDATE
-          payload = {
-            p1: question.key, // ID Question (que_id)
-            p2: formData.quizId, // ID Quiz
-            p3: question.text, // Soal
-            p4: question.type, // Tipe Soal
-            p5: finalGambar || "", // Gambar
-            p6: "Aktif", // Status
-            p7: activeUser, // Modified By
-            p8: question.point || 0, // Poin
-          };
-          // Panggil API Update
-          await axios.post(API_LINK + "Question/UpdateDataQuestion", payload);
+          // throw new Error(`Gagal menghapus pilihan lama dengan ID: ${choiceId}`);
         }
+      }
+     // **3. Simpan atau Update pertanyaan dan pilihan baru**
+    for (const question of formContent) {
+      const isBlobUrl = question.gambar?.startsWith("blob:") || false;
+      const finalGambar = isBlobUrl ? question.img : question.gambar;
+      let questionId = question.key;
 
-        // Tangani opsi untuk Pilihan Ganda
-        if (question.type === "Pilgan") {
-          for (const [optionIndex, option] of question.options.entries()) {
-            let optionPayload;
+      if (!questionId) {
+        // --- CREATE Question ---
+        const createQuestionPayload = {
+          p1: formData.quizId, p2: question.text, p3: question.type,
+          p4: finalGambar || "", p5: "Aktif", p6: activeUser,
+          p7: question.point || 0,
+        };
+        const createQuestionResponse = await UseFetch(
+          API_LINK + "Question/SaveDataQuestion",
+          createQuestionPayload
+        );
+        if (createQuestionResponse === "ERROR") throw new Error("Gagal menyimpan pertanyaan baru.");
+        
+        questionId = createQuestionResponse?.[0]?.hasil;
+        if (!questionId) throw new Error("Gagal mendapatkan ID untuk pertanyaan baru.");
 
-            if (!option.id) {
-              // Parameter untuk CREATE opsi
-              optionPayload = {
-                p1: optionIndex + 1, // Urutan
-                p2: option.label, // Isi Opsi
-                p3: question.key, // ID Question
-                p4: option.point || 0, // Nilai
-                p5: activeUser, // Created By
-                p6: question.jenis === "Tunggal" ? "Tunggal" : "Jamak", // Jenis Opsi
-              };
-              // Panggil API Create Opsi
-              const optionResponse = await axios.post(
-                API_LINK + "Choice/SaveDataChoice",
-                optionPayload
-              );
-              option.id = optionResponse.data?.[0]?.hasil;
-            } else {
-              // Parameter untuk UPDATE opsi
-              optionPayload = {
-                cho_id: option.id, // ID Opsi
-                questionId: question.key, // ID Question
-                urutanChoice: optionIndex + 1, // Urutan
-                cho_isi: option.label, // Isi Opsi
-                cho_nilai: option.point || 0, // Nilai
-                quemodifby: activeUser, // Modified By
-                cho_tipe: question.jenis === "Tunggal" ? "Tunggal" : "Jamak", // Jenis Opsi
-              };
+      } else {
+        // --- UPDATE Question ---
+        const updateQuestionPayload = {
+          p1: question.key, p2: formData.quizId, p3: question.text,
+          p4: question.type, p5: finalGambar || "", p6: "Aktif",
+          p7: activeUser, p8: question.point || 0,
+        };
+        const updateQuestionResponse = await UseFetch(
+          API_LINK + "Question/UpdateDataQuestion",
+          updateQuestionPayload
+        );
+        if (updateQuestionResponse === "ERROR") throw new Error(`Gagal memperbarui pertanyaan: ${question.text}`);
+      }
 
-              // Panggil API Update Opsi
-              await axios.post(
-                API_LINK + "Choice/UpdateDataChoice",
-                optionPayload
-              );
-            }
+      // --- Tangani Opsi untuk Pilihan Ganda ---
+      if (question.type === "Pilgan") {
+        for (const [optionIndex, option] of question.options.entries()) {
+          if (!option.id) {
+            // --- CREATE Choice ---
+            const createChoicePayload = {
+              p1: optionIndex + 1, p2: option.label, p3: questionId,
+              p4: option.point || 0, p5: activeUser,
+              p6: question.jenis === "Tunggal" ? "Tunggal" : "Jamak",
+            };
+            const createChoiceResponse = await UseFetch(
+              API_LINK + "Choice/SaveDataChoice",
+              createChoicePayload
+            );
+            if (createChoiceResponse === "ERROR") throw new Error(`Gagal menyimpan pilihan baru: ${option.label}`);
+            
+            const newOptionId = createChoiceResponse?.[0]?.hasil;
+            if (!newOptionId) throw new Error("Gagal mendapatkan ID untuk pilihan baru.");
+
+          } else {
+            // --- UPDATE Choice ---
+            const updateChoicePayload = {
+              cho_id: option.id, questionId: questionId, urutanChoice: optionIndex + 1,
+              cho_isi: option.label, cho_nilai: option.point || 0,
+              quemodifby: activeUser, cho_tipe: question.jenis === "Tunggal" ? "Tunggal" : "Jamak",
+            };
+            const updateChoiceResponse = await UseFetch(
+              API_LINK + "Choice/UpdateDataChoice",
+              updateChoicePayload
+            );
+            if (updateChoiceResponse === "ERROR") throw new Error(`Gagal memperbarui pilihan: ${option.label}`);
           }
         }
       }
+    }
 
-      // Reset deletedChoices setelah berhasil disimpan
-      setDeletedChoices([]);
+    // Reset deletedChoices setelah semua proses berhasil
+    setDeletedChoices([]);
 
       Swal.fire({
         title: "Berhasil!",
@@ -1148,7 +1120,7 @@ export default function MasterPreTestEdit({ onChangePage, withID }) {
     setIsBackAction(true);
     setShowConfirmation(true);
   };
- 
+
   return (
     <>
       <style>
@@ -1553,7 +1525,11 @@ export default function MasterPreTestEdit({ onChangePage, withID }) {
                                     onClick={() =>
                                       handleDeleteOption(index, optionIndex)
                                     }
-                                    style={{ marginRight: "10px", backgroundColor:"red", color:"white" }}
+                                    style={{
+                                      marginRight: "10px",
+                                      backgroundColor: "red",
+                                      color: "white",
+                                    }}
                                   />
 
                                   {/* Input Nilai untuk Pilihan */}
@@ -1585,8 +1561,6 @@ export default function MasterPreTestEdit({ onChangePage, withID }) {
                             </div>
                           </>
                         )}
-
-
 
                         <div className="d-flex justify-content-between my-2 mx-1">
                           <div></div>
@@ -1664,8 +1638,8 @@ export default function MasterPreTestEdit({ onChangePage, withID }) {
                   ) : null}
                 </div>
                 <div className="total-score-container">
-          Total Skor: {validateTotalPoints()}
-        </div>
+                  Total Skor: {validateTotalPoints()}
+                </div>
               </div>
             ) : (
               <>
@@ -1682,7 +1656,8 @@ export default function MasterPreTestEdit({ onChangePage, withID }) {
                           onClick={() =>
                             onChangePage(
                               "pretestEditNot",
-                              AppContext_master.MateriForm = AppContext_master.DetailMateriEdit
+                              (AppContext_master.MateriForm =
+                                AppContext_master.DetailMateriEdit)
                             )
                           }
                           className="text-primary"
@@ -1702,7 +1677,8 @@ export default function MasterPreTestEdit({ onChangePage, withID }) {
                         onChangePage(
                           "sharingEdit",
                           AppContext_test.ForumForm,
-                          AppContext_master.MateriForm = AppContext_master.DetailMateriEdit,
+                          (AppContext_master.MateriForm =
+                            AppContext_master.DetailMateriEdit),
                           (AppContext_master.count += 1)
                         )
                       }
@@ -1715,7 +1691,8 @@ export default function MasterPreTestEdit({ onChangePage, withID }) {
                       onClick={() =>
                         onChangePage(
                           "posttestEdit",
-                          AppContext_master.MateriForm = AppContext_master.DetailMateriEdit,
+                          (AppContext_master.MateriForm =
+                            AppContext_master.DetailMateriEdit),
                           (AppContext_master.count += 1)
                         )
                       }
@@ -1726,7 +1703,6 @@ export default function MasterPreTestEdit({ onChangePage, withID }) {
             )}
           </div>
         </div>
-       
 
         {showConfirmation && (
           <Konfirmasi

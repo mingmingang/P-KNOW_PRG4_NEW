@@ -137,7 +137,7 @@ export default function ProgramEdit({ onChangePage, withID }) {
       ) : (
         <>
           <div className="program-edit-container">
-            <div className="back-and-title edit-kat">
+            <div className="container d-flex">
               <button className="back-button" onClick={handleGoBack}>
                 <img src={BackPage} alt="" />
               </button>
@@ -147,7 +147,7 @@ export default function ProgramEdit({ onChangePage, withID }) {
             </div>
           </div>
           <form onSubmit={handleAdd} className="edit-form kategori">
-            <div className="card edit-card">
+            <div className="container card edit-card">
               <div className="card-body">
                 <div className="row">
                   <div className="col-lg-12">
@@ -156,11 +156,11 @@ export default function ProgramEdit({ onChangePage, withID }) {
                       forInput="nama"
                       label="Nama Kategori"
                       isRequired
-                      placeholder="Nama Mata Kuliah"
+                      placeholder="Nama Kategori"
                       value={
                         formData && decode(formData.nama)
                           ? decode(formData.nama)
-                          : "Nama tidak tersedia"
+                          : ""
                       }
                       onChange={handleInputChange}
                       errorMessage={errors.nama}
@@ -178,7 +178,7 @@ export default function ProgramEdit({ onChangePage, withID }) {
                   value={
                     formData && decode(formData.deskripsi)
                       ? decode(formData.deskripsi)
-                      : "Deskripsi tidak tersedia"
+                      : ""
                   }
                   onChange={handleInputChange}
                   errorMessage={errors.deskripsi}

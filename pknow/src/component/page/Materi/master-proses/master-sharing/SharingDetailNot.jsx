@@ -38,22 +38,35 @@ export default function MasterSharingDetailNot({ onChangePage }) {
   const [isLoading, setIsLoading] = useState(false);
 
   
-  const previewFile = async (namaFile) => {
-    try {
-      namaFile = namaFile.trim();
-      const response = await axios.get(`${API_LINK}Utilities/Upload/DownloadFile`, {
-        params: {
-          namaFile 
-        },
-        responseType: 'arraybuffer' 
-      }); 
+const previewFile = async (namaFile) => {
+  try {
+    const trimmedNamaFile = namaFile.trim();
+    const response = await UseFetch(
+      `${API_LINK}Utilities/Upload/DownloadFile`,
+      { namaFile: trimmedNamaFile }, 
+      "GET",
+      "blob" 
+    );
 
-      const blob = new Blob([response.data], { type: response.headers['content-type'] });
-      const url = URL.createObjectURL(blob);
-      window.open(url, '_blank');
-    } catch (error) {
+    if (response === "ERROR" || !response.blob) {
+      throw new Error("Gagal mengunduh file.");
     }
-  };
+
+    const fileBlob = response.blob;
+    const fileType = response.contentType;
+
+    const url = URL.createObjectURL(fileBlob);
+    window.open(url, '_blank');
+    
+    setTimeout(() => URL.revokeObjectURL(url), 100); 
+
+  } catch (error) {
+    console.error("Error previewing file:", error);
+     SweetAlert("Error", "Gagal menampilkan file.", "error");
+  }
+};
+
+
   const fileInputRef = useRef(null);
   const vidioInputRef = useRef(null);
 
