@@ -17,7 +17,6 @@ function CardPustaka({
   onDelete,
   onEdit = () => {},
   onDetail = () => {},
-  MAX_DESCRIPTION_LENGTH = 100,
   pustakaSaya,
 }) {
   let activeUser = "";
@@ -401,14 +400,11 @@ function CardPustaka({
                                     style={{
                                       fontSize: "14px",
                                       margin: "15px 20px 0 0",
-                                      display: "-webkit-box",
-                                      WebkitLineClamp: 3, // Jumlah baris maksimal
-                                      WebkitBoxOrient: "vertical",
-                                      overflow: "hidden",
-                                      textOverflow: "ellipsis",
                                     }}
                                   >
-                                    {decode(book.Keterangan)}
+                                    {decode(book.Keterangan).length > 150
+                                        ? decode(book.Keterangan).substring(0, 150) + "..."
+                                        : decode(book.Keterangan)}
                                   </p>
                                 </div>
                               </div>
