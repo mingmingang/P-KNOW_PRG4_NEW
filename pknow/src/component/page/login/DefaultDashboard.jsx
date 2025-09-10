@@ -144,12 +144,12 @@ export default function DefaultDashboard() {
                 className="maskotlogin mr-5"
                 style={{ color: "#0A5EA8", marginLeft: "-30px" }}
               >
-                <h2
+                <h1
                   className="fw-bold"
                   style={{ width: "750px", textAlign: "center" }}
                 >
                   Mulai langkah awal pembelajaranmu dengan P-KNOW
-                </h2>
+                </h1>
                 <img src={maskot} alt="" width="750px" />
               </div>
 

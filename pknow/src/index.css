@@ -1,5 +1,12 @@
 @import "slick-carousel/slick/slick.css";
 @import "slick-carousel/slick/slick-theme.css";
+body {
+  font-family: "Barlow", sans-serif;
+}
+
+#root {
+  font-family: 'Barlow', sans-serif;
+}
 
 :root {
   --primary-color: rgb(10,94,168);
