@@ -18,12 +18,10 @@ export default function DefaultDashboard() {
 
   useEffect(() => {
     const userCookie = Cookies.get("activeUser");
-  
-
     if (userCookie) {
       try {
         const userInfo = JSON.parse(decryptId(userCookie));
-        console.log("userInfo", userInfo)
+        console.log("userInfo", userInfo);
         setCurrentUserInfo(userInfo);
 
         const storedRoles = localStorage.getItem("availableRoles");
@@ -38,10 +36,12 @@ export default function DefaultDashboard() {
         setAvailableRoles(roles);
 
         if (roles.length > 0) {
+        if (roles.length > 0) {
           setShowRoleModal(true);
           if (modalRef.current) {
             modalRef.current.open();
           }
+        } else if (roles.length === 0) {
         } else if (roles.length === 0) {
           handleRoleSelection(roles[0]);
         } else {
@@ -79,9 +79,9 @@ export default function DefaultDashboard() {
   };
 
   const handleRoleSelection = async (selectedRole) => {
-     const user = Cookies.get("activeUser");
-      const userInfo = JSON.parse(decryptId(user));
-  
+    const user = Cookies.get("activeUser");
+    const userInfo = JSON.parse(decryptId(user));
+
     try {
       const token = await UseFetch(API_LINK + "Utilities/CreateJWTToken", {
         username: userInfo.username,
@@ -159,9 +159,16 @@ export default function DefaultDashboard() {
               >
                 <div
                   className="card shadow-lg"
-                  style={{ maxWidth: "500px", width: "100%", borderRadius:"20px" }}
+                  style={{
+                    maxWidth: "500px",
+                    width: "100%",
+                    borderRadius: "20px",
+                  }}
                 >
-                  <div className="card-header text-white text-center" style={{background:"rgb(10, 94, 168)"}}>
+                  <div
+                    className="card-header text-white text-center"
+                    style={{ background: "rgb(10, 94, 168)" }}
+                  >
                     <h5 className="mb-0">Pilih Peran</h5>
                   </div>
                   <div className="card-body">

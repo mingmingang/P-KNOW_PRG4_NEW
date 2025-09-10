@@ -56,6 +56,7 @@ export default function MasterProses() {
   let activeUser = "";
   const cookie = Cookies.get("activeUser");
   if (cookie) activeUser = JSON.parse(decryptId(cookie)).username;
+
   AppContext_test.activeUser = activeUser;
 
   function getPageMode() {
@@ -72,13 +73,13 @@ export default function MasterProses() {
           />
         );
 
-        case "listPeserta":
+      case "listPeserta":
         return (
           <ListPesertaProgram
             onChangePage={handleSetPageMode}
             withID={dataID}
-          />
-        );
+          />
+        );
 
       case "Pre-Test":
         return (
@@ -260,13 +261,10 @@ export default function MasterProses() {
       case "kk":
         return <PilihKelompokKeahlian onChangePage={handleSetPageMode} />;
 
-        case "detailPublish":
-          return (
-            <KKDetailProgram
-              onChangePage={handleSetPageMode}
-              withID={dataID}
-            />
-          );
+      case "detailPublish":
+        return (
+          <KKDetailProgram onChangePage={handleSetPageMode} withID={dataID} />
+        );
     }
   }
 
@@ -280,7 +278,13 @@ export default function MasterProses() {
     setPageMode(mode);
   }
 
-  function handleSetPageMode(newPageMode, dataReady = false, key = "", isOpen = false, quizType = "") {
+  function handleSetPageMode(
+    newPageMode,
+    dataReady = false,
+    key = "",
+    isOpen = false,
+    quizType = ""
+  ) {
     setPageMode(newPageMode);
     setIsDataReady(dataReady);
     setMateriId(key);
@@ -289,13 +293,19 @@ export default function MasterProses() {
     setDataID(dataReady);
   }
 
-  function handleSetPageMode(newPageMode, quizType = "", key = "", quizKey = "", durasi = "") {
+  function handleSetPageMode(
+    newPageMode,
+    quizType = "",
+    key = "",
+    quizKey = "",
+    durasi = ""
+  ) {
     setPageMode(newPageMode);
     setDataID(quizType);
     setQuizType(quizType);
     setMateriId(key);
     setQuizId(quizKey);
-    setDurasi(durasi)
+    setDurasi(durasi);
   }
 
   return <div>{getPageMode()}</div>;
