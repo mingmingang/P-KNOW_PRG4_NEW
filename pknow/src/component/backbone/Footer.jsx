@@ -9,7 +9,7 @@ export default function Footer() {
       </div>
       <div className="footer-detail">
         <div className="footer-section">
-          <h3>nathan</h3>
+          <h3>Alamat</h3>
           <p>
             Kampus Cikarang: Jl. Gaharu Blok F3 Delta Silicon II Cibatu,
             Cikarang Selatan Kota Bekasi Jawa Barat 17530
@@ -34,10 +34,14 @@ export default function Footer() {
               <a href="#">Career</a>
             </li>
             <li>
-              <a href="https://www.polytechnic.astra.ac.id/tentang/">About Us</a>
+              <a href="https://www.polytechnic.astra.ac.id/tentang/">
+                About Us
+              </a>
             </li>
             <li>
-              <a href="https://lppm.polytechnic.astra.ac.id/">Penelitian & Publikasi</a>
+              <a href="https://lppm.polytechnic.astra.ac.id/">
+                Penelitian & Publikasi
+              </a>
             </li>
             <li>
               <a href="https://www.polytechnic.astra.ac.id/berita/">Blog</a>
@@ -50,35 +54,53 @@ export default function Footer() {
             <div className="footer-program-studi">
               <ul>
                 <li>
-                  <a href="https://www.polytechnic.astra.ac.id/program-studi/">Pembuatan Peralatan dan Perkakas Produksi</a>
+                  <a href="https://www.polytechnic.astra.ac.id/program-studi/">
+                    Pembuatan Peralatan dan Perkakas Produksi
+                  </a>
                 </li>
                 <li>
-                  <a href="https://www.polytechnic.astra.ac.id/program-studi/">Teknik Produksi dan Proses Manufaktur</a>
+                  <a href="https://www.polytechnic.astra.ac.id/program-studi/">
+                    Teknik Produksi dan Proses Manufaktur
+                  </a>
                 </li>
                 <li>
-                  <a href="https://www.polytechnic.astra.ac.id/program-studi/">Manajemen Informatika</a>
+                  <a href="https://www.polytechnic.astra.ac.id/program-studi/">
+                    Manajemen Informatika
+                  </a>
                 </li>
                 <li>
-                  <a href="https://www.polytechnic.astra.ac.id/program-studi/">Mesin Otomotif</a>
+                  <a href="https://www.polytechnic.astra.ac.id/program-studi/">
+                    Mesin Otomotif
+                  </a>
                 </li>
                 <li>
-                  <a href="https://www.polytechnic.astra.ac.id/program-studi/">Mekatronika</a>
+                  <a href="https://www.polytechnic.astra.ac.id/program-studi/">
+                    Mekatronika
+                  </a>
                 </li>
               </ul>
             </div>
             <div className="footer-program-studi">
               <ul>
                 <li>
-                  <a href="https://www.polytechnic.astra.ac.id/program-studi/">Teknologi Konstruksi Bangunan Gedung</a>
+                  <a href="https://www.polytechnic.astra.ac.id/program-studi/">
+                    Teknologi Konstruksi Bangunan Gedung
+                  </a>
                 </li>
                 <li>
-                  <a href="https://www.polytechnic.astra.ac.id/program-studi/">Teknologi Rekayasa Pemeliharaan Alat Berat</a>
+                  <a href="https://www.polytechnic.astra.ac.id/program-studi/">
+                    Teknologi Rekayasa Pemeliharaan Alat Berat
+                  </a>
                 </li>
                 <li>
-                  <a href="https://www.polytechnic.astra.ac.id/program-studi/">Teknologi Rekayasa Logistik</a>
+                  <a href="https://www.polytechnic.astra.ac.id/program-studi/">
+                    Teknologi Rekayasa Logistik
+                  </a>
                 </li>
                 <li>
-                  <a href="https://www.polytechnic.astra.ac.id/program-studi/">Teknologi Rekayasa Perangkat Lunak</a>
+                  <a href="https://www.polytechnic.astra.ac.id/program-studi/">
+                    Teknologi Rekayasa Perangkat Lunak
+                  </a>
                 </li>
               </ul>
             </div>
