@@ -14,7 +14,6 @@ import Alert from "../../../../part/Alert";
 import AppContext_test from "../MasterContext";
 import uploadFile from "../../../../util/UploadFile";
 import AppContext_master from "../MasterContext";
-import axios from "axios";
 import { Stepper, Step, StepLabel, Box } from "@mui/material";
 import Konfirmasi from "../../../../part/Konfirmasi";
 import BackPage from "../../../../../assets/backPage.png";
@@ -84,18 +83,19 @@ export default function MasterSharingAdd({ onChangePage }) {
   const previewFile = async (namaFile) => {
     try {
       namaFile = namaFile.trim();
-      const response = await axios.get(
+      const response = await UseFetch(
         `${API_LINK}Upload/GetFile/${namaFile}`,
-        {
-          responseType: "arraybuffer",
-        }
+        null,
+        "GET",
+        false,
+        "arraybuffer"
       );
-  
+
       const blob = new Blob([response.data], {
         type: response.headers["content-type"],
       });
       const url = URL.createObjectURL(blob);
-  
+
       // Cek tipe file
       if (response.headers["content-type"] === "application/pdf") {
         window.open(url, "_blank"); // Pratinjau PDF
@@ -114,10 +114,9 @@ export default function MasterSharingAdd({ onChangePage }) {
   const handlePdfChange = () =>
     handleFileChange(fileInputRef, "pdf,docx,xlsx,pptx", 10);
 
-
   const handleVideoChange = () =>
     handleFileChange(vidioInputRef, "mp4,mov", 250);
-  
+
   const handleFileChange = async (ref, extAllowed, maxFileSize) => {
     const file = ref.current.files[0];
     const fileName = file.name;
@@ -303,39 +302,39 @@ export default function MasterSharingAdd({ onChangePage }) {
                   window.location.reload();
                 } else {
                   if (sharingExpertIndex == 3 && steps.length === 5) {
-                            onChangePage(
-                              steps[4],
-                              AppContext_master.MateriForm,
-                              (AppContext_master.count += 1),
-                              AppContext_master.dataIdSection,
-                              AppContext_master.dataSectionSharing,
-                              AppContext_master.dataIdSectionSharing,
-                              AppContext_master.dataIdSectionPretest,
-                              AppContext_master.dataIdSectionPostTest,
-                              (AppContext_master.dataPretest),
-                              (AppContext_master.dataQuizPretest),
-                              (AppContext_master.dataPostTest),
-                              (AppContext_master.dataQuizPostTest),
-                              AppContext_master.dataTimerQuizPreTest,
-                              AppContext_master.dataTimerPostTest
-                            );
+                    onChangePage(
+                      steps[4],
+                      AppContext_master.MateriForm,
+                      (AppContext_master.count += 1),
+                      AppContext_master.dataIdSection,
+                      AppContext_master.dataSectionSharing,
+                      AppContext_master.dataIdSectionSharing,
+                      AppContext_master.dataIdSectionPretest,
+                      AppContext_master.dataIdSectionPostTest,
+                      AppContext_master.dataPretest,
+                      AppContext_master.dataQuizPretest,
+                      AppContext_master.dataPostTest,
+                      AppContext_master.dataQuizPostTest,
+                      AppContext_master.dataTimerQuizPreTest,
+                      AppContext_master.dataTimerPostTest
+                    );
                   } else if (sharingExpertIndex == 3 && steps.length === 6) {
-                      onChangePage(
-                        steps[4],
-                        AppContext_master.MateriForm,
-                        (AppContext_master.count += 1),
-                        AppContext_master.dataIdSection,
-                        AppContext_master.dataSectionSharing,
-                        AppContext_master.dataIdSectionSharing,
-                        AppContext_master.dataIdSectionPretest,
-                        AppContext_master.dataIdSectionPostTest,
-                        (AppContext_master.dataPretest),
-                        (AppContext_master.dataQuizPretest),
-                        (AppContext_master.dataPostTest),
-                        (AppContext_master.dataQuizPostTest),
-                        AppContext_master.dataTimerQuizPreTest,
-                        AppContext_master.dataTimerPostTest
-                      );
+                    onChangePage(
+                      steps[4],
+                      AppContext_master.MateriForm,
+                      (AppContext_master.count += 1),
+                      AppContext_master.dataIdSection,
+                      AppContext_master.dataSectionSharing,
+                      AppContext_master.dataIdSectionSharing,
+                      AppContext_master.dataIdSectionPretest,
+                      AppContext_master.dataIdSectionPostTest,
+                      AppContext_master.dataPretest,
+                      AppContext_master.dataQuizPretest,
+                      AppContext_master.dataPostTest,
+                      AppContext_master.dataQuizPostTest,
+                      AppContext_master.dataTimerQuizPreTest,
+                      AppContext_master.dataTimerPostTest
+                    );
                   } else if (sharingExpertIndex == 4 && steps.length === 6) {
                     onChangePage(
                       steps[5],
@@ -346,14 +345,14 @@ export default function MasterSharingAdd({ onChangePage }) {
                       AppContext_master.dataIdSectionSharing,
                       AppContext_master.dataIdSectionPretest,
                       AppContext_master.dataIdSectionPostTest,
-                      (AppContext_master.dataPretest),
-                      (AppContext_master.dataQuizPretest),
-                      (AppContext_master.dataPostTest),
-                      (AppContext_master.dataQuizPostTest),
+                      AppContext_master.dataPretest,
+                      AppContext_master.dataQuizPretest,
+                      AppContext_master.dataPostTest,
+                      AppContext_master.dataQuizPostTest,
                       AppContext_master.dataTimerQuizPreTest,
                       AppContext_master.dataTimerPostTest
                     );
-                  }  else if (sharingExpertIndex === 5) {
+                  } else if (sharingExpertIndex === 5) {
                     window.location.reload();
                   } else {
                     window.location.reload();
@@ -389,7 +388,6 @@ export default function MasterSharingAdd({ onChangePage }) {
         AppContext_master.dataQuizPostTest,
         AppContext_master.dataTimerQuizPreTest,
         AppContext_master.dataTimerPostTest
-        
       );
     } else if (steps.length == 5 && sharingExpertIndex === 3) {
       onChangePage(
@@ -479,7 +477,6 @@ export default function MasterSharingAdd({ onChangePage }) {
         AppContext_master.dataTimerQuizPreTest,
         AppContext_master.dataTimerPostTest
       );
-      
     }
   };
 
@@ -592,7 +589,7 @@ export default function MasterSharingAdd({ onChangePage }) {
                       e.preventDefault();
                       previewFile(AppContext_test.sharingExpertPDF);
                     }}
-                    style={{textDecoration:"none"}}
+                    style={{ textDecoration: "none" }}
                   >
                     Lihat berkas yang telah diunggah
                   </a>

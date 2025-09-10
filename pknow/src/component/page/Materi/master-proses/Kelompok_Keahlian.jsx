@@ -18,6 +18,8 @@ export default function SubKKIndex({ onChangePage }) {
   const [isError, setIsError] = useState({ error: false, message: "" });
   const [listKK, setListKK] = useState([]);
 
+  console.log("tesss", AppContext_test.activeUser);
+
   const getKKAndPrograms = async (retries = 3, delay = 1000) => {
     for (let i = 0; i < retries; i++) {
       try {
@@ -31,7 +33,7 @@ export default function SubKKIndex({ onChangePage }) {
         let kkData = await UseFetch(API_LINK + "Program/GetDataKKByAKK", {
           p1: AppContext_test.activeUser,
         });
-  
+
         if (kkData === "ERROR") {
           throw new Error(
             "Terjadi kesalahan: Gagal mengambil data Kelompok Keahlian."
@@ -80,11 +82,7 @@ export default function SubKKIndex({ onChangePage }) {
           for (const program of programData) {
             const categoryData = await UseFetch(
               API_LINK + "Program/GetKategoriByProgram",
-              { p1: program.Key,
-                p2: '',
-                p3: '',
-                p4: 'Aktif'
-              }
+              { p1: program.Key, p2: "", p3: "", p4: "Aktif" }
             );
 
             const categoriesWithMaterialCounts = await Promise.all(
@@ -125,7 +123,7 @@ export default function SubKKIndex({ onChangePage }) {
       }
     }
   };
-  
+
   const isDataReadyTemp = "";
   const materiIdTemp = "";
   const isOpenTemp = true;
@@ -171,7 +169,10 @@ export default function SubKKIndex({ onChangePage }) {
       <div className="d-flex flex-column">
         {listKK.length === 0 ? (
           <div className="mx-5 my-5">
-          <Alert type="warning" message="Anda tidak tergabung pada Program Kelompok Keahlian manapun saat ini." />
+            <Alert
+              type="warning"
+              message="Anda tidak tergabung pada Program Kelompok Keahlian manapun saat ini."
+            />
           </div>
         ) : (
           listKK.map((kk, index) => (
@@ -181,5 +182,4 @@ export default function SubKKIndex({ onChangePage }) {
       </div>
     </>
   );
-  
 }

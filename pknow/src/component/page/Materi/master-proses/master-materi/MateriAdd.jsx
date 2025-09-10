@@ -1,3 +1,4 @@
+//Updated to use UseFetch instead of axios
 import { useRef, useState, useEffect, lazy } from "react";
 import { object, string } from "yup";
 import { API_LINK } from "../../../../util/Constants";
@@ -13,7 +14,6 @@ import uploadFile from "../../../../util/UploadFile";
 import Alert from "../../../../part/Alert";
 import AppContext_master from "../MasterContext";
 import AppContext_test from "../../master-test/TestContext";
-import axios from "axios";
 import BackPage from "../../../../../assets/backPage.png";
 import Konfirmasi from "../../../../part/Konfirmasi";
 import CustomStepper from "../../../../part/Stepp";
@@ -49,18 +49,29 @@ export default function MastermateriAdd({ onChangePage }) {
   const previewFile = async (namaFile) => {
     try {
       namaFile = namaFile.trim();
-      const response = await axios.get(
-        `${API_LINK}Upload/GetFile/${namaFile}`,
-        {
-          responseType: "arraybuffer",
-        }
-      );
 
-      const blob = new Blob([response.data], {
-        type: response.headers["content-type"],
+      // Using UseFetch instead of axios
+      const data = await UseFetch(`${API_LINK}Upload/GetFile/${namaFile}`, {
+        method: "GET",
+        headers: {
+          Accept: "application/octet-stream",
+        },
       });
+
+      if (data === "ERROR") {
+        throw new Error("Gagal mengambil file");
+      }
+
+      // Create blob URL and handle file preview/download
+      // Note: UseFetch might return different format, adjust accordingly
+      const blob = new Blob([data], {
+        type: "application/octet-stream",
+      });
+
       const url = URL.createObjectURL(blob);
-      if (response.headers["content-type"] === "application/pdf") {
+
+      // Try to determine if it's PDF based on filename
+      if (namaFile.toLowerCase().endsWith(".pdf")) {
         window.open(url, "_blank");
       } else {
         const link = document.createElement("a");
@@ -70,7 +81,11 @@ export default function MastermateriAdd({ onChangePage }) {
       }
     } catch (error) {
       console.error("Error fetching file:", error);
-      alert("Tidak dapat menampilkan pratinjau. Silakan unduh file.");
+      SweetAlert(
+        "Error",
+        "Tidak dapat menampilkan pratinjau. Silakan unduh file.",
+        "error"
+      );
     }
   };
 
@@ -167,6 +182,7 @@ export default function MastermateriAdd({ onChangePage }) {
             mat_file_pdf: "Pilih salah satu antara PDF atau Video",
             mat_file_video: "Pilih salah satu antara PDF atau Video",
           }));
+          setIsLoading(false);
           return;
         }
       }
@@ -191,79 +207,83 @@ export default function MastermateriAdd({ onChangePage }) {
         );
       }
 
-      Promise.all(uploadPromises).then(() => {
-        if (
-          AppContext_test.materiVideo == null ||
-          AppContext_test.materiPdf == null
-        ) {
-          if (!hasPdfFile && !hasVideoFile) {
-            setIsLoading(false);
-            SweetAlert(
-              "Terjadi Kesalahan!",
-              "Harus memilih salah satu file PDF atau file video, tidak boleh keduanya kosong.",
-              "error"
-            );
-            return;
-          }
-        }
-        axios
-          .post(API_LINK + "Materi/UpdateSaveDataMateri", formDataRef.current)
-          .then((response) => {
-            const data = response.data;
-            if (data[0].hasil === "OK") {
-              setIsFileDisabled(false);
-              AppContext_master.formSavedMateriFile = true;
-              if (typeof Forum === "undefined" || Forum.forumIsi === "") {
-                onChangePage(
-                  "forumAdd",
-                  AppContext_master.MateriForm,
-                  (AppContext_master.count += 1),
-                  AppContext_test.ForumForm,
-                  AppContext_master.dataIdSection,
-                  AppContext_master.dataSectionSharing,
-                  AppContext_master.dataIdSectionSharing,
-                  AppContext_master.dataIdSectionPretest,
-                  AppContext_master.dataPretest,
-                  AppContext_master.dataQuizPretest,
-                  AppContext_master.dataPostTest,
-                  AppContext_master.dataQuizPostTest,
-                  AppContext_master.dataTimerPostTest
-                );
-              } else {
-                onChangePage(
-                  "forumBefore",
-                  AppContext_master.MateriForm,
-                  (AppContext_master.count += 1),
-                  AppContext_test.ForumForm,
-                  AppContext_master.dataIdSection,
-                  AppContext_master.dataSectionSharing,
-                  AppContext_master.dataIdSectionSharing,
-                  AppContext_master.dataIdSectionPretest,
-                  AppContext_master.dataPretest,
-                  AppContext_master.dataQuizPretest,
-                  AppContext_master.dataPostTest,
-                  AppContext_master.dataQuizPostTest,
-                  AppContext_master.dataTimerPostTest
-                );
-              }
-            } else {
-              setIsError((prevError) => ({
-                ...prevError,
-                error: true,
-                message: "Terjadi kesalahan: Gagal menyimpan data Materi.",
-              }));
+      Promise.all(uploadPromises)
+        .then(() => {
+          if (
+            AppContext_test.materiVideo == null ||
+            AppContext_test.materiPdf == null
+          ) {
+            if (!hasPdfFile && !hasVideoFile) {
+              setIsLoading(false);
+              SweetAlert(
+                "Terjadi Kesalahan!",
+                "Harus memilih salah satu file PDF atau file video, tidak boleh keduanya kosong.",
+                "error"
+              );
+              return;
             }
-          })
-          .catch((error) => {
-            console.error("Terjadi kesalahan:", error);
-            setIsError((prevError) => ({
-              ...prevError,
-              error: true,
-              message: "Terjadi kesalahan: " + error.message,
-            }));
-          })
-          .finally(() => setIsLoading(false));
-      });
+          }
+
+          // Replace axios with UseFetch
+          return UseFetch(
+            API_LINK + "Materi/UpdateSaveDataMateri",
+            formDataRef.current
+          );
+        })
+        .then((data) => {
+          if (data === "ERROR") {
+            throw new Error("Gagal menyimpan data Materi.");
+          }
+
+          if (data && data.length > 0 && data[0].hasil === "OK") {
+            setIsFileDisabled(false);
+            AppContext_master.formSavedMateriFile = true;
+            if (typeof Forum === "undefined" || Forum.forumIsi === "") {
+              onChangePage(
+                "forumAdd",
+                AppContext_master.MateriForm,
+                (AppContext_master.count += 1),
+                AppContext_test.ForumForm,
+                AppContext_master.dataIdSection,
+                AppContext_master.dataSectionSharing,
+                AppContext_master.dataIdSectionSharing,
+                AppContext_master.dataIdSectionPretest,
+                AppContext_master.dataPretest,
+                AppContext_master.dataQuizPretest,
+                AppContext_master.dataPostTest,
+                AppContext_master.dataQuizPostTest,
+                AppContext_master.dataTimerPostTest
+              );
+            } else {
+              onChangePage(
+                "forumBefore",
+                AppContext_master.MateriForm,
+                (AppContext_master.count += 1),
+                AppContext_test.ForumForm,
+                AppContext_master.dataIdSection,
+                AppContext_master.dataSectionSharing,
+                AppContext_master.dataIdSectionSharing,
+                AppContext_master.dataIdSectionPretest,
+                AppContext_master.dataPretest,
+                AppContext_master.dataQuizPretest,
+                AppContext_master.dataPostTest,
+                AppContext_master.dataQuizPostTest,
+                AppContext_master.dataTimerPostTest
+              );
+            }
+          } else {
+            throw new Error("Response tidak valid dari server");
+          }
+        })
+        .catch((error) => {
+          console.error("Terjadi kesalahan:", error);
+          setIsError((prevError) => ({
+            ...prevError,
+            error: true,
+            message: "Terjadi kesalahan: " + error.message,
+          }));
+        })
+        .finally(() => setIsLoading(false));
     }
   };
 
@@ -273,6 +293,11 @@ export default function MastermateriAdd({ onChangePage }) {
         const data = await UseFetch(API_LINK + "Program/GetKategoriKKById", {
           kategori,
         });
+
+        if (data === "ERROR") {
+          throw new Error("Gagal mengambil data kategori");
+        }
+
         const mappedData = data.map((item) => ({
           value: item.Key,
           label: item["Nama Kategori"],

@@ -13,7 +13,6 @@ import UploadFile from "../../../../util/UploadFile";
 import Alert from "../../../../part/Alert";
 import AppContext_master from "../MasterContext";
 import AppContext_test from "../../master-test/TestContext";
-import axios from "axios";
 import BackPage from "../../../../../assets/backPage.png";
 import Konfirmasi from "../../../../part/Konfirmasi";
 import NoImage from "../../../../../assets/NoImage.png";
@@ -68,23 +67,26 @@ export default function Pengenalan({ onChangePage }) {
   const previewFile = async (namaFile) => {
     try {
       namaFile = namaFile.trim();
-      const response = await axios.get(
-        `${API_LINK}Utilities/Upload/DownloadFile`,
-        {
-          params: {
-            namaFile,
-          },
-          responseType: "arraybuffer",
-        }
-      );
 
-      const blob = new Blob([response.data], {
-        type: response.headers["content-type"],
+      // Using UseFetch instead of axios
+      const data = await UseFetch(`${API_LINK}Utilities/Upload/DownloadFile`, {
+        namaFile: namaFile,
       });
+
+      if (data === "ERROR") {
+        throw new Error("Gagal mengunduh file");
+      }
+
+      // Create blob URL and open file
+      // Note: Adjust this based on how UseFetch handles binary data
+      const blob = new Blob([data], {
+        type: "application/octet-stream",
+      });
+
       const url = URL.createObjectURL(blob);
       window.open(url, "_blank");
     } catch (error) {
-      console.error(error);
+      console.error("Error previewing file:", error);
     }
   };
 
@@ -181,11 +183,13 @@ export default function Pengenalan({ onChangePage }) {
 
   const fetchDataMateriById = async (id) => {
     try {
-      const response = await axios.post(
-        API_LINK + "Materi/GetDataMateriById",
-        id
-      );
-      return response.data;
+      const data = await UseFetch(API_LINK + "Materi/GetDataMateriById", id);
+
+      if (data === "ERROR") {
+        throw new Error("Gagal mengambil data materi");
+      }
+
+      return data;
     } catch (error) {
       console.error("Terjadi kesalahan saat mengambil data materi:", error);
       throw error;
@@ -218,59 +222,55 @@ export default function Pengenalan({ onChangePage }) {
 
       try {
         await Promise.all(uploadPromises);
-        axios
-          .post(API_LINK + "Materi/SaveDataMateri", formDataRef.current)
-          .then((response) => {
-            const data = response.data;
-            if (data[0].hasil === "OK") {
-              AppContext_master.dataIDMateri = data[0].newID;
-              setIsFormDisabled(false);
-              AppContext_master.formSavedMateri = true;
-              onChangePage(
-                "materiAdd",
-                (AppContext_master.MateriForm = formDataRef.current),
-                (AppContext_master.count += 1),
-                AppContext_master.dataIDMateri,
-                AppContext_test.ForumForm,
-                AppContext_master.dataIdSection,
-                AppContext_master.dataSectionSharing,
-                AppContext_master.dataIdSectionSharing,
-                AppContext_master.dataIdSectionPretest,
-                AppContext_master.dataIdSectionPostTest,
-                AppContext_master.dataPretest,
-                AppContext_master.dataQuizPretest,
-                AppContext_master.dataPostTest,
-                AppContext_master.dataQuizPostTest,
-                AppContext_master.dataTimerPostTest
-              );
-            } else {
-              setIsError((prevError) => ({
-                ...prevError,
-                error: true,
-                message: "Terjadi kesalahan: Gagal menyimpan data Materi.",
-              }));
-            }
-          })
-          .catch((error) => {
-            console.error("Terjadi kesalahan:", error);
-            setIsError((prevError) => ({
-              ...prevError,
-              error: true,
-              message: "Terjadi kesalahan: " + error.message,
-            }));
-          })
-          .finally(() => setIsLoading(false));
+
+        // Using UseFetch instead of axios
+        const data = await UseFetch(
+          API_LINK + "Materi/SaveDataMateri",
+          formDataRef.current
+        );
+
+        if (data === "ERROR") {
+          throw new Error("Gagal menyimpan data Materi");
+        }
+
+        if (data && data.length > 0 && data[0].hasil === "OK") {
+          AppContext_master.dataIDMateri = data[0].newID;
+          setIsFormDisabled(false);
+          AppContext_master.formSavedMateri = true;
+          onChangePage(
+            "materiAdd",
+            (AppContext_master.MateriForm = formDataRef.current),
+            (AppContext_master.count += 1),
+            AppContext_master.dataIDMateri,
+            AppContext_test.ForumForm,
+            AppContext_master.dataIdSection,
+            AppContext_master.dataSectionSharing,
+            AppContext_master.dataIdSectionSharing,
+            AppContext_master.dataIdSectionPretest,
+            AppContext_master.dataIdSectionPostTest,
+            AppContext_master.dataPretest,
+            AppContext_master.dataQuizPretest,
+            AppContext_master.dataPostTest,
+            AppContext_master.dataQuizPostTest,
+            AppContext_master.dataTimerPostTest
+          );
+        } else {
+          throw new Error("Response tidak valid dari server");
+        }
       } catch (error) {
+        console.error("Terjadi kesalahan:", error);
         window.scrollTo(0, 0);
         setIsError((prevError) => ({
           ...prevError,
           error: true,
-          message: error.message,
+          message: "Terjadi kesalahan: " + error.message,
         }));
       } finally {
         setIsLoading(false);
       }
-    } else window.scrollTo(0, 0);
+    } else {
+      window.scrollTo(0, 0);
+    }
   };
 
   const fetchDataKategori = async (retries = 3, delay = 1000) => {

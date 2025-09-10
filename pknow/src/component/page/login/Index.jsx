@@ -145,6 +145,7 @@ export default function Login() {
           credentials: "include",
         });
         const data = await response.json();
+        console.log("dataaa loginn", data);
 
         if (data === "ERROR") {
           throw new Error("Terjadi kesalahan: Gagal melakukan autentikasi.");
@@ -210,10 +211,12 @@ export default function Login() {
         peran: defaultRole.Role,
         prodi: defaultRole.Pro_ID,
         lastLogin: null,
-        allRoles: roles, 
+        allRoles: roles,
       };
 
       let user = encryptId(JSON.stringify(userInfo));
+
+      console.log("userrrnyeee", userInfo);
       const OneHourFromNow = new Date(new Date().getTime() + 60 * 60 * 1000);
       Cookies.set("activeUser", user, { expires: OneHourFromNow });
 
