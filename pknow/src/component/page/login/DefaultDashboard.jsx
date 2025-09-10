@@ -37,12 +37,12 @@ export default function DefaultDashboard() {
 
         setAvailableRoles(roles);
 
-        if (roles.length > 1) {
+        if (roles.length > 0) {
           setShowRoleModal(true);
           if (modalRef.current) {
             modalRef.current.open();
           }
-        } else if (roles.length === 1) {
+        } else if (roles.length === 0) {
           handleRoleSelection(roles[0]);
         } else {
           window.location.href = "/login";
@@ -191,7 +191,7 @@ export default function DefaultDashboard() {
                         >
                           <div className="d-flex justify-content-between align-items-center">
                             <span style={{fontSize:"17px"}}>Masuk sebagai {role.Role || role.role}</span>
-                            <i className="fas fa-arrow-right"></i>
+                            <i className="fas fa-arrow-right ml-4"></i>
                           </div>
                         </button>
                       ))}

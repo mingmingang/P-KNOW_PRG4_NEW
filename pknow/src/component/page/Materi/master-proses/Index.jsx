@@ -313,25 +313,6 @@ export default function MasterProsesIndex({ onChangePage }) {
           const promises = formattedData.map((value) => {
             const filePromises = [];
 
-            // if (value.Gambar) {
-            //   const gambarPromise = fetch(
-            //     API_LINK + `Upload/GetFile/${value.Gambar}`
-            //   )
-            //     .then((response) => {
-            //       if (!response.ok) {
-            //         throw new Error(`HTTP error! status: ${response.status}`);
-            //       }
-            //       value.gbr = value.Gambar;
-            //       value.Gambar = API_LINK + `Upload/GetFile/${value.Gambar}`;
-            //       return value;
-            //     })
-            //     .catch((error) => {
-            //       console.error("Error fetching gambar:", error);
-            //       return value;
-            //     });
-            //   filePromises.push(gambarPromise);
-            // }
-
             if (value.File_video) {
               const videoPromise = fetch(
                 API_LINK +

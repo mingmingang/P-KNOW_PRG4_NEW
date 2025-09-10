@@ -334,6 +334,13 @@ export default function DetailAKK({ prodi, onChangePage, withID }) {
     currentDosenFilter.prodi ? dosen.Prodi === currentDosenFilter.prodi : true
   );
 
+  const truncateText = (text, maxLength) => {
+    if (!text) return "";
+    return text.length > maxLength
+      ? text.substring(0, maxLength) + "..."
+      : text;
+  };
+
   return (
     <>
       <div
@@ -365,7 +372,7 @@ export default function DetailAKK({ prodi, onChangePage, withID }) {
             <div className="prodi" style={{ marginBottom: "-20px" }}>
               <FontAwesomeIcon
                 icon={faGraduationCap}
-                style={{ fontSize: "1.5rem", marginRight: "-5px" }}
+                style={{ fontSize: "1.5rem", marginRight: "-5px", marginTop:"-15px" }}
               />
               <p className="text-gray-700" style={{ fontFamily: "Poppins" }}>
                 {withID.prodi.nama}
@@ -376,14 +383,14 @@ export default function DetailAKK({ prodi, onChangePage, withID }) {
             </p>
             <p
               className="deskripsi"
-              style={{ fontSize: "17px", width: "500px" }}
+              style={{ fontSize: "17px", width: "100%" }}
             >
-              {decode(withID.desc)}
+              {truncateText(decode(withID.desc), 250)}
             </p>
             <div className="userProdi">
               <FontAwesomeIcon
                 icon={faUser}
-                style={{ fontSize: "1.5rem", marginRight: "5px" }}
+                style={{ fontSize: "1.5rem", marginTop: "-20px" }}
               />
               <p className="text-gray-700" style={{ fontFamily: "Poppins" }}>
                 PIC: {withID.pic.nama}
