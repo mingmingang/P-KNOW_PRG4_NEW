@@ -1,7 +1,10 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { object, string } from "yup";
 import { API_LINK } from "../../../../util/Constants";
-import { validateAllInputs, validateInput } from "../../../../util/ValidateForm";
+import {
+  validateAllInputs,
+  validateInput,
+} from "../../../../util/ValidateForm";
 import SweetAlert from "../../../../util/SweetAlert";
 import UseFetch from "../../../../util/UseFetch";
 import UploadFile from "../../../../util/UploadFile";
@@ -14,31 +17,37 @@ import AppContext_master from "../MasterContext";
 import AppContext_test from "../../master-test/TestContext";
 import FileUpload from "../../../../part/FileUpload";
 import uploadFile from "../../../../util/UploadFile";
-import { Stepper, Step, StepLabel, Box  } from '@mui/material'; 
+import { Stepper, Step, StepLabel, Box } from "@mui/material";
 import Konfirmasi from "../../../../part/Konfirmasi";
 import BackPage from "../../../../../assets/backPage.png";
 import Cookies from "js-cookie";
 import { decryptId } from "../../../../util/Encryptor";
-import axios from "axios";
 
-const steps = ["Pengenalan", "Materi", "Forum", "Sharing Expert", "Pre Test", "Post Test"];
+const steps = [
+  "Pengenalan",
+  "Materi",
+  "Forum",
+  "Sharing Expert",
+  "Pre Test",
+  "Post Test",
+];
 
 function getStepContent(stepIndex) {
   switch (stepIndex) {
     case 0:
-      return 'pengenalanEdit';
+      return "pengenalanEdit";
     case 1:
-      return 'materiEdit';
+      return "materiEdit";
     case 2:
-      return 'forumEdit';
-      case 3:
-      return 'sharingEdit';
+      return "forumEdit";
+    case 3:
+      return "sharingEdit";
     case 4:
-      return 'pretestEdit';
-      case 5:
-      return 'posttestEdit';
+      return "pretestEdit";
+    case 5:
+      return "posttestEdit";
     default:
-      return 'Unknown stepIndex';
+      return "Unknown stepIndex";
   }
 }
 
@@ -49,7 +58,7 @@ function CustomStepper({ activeStep, steps, onChangePage, getStepContent }) {
         {steps.map((label, index) => (
           <Step
             key={label}
-            onClick={() => onChangePage(getStepContent(index))} 
+            onClick={() => onChangePage(getStepContent(index))}
             sx={{
               cursor: "pointer",
               "& .MuiStepIcon-root": {
@@ -86,104 +95,22 @@ export default function MasterSharingEdit({ onChangePage }) {
   let activeUser = "";
   const cookie = Cookies.get("activeUser");
   if (cookie) activeUser = JSON.parse(decryptId(cookie)).username;
+
   const [errors, setErrors] = useState({});
   const [isError, setIsError] = useState({ error: false, message: "" });
   const [isLoading, setIsLoading] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
-  const [isBackAction, setIsBackAction] = useState(false); 
+  const [isBackAction, setIsBackAction] = useState(false);
+
+  // State untuk menyimpan data file yang sudah ada
+  const [existingPdfFile, setExistingPdfFile] = useState("");
+  const [existingVideoFile, setExistingVideoFile] = useState("");
+  const [isDataLoaded, setIsDataLoaded] = useState(false);
 
   const fileInputRef = useRef(null);
   const vidioInputRef = useRef(null);
 
   const Materi = AppContext_test.DetailMateriEdit;
-
-  async function fetchSectionData() {
-    AppContext_test.sharingExpertPDF = AppContext_test.DetailMateriEdit.Sharing_pdf;
-    try {
-      const response = await axios.post(API_LINK + 'Section/GetDataSectionByMateri', {
-        p1 : Materi.Key,
-        p2 : 'Sharing Expert',
-        p3 : 'Aktif'
-      });
-
-      // Handle the response
-      if (response.status === 200) {
-        const data = response.data;
-        const secId = data[0].SectionId;
-        const materialId = Materi.Key;
-        formDataRef.current.sec_id = secId;
-        formDataRef.current.mat_id = materialId;
-        AppContext_test.sharingExpertPDF = data[0].ExpertFile;
-        AppContext_test.sharingExpertVideo = data[0].ExpertVideo;
-        return { secId, materialId};
-      } else {
-        console.error('Failed to fetch data, status:', response.status);
-        return null;
-      }
-    } catch (error) {
-      console.error('Error fetching data:', error);
-      return null;
-    }
-  }
-
-  const matIdFromContext = AppContext_master.MateriForm;
-
-  const previewFile = async (namaFile) => {
-    try {
-      namaFile = namaFile.trim();
-      const response = await axios.get(
-        `${API_LINK}Upload/GetFile/${namaFile}`,
-        {
-          responseType: "arraybuffer",
-        }
-      );
-  
-      const blob = new Blob([response.data], {
-        type: response.headers["content-type"],
-      });
-      const url = URL.createObjectURL(blob);
-  
-      // Cek tipe file
-      if (response.headers["content-type"] === "application/pdf") {
-        window.open(url, "_blank"); // Pratinjau PDF
-      } else {
-        const link = document.createElement("a");
-        link.href = url;
-        link.download = namaFile;
-        link.click();
-      }
-    } catch (error) {
-      console.error("Error fetching file:", error);
-      alert("Tidak dapat menampilkan pratinjau. Silakan unduh file.");
-    }
-  };
-
-
-
-  fetchSectionData(matIdFromContext).then((data) => {
-    if (data) {
-      console.log('Data fetched successfully:', data);
-    } else {
-      console.log('Failed to fetch data.');
-    }
-  });
-
-
-
-  const handleGoBack = () => {
-    setIsBackAction(true);  
-    setShowConfirmation(true);  
-  };
-
-  const handleConfirmYes = () => {
-    setShowConfirmation(false); 
-    window.location.reload();
-  };
-
-
-  const handleConfirmNo = () => {
-    setShowConfirmation(false);  
-  };
 
   const formDataRef = useRef({
     sec_id: "",
@@ -192,17 +119,166 @@ export default function MasterSharingEdit({ onChangePage }) {
     mat_sharing_expert_video: "",
   });
 
+  // Fungsi untuk fetch data section
+  async function fetchSectionData() {
+    try {
+      const data = await UseFetch(API_LINK + "Section/GetDataSectionByMateri", {
+        p1: Materi.Key,
+        p2: "Sharing Expert",
+        p3: "Aktif",
+      });
+
+      if (data === "ERROR") {
+        console.error("Failed to fetch data");
+        return null;
+      } else {
+        const secId = data[0].SectionId;
+        const materialId = Materi.Key;
+        formDataRef.current.sec_id = secId;
+        formDataRef.current.mat_id = materialId;
+
+        // Set existing files
+        const pdfFile = data[0].ExpertFile || "";
+        const videoFile = data[0].ExpertVideo || "";
+
+        setExistingPdfFile(pdfFile);
+        setExistingVideoFile(videoFile);
+
+        AppContext_test.sharingExpertPDF = pdfFile;
+        AppContext_test.sharingExpertVideo = videoFile;
+
+        return { secId, materialId, pdfFile, videoFile };
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      return null;
+    }
+  }
+
+  // useEffect untuk load data saat component mount
+  useEffect(() => {
+    const loadData = async () => {
+      setIsLoading(true);
+      const result = await fetchSectionData();
+      if (result) {
+        console.log("Data fetched successfully:", result);
+        setIsDataLoaded(true);
+      } else {
+        console.log("Failed to fetch data.");
+      }
+      setIsLoading(false);
+    };
+
+    loadData();
+  }, []);
+
+  const previewFile = async (namaFile, fileType = "") => {
+    try {
+      namaFile = namaFile.trim();
+
+      // Cek tipe file - gunakan parameter fileType atau deteksi dari ekstensi
+      const isPDF =
+        fileType === "application/pdf" ||
+        namaFile.toLowerCase().endsWith(".pdf");
+
+      if (isPDF) {
+        // Untuk PDF, buka langsung URL API dengan parameter untuk inline viewing
+        const apiUrl = `${API_LINK}Upload/GetFile/${namaFile}?inline=true`;
+
+        // Buat nama file pendek dari UUID
+        const shortFileName = namaFile.split("_")[1] || namaFile.split(".")[0];
+
+        // Buka di tab baru dengan URL langsung ke API
+        const newWindow = window.open(apiUrl, "_blank");
+
+        // Set title jika memungkinkan
+        if (newWindow) {
+          setTimeout(() => {
+            try {
+              newWindow.document.title = shortFileName;
+            } catch (e) {
+              console.warn(
+                "Cannot set window title due to security restrictions"
+              );
+            }
+          }, 500);
+        }
+      } else {
+        // Untuk file non-PDF, tetap menggunakan blob untuk download
+        const response = await fetch(`${API_LINK}Upload/GetFile/${namaFile}`, {
+          method: "GET",
+          headers: {
+            Authorization: "Bearer " + localStorage.getItem("jwtToken"),
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error("Tidak dapat mengambil file");
+        }
+
+        const blob = await response.blob();
+        const url = URL.createObjectURL(blob);
+
+        // Ambil judul materi untuk format nama file
+        const judulMateri =
+          AppContext_master.MateriForm?.Judul || "SharingExpert";
+        const formattedFileName = `Sharing Expert - ${judulMateri}`;
+
+        const link = document.createElement("a");
+        link.href = url;
+
+        // Tambahkan ekstensi file yang sesuai berdasarkan tipe MIME
+        let extension = "";
+        const actualFileType = fileType || blob.type;
+        if (actualFileType.includes("video")) extension = ".mp4";
+        else if (actualFileType.includes("word")) extension = ".docx";
+        else if (actualFileType.includes("excel")) extension = ".xlsx";
+        else if (actualFileType.includes("powerpoint")) extension = ".pptx";
+        else if (actualFileType.includes("zip")) extension = ".zip";
+        else {
+          // Fallback: ambil ekstensi dari nama file asli
+          const originalExt = namaFile.split(".").pop();
+          extension = originalExt ? `.${originalExt}` : "";
+        }
+
+        link.download = `${formattedFileName}${extension}`;
+        link.click();
+
+        // Clean up setelah 10 detik
+        setTimeout(() => URL.revokeObjectURL(url), 10000);
+      }
+    } catch (error) {
+      console.error("Error fetching file:", error);
+      alert("Tidak dapat menampilkan pratinjau. Silakan unduh file.");
+    }
+  };
+
+  const handleGoBack = () => {
+    setIsBackAction(true);
+    setShowConfirmation(true);
+  };
+
+  const handleConfirmYes = () => {
+    setShowConfirmation(false);
+    window.location.reload();
+  };
+
+  const handleConfirmNo = () => {
+    setShowConfirmation(false);
+  };
 
   const userSchema = object({
     sec_id: string(),
     mat_id: string().required("ID Materi tidak boleh kosong"),
     mat_sharing_expert_pdf: string(),
     mat_sharing_expert_video: string(),
-
   });
 
-  const handlePdfChange = () => handleFileChange(fileInputRef, "pdf,docx,xlsx,pptx", 10);
-  const handleVideoChange = () => handleFileChange(vidioInputRef, "mp4,mov", 250);
+  const handlePdfChange = () =>
+    handleFileChange(fileInputRef, "pdf,docx,xlsx,pptx", 10);
+  const handleVideoChange = () =>
+    handleFileChange(vidioInputRef, "mp4,mov", 250);
+
   const handleFileChange = async (ref, extAllowed, maxFileSize) => {
     const { name, value } = ref.current;
     const file = ref.current.files[0];
@@ -246,7 +322,7 @@ export default function MasterSharingEdit({ onChangePage }) {
       }));
       return;
     }
-    
+
     if (
       Object.values(validationErrors).every((error) => !error) &&
       (!isPdfEmpty || !isVideoEmpty)
@@ -263,6 +339,7 @@ export default function MasterSharingEdit({ onChangePage }) {
           uploadFile(fileInputRef.current).then((data) => {
             formDataRef.current.mat_sharing_expert_pdf = data.Hasil;
             AppContext_test.sharingExpertPDF = data.Hasil;
+            setExistingPdfFile(data.Hasil);
           })
         );
       }
@@ -272,24 +349,34 @@ export default function MasterSharingEdit({ onChangePage }) {
           uploadFile(vidioInputRef.current).then((data) => {
             formDataRef.current.mat_sharing_expert_video = data.Hasil;
             AppContext_test.sharingExpertVideo = data.Hasil;
+            setExistingVideoFile(data.Hasil);
           })
         );
       }
+
       try {
         await Promise.all(uploadPromises);
 
         // Kirim data ke API
-        const response = await axios.post(API_LINK + "SharingExpert/UpdateDataSharing", {
-          p1: formDataRef.current.sec_id, 
-          p2: formDataRef.current.mat_sharing_expert_pdf || "", 
-          p3: formDataRef.current.mat_sharing_expert_video || "", 
-          p4: activeUser, 
-        });
+        const data = await UseFetch(
+          API_LINK + "SharingExpert/UpdateDataSharing",
+          {
+            p1: formDataRef.current.sec_id,
+            p2: formDataRef.current.mat_sharing_expert_pdf || existingPdfFile,
+            p3:
+              formDataRef.current.mat_sharing_expert_video || existingVideoFile,
+            p4: activeUser,
+          }
+        );
 
-        if (response.status === 200) {
-          SweetAlert("Berhasil", "Data Sharing Expert berhasil diubah!", "success");
-        } else {
+        if (data === "ERROR" || !data) {
           throw new Error("Gagal untuk menyimpan data Sharing Expert");
+        } else {
+          SweetAlert(
+            "Berhasil",
+            "Data Sharing Expert berhasil diubah!",
+            "success"
+          );
         }
       } catch (error) {
         console.error("Error editing Sharing Expert data:", error);
@@ -303,41 +390,64 @@ export default function MasterSharingEdit({ onChangePage }) {
     }
   };
 
-
   if (isLoading) return <Loading />;
 
-  const hasPDF = Materi.Sharing_pdf !== null && Materi.Sharing_pdf !== "";
-  const hasVideo = Materi.Sharing_video !== null && Materi.Sharing_video !== "";
+  // Gunakan state yang sudah diload daripada langsung dari Materi
+  const hasPDF = existingPdfFile !== null && existingPdfFile !== "";
+  const hasVideo = existingVideoFile !== null && existingVideoFile !== "";
 
   const handlePageChange = (content) => {
     onChangePage(content);
   };
 
-
   return (
     <>
-     <div className="" style={{display:"flex", justifyContent:"space-between", marginTop:"100px", marginLeft:"70px", marginRight:"70px"}}>
-            <div className="back-and-title" style={{display:"flex"}}>
-              <button style={{backgroundColor:"transparent", border:"none"}} onClick={handleGoBack}><img src={BackPage} alt="" /></button>
-                <h4 style={{ color:"#0A5EA8", fontWeight:"bold", fontSize:"30px", marginTop:"10px", marginLeft:"20px"}}>Edit Sharing Expert</h4>
-              </div>
-              </div>
+      <div
+        className=""
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          marginTop: "100px",
+          marginLeft: "70px",
+          marginRight: "70px",
+        }}
+      >
+        <div className="back-and-title" style={{ display: "flex" }}>
+          <button
+            style={{ backgroundColor: "transparent", border: "none" }}
+            onClick={handleGoBack}
+          >
+            <img src={BackPage} alt="" />
+          </button>
+          <h4
+            style={{
+              color: "#0A5EA8",
+              fontWeight: "bold",
+              fontSize: "30px",
+              marginTop: "10px",
+              marginLeft: "20px",
+            }}
+          >
+            Edit Sharing Expert
+          </h4>
+        </div>
+      </div>
       {isError.error && (
         <div className="flex-fill">
           <Alert type="danger" message={isError.message} />
         </div>
       )}
-      
-      <form onSubmit={handleAdd} style={{marginBottom:"20px"}}>
-      <div className="mb-4">
-            <CustomStepper
-          activeStep={3}
-          steps={steps}
-          onChangePage={handlePageChange}
-          getStepContent={getStepContent}
-        />
+
+      <form onSubmit={handleAdd} style={{ marginBottom: "20px" }}>
+        <div className="mb-4">
+          <CustomStepper
+            activeStep={3}
+            steps={steps}
+            onChangePage={handlePageChange}
+            getStepContent={getStepContent}
+          />
         </div>
-        <div className="card" style={{margin:"0px 80px"}}>
+        <div className="card" style={{ margin: "0px 80px" }}>
           <div className="card-body p-4">
             {hasPDF || hasVideo ? (
               <div className="row">
@@ -347,17 +457,20 @@ export default function MasterSharingEdit({ onChangePage }) {
                     forInput="mat_sharing_expert_pdf"
                     label="File Sharing Expert (.pdf, .docx, .xlsx, .pptx)"
                     formatFile=".pdf,.docx,.xlsx,.pptx,.mp4"
-                    onChange={() => handlePdfChange(fileInputRef, "pdf,docx,xlsx,pptx")}
+                    onChange={() =>
+                      handlePdfChange(fileInputRef, "pdf,docx,xlsx,pptx")
+                    }
                     errorMessage={errors.mat_sharing_expert_pdf}
                   />
-                  {AppContext_test.sharingExpertPDF && (
-                    <a style={{textDecoration:"none"}}
+                  {existingPdfFile && (
+                    <a
+                      style={{ textDecoration: "none" }}
                       href="#"
                       target="_blank"
                       rel="noopener noreferrer"
                       onClick={(e) => {
-                        e.preventDefault(); 
-                        previewFile(AppContext_test.sharingExpertPDF); 
+                        e.preventDefault();
+                        previewFile(existingPdfFile, "application/pdf");
                       }}
                     >
                       Lihat berkas yang telah diunggah
@@ -374,14 +487,15 @@ export default function MasterSharingEdit({ onChangePage }) {
                     onChange={() => handleVideoChange(vidioInputRef, "mp4,mov")}
                     errorMessage={errors.mat_sharing_expert_video}
                   />
-                  {AppContext_test.sharingExpertVideo && (
-                    <a style={{textDecoration:"none"}}
+                  {existingVideoFile && (
+                    <a
+                      style={{ textDecoration: "none" }}
                       href="#"
                       target="_blank"
                       rel="noopener noreferrer"
                       onClick={(e) => {
-                        e.preventDefault(); 
-                        previewFile(AppContext_test.sharingExpertVideo); 
+                        e.preventDefault();
+                        previewFile(existingVideoFile, "video/mp4");
                       }}
                     >
                       Lihat berkas yang telah diunggah
@@ -389,71 +503,119 @@ export default function MasterSharingEdit({ onChangePage }) {
                   )}
                 </div>
 
-                <div className="float my-4 mx-1 d-flex " style={{justifyContent:"space-between"}}>
+                <div
+                  className="float my-4 mx-1 d-flex "
+                  style={{ justifyContent: "space-between" }}
+                >
                   <div className="">
-          <Button
-            classType="outline-secondary me-2 px-4 py-2"
-            label="Sebelumnya"
-            onClick={() => onChangePage("forumEdit", AppContext_test.ForumForm, AppContext_test.MateriForm , AppContext_master.count += 1)}
-          />
-          </div>
-          <div className="d-flex">
-          {hasPDF || hasVideo ? (
-            <div className="mr-2">
-              <Button
-                  classType="primary ms-2 px-4 py-2"
-                  type="submit"
-                  label="Edit"
-              />
-              </div>
-          ) : (
-            null  
-          )}
-           <Button
-            classType="primary ms-3 px-4 py-2"
-            label="Berikutnya"
-            onClick={() => onChangePage("pretestEdit", AppContext_master.MateriForm, AppContext_master.count += 1)}
-          />
-          </div>
-        </div>
+                    <Button
+                      classType="outline-secondary me-2 px-4 py-2"
+                      label="Sebelumnya"
+                      onClick={() =>
+                        onChangePage(
+                          "forumEdit",
+                          AppContext_test.ForumForm,
+                          AppContext_test.MateriForm,
+                          (AppContext_master.count += 1)
+                        )
+                      }
+                    />
+                  </div>
+                  <div className="d-flex">
+                    {hasPDF || hasVideo ? (
+                      <div className="mr-2">
+                        <Button
+                          classType="primary ms-2 px-4 py-2"
+                          type="submit"
+                          label="Edit"
+                        />
+                      </div>
+                    ) : null}
+                    <Button
+                      classType="primary ms-3 px-4 py-2"
+                      label="Berikutnya"
+                      onClick={() =>
+                        onChangePage(
+                          "pretestEdit",
+                          AppContext_master.MateriForm,
+                          (AppContext_master.count += 1)
+                        )
+                      }
+                    />
+                  </div>
+                </div>
               </div>
             ) : (
               <>
-              <div className="" style={{marginLeft:"20px", marginRight:"20px"}}>
-              <Alert type="warning" message={(
-                <span>
-                  Data Sharing Expert belum ditambahkan. <a onClick={() => onChangePage("sharingEditNot", AppContext_master.MateriForm)} className="text-primary">Tambah Data</a>
-                </span>
-              )} />
-              </div>
+                <div
+                  className=""
+                  style={{ marginLeft: "20px", marginRight: "20px" }}
+                >
+                  <Alert
+                    type="warning"
+                    message={
+                      <span>
+                        Data Sharing Expert belum ditambahkan.{" "}
+                        <a
+                          onClick={() =>
+                            onChangePage(
+                              "sharingEditNot",
+                              AppContext_master.MateriForm
+                            )
+                          }
+                          className="text-primary"
+                        >
+                          Tambah Data
+                        </a>
+                      </span>
+                    }
+                  />
+                </div>
                 <div className="d-flex justify-content-between ">
-            <div className="ml-4">
-            <Button
-            classType="outline-secondary me-2 px-4 py-2"
-            label="Sebelumnya"
-            onClick={() => onChangePage("forumEdit", AppContext_test.ForumForm, AppContext_test.MateriForm , AppContext_master.count += 1)}
-          />
-          </div>
-          <div className="d-flex mr-4" >
-          <Button
-            classType="primary ms-3 px-4 py-2"
-            label="Berikutnya"
-            onClick={() => onChangePage("pretestEdit", AppContext_master.MateriForm, AppContext_master.count += 1, AppContext_test.ForumForm)}
-          />
-          </div>
-        </div>
-            </>
-              
+                  <div className="ml-4">
+                    <Button
+                      classType="outline-secondary me-2 px-4 py-2"
+                      label="Sebelumnya"
+                      onClick={() =>
+                        onChangePage(
+                          "forumEdit",
+                          AppContext_test.ForumForm,
+                          AppContext_test.MateriForm,
+                          (AppContext_master.count += 1)
+                        )
+                      }
+                    />
+                  </div>
+                  <div className="d-flex mr-4">
+                    <Button
+                      classType="primary ms-3 px-4 py-2"
+                      label="Berikutnya"
+                      onClick={() =>
+                        onChangePage(
+                          "pretestEdit",
+                          AppContext_master.MateriForm,
+                          (AppContext_master.count += 1),
+                          AppContext_test.ForumForm
+                        )
+                      }
+                    />
+                  </div>
+                </div>
+              </>
             )}
           </div>
         </div>
         {showConfirmation && (
-        <Konfirmasi
-          title={isBackAction ? "Konfirmasi Kembali" : "Konfirmasi Simpan"}
-          pesan={isBackAction ? "Apakah anda ingin kembali?" : "Anda yakin ingin simpan data?"}
-          onYes={handleConfirmYes}
-          onNo={handleConfirmNo}
-        />
+          <Konfirmasi
+            title={isBackAction ? "Konfirmasi Kembali" : "Konfirmasi Simpan"}
+            pesan={
+              isBackAction
+                ? "Apakah anda ingin kembali?"
+                : "Anda yakin ingin simpan data?"
+            }
+            onYes={handleConfirmYes}
+            onNo={handleConfirmNo}
+          />
         )}
       </form>
     </>

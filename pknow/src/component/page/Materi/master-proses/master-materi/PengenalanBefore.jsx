@@ -13,7 +13,6 @@ import UploadFile from "../../../../util/UploadFile";
 import Alert from "../../../../part/Alert";
 import AppContext_master from "../MasterContext";
 import AppContext_test from "../../master-test/TestContext";
-import axios from "axios";
 import Editor from "../../../../part/CKEditor";
 import BackPage from "../../../../../assets/backPage.png";
 import Konfirmasi from "../../../../part/Konfirmasi";
@@ -51,21 +50,26 @@ export default function PengenalanBefore({ onChangePage }) {
   const previewFile = async (namaFile) => {
     try {
       namaFile = namaFile.trim();
-      const response = await axios.get(
-        `${API_LINK}Utilities/Upload/DownloadFile`,
+
+      const response = await fetch(
+        `${API_LINK}Utilities/Upload/DownloadFile?namaFile=${namaFile}`,
         {
-          params: {
-            namaFile,
+          method: "GET",
+          headers: {
+            Authorization: "Bearer " + localStorage.getItem("jwtToken"),
           },
-          responseType: "arraybuffer",
         }
       );
 
-      const blob = new Blob([response.data], {
-        type: response.headers["content-type"],
-      });
+      if (!response.ok) {
+        throw new Error("Tidak dapat mengambil file");
+      }
+
+      const blob = await response.blob();
       const url = URL.createObjectURL(blob);
       window.open(url, "_blank");
+
+      setTimeout(() => URL.revokeObjectURL(url), 10000);
     } catch (error) {
       console.log(error);
     }
@@ -168,11 +172,13 @@ export default function PengenalanBefore({ onChangePage }) {
 
   const fetchDataMateriById = async (id) => {
     try {
-      const response = await axios.post(
-        API_LINK + "Materi/GetDataMateriById",
-        id
-      );
-      return response.data;
+      const data = await UseFetch(API_LINK + "Materi/GetDataMateriById", id);
+
+      if (data === "ERROR") {
+        throw new Error("Gagal mengambil data materi");
+      }
+
+      return data;
     } catch (error) {
       console.error("Terjadi kesalahan saat mengambil data materi:", error);
       throw error;
@@ -205,11 +211,15 @@ export default function PengenalanBefore({ onChangePage }) {
 
       try {
         await Promise.all(uploadPromises);
-        axios
-          .post(API_LINK + "Materi/UpdateDataMateri", formDataRef.current)
-          .then((response) => {
-            const data = response.data;
-            if (data[0].hasil === "OK") {
+        UseFetch(API_LINK + "Materi/UpdateDataMateri", formDataRef.current)
+          .then((data) => {
+            if (data === "ERROR" || !data || data.length === 0) {
+              setIsError((prevError) => ({
+                ...prevError,
+                error: true,
+                message: "Terjadi kesalahan: Gagal menyimpan data Materi.",
+              }));
+            } else if (data[0].hasil === "OK") {
               setIsFormDisabled(false);
               AppContext_master.formSavedMateri = false;
               onChangePage(

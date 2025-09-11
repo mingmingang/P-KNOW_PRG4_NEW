@@ -6,7 +6,6 @@ import Button from "../../../../part/Button copy";
 import Input from "../../../../part/Input";
 import Loading from "../../../../part/Loading";
 import Alert from "../../../../part/Alert";
-import axios from "axios";
 import { API_LINK } from "../../../../util/Constants";
 import UseFetch from "../../../../util/UseFetch";
 import Editor from "../../../../part/CKEditor";
@@ -108,7 +107,7 @@ export default function MasterForumEdit({ onChangePage }) {
   const Materi = AppContext_master.MateriForm;
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [isBackAction, setIsBackAction] = useState(false);
-const [isFormDisabled, setIsFormDisabled] = useState(false);
+  const [isFormDisabled, setIsFormDisabled] = useState(false);
   const handleGoBack = () => {
     setIsBackAction(true);
     setShowConfirmation(true);
@@ -194,16 +193,17 @@ const [isFormDisabled, setIsFormDisabled] = useState(false);
     }
 
     try {
-      const response = await axios.post(API_LINK + "Forum/EditDataForum", {
+      const data = await UseFetch(API_LINK + "Forum/EditDataForum", {
         p1: Materi.Key,
         p2: formData.forumJudul,
         p3: formData.forumIsi,
         p4: activeUser,
       });
-      if (response.status === 200) {
-        SweetAlert("Berhasil", "Data forum berhasil diubah!", "success");
-      } else {
+
+      if (data === "ERROR" || !data) {
         throw new Error("Gagal untuk menyimpan data forum");
+      } else {
+        SweetAlert("Berhasil", "Data forum berhasil diubah!", "success");
       }
     } catch (error) {
       setIsError(true);

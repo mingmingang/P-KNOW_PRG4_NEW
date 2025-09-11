@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState, useContext } from "react";
-import axios from "axios";
 import { PAGE_SIZE, API_LINK, ROOT_LINK } from "../../../util/Constants";
 import UseFetch from "../../../util/UseFetch";
 import Alert from "../../../part/Alert";
@@ -106,12 +105,12 @@ export default function MasterTestIndex({ onChangePage, materiId }) {
 
     while (!success && retryCount < maxRetries) {
       try {
-        const response = await axios.post(
-          API_LINK + "Materis/SaveProgresMateri",
+        const response = await UseFetch(
+          API_LINK + "Materi/SaveProgresMateri",
           formUpdate.current
         );
 
-        if (response.data != 0) {
+        if (response !== "ERROR" && response != 0) {
           success = true;
           AppContext_test.refreshPage += retryCount;
         }
@@ -134,7 +133,7 @@ export default function MasterTestIndex({ onChangePage, materiId }) {
 
     while (!success && retryCount < maxRetries) {
       try {
-        const response = await axios.post(
+        const response = await UseFetch(
           API_LINK + "Materi/UpdatePoinProgresMateri",
           {
             materiId: AppContext_test.materiId,
@@ -142,7 +141,7 @@ export default function MasterTestIndex({ onChangePage, materiId }) {
             tipe: "Materi",
           }
         );
-        if (response.status === 200) {
+        if (response !== "ERROR") {
           success = true;
         }
       } catch (error) {

@@ -1,7 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import KMS_Rightbar from "../../../part/RightBar";
 import { validateAllInputs, validateInput } from "../../../util/ValidateForm";
-import axios from "axios";
 import Input from "../../../part/Input";
 import { object, string } from "yup";
 import AppContext_test from "./TestContext";
@@ -10,6 +9,7 @@ import Cookies from "js-cookie";
 import { decryptId } from "../../../util/Encryptor";
 import he from "he";
 import maskotPknow from "../../../../assets/pknowmaskot.png";
+import UseFetch from "../../../util/UseFetch";
 
 const cleanText = (html) => {
   const decoded = he.decode(html);
@@ -52,7 +52,7 @@ export default function Forum({ onChangePage, isOpen }) {
 
     while (!success && retryCount < maxRetries) {
       try {
-        const response = await axios.post(
+        const data = await UseFetch(
           API_LINK + "Materi/UpdatePoinProgresMateri",
           {
             materiId: AppContext_test.materiId,
@@ -60,8 +60,11 @@ export default function Forum({ onChangePage, isOpen }) {
             tipe: "Forum",
           }
         );
-        if (response.status === 200) {
+
+        if (data !== "ERROR") {
           success = true;
+        } else {
+          throw new Error("Failed to save progress");
         }
       } catch (error) {
         console.error("Failed to save progress:", error);
@@ -161,10 +164,16 @@ export default function Forum({ onChangePage, isOpen }) {
       setErrors({});
     }
     try {
-      const response = await axios.post(
+      // Menggunakan UseFetch untuk mengirim balasan
+      const data = await UseFetch(
         API_LINK + "Forum/SaveTransaksiForum",
         formDataRef.current
       );
+
+      if (data === "ERROR") {
+        throw new Error("Gagal mengirim balasan");
+      }
+
       const updatedForumData = await fetchDataWithRetry();
       setCurrentData(updatedForumData);
       formDataRef.current.isiDetailForum = "";
@@ -227,12 +236,14 @@ export default function Forum({ onChangePage, isOpen }) {
   const fetchDataWithRetry = async (retries = 10, delay = 1000) => {
     for (let i = 0; i < retries; i++) {
       try {
-        const response = await axios.post(API_LINK + "Forum/GetDataForum", {
+        // Menggunakan UseFetch untuk mengambil data forum
+        const data = await UseFetch(API_LINK + "Forum/GetDataForum", {
           materiId: AppContext_test.materiId,
         });
-        if (response.data.length != 0) {
-          setCurrentData(response.data);
-          return response.data;
+
+        if (data !== "ERROR" && data.length !== 0) {
+          setCurrentData(data);
+          return data;
         }
       } catch (error) {
         console.error("Error fetching quiz data:", error);

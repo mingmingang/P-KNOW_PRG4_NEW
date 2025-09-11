@@ -11,25 +11,24 @@ import Alert from "../../../part/Alert";
 import AppContext_master from "../MasterContext";
 import AppContext_test from "../../master-test/TestContext";
 import uploadFile from "../../../util/UploadFile";
-import { Stepper, Step, StepLabel } from '@mui/material';
+import { Stepper, Step, StepLabel } from "@mui/material";
 
-import axios from "axios";
-const steps = ['Materi', 'Pretest', 'Sharing Expert', 'Forum', 'Post Test'];
+const steps = ["Materi", "Pretest", "Sharing Expert", "Forum", "Post Test"];
 
 function getStepContent(stepIndex) {
   switch (stepIndex) {
     case 0:
-      return 'materiAdd';
+      return "materiAdd";
     case 1:
-      return 'pretestAdd';
+      return "pretestAdd";
     case 2:
-      return 'sharingAdd';
+      return "sharingAdd";
     case 3:
-      return 'forumAdd';
+      return "forumAdd";
     case 4:
-      return 'posttestAdd';
+      return "posttestAdd";
     default:
-      return 'Unknown stepIndex';
+      return "Unknown stepIndex";
   }
 }
 export default function MasterSharingDetailNot({ onChangePage }) {
@@ -37,21 +36,32 @@ export default function MasterSharingDetailNot({ onChangePage }) {
   const [isError, setIsError] = useState({ error: false, message: "" });
   const [isLoading, setIsLoading] = useState(false);
 
-  
   const previewFile = async (namaFile) => {
     try {
       namaFile = namaFile.trim();
-      const response = await axios.get(`${API_LINK}Utilities/Upload/DownloadFile`, {
-        params: {
-          namaFile 
-        },
-        responseType: 'arraybuffer' 
-      }); 
+      const response = await fetch(
+        `${API_LINK}Utilities/Upload/DownloadFile?namaFile=${encodeURIComponent(
+          namaFile
+        )}`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: "Bearer " + localStorage.getItem("jwtToken"),
+          },
+        }
+      );
 
-      const blob = new Blob([response.data], { type: response.headers['content-type'] });
+      if (!response.ok) {
+        throw new Error("Tidak dapat mengambil file");
+      }
+
+      const blob = await response.blob();
       const url = URL.createObjectURL(blob);
-      window.open(url, '_blank');
+      window.open(url, "_blank");
+
+      setTimeout(() => URL.revokeObjectURL(url), 10000);
     } catch (error) {
+      console.error("Error previewing file:", error);
     }
   };
   const fileInputRef = useRef(null);
@@ -60,8 +70,8 @@ export default function MasterSharingDetailNot({ onChangePage }) {
   // AppContext_test.ForumForm
   const formDataRef = useRef({
     mat_id: AppContext_test.DetailMateri?.Key || "",
-    mat_sharing_expert_pdf: AppContext_test.DetailMateri?.Sharing_pdf||"",
-    mat_sharing_expert_video: AppContext_test.DetailMateri?.Sharing_video||"",
+    mat_sharing_expert_pdf: AppContext_test.DetailMateri?.Sharing_pdf || "",
+    mat_sharing_expert_video: AppContext_test.DetailMateri?.Sharing_video || "",
   });
 
   const userSchema = object({
@@ -79,9 +89,10 @@ export default function MasterSharingDetailNot({ onChangePage }) {
       [validationError.name]: validationError.error,
     }));
   };
-  
+
   const handlePdfChange = () => handleFileChange(fileInputRef, "pdf", 5);
-  const handleVideoChange = () => handleFileChange(vidioInputRef, "mp4,mov", 100);
+  const handleVideoChange = () =>
+    handleFileChange(vidioInputRef, "mp4,mov", 100);
   const handleFileChange = async (ref, extAllowed, maxFileSize) => {
     const file = ref.current.files[0];
     const fileName = file.name;
@@ -107,218 +118,221 @@ export default function MasterSharingDetailNot({ onChangePage }) {
   const handleAdd = async (e) => {
     e.preventDefault();
     const validationErrors = await validateAllInputs(
-        formDataRef.current,
-        userSchema,
-        setErrors
+      formDataRef.current,
+      userSchema,
+      setErrors
     );
 
     const isPdfEmpty = !fileInputRef.current.files.length;
     const isVideoEmpty = !vidioInputRef.current.files.length;
 
     if (isPdfEmpty && isVideoEmpty) {
-        setErrors((prevErrors) => ({
-            ...prevErrors,
-            mat_sharing_expert_pdf: "Pilih salah satu antara PDF atau Video",
-            mat_sharing_expert_video: "Pilih salah satu antara PDF atau Video",
-        }));
-        return;
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        mat_sharing_expert_pdf: "Pilih salah satu antara PDF atau Video",
+        mat_sharing_expert_video: "Pilih salah satu antara PDF atau Video",
+      }));
+      return;
     }
 
     if (
-        Object.values(validationErrors).every((error) => !error) &&
-        (!isPdfEmpty || !isVideoEmpty)
+      Object.values(validationErrors).every((error) => !error) &&
+      (!isPdfEmpty || !isVideoEmpty)
     ) {
-        setIsLoading(true);
-        setIsError({ error: false, message: "" });
-        setErrors({});
+      setIsLoading(true);
+      setIsError({ error: false, message: "" });
+      setErrors({});
 
-        const uploadPromises = [];
+      const uploadPromises = [];
 
-        if (fileInputRef.current && fileInputRef.current.files.length > 0) {
-            uploadPromises.push(
-                uploadFile(fileInputRef.current).then((data) => {
-                    formDataRef.current.mat_sharing_expert_pdf = data.newFileName;
+      if (fileInputRef.current && fileInputRef.current.files.length > 0) {
+        uploadPromises.push(
+          uploadFile(fileInputRef.current).then((data) => {
+            formDataRef.current.mat_sharing_expert_pdf = data.newFileName;
             AppContext_test.sharingExpertPDF = data.newFileName;
-                })
-            );
-        }
+          })
+        );
+      }
 
-        if (vidioInputRef.current && vidioInputRef.current.files.length > 0) {
-            uploadPromises.push(
-                uploadFile(vidioInputRef.current).then((data) => {
-                    formDataRef.current.mat_sharing_expert_video = data.newFileName;
+      if (vidioInputRef.current && vidioInputRef.current.files.length > 0) {
+        uploadPromises.push(
+          uploadFile(vidioInputRef.current).then((data) => {
+            formDataRef.current.mat_sharing_expert_video = data.newFileName;
             AppContext_test.sharingExpertVideo = data.newFileName;
+          })
+        );
+      }
+
+      Promise.all(uploadPromises)
+        .then(() => {
+          return UseFetch(
+            API_LINK + "SharingExperts/SaveDataSharing",
+            formDataRef.current
+          );
+        })
+        .then((data) => {
+          if (data === "ERROR") {
+            setIsError({
+              error: true,
+              message: "Terjadi kesalahan: Gagal menyimpan data Sharing.",
+            });
+          } else {
+            // Ambil data terbaru dari server setelah disimpan
+            return UseFetch(API_LINK + "Materis/GetDataMateriById", {
+              p1: formDataRef.current.mat_id,
+            });
+          }
+        })
+        .then((responseData) => {
+          // Konversi file PDF dan video menjadi blob
+          const promises = responseData.map((value) => {
+            const filePromises = [];
+
+            // Fetch Gambar
+            if (value.Gambar) {
+              const gambarPromise = fetch(
+                `${API_LINK}Utilities/Upload/DownloadFile?namaFile=${encodeURIComponent(
+                  value.Gambar
+                )}`
+              )
+                .then((response) => response.blob())
+                .then((blob) => {
+                  const url = URL.createObjectURL(blob);
+                  value.Gambar = url;
+                  return value;
                 })
-            );
-        }
-
-        Promise.all(uploadPromises)
-            .then(() => {
-                return UseFetch(
-                    API_LINK + "SharingExperts/SaveDataSharing",
-                    formDataRef.current
-                );
-            })
-            .then((data) => {
-                if (data === "ERROR") {
-                    setIsError({
-                        error: true,
-                        message: "Terjadi kesalahan: Gagal menyimpan data Sharing.",
-                    });
-                } else {
-                    // Ambil data terbaru dari server setelah disimpan
-                    return UseFetch(API_LINK + "Materis/GetDataMateriById", {
-                        p1: formDataRef.current.mat_id,
-                    });
-                }
-            })
-            .then((responseData) => {
-                // Konversi file PDF dan video menjadi blob
-                const promises = responseData.map((value) => {
-                    const filePromises = [];
-
-                    // Fetch Gambar
-                    if (value.Gambar) {
-                        const gambarPromise = fetch(
-                            `${API_LINK}Utilities/Upload/DownloadFile?namaFile=${encodeURIComponent(
-                                value.Gambar
-                            )}`
-                        )
-                            .then((response) => response.blob())
-                            .then((blob) => {
-                                const url = URL.createObjectURL(blob);
-                                value.Gambar = url;
-                                return value;
-                            })
-                            .catch((error) => {
-                                console.error("Error fetching gambar:", error);
-                                return value;
-                            });
-                        filePromises.push(gambarPromise);
-                    }
-
-                    // Fetch File Video
-                    if (value.File_video) {
-                        const videoPromise = fetch(
-                            `${API_LINK}Utilities/Upload/DownloadFile?namaFile=${encodeURIComponent(
-                                value.File_video
-                            )}`
-                        )
-                            .then((response) => response.blob())
-                            .then((blob) => {
-                                const url = URL.createObjectURL(blob);
-                                value.File_video = url;
-                                return value;
-                            })
-                            .catch((error) => {
-                                console.error("Error fetching video:", error);
-                                return value;
-                            });
-                        filePromises.push(videoPromise);
-                    }
-
-                    // Fetch File PDF
-                    if (value.File_pdf) {
-                        const pdfPromise = fetch(
-                            `${API_LINK}Utilities/Upload/DownloadFile?namaFile=${encodeURIComponent(
-                                value.File_pdf
-                            )}`
-                        )
-                            .then((response) => response.blob())
-                            .then((blob) => {
-                                const url = URL.createObjectURL(blob);
-                                value.File_pdf = url;
-                                return value;
-                            })
-                            .catch((error) => {
-                                console.error("Error fetching PDF:", error);
-                                return value;
-                            });
-                        filePromises.push(pdfPromise);
-                    }
-
-                    // Fetch Sharing PDF
-                    if (value.Sharing_pdf) {
-                        const sharingPdfPromise = fetch(
-                            `${API_LINK}Utilities/Upload/DownloadFile?namaFile=${encodeURIComponent(
-                                value.Sharing_pdf
-                            )}`
-                        )
-                            .then((response) => response.blob())
-                            .then((blob) => {
-                                const url = URL.createObjectURL(blob);
-                                value.Sharing_pdf_url = url;
-                                return value;
-                            })
-                            .catch((error) => {
-                                console.error("Error fetching sharing PDF:", error);
-                                return value;
-                            });
-                        filePromises.push(sharingPdfPromise);
-                    }
-
-                    // Fetch Sharing Video
-                    if (value.Sharing_video) {
-                        const sharingVideoPromise = fetch(
-                            `${API_LINK}Utilities/Upload/DownloadFile?namaFile=${encodeURIComponent(
-                                value.Sharing_video
-                            )}`
-                        )
-                            .then((response) => response.blob())
-                            .then((blob) => {
-                                const url = URL.createObjectURL(blob);
-                                value.Sharing_video_url = url;
-                                return value;
-                            })
-                            .catch((error) => {
-                                console.error("Error fetching sharing video:", error);
-                                return value;
-                            });
-                        filePromises.push(sharingVideoPromise);
-                    }
-
-                    return Promise.all(filePromises).then((results) => {
-                        const updatedValue = results.reduce(
-                            (acc, curr) => ({ ...acc, ...curr }),
-                            value
-                        );
-                        return updatedValue;
-                    });
+                .catch((error) => {
+                  console.error("Error fetching gambar:", error);
+                  return value;
                 });
+              filePromises.push(gambarPromise);
+            }
 
-                return Promise.all(promises)
-                    .then((updatedData) => {
-                        if (AppContext_test.DetailMateri) {
-                            const updatedDetailMateri = updatedData[0];
-                            AppContext_test.DetailMateri.Sharing_pdf_url = updatedDetailMateri.Sharing_pdf_url || null;
-                            AppContext_test.DetailMateri.Sharing_video_url = updatedDetailMateri.Sharing_video_url || null;
-                        }
-                        SweetAlert(
-                          "Sukses",
-                          "Data Sharing Expert berhasil disimpan",
-                          "success"
-                      ).then(() => {
-                          onChangePage("sharingDetail", AppContext_test.DetailMateri);
-                      });
-                    })
-                    .catch((error) => {
-                        console.error("Error updating currentData:", error);
-                    });
+            // Fetch File Video
+            if (value.File_video) {
+              const videoPromise = fetch(
+                `${API_LINK}Utilities/Upload/DownloadFile?namaFile=${encodeURIComponent(
+                  value.File_video
+                )}`
+              )
+                .then((response) => response.blob())
+                .then((blob) => {
+                  const url = URL.createObjectURL(blob);
+                  value.File_video = url;
+                  return value;
+                })
+                .catch((error) => {
+                  console.error("Error fetching video:", error);
+                  return value;
+                });
+              filePromises.push(videoPromise);
+            }
+
+            // Fetch File PDF
+            if (value.File_pdf) {
+              const pdfPromise = fetch(
+                `${API_LINK}Utilities/Upload/DownloadFile?namaFile=${encodeURIComponent(
+                  value.File_pdf
+                )}`
+              )
+                .then((response) => response.blob())
+                .then((blob) => {
+                  const url = URL.createObjectURL(blob);
+                  value.File_pdf = url;
+                  return value;
+                })
+                .catch((error) => {
+                  console.error("Error fetching PDF:", error);
+                  return value;
+                });
+              filePromises.push(pdfPromise);
+            }
+
+            // Fetch Sharing PDF
+            if (value.Sharing_pdf) {
+              const sharingPdfPromise = fetch(
+                `${API_LINK}Utilities/Upload/DownloadFile?namaFile=${encodeURIComponent(
+                  value.Sharing_pdf
+                )}`
+              )
+                .then((response) => response.blob())
+                .then((blob) => {
+                  const url = URL.createObjectURL(blob);
+                  value.Sharing_pdf_url = url;
+                  return value;
+                })
+                .catch((error) => {
+                  console.error("Error fetching sharing PDF:", error);
+                  return value;
+                });
+              filePromises.push(sharingPdfPromise);
+            }
+
+            // Fetch Sharing Video
+            if (value.Sharing_video) {
+              const sharingVideoPromise = fetch(
+                `${API_LINK}Utilities/Upload/DownloadFile?namaFile=${encodeURIComponent(
+                  value.Sharing_video
+                )}`
+              )
+                .then((response) => response.blob())
+                .then((blob) => {
+                  const url = URL.createObjectURL(blob);
+                  value.Sharing_video_url = url;
+                  return value;
+                })
+                .catch((error) => {
+                  console.error("Error fetching sharing video:", error);
+                  return value;
+                });
+              filePromises.push(sharingVideoPromise);
+            }
+
+            return Promise.all(filePromises).then((results) => {
+              const updatedValue = results.reduce(
+                (acc, curr) => ({ ...acc, ...curr }),
+                value
+              );
+              return updatedValue;
+            });
+          });
+
+          return Promise.all(promises)
+            .then((updatedData) => {
+              if (AppContext_test.DetailMateri) {
+                const updatedDetailMateri = updatedData[0];
+                AppContext_test.DetailMateri.Sharing_pdf_url =
+                  updatedDetailMateri.Sharing_pdf_url || null;
+                AppContext_test.DetailMateri.Sharing_video_url =
+                  updatedDetailMateri.Sharing_video_url || null;
+              }
+              SweetAlert(
+                "Sukses",
+                "Data Sharing Expert berhasil disimpan",
+                "success"
+              ).then(() => {
+                onChangePage("sharingDetail", AppContext_test.DetailMateri);
+              });
             })
             .catch((error) => {
-                console.error("Error:", error);
-                setIsError({
-                    error: true,
-                    message: "Terjadi kesalahan: Gagal menyimpan data atau mengambil data terbaru.",
-                });
-            })
-            .finally(() => {
-                setIsLoading(false);
+              console.error("Error updating currentData:", error);
             });
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+          setIsError({
+            error: true,
+            message:
+              "Terjadi kesalahan: Gagal menyimpan data atau mengambil data terbaru.",
+          });
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
     }
-};
+  };
 
-const [activeStep, setActiveStep] = useState(2);
+  const [activeStep, setActiveStep] = useState(2);
 
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -331,7 +345,6 @@ const [activeStep, setActiveStep] = useState(2);
   const handleReset = () => {
     setActiveStep(0);
   };
-  
 
   if (isLoading) return <Loading />;
 
@@ -346,7 +359,10 @@ const [activeStep, setActiveStep] = useState(2);
         <div>
           <Stepper activeStep={activeStep}>
             {steps.map((label, index) => (
-              <Step key={label} onClick={() => onChangePage(getStepContent(index))}>
+              <Step
+                key={label}
+                onClick={() => onChangePage(getStepContent(index))}
+              >
                 <StepLabel>{label}</StepLabel>
               </Step>
             ))}
@@ -361,8 +377,12 @@ const [activeStep, setActiveStep] = useState(2);
                 <Button disabled={activeStep === 0} onClick={handleBack}>
                   Back
                 </Button>
-                <Button variant="contained" color="primary" onClick={handleNext}>
-                  {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={handleNext}
+                >
+                  {activeStep === steps.length - 1 ? "Finish" : "Next"}
                 </Button>
               </div>
             )}
@@ -390,8 +410,8 @@ const [activeStep, setActiveStep] = useState(2);
                     target="_blank"
                     rel="noopener noreferrer"
                     onClick={(e) => {
-                      e.preventDefault(); 
-                      previewFile(AppContext_test.sharingExpertPDF); 
+                      e.preventDefault();
+                      previewFile(AppContext_test.sharingExpertPDF);
                     }}
                   >
                     Lihat berkas yang telah diunggah
@@ -414,8 +434,8 @@ const [activeStep, setActiveStep] = useState(2);
                     target="_blank"
                     rel="noopener noreferrer"
                     onClick={(e) => {
-                      e.preventDefault(); 
-                      previewFile(AppContext_test.sharingExpertVideo); 
+                      e.preventDefault();
+                      previewFile(AppContext_test.sharingExpertVideo);
                     }}
                   >
                     Lihat berkas yang telah diunggah

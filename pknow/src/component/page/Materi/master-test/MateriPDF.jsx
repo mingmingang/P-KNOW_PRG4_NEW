@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, useContext } from "react";
-import axios from "axios";
+import UseFetch from "../../../util/UseFetch";
 import { PAGE_SIZE, API_LINK, ROOT_LINK } from "../../../util/Constants";
 import Alert from "../../../part/Alert";
 import Loading from "../../../part/Loading";
@@ -64,15 +64,12 @@ export default function MasterTestIndex({ onChangePage, materiId }) {
   const getFileData = async (retries = 3, delay = 1000) => {
     for (let i = 0; i < retries; i++) {
       try {
-        const response = await axios.post(
-          API_LINK + "Materi/GetDataMateriById",
-          {
-            id: AppContext_test.materiId,
-          }
-        );
-        if (response.data.length !== 0) {
+        const response = await UseFetch(API_LINK + "Materi/GetDataMateriById", {
+          id: AppContext_test.materiId,
+        });
+        if (response !== "ERROR" && response.length !== 0) {
           const { File_pdf, Judul, Nama, Creadate, NamaKK, Prodi } =
-            response.data[0];
+            response[0];
           if (!File_pdf || !Judul) {
             console.error("File_pdf atau Judul tidak ditemukan!");
             return;
@@ -109,11 +106,18 @@ export default function MasterTestIndex({ onChangePage, materiId }) {
 
   const setupDownload = async (fileUrl, formattedFileName) => {
     try {
-      const response = await axios.get(fileUrl, {
-        responseType: "blob",
+      const response = await fetch(fileUrl, {
+        method: "GET",
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("jwtToken"),
+        },
       });
 
-      const blob = new Blob([response.data]);
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+
+      const blob = await response.blob();
       const blobUrl = window.URL.createObjectURL(blob);
 
       const link = document.createElement("a");
@@ -160,7 +164,7 @@ export default function MasterTestIndex({ onChangePage, materiId }) {
 
     while (!success && retryCount < maxRetries) {
       try {
-        const response = await axios.post(
+        const response = await UseFetch(
           API_LINK + "Materi/UpdatePoinProgresMateri",
           {
             materiId: AppContext_test.materiId,
@@ -168,7 +172,7 @@ export default function MasterTestIndex({ onChangePage, materiId }) {
             tipe: "Materi",
           }
         );
-        if (response.status === 200) {
+        if (response !== "ERROR") {
           success = true;
         }
       } catch (error) {

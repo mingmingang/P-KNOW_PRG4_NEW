@@ -5,11 +5,11 @@ import Button from "../../../part/Button";
 import Input from "../../../part/Input";
 import Loading from "../../../part/Loading";
 import Alert from "../../../part/Alert";
-import { API_LINK } from "../../../util/Constants";
+import { API_LINK } from "../../../../util/Constants";
 import AppContext_test from "../../master-test/TestContext";
 import Editor from "../../../../part/CKEditor";
 import Swal from "sweetalert2";
-import axios from "axios";
+import UseFetch from "../../../../util/UseFetch";
 import { Stepper, Step, StepLabel } from "@mui/material";
 
 const steps = ["Materi", "Pretest", "Sharing Expert", "Forum", "Post Test"];
@@ -90,15 +90,12 @@ export default function MasterForumAddNot({ onChangePage }) {
     }
 
     try {
-      const response = await axios.post(
-        API_LINK + "Forum/SaveDataForum",
-        formData
-      );
+      const data = await UseFetch(API_LINK + "Forum/SaveDataForum", formData);
 
-      if (response === "ERROR") {
+      if (data === "ERROR" || !data) {
         setIsError({
           error: true,
-          message: "Terjadi kesalahan: Gagal menyimpan data Sharing.",
+          message: "Terjadi kesalahan: Gagal menyimpan data Forum.",
         });
       } else {
         Swal.fire({

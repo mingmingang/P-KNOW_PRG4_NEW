@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { PAGE_SIZE, API_LINK, ROOT_LINK } from "../../../util/Constants";
-import axios from "axios";
+import UseFetch from "../../../util/UseFetch";
 import AppContext_test from "./TestContext";
 import ReactPlayer from "react-player";
 import KMS_Rightbar from "../../../part/RightBar";
@@ -49,7 +49,7 @@ export default function MasterTestSharingVideo({
 
     while (!success && retryCount < maxRetries) {
       try {
-        const response = await axios.post(
+        const response = await UseFetch(
           API_LINK + "Materi/UpdatePoinProgresMateri",
           {
             materiId: AppContext_test.materiId,
@@ -57,7 +57,7 @@ export default function MasterTestSharingVideo({
             tipe: "Sharing Expert",
           }
         );
-        if (response.status === 200) {
+        if (response !== "ERROR") {
           success = true;
         }
       } catch (error) {
@@ -75,7 +75,7 @@ export default function MasterTestSharingVideo({
   const getListSection = async (retries = 10, delay = 2000) => {
     for (let i = 0; i < retries; i++) {
       try {
-        const response = await axios.post(
+        const response = await UseFetch(
           API_LINK + "Section/GetDataSectionByMateri",
           {
             mat_id: AppContext_test.materiId,
@@ -83,8 +83,8 @@ export default function MasterTestSharingVideo({
             sec_status: "Aktif",
           }
         );
-        if (response.data.length !== 0) {
-          return response.data;
+        if (response !== "ERROR" && response.length !== 0) {
+          return response;
         }
       } catch (error) {
         console.error("Error fetching materi data: ", error);
@@ -135,7 +135,7 @@ export default function MasterTestSharingVideo({
       }
     };
     window.addEventListener("resize", handleResize);
-    handleResize(); 
+    handleResize();
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 

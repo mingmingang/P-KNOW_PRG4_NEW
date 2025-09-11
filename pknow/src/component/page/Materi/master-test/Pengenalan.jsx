@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { PAGE_SIZE, API_LINK, ROOT_LINK } from "../../../util/Constants";
 import Alert from "../../../part/Alert";
 import Loading from "../../../part/Loading";
-import axios from "axios";
+import UseFetch from "../../../util/UseFetch";
 import AppContext_test from "./TestContext";
 import he from "he";
 import KMS_Rightbar from "../../../part/RightBar";
@@ -38,7 +38,7 @@ export default function MasterTestIndex({
 
     while (!success && retryCount < maxRetries) {
       try {
-        const response = await axios.post(
+        const response = await UseFetch(
           API_LINK + "Materi/UpdatePoinProgresMateri",
           {
             materiId: AppContext_test.materiId,
@@ -46,7 +46,8 @@ export default function MasterTestIndex({
             tipe: "Pengenalan",
           }
         );
-        if (response.status === 200) {
+
+        if (response !== "ERROR") {
           success = true;
         }
       } catch (error) {
@@ -103,14 +104,15 @@ export default function MasterTestIndex({
     const getMateri = async (retries = 10, delay = 2000) => {
       for (let i = 0; i < retries; i++) {
         try {
-          const response = await axios.post(
+          const response = await UseFetch(
             API_LINK + "Materi/GetDataMateriById",
             {
               materiId: AppContext_test.materiId,
             }
           );
-          if (response.data.length !== 0) {
-            return response.data;
+
+          if (response !== "ERROR" && response.length !== 0) {
+            return response;
           }
         } catch (error) {
           console.error("Error fetching materi data:", error);

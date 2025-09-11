@@ -13,7 +13,6 @@ import uploadFile from "../../../../util/UploadFile";
 import Alert from "../../../../part/Alert";
 import AppContext_master from "../MasterContext";
 import AppContext_test from "../../master-test/TestContext";
-import axios from "axios";
 import { Stepper, Step, StepLabel, Box } from "@mui/material";
 import BackPage from "../../../../../assets/backPage.png";
 import Konfirmasi from "../../../../part/Konfirmasi";
@@ -111,27 +110,38 @@ export default function MastermateriEdit({ onChangePage }) {
     setShowConfirmation(false);
   };
 
-  const previewFile = async (namaFile) => {
+  const previewFile = async (namaFile, index) => {
     try {
       namaFile = namaFile.trim();
-      const response = await axios.get(
-        `${API_LINK}Upload/GetFile/${namaFile}`,
-        {
-          responseType: "arraybuffer",
-        }
-      );
 
-      const blob = new Blob([response.data], {
-        type: response.headers["content-type"],
-      });
-      const url = URL.createObjectURL(blob);
-      if (response.headers["content-type"] === "application/pdf") {
-        window.open(url, "_blank");
+      const judulMateri = AppContext_master.MateriForm?.Judul || "Materi";
+      const formattedFileName = `Materi - ${judulMateri}`;
+
+      if (namaFile.toLowerCase().endsWith(".pdf")) {
+        const pdfUrl = `${API_LINK}Upload/GetFile/${namaFile}`;
+
+        window.open(pdfUrl, "_blank");
       } else {
+        const response = await fetch(`${API_LINK}Upload/GetFile/${namaFile}`, {
+          method: "GET",
+          headers: {
+            Authorization: "Bearer " + localStorage.getItem("jwtToken"),
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error("Tidak dapat mengambil file");
+        }
+
+        const blob = await response.blob();
+        const url = URL.createObjectURL(blob);
+
         const link = document.createElement("a");
         link.href = url;
-        link.download = namaFile;
+        link.download = formattedFileName;
         link.click();
+
+        setTimeout(() => URL.revokeObjectURL(url), 10000);
       }
     } catch (error) {
       console.error("Error fetching file:", error);
@@ -253,11 +263,15 @@ export default function MastermateriEdit({ onChangePage }) {
           );
           return;
         }
-        axios
-          .post(API_LINK + "Materi/UpdateSaveDataMateri", formDataRef.current)
-          .then((response) => {
-            const data = response.data;
-            if (data[0].hasil === "OK") {
+        UseFetch(API_LINK + "Materi/UpdateSaveDataMateri", formDataRef.current)
+          .then((data) => {
+            if (data === "ERROR" || !data || data.length === 0) {
+              setIsError((prevError) => ({
+                ...prevError,
+                error: true,
+                message: "Terjadi kesalahan: Gagal menyimpan data Materi.",
+              }));
+            } else if (data[0].hasil === "OK") {
               SweetAlert("Sukses", "Data Materi berhasil disimpan", "success");
               AppContext_master.formSavedMateriFile = true;
             } else {
