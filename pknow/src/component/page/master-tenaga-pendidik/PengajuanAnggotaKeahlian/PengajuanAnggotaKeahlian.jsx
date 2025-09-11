@@ -65,7 +65,13 @@ export default function PengajuanKelompokKeahlian({ onChangePage }) {
   const searchQuery = useRef();
   const searchFilterSort = useRef();
 
+  const [hasSearched, setHasSearched] = useState(false);
+  const [isEmpty, setIsEmpty] = useState(false);
+
   function handleSearch() {
+    setHasSearched(true);
+    setIsLoading(true);
+    
     setCurrentFilter((prevFilter) => {
       return {
         ...prevFilter,
@@ -74,27 +80,6 @@ export default function PengajuanKelompokKeahlian({ onChangePage }) {
         sort: searchFilterSort.current.value,
       };
     });
-  }
-
-  async function pencaharian() {
-    setIsLoading(true);
-    try {
-      const data = await UseFetch(API_LINK + "PengajuanKK/GetAnggotaKK", {
-        ...currentFilter,
-        query: searchQuery.current.value,
-      });
-
-      if (data && data.length > 0) {
-        setListKK(data);
-      } else {
-        setListKK([]);
-      }
-    } catch (error) {
-      console.error("Error during search:", error);
-      setListKK([]);
-    } finally {
-      setIsLoading(false);
-    }
   }
 
   const [show, setShow] = useState(false);
@@ -153,18 +138,16 @@ export default function PengajuanKelompokKeahlian({ onChangePage }) {
   }, []);
 
   const filterUniqueKK = (data) => {
-    let waitingAccCount = 0; // Hitung jumlah entri "Menunggu Acc"
+    let waitingAccCount = 0;
     const uniqueKK = data.reduce((acc, current) => {
       const existing = acc.find((item) => item["ID KK"] === current["ID KK"]);
 
       if (!existing) {
-        // Tambahkan jika belum ada
         acc.push(current);
         if (current.Status === "Menunggu Acc") {
           waitingAccCount++;
         }
       } else {
-        // Prioritaskan "Aktif" di atas status lainnya
         if (current.Status === "Aktif") {
           acc = acc.map((item) =>
             item["ID KK"] === current["ID KK"] ? current : item
@@ -174,7 +157,6 @@ export default function PengajuanKelompokKeahlian({ onChangePage }) {
           existing.Status !== "Aktif" &&
           waitingAccCount < 2
         ) {
-          // Ganti dengan "Menunggu Acc" jika belum mencapai batas
           acc = acc.map((item) =>
             item["ID KK"] === current["ID KK"] ? current : item
           );
@@ -193,52 +175,50 @@ export default function PengajuanKelompokKeahlian({ onChangePage }) {
     if (currentFilter.kry_id === "") return;
 
     try {
-      while (true) {
-        let data = await UseFetch(
-          API_LINK + "PengajuanKK/GetAnggotaKK",
-          currentFilter
-        );
+      let data = await UseFetch(
+        API_LINK + "PengajuanKK/GetAnggotaKK",
+        currentFilter
+      );
 
-        if (data === "ERROR") {
-          throw new Error("Terjadi kesalahan: Gagal mengambil daftar prodi.");
-        } else if (data.length === 0) {
-          await new Promise((resolve) => setTimeout(resolve, 2000));
-        } else {
-          // Format data awal
-          const formattedData = data.map((value) => {
-            if (value.Status === "Ditolak" || value.Status === "Dibatalkan") {
-              return { ...value, Status: "Kosong" };
-            }
-            return value;
-          });
+      if (data === "ERROR") {
+        throw new Error("Terjadi kesalahan: Gagal mengambil daftar prodi.");
+      } else if (data.length === 0) {
+        setListKK([]);
+        setIsEmpty(true);
+      } else {
+        const formattedData = data.map((value) => {
+          if (value.Status === "Ditolak" || value.Status === "Dibatalkan") {
+            return { ...value, Status: "Kosong" };
+          }
+          return value;
+        });
 
-          // Filter data untuk memastikan keunikan dan maksimal 2 "Menunggu Acc"
-          const uniqueData = filterUniqueKK(formattedData);
+        const uniqueData = filterUniqueKK(formattedData);
 
-          // Hitung status "Menunggu Acc"
-          const waitingCount = uniqueData.filter(
-            (value) => value.Status === "Menunggu Acc"
-          ).length;
+        const waitingCount = uniqueData.filter(
+          (value) => value.Status === "Menunggu Acc"
+        ).length;
 
-          // Atur status menjadi "None" jika lebih dari 2 "Menunggu Acc"
-          const finalData = uniqueData.map((value) => {
-            if (waitingCount === 2 && value.Status !== "Menunggu Acc") {
-              return { ...value, Status: "None" };
-            }
-            return value;
-          });
+        const finalData = uniqueData.map((value) => {
+          if (waitingCount === 2 && value.Status !== "Menunggu Acc") {
+            return { ...value, Status: "None" };
+          }
+          return value;
+        });
 
-          setListKK(finalData);
-          break;
-        }
+        setListKK(finalData);
+        setIsEmpty(finalData.length === 0);
       }
     } catch (error) {
       setListKK([]);
+      setIsEmpty(true);
       setIsError((prevError) => ({
         ...prevError,
         error: true,
         message: error.message,
       }));
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -268,7 +248,7 @@ export default function PengajuanKelompokKeahlian({ onChangePage }) {
     const parser = new DOMParser();
     const decodedString = parser.parseFromString(str, "text/html").body
       .textContent;
-    return decodedString || str; // Jika decoding gagal, gunakan string asli
+    return decodedString || str;
   };
 
   const getLampiran = async () => {
@@ -290,18 +270,11 @@ export default function PengajuanKelompokKeahlian({ onChangePage }) {
         const updatedData = data.map((item) => {
           if (item.Lampiran) {
             try {
-              // Decode HTML entities sebelum parsing JSON
               const cleanedLampiran = decodeHtmlEntities(item.Lampiran);
-
-              // Parse JSON string
               const parsedLampiran = JSON.parse(cleanedLampiran);
-
-              // Proses setiap file di dalam parsedLampiran
               const fileUrls = parsedLampiran.map((file) => {
                 return `${API_LINK}Upload/GetFile/${file.pus_file}`;
               });
-
-              // Tambahkan fileUrls ke objek item
               return { ...item, Lampiran: fileUrls };
             } catch (err) {
               console.error("Gagal mem-parse JSON Lampiran:", err);
@@ -408,7 +381,21 @@ export default function PengajuanKelompokKeahlian({ onChangePage }) {
             </div>
           </div>
 
-          <>
+          {/* Tampilkan alert jika hasil pencarian kosong */}
+          {hasSearched && isEmpty && !isLoading && (
+            <div className="container">
+              <Alert
+                type="warning mt-3"
+                message="Tidak ada data! Silahkan cari kelompok keahlian diatas.."
+              />
+            </div>
+          )}
+
+          {isLoading ? (
+            <div className="container">
+              <p>Loading...</p>
+            </div>
+          ) : (
             <div className="d-flex flex-column container">
               {dataAktif ? (
                 <div className="flex-fill">
@@ -472,7 +459,6 @@ export default function PengajuanKelompokKeahlian({ onChangePage }) {
                             {detail?.map((item, index) => (
                               <div key={index}>
                                 {item.Lampiran ? (
-                                  // Check if Lampiran is a string before splitting
                                   Array.isArray(item.Lampiran) ? (
                                     item.Lampiran.map((link, linkIndex) => (
                                       <div key={linkIndex}>
@@ -566,18 +552,7 @@ export default function PengajuanKelompokKeahlian({ onChangePage }) {
                 </div>
               ) : (
                 <>
-                  {!isLoading &&
-                  (listKK.length === 0 ||
-                    listKK.every((value) => value.Status === "None")) ? (
-                    <>
-                      <div className="container">
-                        <Alert
-                          type="warning mt-3"
-                          message="Tidak ada data! Silahkan cari kelompok keahlian diatas.."
-                        />
-                      </div>
-                    </>
-                  ) : (
+                  {!isEmpty ? (
                     <div className="flex-fill">
                       <div className="container">
                         {listKK.filter(
@@ -652,22 +627,22 @@ export default function PengajuanKelompokKeahlian({ onChangePage }) {
                               return value.Status !== "Menunggu Acc";
                             })
                             .map((value, index) => (
-                              <>
-                                <CardPengajuanBaru
-                                  key={index}
-                                  data={value}
-                                  onChangePage={onChangePage}
-                                />
-                              </>
+                              <CardPengajuanBaru
+                                key={index}
+                                data={value}
+                                onChangePage={onChangePage}
+                              />
                             ))}
                         </div>
                       </div>
                     </div>
+                  ) : (
+                    null
                   )}
                 </>
               )}
             </div>
-          </>
+          )}
         </main>
       </div>
     </>
