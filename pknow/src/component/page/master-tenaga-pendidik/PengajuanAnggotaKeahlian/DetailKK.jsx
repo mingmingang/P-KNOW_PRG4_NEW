@@ -156,6 +156,7 @@ export default function KKDetailPublish({ onChangePage, withID }) {
           <Alert type="danger" message={isError.message} />
         </div>
       )}
+      
       <div className="container mb-4" style={{marginTop:"100px"}}>
       <div className="card" >
        

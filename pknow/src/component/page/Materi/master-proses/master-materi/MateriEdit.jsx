@@ -284,6 +284,7 @@ export default function MastermateriEdit({ onChangePage }) {
           );
           return;
         }
+        
         UseFetch(API_LINK + "Materi/UpdateSaveDataMateri", formDataRef.current)
           .then((data) => {
             if (data === "ERROR" || !data || data.length === 0) {
@@ -312,10 +313,8 @@ export default function MastermateriEdit({ onChangePage }) {
                 AppContext_master.dataTimerPostTest
               );
             }
-          } else {
-            throw new Error("Response tidak valid dari server");
-          }
-        })
+          } 
+        )
         .catch((error) => {
           console.error("Terjadi kesalahan:", error);
           setIsError((prevError) => ({
@@ -326,7 +325,8 @@ export default function MastermateriEdit({ onChangePage }) {
         })
         .finally(() => setIsLoading(false));
     }
-  };
+  }
+};
 
   const fetchDataKategori = async (retries = 3, delay = 1000) => {
     for (let i = 0; i < retries; i++) {
