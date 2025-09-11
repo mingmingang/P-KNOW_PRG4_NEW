@@ -338,8 +338,8 @@ export default function MasterPostTestAdd({ onChangePage }) {
             return;
           }
 
-          const quizId = quizResponse.data[0].hasil;
-          formData.sec_id = quizResponse.data[0].hasil;
+          const quizId = quizResponse[0].hasil;
+          formData.sec_id = quizResponse[0].hasil;
 
           for (const question of formContent) {
             const formQuestion = {

@@ -876,7 +876,9 @@ export default function MasterPostTestEdit({ onChangePage, withID }) {
         API_LINK + "Quiz/UpdateDataQuiz",
         quizPayload
       );
-      if (!quizResponse.data.length) {
+      console.log("DEBUG quizResponse:", quizResponse);
+console.log("DEBUG quizResponse.data:", quizResponse?.data);
+      if (!quizResponse.length) {
         Swal.fire({
           title: "Error!",
           text: "Gagal menyimpan quiz.",
@@ -915,7 +917,7 @@ export default function MasterPostTestEdit({ onChangePage, withID }) {
           };
 
           const response = await UseFetch(API_LINK + "Question/SaveDataQuestion", payload);
-          const newQuestionId = response.data?.[0]?.hasil;
+          const newQuestionId = response[0]?.hasil;
 
           if (!newQuestionId) throw new Error("Failed to save question.");
           question.key = newQuestionId;
@@ -937,7 +939,7 @@ export default function MasterPostTestEdit({ onChangePage, withID }) {
 
             if (!option.id) {
             const createOptionPayload = {
-                            p1: optionIndex + 1, p2: option.label, p3: questionId,
+                            p1: optionIndex + 1, p2: option.label, p3: question.key,
                             p4: option.point || 0, p5: activeUser,
                             p6: question.jenis === "Tunggal" ? "Tunggal" : "Jamak",
                         };
