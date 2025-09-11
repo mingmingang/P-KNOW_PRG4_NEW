@@ -7,7 +7,7 @@ import Loading from "../../../part/Loading";
 import KMS_Rightbar from "../../../part/RightBar";
 import Cookies from "js-cookie";
 import { decryptId } from "../../../util/Encryptor";
-import axios from "axios";
+import UseFetch from "../../../util/UseFetch";
 import AppContext_test from "./TestContext";
 import "../../../../style/Table.css";
 import { decode } from "html-entities";
@@ -30,51 +30,48 @@ export default function MasterTestPreTest({
   const [error, setError] = useState(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  function onStartTest() {
+  async function onStartTest() {
     try {
-      axios
-        .post(API_LINK + "Quiz/SaveTransaksiQuiz", {
-          karyawanId: activeUser,
-          status: "Aktif",
-          quizId: activeUser,
-          jumlahBenar: "",
-        })
-        .then((response) => {
-          const data = response.data;
-          if (data[0].hasil === "OK") {
-            updateProgres();
-            AppContext_test.dataIdTrQuiz = data[0].tempIDAlt;
-            onChangePage(
-              "pengerjaantest",
-              "Pretest",
-              currentData.materiId,
-              currentData.quizId,
-              currentData.timer,
-              AppContext_test.dataIdTrQuiz,
-              currentData.timer
-            );
-          } else {
-            setIsError((prevError) => ({
-              ...prevError,
-              error: true,
-              message: "Terjadi kesalahan: Gagal menyimpan data Materi.",
-            }));
-          }
-        })
-        .catch((error) => {
-          console.error("Terjadi kesalahan:", error);
-          setIsError((prevError) => ({
-            ...prevError,
-            error: true,
-            message: "Terjadi kesalahan: " + error.message,
-          }));
-        })
-        .finally(() => setIsLoading(false));
+      setIsLoading(true);
+      const data = await UseFetch(API_LINK + "Quiz/SaveTransaksiQuiz", {
+        karyawanId: activeUser,
+        status: "Aktif",
+        quizId: activeUser,
+        jumlahBenar: "",
+      });
+
+      if (data === "ERROR") {
+        setIsError({
+          error: true,
+          message: "Terjadi kesalahan: Gagal menyimpan data Materi.",
+        });
+        return;
+      }
+
+      if (data[0].hasil === "OK") {
+        await updateProgres();
+        AppContext_test.dataIdTrQuiz = data[0].tempIDAlt;
+        onChangePage(
+          "pengerjaantest",
+          "Pretest",
+          currentData.materiId,
+          currentData.quizId,
+          currentData.timer,
+          AppContext_test.dataIdTrQuiz,
+          currentData.timer
+        );
+      } else {
+        setIsError({
+          error: true,
+          message: "Terjadi kesalahan: Gagal menyimpan data Materi.",
+        });
+      }
     } catch (error) {
       setIsError({
         error: true,
         message: "Failed to save forum data: " + error.message,
       });
+    } finally {
       setIsLoading(false);
     }
   }
@@ -86,7 +83,7 @@ export default function MasterTestPreTest({
 
     while (!success && retryCount < maxRetries) {
       try {
-        const response = await axios.post(
+        const response = await UseFetch(
           API_LINK + "Materi/UpdatePoinProgresMateri",
           {
             materiId: AppContext_test.materiId,
@@ -94,7 +91,8 @@ export default function MasterTestPreTest({
             tipe: "Pre-Test",
           }
         );
-        if (response.status === 200) {
+
+        if (response !== "ERROR") {
           success = true;
         }
       } catch (error) {
@@ -205,18 +203,15 @@ export default function MasterTestPreTest({
     const fetchDataWithRetry_pretest = async (retries = 15, delay = 500) => {
       for (let i = 0; i < retries; i++) {
         try {
-          const response = await axios.post(
-            API_LINK + "Quiz/GetDataResultQuiz",
-            {
-              matId: AppContext_test.materiId,
-              quiTipe: "Pretest",
-              karyawanId: activeUser,
-            }
-          );
-          if (response.data.length !== 0) {
-            setDataDetailQuiz(response.data);
-            //updateProgres();
-            return response.data;
+          const data = await UseFetch(API_LINK + "Quiz/GetDataResultQuiz", {
+            matId: AppContext_test.materiId,
+            quiTipe: "Pretest",
+            karyawanId: activeUser,
+          });
+
+          if (data !== "ERROR" && data.length !== 0) {
+            setDataDetailQuiz(data);
+            return data;
           }
         } catch (error) {
           if (i < retries - 1) {
@@ -231,7 +226,7 @@ export default function MasterTestPreTest({
     const getListSection = async (retries = 10, delay = 2000) => {
       for (let i = 0; i < retries; i++) {
         try {
-          const response = await axios.post(
+          const data = await UseFetch(
             API_LINK + "Section/GetDataSectionByMateri",
             {
               mat_id: AppContext_test.materiId,
@@ -240,8 +235,8 @@ export default function MasterTestPreTest({
             }
           );
 
-          if (response.data.length !== 0) {
-            idSection = response.data[0].SectionId;
+          if (data !== "ERROR" && data.length !== 0) {
+            idSection = data[0].SectionId;
           }
         } catch (e) {
           console.error("Error fetching materi data: ", error);
@@ -257,16 +252,17 @@ export default function MasterTestPreTest({
     const getQuiz_pretest = async (retries = 10, delay = 500) => {
       for (let i = 0; i < retries; i++) {
         try {
-          const quizResponse = await axios.post(
+          const data = await UseFetch(
             API_LINK + "Quiz/GetDataQuizByIdSection",
             {
               section: idSection,
             }
           );
-          if (quizResponse.data && quizResponse.data.length > 0) {
-            AppContext_test.IdQuiz = quizResponse.data[0].quizId;
-            setCurrentData(quizResponse.data[0]); // Hanya set data pertama
-            return quizResponse.data[0];
+
+          if (data !== "ERROR" && data && data.length > 0) {
+            AppContext_test.IdQuiz = data[0].quizId;
+            setCurrentData(data[0]); // Hanya set data pertama
+            return data[0];
           }
         } catch (error) {
           console.error("Error fetching quiz data:", error);
@@ -463,8 +459,8 @@ export default function MasterTestPreTest({
                     {currentData.jumlahSoal} soal. Anda diberikan waktu total{" "}
                     {convertToMinutes(currentData.timer)} menit untuk
                     menyelesaikan semua soal tersebut. Waktu pengerjaan akan
-                    dimulai secara otomatis saat Anda menekan tombol “Mulai
-                    Pre-Test” yang terletak di bawah instruksi ini. Pre-Test
+                    dimulai secara otomatis saat Anda menekan tombol "Mulai
+                    Pre-Test" yang terletak di bawah instruksi ini. Pre-Test
                     tidak akan dimulai hingga Anda siap dan memilih untuk
                     memulainya dengan mengklik tombol tersebut. Begitu tombol
                     ditekan, waktu akan mulai berjalan, dan Anda harus

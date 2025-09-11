@@ -10,7 +10,6 @@ import Input from "../../../part/Input";
 import FileUpload from "../../../part/FileUpload";
 import KMS_Sidebar from "../../../part/KMS_SideBar";
 import styled from "styled-components";
-import axios from "axios";
 import Swal from "sweetalert2";
 import AppContext_test from "./TestContext";
 import he from "he";
@@ -248,22 +247,19 @@ export default function PengerjaanTest({
 
     while (!responseSave) {
       try {
-        const response = await axios.post(
+        const data = await UseFetch(
           API_LINK + "Quiz/SaveDetailTransaksiQuiz",
           formDataRef.current
         );
-        if (response.data.length != 0) {
+        if (data !== "ERROR" && data.length != 0) {
           responseSave = true;
           try {
-            const response = await axios.post(
-              API_LINK + "Quiz/UpdateNilaiQuiz",
-              {
-                idTrQuiz: AppContext_test.dataIdTrQuiz,
-                jumlahBenar: countBenar,
-                nilai: totalPoint,
-              }
-            );
-            if (response.data.length != 0) {
+            const response = await UseFetch(API_LINK + "Quiz/UpdateNilaiQuiz", {
+              idTrQuiz: AppContext_test.dataIdTrQuiz,
+              jumlahBenar: countBenar,
+              nilai: totalPoint,
+            });
+            if (response !== "ERROR" && response.length != 0) {
               responseSave = true;
             }
           } catch (error) {
@@ -271,12 +267,12 @@ export default function PengerjaanTest({
           }
           for (let i = 0; i < submittedAnswersFormatted.length; i++) {
             try {
-              const response = await axios.post(
+              const response = await UseFetch(
                 API_LINK + "Quiz/SaveDataAnswer",
                 submittedAnswersFormatted[i]
               );
-              if (response.data.length != 0) {
-                console.log("Berhasil:", response.data);
+              if (response !== "ERROR" && response.length != 0) {
+                console.log("Berhasil:", response);
               }
             } catch (error) {
               console.error(
@@ -331,8 +327,8 @@ export default function PengerjaanTest({
     let attempts = 0;
     while (attempts < maxRetries) {
       try {
-        const response = await axios.post(url, data);
-        return response.data;
+        const response = await UseFetch(url, data);
+        return response;
       } catch (error) {
         attempts++;
         if (attempts >= maxRetries) {
@@ -570,23 +566,23 @@ export default function PengerjaanTest({
     const fetchData = async () => {
       setIsLoading(true);
       try {
-        const response = await axios.post(API_LINK + "Quiz/GetDataQuestion", {
+        const data = await UseFetch(API_LINK + "Quiz/GetDataQuestion", {
           idQuiz: quizId,
         });
-        const checkIsDone = await axios.post(
+        const checkIsDone = await UseFetch(
           API_LINK + "Quiz/GetDataResultQuiz",
           {
             materiId: AppContext_test.materiId,
             karyawanId: activeUser,
           }
         );
-        if (response.data && Array.isArray(response.data)) {
-          setCreatedBy(response.data[0]?.CreatedBy || "");
-          AppContext_test.quizId = response.data[0].ForeignKey;
+        if (data !== "ERROR" && Array.isArray(data)) {
+          setCreatedBy(data[0]?.CreatedBy || "");
+          AppContext_test.quizId = data[0].ForeignKey;
           const questionMap = new Map();
           const filePromises = [];
 
-          const transformedData = response.data
+          const transformedData = data
             .map((item) => {
               const {
                 Soal,
@@ -618,7 +614,7 @@ export default function PengerjaanTest({
                 }
 
                 if (TipeSoal === "Pilgan") {
-                  question.options = response.data
+                  question.options = data
                     .filter((choice) => choice.Key === item.Key)
                     .map((choice) => ({
                       value: choice.Jawaban,
@@ -910,7 +906,7 @@ export default function PengerjaanTest({
                                   style={{
                                     marginLeft: "6px",
                                     marginRight: "10px",
-                                    transform: "scale(2)",
+                                    transform: "scale(2",
                                     borderColor: "#000",
                                   }}
                                 />

@@ -13,6 +13,7 @@ import uploadFile from "../../../../util/UploadFile";
 import Alert from "../../../../part/Alert";
 import AppContext_master from "../MasterContext";
 import AppContext_test from "../../master-test/TestContext";
+import axios from "axios";
 import { Stepper, Step, StepLabel, Box } from "@mui/material";
 import BackPage from "../../../../../assets/backPage.png";
 import Konfirmasi from "../../../../part/Konfirmasi";
@@ -110,38 +111,33 @@ export default function MastermateriEdit({ onChangePage }) {
     setShowConfirmation(false);
   };
 
-  const previewFile = async (namaFile, index) => {
+  const previewFile = async (namaFile) => {
     try {
       namaFile = namaFile.trim();
+      const data = await UseFetch(`${API_LINK}Upload/GetFile/${namaFile}`, {
+        method: "GET",
+        headers: {
+          Accept: "application/octet-stream",
+        },
+      });
 
-      const judulMateri = AppContext_master.MateriForm?.Judul || "Materi";
-      const formattedFileName = `Materi - ${judulMateri}`;
+      if (data === "ERROR") {
+        throw new Error("Gagal mengambil file");
+      }
+
+      const blob = new Blob([data], {
+        type: "application/octet-stream",
+      });
+
+      const url = URL.createObjectURL(blob);
 
       if (namaFile.toLowerCase().endsWith(".pdf")) {
-        const pdfUrl = `${API_LINK}Upload/GetFile/${namaFile}`;
-
-        window.open(pdfUrl, "_blank");
+        window.open(url, "_blank");
       } else {
-        const response = await fetch(`${API_LINK}Upload/GetFile/${namaFile}`, {
-          method: "GET",
-          headers: {
-            Authorization: "Bearer " + localStorage.getItem("jwtToken"),
-          },
-        });
-
-        if (!response.ok) {
-          throw new Error("Tidak dapat mengambil file");
-        }
-
-        const blob = await response.blob();
-        const url = URL.createObjectURL(blob);
-
         const link = document.createElement("a");
         link.href = url;
-        link.download = formattedFileName;
+        link.download = namaFile;
         link.click();
-
-        setTimeout(() => URL.revokeObjectURL(url), 10000);
       }
     } catch (error) {
       console.error("Error fetching file:", error);
@@ -152,7 +148,6 @@ export default function MastermateriEdit({ onChangePage }) {
       );
     }
   };
-
 
   const Materi = AppContext_master.MateriForm;
   const kategori = AppContext_master.KategoriIdByKK;
@@ -274,27 +269,52 @@ export default function MastermateriEdit({ onChangePage }) {
         );
       }
 
-      Promise.all(uploadPromises).then(() => {
-        if (!hasPdfFile && !hasVideoFile) {
-          setIsLoading(false);
-          SweetAlert(
-            "Terjadi Kesalahan!",
-            "Harus memilih salah satu file PDF atau file video, tidak boleh keduanya kosong.",
-            "error"
+      Promise.all(uploadPromises)
+        .then(() => {
+          if (
+            AppContext_test.materiVideo == null ||
+            AppContext_test.materiPdf == null
+          ) {
+            if (!hasPdfFile && !hasVideoFile) {
+              setIsLoading(false);
+              SweetAlert(
+                "Terjadi Kesalahan!",
+                "Harus memilih salah satu file PDF atau file video, tidak boleh keduanya kosong.",
+                "error"
+              );
+              return;
+            }
+          }
+
+          return UseFetch(
+            API_LINK + "Materi/UpdateSaveDataMateri",
+            formDataRef.current
           );
-          return;
-        }
-        UseFetch(API_LINK + "Materi/UpdateSaveDataMateri", formDataRef.current)
-          .then((data) => {
-            if (data === "ERROR" || !data || data.length === 0) {
-              setIsError((prevError) => ({
-                ...prevError,
-                error: true,
-                message: "Terjadi kesalahan: Gagal menyimpan data Materi.",
-              }));
-            } else if (data[0].hasil === "OK") {
-              SweetAlert("Sukses", "Data Materi berhasil disimpan", "success");
-              AppContext_master.formSavedMateriFile = true;
+        })
+        .then((data) => {
+          if (data === "ERROR") {
+            throw new Error("Gagal menyimpan data Materi.");
+          }
+
+          if (data && data.length > 0 && data[0].hasil === "OK") {
+            setIsFileDisabled(false);
+            AppContext_master.formSavedMateriFile = true;
+            if (typeof Forum === "undefined" || Forum.forumIsi === "") {
+              onChangePage(
+                "forumAdd",
+                AppContext_master.MateriForm,
+                (AppContext_master.count += 1),
+                AppContext_test.ForumForm,
+                AppContext_master.dataIdSection,
+                AppContext_master.dataSectionSharing,
+                AppContext_master.dataIdSectionSharing,
+                AppContext_master.dataIdSectionPretest,
+                AppContext_master.dataPretest,
+                AppContext_master.dataQuizPretest,
+                AppContext_master.dataPostTest,
+                AppContext_master.dataQuizPostTest,
+                AppContext_master.dataTimerPostTest
+              );
             } else {
               onChangePage(
                 "forumBefore",
