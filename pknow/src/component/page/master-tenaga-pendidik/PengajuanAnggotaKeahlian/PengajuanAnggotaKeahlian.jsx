@@ -65,12 +65,11 @@ export default function PengajuanKelompokKeahlian({ onChangePage }) {
   const searchQuery = useRef();
   const searchFilterSort = useRef();
 
-  // State baru untuk menangani pencarian
   const [hasSearched, setHasSearched] = useState(false);
   const [isEmpty, setIsEmpty] = useState(false);
 
   function handleSearch() {
-    setHasSearched(true); // Tandai bahwa pengguna telah melakukan pencarian
+    setHasSearched(true);
     setIsLoading(true);
     
     setCurrentFilter((prevFilter) => {
@@ -82,8 +81,6 @@ export default function PengajuanKelompokKeahlian({ onChangePage }) {
       };
     });
   }
-
-  // Hapus fungsi pencaharian() yang tidak digunakan
 
   const [show, setShow] = useState(false);
   const [isError, setIsError] = useState(false);
@@ -186,11 +183,9 @@ export default function PengajuanKelompokKeahlian({ onChangePage }) {
       if (data === "ERROR") {
         throw new Error("Terjadi kesalahan: Gagal mengambil daftar prodi.");
       } else if (data.length === 0) {
-        // Data kosong setelah pencarian
         setListKK([]);
         setIsEmpty(true);
       } else {
-        // Format data awal
         const formattedData = data.map((value) => {
           if (value.Status === "Ditolak" || value.Status === "Dibatalkan") {
             return { ...value, Status: "Kosong" };
@@ -198,15 +193,12 @@ export default function PengajuanKelompokKeahlian({ onChangePage }) {
           return value;
         });
 
-        // Filter data untuk memastikan keunikan dan maksimal 2 "Menunggu Acc"
         const uniqueData = filterUniqueKK(formattedData);
 
-        // Hitung status "Menunggu Acc"
         const waitingCount = uniqueData.filter(
           (value) => value.Status === "Menunggu Acc"
         ).length;
 
-        // Atur status menjadi "None" jika lebih dari 2 "Menunggu Acc"
         const finalData = uniqueData.map((value) => {
           if (waitingCount === 2 && value.Status !== "Menunggu Acc") {
             return { ...value, Status: "None" };
@@ -645,7 +637,6 @@ export default function PengajuanKelompokKeahlian({ onChangePage }) {
                       </div>
                     </div>
                   ) : (
-                    // Alert sudah ditampilkan di atas, tidak perlu menampilkan lagi
                     null
                   )}
                 </>
