@@ -190,23 +190,30 @@ export default function MasterForumEdit({ onChangePage }) {
       setIsLoading(true);
       setIsError({ error: false, message: "" });
       setErrors({});
+    } else {
+      return;
     }
 
     try {
-      const data = await UseFetch(API_LINK + "Forum/EditDataForum", {
+      const response = await UseFetch(API_LINK + "Forum/EditDataForum", {
         p1: Materi.Key,
         p2: formData.forumJudul,
         p3: formData.forumIsi,
         p4: activeUser,
       });
 
-      if (data === "ERROR" || !data) {
-        throw new Error("Gagal untuk menyimpan data forum");
-      } else {
+      if (response !== "ERROR") {
         SweetAlert("Berhasil", "Data forum berhasil diubah!", "success");
+      } else {
+        throw new Error(
+          "Gagal menyimpan data forum. Respons dari server tidak valid."
+        );
       }
     } catch (error) {
-      setIsError(true);
+      setIsError({
+        error: true,
+        message: error.message || "Terjadi kesalahan saat menyimpan data.",
+      });
       console.error("Error saving forum data:", error);
     } finally {
       setIsLoading(false);

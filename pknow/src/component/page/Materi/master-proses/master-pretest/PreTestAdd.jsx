@@ -6,7 +6,6 @@ import Loading from "../../../../part/Loading";
 import { Stepper, Step, StepLabel, Box, colors } from "@mui/material";
 import SweetAlert from "../../../../util/SweetAlert";
 import * as XLSX from "xlsx";
-import axios from "axios";
 import {
   validateAllInputs,
   validateInput,
@@ -25,6 +24,7 @@ import Cookies from "js-cookie";
 import { decryptId } from "../../../../util/Encryptor";
 import CustomStepper from "../../../../part/Stepp";
 import NoImage from "../../../../../assets/NoImage.png";
+import UseFetch from "../../../../util/UseFetch";
 
 export default function MasterPreTestAdd({ onChangePage }) {
   let activeUser = "";
@@ -45,7 +45,7 @@ export default function MasterPreTestAdd({ onChangePage }) {
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [filePreview, setFilePreview] = useState(false);
   const [filePreviews, setFilePreviews] = useState({});
-    const [isFormDisabled, setIsFormDisabled] = useState(false);
+  const [isFormDisabled, setIsFormDisabled] = useState(false);
 
   const [dataSection, setDataSection] = useState({
     materiId: AppContext_master.dataIDMateri,
@@ -59,27 +59,18 @@ export default function MasterPreTestAdd({ onChangePage }) {
     formData.append("file", file);
 
     try {
-      const response = await axios.post(
-        `${API_LINK}Upload/UploadFile`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      const response = await UseFetch(`${API_LINK}Upload/UploadFile`, formData);
 
-      if (response.status === 200 && response.data) {
-        return response.data; // Pastikan ini berisi newFileName
-      } else {
-        throw new Error("Upload file gagal.");
+      if (response === "ERROR" || !response) {
+        throw new Error("Upload file gagal. Respons server tidak valid.");
       }
+
+      return response;
     } catch (error) {
       console.error("Error in uploadFile function:", error);
       throw error;
     }
   };
-
   const storedSteps = sessionStorage.getItem("steps");
   const steps = storedSteps ? JSON.parse(storedSteps) : initialSteps;
 
@@ -135,7 +126,9 @@ export default function MasterPreTestAdd({ onChangePage }) {
       setFormData(AppContext_master.dataQuizPretest);
       AppContext_master.dataTimerQuizPreTest;
       setTimer(
-        AppContext_master.dataTimerQuizPreTest ? convertSecondsToTimeFormat(AppContext_master.dataTimerQuizPreTest) : ""
+        AppContext_master.dataTimerQuizPreTest
+          ? convertSecondsToTimeFormat(AppContext_master.dataTimerQuizPreTest)
+          : ""
       );
       // convertSecondsToTimeFormat(formData.timer);
     }
@@ -253,7 +246,6 @@ export default function MasterPreTestAdd({ onChangePage }) {
     }
   };
 
-
   const handleDeleteOption = (questionIndex, optionIndex) => {
     const updatedFormContent = [...formContent];
     updatedFormContent[questionIndex].options.splice(optionIndex, 1);
@@ -364,7 +356,9 @@ export default function MasterPreTestAdd({ onChangePage }) {
       setResetStepper((prev) => !prev + 1);
       Swal.fire({
         title: "Gagal!",
-        text: `Total skor harus berjumlah 100. Saat ini skor berjumlah: ${totalQuestionPoint + totalOptionPoint}`,
+        text: `Total skor harus berjumlah 100. Saat ini skor berjumlah: ${
+          totalQuestionPoint + totalOptionPoint
+        }`,
         icon: "error",
         confirmButtonText: "OK",
       });
@@ -374,48 +368,45 @@ export default function MasterPreTestAdd({ onChangePage }) {
     if (typeof AppContext_master.dataIdSectionPretest === "undefined") {
       try {
         // Step 1: Create Section
-        const sectionResponse = await axios.post(
+        const sectionResponse = await UseFetch(
           API_LINK + "Section/CreateSection",
           dataSection
         );
-        const sectionData = sectionResponse.data;
 
-        if (sectionData[0]?.hasil === "OK") {
-          const sectionId = sectionData[0].newID;
+        // Disesuaikan: Pengecekan respons UseFetch
+        if (sectionResponse !== "ERROR" && sectionResponse[0]?.hasil === "OK") {
+          const sectionId = sectionResponse[0].newID;
           AppContext_master.dataIdSectionPretest = sectionId;
           formData.timer = convertTimeToSeconds(timer);
           formData.sec_id = sectionId;
           AppContext_master.dataTimerQuizPreTest = formData.timer;
 
-          // Step 2: Save Data Quiz
-          const quizResponse = await axios.post(
-            API_LINK + "Quiz/SaveDataQuiz",
-            {
-              materiId: AppContext_master.dataIDMateri,
-              sec_id: sectionId, 
-              quizDeskripsi: formData.quizDeskripsi,
-              quizTipe: "Pretest",
-              tanggalAwal: "",
-              tanggalAkhir: "",
-              timer: formData.timer,
-              status: "Aktif",
-              createdby: activeUser,
-              type: "Pre-Test",
-            }
-          );
-          if (quizResponse.data.length === 0) {
+          const quizResponse = await UseFetch(API_LINK + "Quiz/SaveDataQuiz", {
+            materiId: AppContext_master.dataIDMateri,
+            sec_id: sectionId,
+            quizDeskripsi: formData.quizDeskripsi,
+            quizTipe: "Pretest",
+            tanggalAwal: "",
+            tanggalAkhir: "",
+            timer: formData.timer,
+            status: "Aktif",
+            createdby: activeUser,
+            type: "Pre-Test",
+          });
+
+          // Disesuaikan: Pengecekan respons UseFetch
+          if (quizResponse === "ERROR" || quizResponse.length === 0) {
             Swal.fire({
               title: "Gagal!",
               text: "Data yang dimasukkan tidak valid atau kurang",
               icon: "error",
-              confirmButtonText: "OK",
             });
             return;
           }
 
-          const quizId = quizResponse.data[0].hasil;
-          formData.quizId = quizResponse.data[0].hasil;
-          // Step 3: Save Questions and Answers
+          const quizId = quizResponse[0].hasil;
+          formData.quizId = quizResponse[0].hasil;
+
           for (const question of formContent) {
             const formQuestion = {
               quizId: quizId,
@@ -427,11 +418,12 @@ export default function MasterPreTestAdd({ onChangePage }) {
               point: question.point,
             };
 
-            const uploadPromises = [];
-            if (question.type === "Essay" || question.type === "Praktikum") {
-            if (question.selectedFile) {
+            if (
+              (question.type === "Essay" || question.type === "Praktikum") &&
+              question.selectedFile
+            ) {
               try {
-                const uploadResult = await uploadFile(question.selectedFile);
+                const uploadResult = await uploadFile(question.selectedFile); // Asumsi 'uploadFile' sudah dikonversi
                 formQuestion.gambar = uploadResult.Hasil;
               } catch (uploadError) {
                 console.error("Gagal mengunggah gambar:", uploadError);
@@ -439,58 +431,55 @@ export default function MasterPreTestAdd({ onChangePage }) {
                   title: "Gagal!",
                   text: `Gagal mengunggah gambar untuk pertanyaan: ${question.text}`,
                   icon: "error",
-                  confirmButtonText: "OK",
                 });
                 return;
               }
-            } else {
+            } else if (question.type === "Pilgan") {
               formQuestion.gambar = "";
             }
-          } else if (question.type === "Pilgan") {
-            formQuestion.gambar= "";
-          }
 
             try {
-              await Promise.all(uploadPromises);
-              const questionResponse = await axios.post(
+              const questionResponse = await UseFetch(
                 API_LINK + "Question/SaveDataQuestion",
                 formQuestion
               );
-              if (questionResponse.data.length === 0) {
+
+              // Disesuaikan: Pengecekan respons UseFetch
+              if (
+                questionResponse === "ERROR" ||
+                questionResponse.length === 0
+              ) {
                 Swal.fire({
                   title: "Gagal!",
                   text: "Data yang dimasukkan tidak valid atau kurang",
                   icon: "error",
-                  confirmButtonText: "OK",
                 });
                 return;
               }
 
-              const questionId = questionResponse.data[0].hasil;
+              const questionId = questionResponse[0].hasil;
 
               if (question.type === "Essay" || question.type === "Praktikum") {
                 const answerData = {
                   urutanChoice: "",
-                  answerText: question.correctAnswer
-                    ? question.correctAnswer
-                    : "0",
+                  answerText: question.correctAnswer || "0",
                   questionId: questionId,
                   nilaiChoice: question.point,
                   quecreatedby: activeUser,
                 };
-
-                try {
-                  const answerResponse = await axios.post(
-                    API_LINK + "Choice/SaveDataChoice",
-                    answerData
+                const answerResponse = await UseFetch(
+                  API_LINK + "Choice/SaveDataChoice",
+                  answerData
+                );
+                if (answerResponse === "ERROR") {
+                  console.error(
+                    "Gagal menyimpan jawaban Essay:",
+                    "Respons tidak valid"
                   );
-                } catch (error) {
-                  console.error("Gagal menyimpan jawaban Essay:", error);
                   Swal.fire({
                     title: "Gagal!",
                     text: "Data yang dimasukkan tidak valid atau kurang",
                     icon: "error",
-                    confirmButtonText: "OK",
                   });
                 }
               } else if (question.type === "Pilgan") {
@@ -508,21 +497,19 @@ export default function MasterPreTestAdd({ onChangePage }) {
                       question.jenis === "Tunggal" ? "Tunggal" : "Jamak",
                   };
 
-                  try {
-                    const answerResponse = await axios.post(
-                      API_LINK + "Choice/SaveDataChoice",
-                      answerData
-                    );
-                  } catch (error) {
+                  const answerResponse = await UseFetch(
+                    API_LINK + "Choice/SaveDataChoice",
+                    answerData
+                  );
+                  if (answerResponse === "ERROR") {
                     console.error(
                       "Gagal menyimpan jawaban multiple choice:",
-                      error
+                      "Respons tidak valid"
                     );
                     Swal.fire({
                       title: "Gagal!",
                       text: "Data yang dimasukkan tidak valid atau kurang",
                       icon: "error",
-                      confirmButtonText: "OK",
                     });
                   }
                 }
@@ -534,7 +521,6 @@ export default function MasterPreTestAdd({ onChangePage }) {
                 title: "Gagal!",
                 text: "Data yang dimasukkan tidak valid atau kurang",
                 icon: "error",
-                confirmButtonText: "OK",
               });
             }
           }
@@ -542,7 +528,6 @@ export default function MasterPreTestAdd({ onChangePage }) {
             title: "Berhasil!",
             text: "Pre Test berhasil ditambahkan",
             icon: "success",
-            confirmButtonText: "OK",
           }).then(() => {
             if (steps.length == 4) {
               window.location.reload();
@@ -558,8 +543,8 @@ export default function MasterPreTestAdd({ onChangePage }) {
                 AppContext_master.dataIdSectionPostTest,
                 (AppContext_master.dataPretest = formContent),
                 (AppContext_master.dataQuizPretest = formData),
-                (AppContext_master.dataPostTest),
-                (AppContext_master.dataQuizPostTest),
+                AppContext_master.dataPostTest,
+                AppContext_master.dataQuizPostTest,
                 AppContext_master.dataTimerQuizPreTest,
                 AppContext_master.dataTimerPostTest
               );
@@ -577,8 +562,8 @@ export default function MasterPreTestAdd({ onChangePage }) {
                 AppContext_master.dataIdSectionPostTest,
                 (AppContext_master.dataPretest = formContent),
                 (AppContext_master.dataQuizPretest = formData),
-                (AppContext_master.dataPostTest),
-                (AppContext_master.dataQuizPostTest),
+                AppContext_master.dataPostTest,
+                AppContext_master.dataQuizPostTest,
                 AppContext_master.dataTimerQuizPreTest,
                 AppContext_master.dataTimerPostTest
               );
@@ -594,8 +579,8 @@ export default function MasterPreTestAdd({ onChangePage }) {
                 AppContext_master.dataIdSectionPostTest,
                 (AppContext_master.dataPretest = formContent),
                 (AppContext_master.dataQuizPretest = formData),
-                (AppContext_master.dataPostTest),
-                (AppContext_master.dataQuizPostTest),
+                AppContext_master.dataPostTest,
+                AppContext_master.dataQuizPostTest,
                 AppContext_master.dataTimerQuizPreTest,
                 AppContext_master.dataTimerPostTest
               );
@@ -637,27 +622,27 @@ export default function MasterPreTestAdd({ onChangePage }) {
       };
 
       try {
-        const quizResponse = await axios.post(
+
+        const quizResponse = await UseFetch(
           API_LINK + "Quiz/UpdateDataQuiz",
           quizPayload
         );
 
-        if (!quizResponse.data.length) {
+        // Disesuaikan: Pengecekan respons UseFetch
+        if (quizResponse === "ERROR" || !quizResponse.length) {
           Swal.fire({
             title: "Error!",
             text: "Gagal menyimpan quiz.",
             icon: "error",
-            confirmButtonText: "OK",
           });
           return;
         }
 
         const quizId = quizPayload.quizId;
-    
-        const deleteQuestion = await axios.post(
-          API_LINK + "Question/DeleteQuestionByIdQuiz",
-          { p1: quizId }
-        );
+
+        await UseFetch(API_LINK + "Question/DeleteQuestionByIdQuiz", {
+          p1: quizId,
+        });
 
         for (const question of formContent) {
           const formQuestion = {
@@ -670,70 +655,66 @@ export default function MasterPreTestAdd({ onChangePage }) {
             point: question.point,
           };
 
-          const uploadPromises = [];
-          if (question.type === "Essay" || question.type === "Praktikum") {
-            if (question.selectedFile) {
-              try {
-                const uploadResult = await uploadFile(question.selectedFile);
-                formQuestion.gambar = uploadResult.Hasil;
-              } catch (uploadError) {
-                console.error("Gagal mengunggah gambar:", uploadError);
-                Swal.fire({
-                  title: "Gagal!",
-                  text: `Gagal mengunggah gambar untuk pertanyaan: ${question.text}`,
-                  icon: "error",
-                  confirmButtonText: "OK",
-                });
-                return;
-              }
-            } else {
-              formQuestion.gambar = "";
+          if (
+            (question.type === "Essay" || question.type === "Praktikum") &&
+            question.selectedFile
+          ) {
+            try {
+              const uploadResult = await uploadFile(question.selectedFile); // Asumsi 'uploadFile' sudah dikonversi
+              formQuestion.gambar = uploadResult.Hasil;
+            } catch (uploadError) {
+              console.error("Gagal mengunggah gambar:", uploadError);
+              Swal.fire({
+                title: "Gagal!",
+                text: `Gagal mengunggah gambar untuk pertanyaan: ${question.text}`,
+                icon: "error",
+              });
+              return;
             }
           } else if (question.type === "Pilgan") {
             formQuestion.gambar = "";
           }
 
           try {
-            await Promise.all(uploadPromises);
-            const questionResponse = await axios.post(
+            const questionResponse = await UseFetch(
               API_LINK + "Question/SaveDataQuestion",
               formQuestion
             );
-            if (questionResponse.data.length === 0) {
+
+            // Disesuaikan: Pengecekan respons UseFetch
+            if (questionResponse === "ERROR" || questionResponse.length === 0) {
               Swal.fire({
                 title: "Gagal!",
                 text: "Data yang dimasukkan tidak valid atau kurang",
                 icon: "error",
-                confirmButtonText: "OK",
               });
               return;
             }
 
-            const questionId = questionResponse.data[0].hasil;
+            const questionId = questionResponse[0].hasil;
 
             if (question.type === "Essay" || question.type === "Praktikum") {
               const answerData = {
                 urutanChoice: "",
-                answerText: question.correctAnswer
-                  ? question.correctAnswer
-                  : "0",
+                answerText: question.correctAnswer || "0",
                 questionId: questionId,
                 nilaiChoice: question.point,
                 quecreatedby: activeUser,
               };
 
-              try {
-                const answerResponse = await axios.post(
-                  API_LINK + "Choice/SaveDataChoice",
-                  answerData
+              const answerResponse = await UseFetch(
+                API_LINK + "Choice/SaveDataChoice",
+                answerData
+              );
+              if (answerResponse === "ERROR") {
+                console.error(
+                  "Gagal menyimpan jawaban Essay:",
+                  "Respons tidak valid"
                 );
-              } catch (error) {
-                console.error("Gagal menyimpan jawaban Essay:", error);
                 Swal.fire({
                   title: "Gagal!",
                   text: "Data yang dimasukkan tidak valid atau kurang",
                   icon: "error",
-                  confirmButtonText: "OK",
                 });
               }
             } else if (question.type === "Pilgan") {
@@ -746,23 +727,19 @@ export default function MasterPreTestAdd({ onChangePage }) {
                   quecreatedby: activeUser,
                   cho_tipe: question.jenis === "Tunggal" ? "Tunggal" : "Jamak",
                 };
-
-                try {
-                  const answerResponse = await axios.post(
-                    API_LINK + "Choice/SaveDataChoice",
-                    answerData
-                  );
-
-                } catch (error) {
+                const answerResponse = await UseFetch(
+                  API_LINK + "Choice/SaveDataChoice",
+                  answerData
+                );
+                if (answerResponse === "ERROR") {
                   console.error(
                     "Gagal menyimpan jawaban multiple choice:",
-                    error
+                    "Respons tidak valid"
                   );
                   Swal.fire({
                     title: "Gagal!",
                     text: "Data yang dimasukkan tidak valid atau kurang",
                     icon: "error",
-                    confirmButtonText: "OK",
                   });
                 }
               }
@@ -774,7 +751,6 @@ export default function MasterPreTestAdd({ onChangePage }) {
               title: "Gagal!",
               text: "Data yang dimasukkan tidak valid atau kurang",
               icon: "error",
-              confirmButtonText: "OK",
             });
           }
         }
@@ -782,7 +758,6 @@ export default function MasterPreTestAdd({ onChangePage }) {
           title: "Berhasil!",
           text: "Pre Test berhasil dimodifikasi",
           icon: "success",
-          confirmButtonText: "OK",
         }).then(() => {
           setFormContent([]);
           setSelectedOptions([]);
@@ -802,8 +777,8 @@ export default function MasterPreTestAdd({ onChangePage }) {
               AppContext_master.dataIdSectionPostTest,
               (AppContext_master.dataPretest = formContent),
               (AppContext_master.dataQuizPretest = formData),
-              (AppContext_master.dataPostTest),
-              (AppContext_master.dataQuizPostTest),
+              AppContext_master.dataPostTest,
+              AppContext_master.dataQuizPostTest,
               AppContext_master.dataTimerQuizPreTest,
               AppContext_master.dataTimerPostTest
             );
@@ -821,8 +796,8 @@ export default function MasterPreTestAdd({ onChangePage }) {
               AppContext_master.dataIdSectionPostTest,
               (AppContext_master.dataPretest = formContent),
               (AppContext_master.dataQuizPretest = formData),
-              (AppContext_master.dataPostTest),
-              (AppContext_master.dataQuizPostTest),
+              AppContext_master.dataPostTest,
+              AppContext_master.dataQuizPostTest,
               AppContext_master.dataTimerQuizPreTest,
               AppContext_master.dataTimerPostTest
             );
@@ -838,8 +813,8 @@ export default function MasterPreTestAdd({ onChangePage }) {
               AppContext_master.dataIdSectionPostTest,
               (AppContext_master.dataPretest = formContent),
               (AppContext_master.dataQuizPretest = formData),
-              (AppContext_master.dataPostTest),
-              (AppContext_master.dataQuizPostTest),
+              AppContext_master.dataPostTest,
+              AppContext_master.dataQuizPostTest,
               AppContext_master.dataTimerQuizPreTest,
               AppContext_master.dataTimerPostTest
             );
@@ -1014,7 +989,7 @@ export default function MasterPreTestAdd({ onChangePage }) {
 
     const allowedExtensions = ["jpg", "jpeg", "png"];
     const fileExtension = file.name.split(".").pop().toLowerCase();
-    const maxSizeInMB = 10; 
+    const maxSizeInMB = 10;
 
     if (!allowedExtensions.includes(fileExtension)) {
       Swal.fire({
@@ -1209,8 +1184,8 @@ export default function MasterPreTestAdd({ onChangePage }) {
         AppContext_master.dataIdSectionSharing,
         AppContext_master.dataIdSectionPretest,
         AppContext_master.dataIdSectionPostTest,
-        (AppContext_master.dataPostTest),
-        (AppContext_master.dataQuizPostTest),
+        AppContext_master.dataPostTest,
+        AppContext_master.dataQuizPostTest,
         AppContext_master.dataTimerQuizPreTest,
         AppContext_master.dataTimerPostTest
       );
@@ -1225,8 +1200,8 @@ export default function MasterPreTestAdd({ onChangePage }) {
         AppContext_master.dataIdSectionSharing,
         AppContext_master.dataIdSectionPretest,
         AppContext_master.dataIdSectionPostTest,
-        (AppContext_master.dataPostTest),
-        (AppContext_master.dataQuizPostTest),
+        AppContext_master.dataPostTest,
+        AppContext_master.dataQuizPostTest,
         AppContext_master.dataTimerQuizPreTest,
         AppContext_master.dataTimerPostTest
       );
@@ -1241,8 +1216,8 @@ export default function MasterPreTestAdd({ onChangePage }) {
         AppContext_master.dataIdSectionSharing,
         AppContext_master.dataIdSectionPretest,
         AppContext_master.dataIdSectionPostTest,
-        (AppContext_master.dataPostTest),
-        (AppContext_master.dataQuizPostTest),
+        AppContext_master.dataPostTest,
+        AppContext_master.dataQuizPostTest,
         AppContext_master.dataTimerQuizPreTest,
         AppContext_master.dataTimerPostTest
       );
@@ -1257,8 +1232,8 @@ export default function MasterPreTestAdd({ onChangePage }) {
         AppContext_master.dataIdSectionSharing,
         AppContext_master.dataIdSectionPretest,
         AppContext_master.dataIdSectionPostTest,
-        (AppContext_master.dataPostTest),
-        (AppContext_master.dataQuizPostTest),
+        AppContext_master.dataPostTest,
+        AppContext_master.dataQuizPostTest,
         AppContext_master.dataTimerQuizPreTest,
         AppContext_master.dataTimerPostTest
       );
@@ -1273,8 +1248,8 @@ export default function MasterPreTestAdd({ onChangePage }) {
         AppContext_master.dataIdSectionPostTest,
         (AppContext_master.dataPretest = formContent),
         (AppContext_master.dataQuizPretest = formData),
-        (AppContext_master.dataPostTest),
-        (AppContext_master.dataQuizPostTest),
+        AppContext_master.dataPostTest,
+        AppContext_master.dataQuizPostTest,
         AppContext_master.dataTimerQuizPreTest,
         AppContext_master.dataTimerPostTest
       );
@@ -1289,12 +1264,11 @@ export default function MasterPreTestAdd({ onChangePage }) {
         AppContext_master.dataIdSectionPostTest,
         (AppContext_master.dataPostTest = formContent),
         (AppContext_master.dataQuizPostTest = formData),
-        (AppContext_master.dataPretest ),
-        (AppContext_master.dataQuizPretest),
+        AppContext_master.dataPretest,
+        AppContext_master.dataQuizPretest,
         AppContext_master.dataTimerQuizPreTest,
         AppContext_master.dataTimerPostTest
       );
-      
     }
   };
 
@@ -1606,39 +1580,39 @@ export default function MasterPreTestAdd({ onChangePage }) {
                         question.type === "Praktikum") && (
                         <div className="d-flex flex-column w-100">
                           <FileUpload
-                                forInput={`fileInput_${index}`}
-                                formatFile=".jpg,.jpeg,.png"
-                                label={
-                                  <span className="file-upload-label">
-                                    Gambar (.jpg, .jpeg, .png)
-                                  </span>
-                                }
-                                onChange={(e) => handleFileChange(e, index)}
-                                hasExisting={formContent[index]?.img || null}
-                                style={{ fontSize: "12px" }}
-                              />
+                            forInput={`fileInput_${index}`}
+                            formatFile=".jpg,.jpeg,.png"
+                            label={
+                              <span className="file-upload-label">
+                                Gambar (.jpg, .jpeg, .png)
+                              </span>
+                            }
+                            onChange={(e) => handleFileChange(e, index)}
+                            hasExisting={formContent[index]?.img || null}
+                            style={{ fontSize: "12px" }}
+                          />
 
-                              {/* Tampilkan preview gambar jika ada gambar yang dipilih */}
-                              {question.previewUrl && (
-                                <div
-                                  style={{
-                                    maxWidth: "300px",
-                                    maxHeight: "300px",
-                                    overflow: "hidden",
-                                    borderRadius:"20px"
-                                  }}
-                                >
-                                  <img
-                                    src={question.previewUrl}
-                                    alt=""
-                                    style={{
-                                      width: "100%",
-                                      height: "auto",
-                                      objectFit: "contain",
-                                    }}
-                                  />
-                                </div>
-                              )}
+                          {/* Tampilkan preview gambar jika ada gambar yang dipilih */}
+                          {question.previewUrl && (
+                            <div
+                              style={{
+                                maxWidth: "300px",
+                                maxHeight: "300px",
+                                overflow: "hidden",
+                                borderRadius: "20px",
+                              }}
+                            >
+                              <img
+                                src={question.previewUrl}
+                                alt=""
+                                style={{
+                                  width: "100%",
+                                  height: "auto",
+                                  objectFit: "contain",
+                                }}
+                              />
+                            </div>
+                          )}
 
                           {/* {question.selectedFile && (
                             <div
@@ -1851,8 +1825,8 @@ export default function MasterPreTestAdd({ onChangePage }) {
       </form>
 
       <div className="total-score-container">
-          Total Skor: {validateTotalPoints()}
-        </div>
+        Total Skor: {validateTotalPoints()}
+      </div>
       {showConfirmation && (
         <Konfirmasi
           title={isBackAction ? "Konfirmasi Kembali" : "Konfirmasi Simpan"}

@@ -194,7 +194,7 @@ function CardKelompokKeahlian({
       <div className="d-flex">
         <FontAwesomeIcon
           icon={showUserProdi ? faUser : faClock}
-          className="icon-style person-icon"
+          className="icon-style person-icon mt-2"
         />
         <p className="text-gray-700 pic-value" style={{ fontSize: "15px"}}>
           PIC :{" "}

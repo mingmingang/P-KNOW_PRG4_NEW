@@ -9,7 +9,7 @@ export default function Footer() {
       </div>
       <div className="footer-detail">
         <div className="footer-section">
-          <h3>Lulu</h3>
+          <h3>Alamat</h3>
           <p>
             Kampus Cikarang: Jl. Gaharu Blok F3 Delta Silicon II Cibatu,
             Cikarang Selatan Kota Bekasi Jawa Barat 17530

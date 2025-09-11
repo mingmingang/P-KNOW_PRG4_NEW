@@ -145,9 +145,14 @@ export default function MastermateriEdit({ onChangePage }) {
       }
     } catch (error) {
       console.error("Error fetching file:", error);
-      alert("Tidak dapat menampilkan pratinjau. Silakan unduh file.");
+      SweetAlert(
+        "Error",
+        "Tidak dapat menampilkan pratinjau. Silakan unduh file.",
+        "error"
+      );
     }
   };
+
 
   const Materi = AppContext_master.MateriForm;
   const kategori = AppContext_master.KategoriIdByKK;
@@ -213,7 +218,6 @@ export default function MastermateriEdit({ onChangePage }) {
 
   const handleAdd = async (e) => {
     e.preventDefault();
-
     const validationErrors = await validateAllInputs(
       formDataRef.current,
       userSchema,
@@ -232,6 +236,23 @@ export default function MastermateriEdit({ onChangePage }) {
 
       let hasPdfFile = false;
       let hasVideoFile = false;
+      const isPdfEmpty = !fileInputRef.current.files.length;
+      const isVideoEmpty = !vidioInputRef.current.files.length;
+
+      if (
+        AppContext_test.materiVideo === "" &&
+        AppContext_test.materiPdf === ""
+      ) {
+        if (isPdfEmpty && isVideoEmpty) {
+          setErrors((prevErrors) => ({
+            ...prevErrors,
+            mat_file_pdf: "Pilih salah satu antara PDF atau Video",
+            mat_file_video: "Pilih salah satu antara PDF atau Video",
+          }));
+          setIsLoading(false);
+          return;
+        }
+      }
 
       if (fileInputRef.current && fileInputRef.current.files.length > 0) {
         uploadPromises.push(
@@ -275,23 +296,35 @@ export default function MastermateriEdit({ onChangePage }) {
               SweetAlert("Sukses", "Data Materi berhasil disimpan", "success");
               AppContext_master.formSavedMateriFile = true;
             } else {
-              setIsError((prevError) => ({
-                ...prevError,
-                error: true,
-                message: "Terjadi kesalahan: Gagal menyimpan data Materi.",
-              }));
+              onChangePage(
+                "forumBefore",
+                AppContext_master.MateriForm,
+                (AppContext_master.count += 1),
+                AppContext_test.ForumForm,
+                AppContext_master.dataIdSection,
+                AppContext_master.dataSectionSharing,
+                AppContext_master.dataIdSectionSharing,
+                AppContext_master.dataIdSectionPretest,
+                AppContext_master.dataPretest,
+                AppContext_master.dataQuizPretest,
+                AppContext_master.dataPostTest,
+                AppContext_master.dataQuizPostTest,
+                AppContext_master.dataTimerPostTest
+              );
             }
-          })
-          .catch((error) => {
-            console.error("Terjadi kesalahan:", error);
-            setIsError((prevError) => ({
-              ...prevError,
-              error: true,
-              message: "Terjadi kesalahan: " + error.message,
-            }));
-          })
-          .finally(() => setIsLoading(false));
-      });
+          } else {
+            throw new Error("Response tidak valid dari server");
+          }
+        })
+        .catch((error) => {
+          console.error("Terjadi kesalahan:", error);
+          setIsError((prevError) => ({
+            ...prevError,
+            error: true,
+            message: "Terjadi kesalahan: " + error.message,
+          }));
+        })
+        .finally(() => setIsLoading(false));
     }
   };
 

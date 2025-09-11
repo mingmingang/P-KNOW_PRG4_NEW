@@ -9,7 +9,6 @@ import Cookies from "js-cookie";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSyncAlt } from "@fortawesome/free-solid-svg-icons";
 import maskot from "../../../assets/loginMaskotTMS.png";
-
 import { API_LINK, ROOT_LINK } from "../../util/Constants";
 import { validateAllInputs, validateInput } from "../../util/ValidateForm";
 import { encryptId } from "../../util/Encryptor";
@@ -314,12 +313,12 @@ export default function Login() {
                   className="maskotlogin mr-5"
                   style={{ color: "#0A5EA8", marginLeft: "-30px" }}
                 >
-                  <h2
+                  <h1
                     className="fw-bold"
                     style={{ width: "750px", textAlign: "center" }}
                   >
                     Mulai langkah awal pembelajaranmu dengan P-KNOW
-                  </h2>
+                  </h1>
                   <img src={maskot} alt="" width="750px" />
                 </div>
 

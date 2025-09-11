@@ -481,29 +481,24 @@ export default function MasterSharingEditNot({ onChangePage }) {
                 )}
               </div>
             </div>
-
-            {/* Button Section dengan layout yang diperbaiki */}
-            <div
-              className="my-4 d-flex justify-content-between"
-              style={{ marginTop: "2rem" }}
-            >
-              <div>
+          </div>
+          <div className="d-flex ml-4 mb-4 justify-content-between">
+            <Button
+              classType="outline-secondary me-2 px-4 py-2"
+              label="Sebelumnya"
+              onClick={() =>
+                onChangePage(
+                  "forumEdit",
+                  AppContext_test.ForumForm,
+                  AppContext_test.MateriForm,
+                  (AppContext_master.count += 1)
+                )
+              }
+            />
+            <div className="d-flex">
+              <div className="mr-2">
                 <Button
-                  classType="outline-secondary me-2 px-4 py-2"
-                  label="Sebelumnya"
-                  onClick={() =>
-                    onChangePage(
-                      "forumEdit",
-                      AppContext_test.ForumForm,
-                      AppContext_test.MateriForm,
-                      (AppContext_master.count += 1)
-                    )
-                  }
-                />
-              </div>
-              <div className="d-flex">
-                <Button
-                  classType="primary me-3 px-4 py-2"
+                  classType="primary ms-2 px-4 py-2"
                   type="submit"
                   label="Simpan"
                 />
@@ -519,6 +514,18 @@ export default function MasterSharingEditNot({ onChangePage }) {
                   }
                 />
               </div>
+
+              <Button
+                classType="dark ms-3 px-4 py-2 mr-4"
+                label="Berikutnya"
+                onClick={() =>
+                  onChangePage(
+                    "pretestEdit",
+                    AppContext_test.ForumForm,
+                    AppContext_master.MateriForm
+                  )
+                }
+              />
             </div>
           </div>
         </div>

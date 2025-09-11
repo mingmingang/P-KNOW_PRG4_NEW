@@ -4,7 +4,6 @@ import { object, string } from "yup";
 import Input from "../../../part/Input";
 import Loading from "../../../part/Loading";
 import * as XLSX from 'xlsx';
-import axios from 'axios';
 import { validateAllInputs, validateInput } from "../../../util/ValidateForm";
 import { API_LINK } from "../../../util/Constants";
 import FileUpload from "../../../part/FileUpload";
@@ -14,6 +13,7 @@ import Editor from "../../../../part/CKEditor";
 import AppContext_master from "../MasterContext";
 import AppContext_test from "../../master-test/TestContext";
 import { Stepper, Step, StepLabel } from '@mui/material';
+import UseFetch from "../../../../util/UseFetch";
 
 const steps = ['Materi', 'Pretest', 'Sharing Expert', 'Forum', 'Post Test'];
 
@@ -157,12 +157,9 @@ export default function MasterPreTestAdd({ onChangePage }) {
   const handleAdd = async (e) => {
     e.preventDefault();
 
-      formData.timer = convertTimeToSeconds(timer)
-    const validationErrors = await validateAllInputs(
-      formData,
-      userSchema,
-      setErrors
-    );
+    formData.timer = convertTimeToSeconds(timer);
+
+    const validationErrors = await validateAllInputs(formData, userSchema, setErrors);
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
       Swal.fire({
@@ -184,200 +181,169 @@ export default function MasterPreTestAdd({ onChangePage }) {
       return;
     }
 
-      for (let question of formContent) {
-        if (question.type === 'Pilgan' && question.options.length < 2) {
-            Swal.fire({
-              title: 'Gagal!',
-              text: 'Opsi pilihan ganda harus lebih dari satu',
-              icon: 'error',
-              confirmButtonText: 'OK'
-            });
-            return;
-        }
-      }
-  
-      // Hitung total point dari semua pertanyaan dan opsi
-      const totalQuestionPoint = formContent.reduce((total, question) => {
-        if (question.type !== 'Pilgan') {
-          total = total + parseInt(question.point)
-        }
-          return total;
-      }, 0);
-
-      const totalOptionPoint = formContent.reduce((total, question) => {
-        if (question.type === 'Pilgan') {
-          return total + question.options.reduce((optionTotal, option) => optionTotal + parseInt(option.point || 0), 0);
-        }
-        return total;
-      }, 0);
-
-      if (totalQuestionPoint + totalOptionPoint !== 100) {
+    for (let question of formContent) {
+      if (question.type === 'Pilgan' && question.options.length < 2) {
         Swal.fire({
           title: 'Gagal!',
-          text: 'Total skor harus berjumlah 100',
+          text: 'Opsi pilihan ganda harus lebih dari satu',
           icon: 'error',
           confirmButtonText: 'OK'
         });
         return;
       }
-  
-      try {
-    formData.timer = convertTimeToSeconds();
-        const response = await axios.post(API_LINK + 'Quiz/SaveDataQuiz', formData);
-        if (response.data.length === 0) {
-          Swal.fire({
-            title: 'Gagal!',
-            text: 'Data yang dimasukkan tidak valid atau kurang',
-            icon: 'error',
-            confirmButtonText: 'OK'
-          });
-          return;
-        }
-    
-        const quizId = response.data[0].hasil;
-    
-        for (let i = 0; i < formContent.length; i++) {
-          const question = formContent[i];
-          const formQuestion = {
-            quizId: quizId,
-            soal: question.text,
-            tipeQuestion: question.type,
-            gambar: question.gambar,
-            questionDeskripsi: '',
-            status: 'Aktif',
-            quecreatedby: AppContext_test.DisplayName,
-          };
-          if (question.type === 'Essay' || question.type === 'Praktikum') {
-            if (question.selectedFile) {
-              try {
-                const uploadResult = await uploadFile(question.selectedFile);
-                formQuestion.gambar = uploadResult.newFileName;
-              } catch (uploadError) {
-                alert('Gagal mengunggah gambar untuk pertanyaan: ' + question.text);
-                return;
-              }
-            } else {
-              // Jika tidak ada file yang dipilih, atur question.gambar menjadi null
-              formQuestion.gambar = null;
+    }
+
+    const totalQuestionPoint = formContent.reduce((total, question) => {
+      if (question.type !== 'Pilgan') {
+        total = total + parseInt(question.point);
+      }
+      return total;
+    }, 0);
+
+    const totalOptionPoint = formContent.reduce((total, question) => {
+      if (question.type === 'Pilgan') {
+        return total + question.options.reduce((optionTotal, option) => optionTotal + parseInt(option.point || 0), 0);
+      }
+      return total;
+    }, 0);
+
+    if (totalQuestionPoint + totalOptionPoint !== 100) {
+      Swal.fire({
+        title: 'Gagal!',
+        text: 'Total skor harus berjumlah 100',
+        icon: 'error',
+        confirmButtonText: 'OK'
+      });
+      return;
+    }
+
+    try {
+      formData.timer = convertTimeToSeconds(timer); 
+
+      const response = await UseFetch(API_LINK + 'Quiz/SaveDataQuiz', formData);
+
+      if (response === "ERROR" || response.length === 0) {
+        Swal.fire({
+          title: 'Gagal!',
+          text: 'Data yang dimasukkan tidak valid atau kurang',
+          icon: 'error',
+          confirmButtonText: 'OK'
+        });
+        return;
+      }
+
+      const quizId = response[0].hasil;
+
+      for (let i = 0; i < formContent.length; i++) {
+        const question = formContent[i];
+        const formQuestion = {
+          quizId: quizId,
+          soal: question.text,
+          tipeQuestion: question.type,
+          gambar: question.gambar,
+          questionDeskripsi: '',
+          status: 'Aktif',
+          quecreatedby: AppContext_test.DisplayName,
+        };
+
+        if (question.type === 'Essay' || question.type === 'Praktikum') {
+          if (question.selectedFile) {
+            try {
+              const uploadResult = await uploadFile(question.selectedFile); 
+              formQuestion.gambar = uploadResult.newFileName;
+            } catch (uploadError) {
+              alert('Gagal mengunggah gambar untuk pertanyaan: ' + question.text);
+              return;
             }
-          } else if (question.type === 'Pilgan') {
-            formQuestion.gambar = '';
+          } else {
+            formQuestion.gambar = null;
           }
-    
-          try {
-            const questionResponse = await axios.post(API_LINK + 'Questions/SaveDataQuestion', formQuestion);
-    
-            if (questionResponse.data.length === 0) {
-              Swal.fire({
-                title: 'Gagal!',
-                text: 'Data yang dimasukkan tidak valid atau kurang',
-                icon: 'error',
-                confirmButtonText: 'OK'
-              });
-              return
-            }
-    
-            const questionId = questionResponse.data[0].hasil;
-    
-            if (question.type === 'Essay' || question.type === 'Praktikum') {
-              const answerData = {
-                urutanChoice: '',
-                answerText: question.correctAnswer ? question.correctAnswer : "0", 
-                questionId: questionId,
-                nilaiChoice: question.point,
-                quecreatedby: AppContext_test.DisplayName,
-              };
-    
-              try {
-                const answerResponse = await axios.post(API_LINK + 'Choices/SaveDataChoice', answerData);
-              } catch (error) {
-                console.error('Gagal menyimpan jawaban Essay:', error);
-                Swal.fire({
-                  title: 'Gagal!',
-                  text: 'Data yang dimasukkan tidak valid atau kurang',
-                  icon: 'error',
-                  confirmButtonText: 'OK'
-                });
-              }
-            } else if (question.type === 'Pilgan') {
-              for (const [optionIndex, option] of question.options.entries()) {
-                const answerData = {
-                  urutanChoice: optionIndex + 1,
-                  answerText: option.label,
-                  questionId: questionId,
-                  nilaiChoice: option.point || 0,
-                  quecreatedby: AppContext_test.DisplayName,
-                };
-                try {
-                  const answerResponse = await axios.post(API_LINK + 'Choices/SaveDataChoice', answerData);
-                } catch (error) {
-                  console.error('Gagal menyimpan jawaban multiple choice:', error);
-                  Swal.fire({
-                    title: 'Gagal!',
-                    text: 'Data yang dimasukkan tidak valid atau kurang',
-                    icon: 'error',
-                    confirmButtonText: 'OK'
-                  });
-                }
-              }
-            }
-            
-            setResetStepper((prev) => !prev + 1);
-          } catch (error) {
-            console.error('Gagal menyimpan pertanyaan:', error);
+        } else if (question.type === 'Pilgan') {
+          formQuestion.gambar = '';
+        }
+
+        try {
+          const questionResponse = await UseFetch(API_LINK + 'Questions/SaveDataQuestion', formQuestion);
+          
+          if (questionResponse === "ERROR" || questionResponse.length === 0) {
             Swal.fire({
               title: 'Gagal!',
               text: 'Data yang dimasukkan tidak valid atau kurang',
               icon: 'error',
               confirmButtonText: 'OK'
             });
+            return;
           }
+          
+          const questionId = questionResponse[0].hasil;
+
+          if (question.type === 'Essay' || question.type === 'Praktikum') {
+            const answerData = {
+              urutanChoice: '',
+              answerText: question.correctAnswer ? question.correctAnswer : "0",
+              questionId: questionId,
+              nilaiChoice: question.point,
+              quecreatedby: AppContext_test.DisplayName,
+            };
+            
+            const answerResponse = await UseFetch(API_LINK + 'Choices/SaveDataChoice', answerData);
+            if(answerResponse === "ERROR") {
+                console.error('Gagal menyimpan jawaban Essay:', "Respons tidak valid");
+                Swal.fire({ title: 'Gagal!', text: 'Data yang dimasukkan tidak valid atau kurang', icon: 'error'});
+            }
+
+          } else if (question.type === 'Pilgan') {
+            for (const [optionIndex, option] of question.options.entries()) {
+              const answerData = {
+                urutanChoice: optionIndex + 1,
+                answerText: option.label,
+                questionId: questionId,
+                nilaiChoice: option.point || 0,
+                quecreatedby: AppContext_test.DisplayName,
+              };
+
+              const answerResponse = await UseFetch(API_LINK + 'Choices/SaveDataChoice', answerData);
+              if (answerResponse === "ERROR") {
+                console.error('Gagal menyimpan jawaban multiple choice:', "Respons tidak valid");
+                Swal.fire({ title: 'Gagal!', text: 'Data yang dimasukkan tidak valid atau kurang', icon: 'error' });
+              }
+            }
+          }
+          setResetStepper((prev) => !prev + 1);
+        } catch (error) {
+          console.error('Gagal menyimpan pertanyaan:', error);
+          Swal.fire({ title: 'Gagal!', text: 'Data yang dimasukkan tidak valid atau kurang', icon: 'error' });
         }
-    
-        // Tampilkan pesan sukses atau lakukan tindakan lain yang diperlukan setelah semua data berhasil disimpan
-        Swal.fire({
-          title: 'Berhasil!',
-          text: 'Pretest berhasil ditambahkan',
-          icon: 'success',
-          confirmButtonText: 'OK'
-        }).then((result) => {
-          if (result.isConfirmed) {
-            setFormContent([]);
-            setSelectedOptions([]);
-            setErrors({});
-            setSelectedFile(null);
-            setTimer('');
-            setIsButtonDisabled(true);
-            onChangePage("pretestDetail");
-          }
-        });
-    
-      } catch (error) {
-        console.error('Gagal menyimpan data:', error);
-        Swal.fire({
-          title: 'Gagal!',
-          text: 'Terjadi kesalahan saat menyimpan data.',
-          icon: 'error',
-          confirmButtonText: 'OK'
-        });
       }
-    
+
+      Swal.fire({
+        title: 'Berhasil!',
+        text: 'Pretest berhasil ditambahkan',
+        icon: 'success',
+        confirmButtonText: 'OK'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          setFormContent([]);
+          setSelectedOptions([]);
+          setErrors({});
+          setSelectedFile(null);
+          setTimer('');
+          setIsButtonDisabled(true);
+          onChangePage("pretestDetail");
+        }
+      });
+
+    } catch (error) {
+      console.error('Gagal menyimpan data:', error);
+      Swal.fire({
+        title: 'Gagal!',
+        text: 'Terjadi kesalahan saat menyimpan data.',
+        icon: 'error',
+        confirmButtonText: 'OK'
+      });
+    }
   };
-
-  // const handleQuestionTypeChange = (e, index) => {
-  //   const { value } = e.target;
-  //   const updatedFormContent = [...formContent];
-  //   updatedFormContent[index] = {
-  //     ...updatedFormContent[index],
-  //     type: value,
-  //     options: value === "Essay" ? [] : updatedFormContent[index].options,
-  //   };
-  //   setFormContent(updatedFormContent);
-
-  //   // Pastikan tipeQuestion diperbarui dengan benar di formQuestion
-  //   updateFormQuestion('tipeQuestion', value);
-  // };
-
+  
   const handleQuestionTextChange = (e, index) => {
     const { value } = e.target;
     const updatedFormContent = [...formContent];

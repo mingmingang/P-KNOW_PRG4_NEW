@@ -27,11 +27,6 @@ export default function App() {
   const isDefaultDashboard = window.location.pathname === "/halaman_sso";
   const cookie = Cookies.get("activeUser");
 
-  console.log("Current path:", window.location.pathname);
-  console.log("Is default dashboard:", isDefaultDashboard);
-  console.log("Is login page:", isLoginPage);
-  console.log("Cookie exists:", !!cookie);
-
   if (isLogoutPage) return <Logout />;
 
   if (isDefaultDashboard && cookie) return  <BrowserRouter basename={BASE_ROUTE}>
@@ -55,7 +50,6 @@ export default function App() {
   }
   
   const userInfo = JSON.parse(decryptId(cookie));
-  console.log("dataku", userInfo.role, userInfo.prodi);
 
   useEffect(() => {
     const getMenu = async () => {
@@ -78,7 +72,6 @@ export default function App() {
         return pathExistsInMenu;
       });
 
-      console.log("rute", route);
 
       route.push({
         path: "default-dashboard",
@@ -119,12 +112,10 @@ export default function App() {
         isProfileDropdownVisible={true}
         showMenu={true}
       />
-      {/* Kita harus mengganti RouterProvider dengan <Routes> dan <Route> */}
       <Routes>
         {listRoute.map((route) => (
           <Route key={route.path} path={route.path} element={route.element} />
         ))}
-        {/* Tambahkan NotFound Route jika belum ada di listRoute */}
         <Route path="*" element={<NotFound />} /> 
       </Routes>
 

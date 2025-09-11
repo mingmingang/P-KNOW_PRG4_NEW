@@ -82,7 +82,7 @@ export default function KKDetailProgram({ onChangePage, withID }) {
       }));
     }
   };
-
+  console.log("dataanya", withID)
   const getListProgram = async () => {
     setIsError({ error: false, message: "" });
     setIsLoading(true);
@@ -197,7 +197,7 @@ export default function KKDetailProgram({ onChangePage, withID }) {
           </h4>
         </div>
       </div>
-      <div className="card card-detail">
+      <div className="container card mb-4">
         <div className="card-body">
           <div className="row pt-2">
             <div className="col-lg-7 px-4">

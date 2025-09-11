@@ -71,7 +71,7 @@ export default function PengenalanBefore({ onChangePage }) {
 
       setTimeout(() => URL.revokeObjectURL(url), 10000);
     } catch (error) {
-      console.log(error);
+      console.error("Error previewing file:", error);
     }
   };
 
@@ -179,6 +179,13 @@ export default function PengenalanBefore({ onChangePage }) {
       }
 
       return data;
+      const data = await UseFetch(API_LINK + "Materi/GetDataMateriById", id);
+
+      if (data === "ERROR") {
+        throw new Error("Gagal mengambil data materi");
+      }
+
+      return data;
     } catch (error) {
       console.error("Terjadi kesalahan saat mengambil data materi:", error);
       throw error;
@@ -258,16 +265,19 @@ export default function PengenalanBefore({ onChangePage }) {
           })
           .finally(() => setIsLoading(false));
       } catch (error) {
+        console.error("Terjadi kesalahan:", error);
         window.scrollTo(0, 0);
         setIsError((prevError) => ({
           ...prevError,
           error: true,
-          message: error.message,
+          message: "Terjadi kesalahan: " + error.message,
         }));
       } finally {
         setIsLoading(false);
       }
-    } else window.scrollTo(0, 0);
+    } else {
+      window.scrollTo(0, 0);
+    }
   };
 
   const fetchDataKategori = async (retries = 3, delay = 1000) => {

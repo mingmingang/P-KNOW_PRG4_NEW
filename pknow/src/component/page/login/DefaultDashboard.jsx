@@ -36,16 +36,19 @@ export default function DefaultDashboard() {
         setAvailableRoles(roles);
 
         if (roles.length > 0) {
+        if (roles.length > 0) {
           setShowRoleModal(true);
           if (modalRef.current) {
             modalRef.current.open();
           }
-        } else if (roles.length === 0) {
+        }  else if (roles.length === 0) {
           handleRoleSelection(roles[0]);
         } else {
           window.location.href = "/login";
         }
-      } catch (error) {
+      }
+    }
+      catch (error) {
         console.error("Error parsing user data:", error);
         window.location.href = "/login";
       } finally {
@@ -142,12 +145,12 @@ export default function DefaultDashboard() {
                 className="maskotlogin mr-5"
                 style={{ color: "#0A5EA8", marginLeft: "-30px" }}
               >
-                <h2
+                <h1
                   className="fw-bold"
                   style={{ width: "750px", textAlign: "center" }}
                 >
                   Mulai langkah awal pembelajaranmu dengan P-KNOW
-                </h2>
+                </h1>
                 <img src={maskot} alt="" width="750px" />
               </div>
 
@@ -195,10 +198,8 @@ export default function DefaultDashboard() {
                           }}
                         >
                           <div className="d-flex justify-content-between align-items-center">
-                            <span style={{ fontSize: "17px" }}>
-                              Masuk sebagai {role.Role || role.role}
-                            </span>
-                            <i className="fas fa-arrow-right"></i>
+                            <span style={{fontSize:"17px"}}>Masuk sebagai {role.Role || role.role}</span>
+                            <i className="fas fa-arrow-right ml-4"></i>
                           </div>
                         </button>
                       ))}
