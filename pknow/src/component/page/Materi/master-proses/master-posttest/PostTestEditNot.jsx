@@ -120,28 +120,26 @@ const [isFormDisabled, setIsFormDisabled] = useState(false);
   };
 
   const uploadFile = async (file) => {
-    const formData = new FormData();
-    formData.append("file", file);
-
     try {
-      const response = await axios.post(
-        `${API_LINK}Upload/UploadFile`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-
-      if (response.status === 200 && response.data) {
-        return response.data;
-      } else {
-        throw new Error("Upload file gagal.");
-      }
+      const result = await uploadFile(file); 
+      return result;
     } catch (error) {
-      console.error("Error in uploadFile function:", error);
-      throw error;
+      console.error('Error using util uploadFile:', error);
+      
+      const formData = new FormData();
+      formData.append("file", file);
+      
+      const response = await fetch(`${API_LINK}Upload/UploadFile`, {
+        method: 'POST',
+        body: formData
+      });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+      
+      const data = await response.json();
+      return data;
     }
   };
 
@@ -440,7 +438,7 @@ const [isFormDisabled, setIsFormDisabled] = useState(false);
           type: "Post-Test",
         });
 
-        if (quizResponse.data.length === 0) {
+        if (quizResponse.length === 0) {
           Swal.fire({
             title: "Gagal!",
             text: "Data yang dimasukkan tidak valid atau kurang",
@@ -450,7 +448,7 @@ const [isFormDisabled, setIsFormDisabled] = useState(false);
           return;
         }
 
-        const quizId = quizResponse.data[0].hasil;
+        const quizId = quizResponse[0].hasil;
 
         for (const question of formContent) {
           const formQuestion = {
@@ -492,7 +490,7 @@ const [isFormDisabled, setIsFormDisabled] = useState(false);
               API_LINK + "Question/SaveDataQuestion",
               formQuestion
             );
-            if (questionResponse.data.length === 0) {
+            if (questionResponse.length === 0) {
               Swal.fire({
                 title: "Gagal!",
                 text: "Data yang dimasukkan tidak valid atau kurang",
@@ -502,7 +500,7 @@ const [isFormDisabled, setIsFormDisabled] = useState(false);
               return;
             }
 
-            const questionId = questionResponse.data[0].hasil;
+            const questionId = questionResponse[0].hasil;
 
             if (question.type === "Essay" || question.type === "Praktikum") {
               const answerData = {

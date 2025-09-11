@@ -160,7 +160,6 @@ export default function MasterPostTestEdit({ onChangePage, withID }) {
       const updatedFormContent = [...prevFormContent];
       const question = updatedFormContent[questionIndex];
 
-      // Perbarui jenis pilihan
       question.jenis = value;
 
       let choicesToDelete = [];
@@ -202,11 +201,9 @@ export default function MasterPostTestEdit({ onChangePage, withID }) {
 
   async function fetchSectionAndQuizData() {
     setIsLoading(true);
-    // Reset state error sebelumnya jika ada
     setIsError({ error: false, message: "" });
 
     try {
-      // 1. Panggil UseFetch untuk mendapatkan data Section
       const sectionData = await UseFetch(
         API_LINK + "Section/GetDataSectionByMateri",
         {
@@ -734,23 +731,26 @@ export default function MasterPostTestEdit({ onChangePage, withID }) {
   };
 
   const uploadFile = async (file) => {
-    const formData = new FormData();
-    formData.append("file", file);
-
     try {
-      const responseData = await UseFetch(
-        `${API_LINK}Upload/UploadFile`,
-        formData
-      );
-
-      if (responseData === "ERROR") {
-        throw new Error("Upload file gagal. Server memberikan respons error.");
-      }
-
-      return responseData;
+      const result = await uploadFile(file);
+      return result;
     } catch (error) {
-      console.error("Error di dalam fungsi uploadFile:", error);
-      throw error;
+      console.error('Error using util uploadFile:', error);
+      
+      const formData = new FormData();
+      formData.append("file", file);
+      
+      const response = await fetch(`${API_LINK}Upload/UploadFile`, {
+        method: 'POST',
+        body: formData
+      });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+      
+      const data = await response.json();
+      return data;
     }
   };
 
@@ -876,8 +876,7 @@ export default function MasterPostTestEdit({ onChangePage, withID }) {
         API_LINK + "Quiz/UpdateDataQuiz",
         quizPayload
       );
-      console.log("DEBUG quizResponse:", quizResponse);
-console.log("DEBUG quizResponse.data:", quizResponse?.data);
+
       if (!quizResponse.length) {
         Swal.fire({
           title: "Error!",
@@ -948,7 +947,7 @@ console.log("DEBUG quizResponse.data:", quizResponse?.data);
                         if (optionResponse === "ERROR" || !newOptionId) {
                             throw new Error(`Gagal menyimpan pilihan baru: "${option.label}"`);
                         }
-                        option.id = newOptionId; // Simpan ID baru
+                        option.id = newOptionId;
                     } else {
                const updateOptionPayload = {
                             cho_id: option.id, questionId: question.key, urutanChoice: optionIndex + 1,
