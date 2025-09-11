@@ -366,6 +366,13 @@ export default function MasterPreTestEdit({ onChangePage, withID }) {
               }
 
               if (question.Gambar) {
+                formattedQuestions[
+                  question.Key
+                ].previewUrl = `${API_LINK}Utilities/Upload/DownloadFile?namaFile=${encodeURIComponent(
+                  question.Gambar
+                )}`;
+
+                // Optional: Download blob untuk offline preview
                 const gambarPromise = UseFetch(
                   `${API_LINK}Utilities/DownloadFile`,
                   { namaFile: question.Gambar },
@@ -375,7 +382,7 @@ export default function MasterPreTestEdit({ onChangePage, withID }) {
                   .then((response) => {
                     if (response !== "ERROR" && response.blob) {
                       const url = URL.createObjectURL(response.blob);
-                      formattedQuestions[question.Key].gambar = url;
+                      formattedQuestions[question.Key].blobUrl = url;
                     }
                   })
                   .catch((error) => {
@@ -767,34 +774,43 @@ export default function MasterPreTestEdit({ onChangePage, withID }) {
     formData.append("file", file);
 
     try {
-      const responseData = await UseFetch(
-        `${API_LINK}Upload/UploadFile`,
-        formData
-      );
+      // Coba gunakan fetch langsung jika UseFetch bermasalah dengan FormData
+      const response = await fetch(`${API_LINK}Upload/UploadFile`, {
+        method: "POST",
+        body: formData,
+        // Jangan set Content-Type header, biarkan browser yang set untuk FormData
+      });
 
-      if (responseData === "ERROR") {
-        throw new Error("Upload file gagal.");
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
 
+      const responseData = await response.json();
+
+      // Periksa struktur response sesuai dengan API Anda
+      if (!responseData || responseData === "ERROR") {
+        throw new Error("Response dari server tidak valid");
+      }
+
+      // Sesuaikan dengan struktur response API Anda
+      // Mungkin responseData.Hasil atau responseData.filename atau responseData.data
       return responseData;
     } catch (error) {
       console.error("Error in uploadFile function:", error);
-      throw error;
+      throw new Error(`Upload file gagal: ${error.message}`);
     }
   };
 
   const handleFileChange = async (e, index) => {
     const file = e.target.files[0];
     if (!file) {
-      console.log(
-        "Tidak ada file yang diunggah, tidak ada perubahan pada gambar."
-      );
+      console.log("Tidak ada file yang diunggah");
       return;
     }
 
     const allowedExtensions = ["jpg", "jpeg", "png"];
     const fileExtension = file.name.split(".").pop().toLowerCase();
-    const maxSizeInMB = 10; // Maksimum ukuran file (dalam MB)
+    const maxSizeInMB = 10;
 
     // Validasi ekstensi file
     if (!allowedExtensions.includes(fileExtension)) {
@@ -803,6 +819,7 @@ export default function MasterPreTestEdit({ onChangePage, withID }) {
         title: "Format Berkas Tidak Valid",
         text: "Hanya file dengan format .jpg, .jpeg, atau .png yang diizinkan.",
       });
+      e.target.value = ""; // Reset input
       return;
     }
 
@@ -813,23 +830,73 @@ export default function MasterPreTestEdit({ onChangePage, withID }) {
         title: "Ukuran File Terlalu Besar",
         text: `Ukuran file maksimal adalah ${maxSizeInMB} MB.`,
       });
+      e.target.value = ""; // Reset input
       return;
     }
 
-    try {
-      const uploadResponse = await uploadFile(file);
-      const fileName = uploadResponse.Hasil;
+    // Tampilkan loading
+    Swal.fire({
+      title: "Mengunggah file...",
+      text: "Mohon tunggu",
+      allowOutsideClick: false,
+      showConfirmButton: false,
+      willOpen: () => {
+        Swal.showLoading();
+      },
+    });
 
+    try {
+      // Coba upload file
+      const uploadResponse = await uploadFile(file);
+
+      console.log("Upload successful:", uploadResponse); // Debug log
+
+      // Ambil nama file dari response (sesuaikan dengan struktur API Anda)
+      let fileName;
+      if (uploadResponse.Hasil) {
+        fileName = uploadResponse.Hasil;
+      } else if (uploadResponse.filename) {
+        fileName = uploadResponse.filename;
+      } else if (uploadResponse.data && uploadResponse.data.filename) {
+        fileName = uploadResponse.data.filename;
+      } else {
+        // Jika tidak ada property yang dikenali, gunakan nama file asli
+        console.warn("Unknown response structure, using original filename");
+        fileName = file.name;
+      }
+
+      // Update state
       const updatedFormContent = [...formContent];
       updatedFormContent[index] = {
         ...updatedFormContent[index],
-        gambar: fileName, // Nama file baru dari server
+        gambar: fileName, // Nama file dari server
         previewUrl: URL.createObjectURL(file), // URL untuk preview
+        isNewFile: true, // Flag untuk menandai file baru
       };
 
       setFormContent(updatedFormContent);
+
+      // Tutup loading dan tampilkan sukses
+      Swal.fire({
+        icon: "success",
+        title: "Berhasil!",
+        text: "File berhasil diunggah",
+        timer: 2000,
+        showConfirmButton: false,
+      });
     } catch (error) {
       console.error("Error uploading file:", error);
+
+      // Tutup loading dan tampilkan error
+      Swal.fire({
+        icon: "error",
+        title: "Upload Gagal",
+        text: `Gagal mengunggah file: ${error.message}`,
+        confirmButtonText: "OK",
+      });
+
+      // Reset input file
+      e.target.value = "";
     }
   };
 
@@ -945,80 +1012,102 @@ export default function MasterPreTestEdit({ onChangePage, withID }) {
           // throw new Error(`Gagal menghapus pilihan lama dengan ID: ${choiceId}`);
         }
       }
-     // **3. Simpan atau Update pertanyaan dan pilihan baru**
-    for (const question of formContent) {
-      const isBlobUrl = question.gambar?.startsWith("blob:") || false;
-      const finalGambar = isBlobUrl ? question.img : question.gambar;
-      let questionId = question.key;
+      // **3. Simpan atau Update pertanyaan dan pilihan baru**
+      for (const question of formContent) {
+        const isBlobUrl = question.gambar?.startsWith("blob:") || false;
+        const finalGambar = isBlobUrl ? question.img : question.gambar;
+        let questionId = question.key;
 
-      if (!questionId) {
-        // --- CREATE Question ---
-        const createQuestionPayload = {
-          p1: formData.quizId, p2: question.text, p3: question.type,
-          p4: finalGambar || "", p5: "Aktif", p6: activeUser,
-          p7: question.point || 0,
-        };
-        const createQuestionResponse = await UseFetch(
-          API_LINK + "Question/SaveDataQuestion",
-          createQuestionPayload
-        );
-        if (createQuestionResponse === "ERROR") throw new Error("Gagal menyimpan pertanyaan baru.");
-        
-        questionId = createQuestionResponse?.[0]?.hasil;
-        if (!questionId) throw new Error("Gagal mendapatkan ID untuk pertanyaan baru.");
+        if (!questionId) {
+          // --- CREATE Question ---
+          const createQuestionPayload = {
+            p1: formData.quizId,
+            p2: question.text,
+            p3: question.type,
+            p4: finalGambar || "",
+            p5: "Aktif",
+            p6: activeUser,
+            p7: question.point || 0,
+          };
+          const createQuestionResponse = await UseFetch(
+            API_LINK + "Question/SaveDataQuestion",
+            createQuestionPayload
+          );
+          if (createQuestionResponse === "ERROR")
+            throw new Error("Gagal menyimpan pertanyaan baru.");
 
-      } else {
-        // --- UPDATE Question ---
-        const updateQuestionPayload = {
-          p1: question.key, p2: formData.quizId, p3: question.text,
-          p4: question.type, p5: finalGambar || "", p6: "Aktif",
-          p7: activeUser, p8: question.point || 0,
-        };
-        const updateQuestionResponse = await UseFetch(
-          API_LINK + "Question/UpdateDataQuestion",
-          updateQuestionPayload
-        );
-        if (updateQuestionResponse === "ERROR") throw new Error(`Gagal memperbarui pertanyaan: ${question.text}`);
-      }
+          questionId = createQuestionResponse?.[0]?.hasil;
+          if (!questionId)
+            throw new Error("Gagal mendapatkan ID untuk pertanyaan baru.");
+        } else {
+          // --- UPDATE Question ---
+          const updateQuestionPayload = {
+            p1: question.key,
+            p2: formData.quizId,
+            p3: question.text,
+            p4: question.type,
+            p5: finalGambar || "",
+            p6: "Aktif",
+            p7: activeUser,
+            p8: question.point || 0,
+          };
+          const updateQuestionResponse = await UseFetch(
+            API_LINK + "Question/UpdateDataQuestion",
+            updateQuestionPayload
+          );
+          if (updateQuestionResponse === "ERROR")
+            throw new Error(`Gagal memperbarui pertanyaan: ${question.text}`);
+        }
 
-      // --- Tangani Opsi untuk Pilihan Ganda ---
-      if (question.type === "Pilgan") {
-        for (const [optionIndex, option] of question.options.entries()) {
-          if (!option.id) {
-            // --- CREATE Choice ---
-            const createChoicePayload = {
-              p1: optionIndex + 1, p2: option.label, p3: questionId,
-              p4: option.point || 0, p5: activeUser,
-              p6: question.jenis === "Tunggal" ? "Tunggal" : "Jamak",
-            };
-            const createChoiceResponse = await UseFetch(
-              API_LINK + "Choice/SaveDataChoice",
-              createChoicePayload
-            );
-            if (createChoiceResponse === "ERROR") throw new Error(`Gagal menyimpan pilihan baru: ${option.label}`);
-            
-            const newOptionId = createChoiceResponse?.[0]?.hasil;
-            if (!newOptionId) throw new Error("Gagal mendapatkan ID untuk pilihan baru.");
+        // --- Tangani Opsi untuk Pilihan Ganda ---
+        if (question.type === "Pilgan") {
+          for (const [optionIndex, option] of question.options.entries()) {
+            if (!option.id) {
+              // --- CREATE Choice ---
+              const createChoicePayload = {
+                p1: optionIndex + 1,
+                p2: option.label,
+                p3: questionId,
+                p4: option.point || 0,
+                p5: activeUser,
+                p6: question.jenis === "Tunggal" ? "Tunggal" : "Jamak",
+              };
+              const createChoiceResponse = await UseFetch(
+                API_LINK + "Choice/SaveDataChoice",
+                createChoicePayload
+              );
+              if (createChoiceResponse === "ERROR")
+                throw new Error(
+                  `Gagal menyimpan pilihan baru: ${option.label}`
+                );
 
-          } else {
-            // --- UPDATE Choice ---
-            const updateChoicePayload = {
-              cho_id: option.id, questionId: questionId, urutanChoice: optionIndex + 1,
-              cho_isi: option.label, cho_nilai: option.point || 0,
-              quemodifby: activeUser, cho_tipe: question.jenis === "Tunggal" ? "Tunggal" : "Jamak",
-            };
-            const updateChoiceResponse = await UseFetch(
-              API_LINK + "Choice/UpdateDataChoice",
-              updateChoicePayload
-            );
-            if (updateChoiceResponse === "ERROR") throw new Error(`Gagal memperbarui pilihan: ${option.label}`);
+              const newOptionId = createChoiceResponse?.[0]?.hasil;
+              if (!newOptionId)
+                throw new Error("Gagal mendapatkan ID untuk pilihan baru.");
+            } else {
+              // --- UPDATE Choice ---
+              const updateChoicePayload = {
+                cho_id: option.id,
+                questionId: questionId,
+                urutanChoice: optionIndex + 1,
+                cho_isi: option.label,
+                cho_nilai: option.point || 0,
+                quemodifby: activeUser,
+                cho_tipe: question.jenis === "Tunggal" ? "Tunggal" : "Jamak",
+              };
+              const updateChoiceResponse = await UseFetch(
+                API_LINK + "Choice/UpdateDataChoice",
+                updateChoicePayload
+              );
+              if (updateChoiceResponse === "ERROR")
+                throw new Error(`Gagal memperbarui pilihan: ${option.label}`);
+            }
           }
         }
       }
-    }
 
-    // Reset deletedChoices setelah semua proses berhasil
-    setDeletedChoices([]);
+      // Reset deletedChoices setelah semua proses berhasil
+      setDeletedChoices([]);
 
       Swal.fire({
         title: "Berhasil!",
@@ -1041,20 +1130,20 @@ export default function MasterPreTestEdit({ onChangePage, withID }) {
     }
   };
 
-  useEffect(() => {
-    const updatedFormContent = formContent.map((question) => {
-      if (question.gambar) {
-        return {
-          ...question,
-          previewUrl: `${API_LINK}Utilities/Upload/DownloadFile?namaFile=${encodeURIComponent(
-            question.gambar
-          )}`,
-        };
-      }
-      return question;
-    });
-    setFormContent(updatedFormContent);
-  }, []);
+  // useEffect(() => {
+  //   const updatedFormContent = formContent.map((question) => {
+  //     if (question.gambar) {
+  //       return {
+  //         ...question,
+  //         previewUrl: `${API_LINK}Utilities/Upload/DownloadFile?namaFile=${encodeURIComponent(
+  //           question.gambar
+  //         )}`,
+  //       };
+  //     }
+  //     return question;
+  //   });
+  //   setFormContent(updatedFormContent);
+  // }, []);
 
   const handleDownloadTemplate = () => {
     const link = document.createElement("a");
@@ -1405,13 +1494,56 @@ export default function MasterPreTestEdit({ onChangePage, withID }) {
                                 >
                                   <img
                                     src={question.previewUrl}
-                                    alt=""
+                                    alt="Preview"
                                     style={{
                                       width: "100%",
                                       height: "auto",
                                       objectFit: "contain",
                                     }}
+                                    onError={(e) => {
+                                      console.error("Error loading image:", e);
+                                      // Fallback jika gambar gagal dimuat
+                                      e.target.style.display = "none";
+                                    }}
                                   />
+                                </div>
+                              )}
+                              {!question.previewUrl && question.gambar && (
+                                <div
+                                  style={{
+                                    marginTop: "10px",
+                                    padding: "10px",
+                                    backgroundColor: "#f8f9fa",
+                                    borderRadius: "4px",
+                                  }}
+                                >
+                                  <p
+                                    style={{
+                                      fontSize: "12px",
+                                      color: "#666",
+                                      margin: 0,
+                                    }}
+                                  >
+                                    File gambar: {question.gambar}
+                                  </p>
+                                  <button
+                                    type="button"
+                                    className="btn btn-sm btn-outline-primary mt-2"
+                                    onClick={() => {
+                                      // Coba load ulang gambar
+                                      const updatedFormContent = [
+                                        ...formContent,
+                                      ];
+                                      updatedFormContent[
+                                        index
+                                      ].previewUrl = `${API_LINK}Utilities/Upload/DownloadFile?namaFile=${encodeURIComponent(
+                                        question.gambar
+                                      )}`;
+                                      setFormContent(updatedFormContent);
+                                    }}
+                                  >
+                                    Muat Gambar
+                                  </button>
                                 </div>
                               )}
 
