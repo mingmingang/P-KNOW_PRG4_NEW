@@ -216,6 +216,30 @@ export default function MastermateriEdit({ onChangePage }) {
     }));
   };
 
+   const fetchDataKategori = async (retries = 3, delay = 1000) => {
+    for (let i = 0; i < retries; i++) {
+      try {
+        const data = await UseFetch(API_LINK + "Program/GetKategoriKKById", {
+          kategori,
+        });
+        const mappedData = data.map((item) => ({
+          value: item.Key,
+          label: item["Nama Kategori"],
+          idKK: item.idKK,
+          namaKK: item.namaKK,
+        }));
+        return mappedData;
+      } catch (error) {
+        console.error("Error fetching kategori data:", error);
+        if (i < retries - 1) {
+          await new Promise((resolve) => setTimeout(resolve, delay));
+        } else {
+          throw error;
+        }
+      }
+    }
+  };
+  
   const handleAdd = async (e) => {
     e.preventDefault();
     const validationErrors = await validateAllInputs(
@@ -313,44 +337,22 @@ export default function MastermateriEdit({ onChangePage }) {
                 AppContext_master.dataTimerPostTest
               );
             }
-          } 
-        )
-        .catch((error) => {
-          console.error("Terjadi kesalahan:", error);
-          setIsError((prevError) => ({
-            ...prevError,
-            error: true,
-            message: "Terjadi kesalahan: " + error.message,
-          }));
-        })
-        .finally(() => setIsLoading(false));
-    }
+                }) // <--- TAMBAHKAN KURUNG TUTUP DI SINI
+      .catch((error) => {
+        console.error("Terjadi kesalahan:", error);
+        setIsError((prevError) => ({
+          ...prevError,
+          error: true,
+          message: "Terjadi kesalahan: " + error.message,
+        }));
+      })
+      .finally(() => setIsLoading(false));
+    }); // <<< Perhatikan juga, .then dari Promise.all butuh catch-nya sendiri atau ditangani dengan cara lain
   }
 };
 
-  const fetchDataKategori = async (retries = 3, delay = 1000) => {
-    for (let i = 0; i < retries; i++) {
-      try {
-        const data = await UseFetch(API_LINK + "Program/GetKategoriKKById", {
-          kategori,
-        });
-        const mappedData = data.map((item) => ({
-          value: item.Key,
-          label: item["Nama Kategori"],
-          idKK: item.idKK,
-          namaKK: item.namaKK,
-        }));
-        return mappedData;
-      } catch (error) {
-        console.error("Error fetching kategori data:", error);
-        if (i < retries - 1) {
-          await new Promise((resolve) => setTimeout(resolve, delay));
-        } else {
-          throw error;
-        }
-      }
-    }
-  };
+
+
 
   useEffect(() => {
     let isMounted = true;
@@ -381,6 +383,7 @@ export default function MastermateriEdit({ onChangePage }) {
       isMounted = false;
     };
   }, [kategori]);
+
   useEffect(() => {
     if (
       AppContext_master.MateriForm &&

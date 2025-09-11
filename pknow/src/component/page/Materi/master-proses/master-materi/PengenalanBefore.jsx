@@ -179,13 +179,7 @@ export default function PengenalanBefore({ onChangePage }) {
       }
 
       return data;
-      const data = await UseFetch(API_LINK + "Materi/GetDataMateriById", id);
 
-      if (data === "ERROR") {
-        throw new Error("Gagal mengambil data materi");
-      }
-
-      return data;
     } catch (error) {
       console.error("Terjadi kesalahan saat mengambil data materi:", error);
       throw error;
