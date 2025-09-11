@@ -32,6 +32,22 @@ export default function SubKKIndex({ onChangePage }) {
           p1: AppContext_test.activeUser,
         });
 
+        if (!Array.isArray(kkData)) {
+          console.warn(
+            "Menerima data KK bukan array, menghentikan proses. Data:",
+            kkData
+          );
+          setIsLoading(false);
+          return;
+        }
+
+        // Jika kkData kosong, tidak perlu lanjut
+        if (kkData.length === 0) {
+          setListKK([]);
+          setIsLoading(false);
+          return;
+        }
+
         if (kkData === "ERROR") {
           throw new Error(
             "Terjadi kesalahan: Gagal mengambil data Kelompok Keahlian."
@@ -138,7 +154,7 @@ export default function SubKKIndex({ onChangePage }) {
             error: true,
             message: error.message || "Gagal memuat data. Silakan coba lagi.",
           });
-          setIsLoading(false); 
+          setIsLoading(false);
         }
         console.error("Fetch error:", error);
       }
@@ -159,7 +175,7 @@ export default function SubKKIndex({ onChangePage }) {
         showInput={false}
       />
       {isError.error && <Alert type="danger" message={isError.message} />}
-      
+
       <div className="d-flex flex-column">
         {isLoading ? (
           <div className="my-5">
