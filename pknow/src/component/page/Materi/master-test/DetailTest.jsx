@@ -4,7 +4,7 @@ import Button from "../../../part/Button copy";
 import Input from "../../../part/Input";
 import KMS_Sidebar from "../../../part/KMS_SideBar";
 import styled from "styled-components";
-import axios from "axios";
+import UseFetch from "../../../util/UseFetch";
 import AppContext_test from "./TestContext";
 import Cookies from "js-cookie";
 import he from "he";
@@ -12,10 +12,16 @@ import { decryptId } from "../../../util/Encryptor";
 import Search from "../../../part/Search";
 
 const ButtonContainer = styled.div`
-    bottom: 35px;
+  bottom: 35px;
   display: flex;
   justify-content: space-between;
 `;
+
+const removeHtmlTags = (str) => {
+  if (!str) return "";
+  const decoded = he.decode(str);
+  return decoded.replace(/<\/?[^>]+(>|$)/g, "");
+};
 
 export default function PengerjaanTest({
   onChangePage,
@@ -27,7 +33,6 @@ export default function PengerjaanTest({
   const cookie = Cookies.get("activeUser");
   if (cookie) activeUser = JSON.parse(decryptId(cookie)).username;
 
-
   const [isError, setIsError] = useState({ error: false, message: "" });
   const [isLoading, setIsLoading] = useState(false);
   const [currentData, setCurrentData] = useState([]);
@@ -35,6 +40,7 @@ export default function PengerjaanTest({
   const [totalQuestion, setTotalQuestion] = useState();
   const [answerStatus, setAnswerStatus] = useState([]);
   const [answerUser, setAnswerUser] = useState([]);
+
   const selectPreviousQuestion = () => {
     if (selectedQuestion > 1) {
       setSelectedQuestion(selectedQuestion - 1);
@@ -45,6 +51,7 @@ export default function PengerjaanTest({
 
   const idTrq = quizId;
   AppContext_test.quizType = quizType;
+
   const selectNextQuestion = () => {
     if (selectedQuestion < totalQuestion) {
       setSelectedQuestion(selectedQuestion + 1);
@@ -52,8 +59,10 @@ export default function PengerjaanTest({
       setSelectedQuestion(selectedQuestion - totalQuestion + 1);
     }
   };
+
   const [selectedQuestion, setSelectedQuestion] = useState(1);
   const [selectedAnswer, setSelectedAnswer] = useState("");
+
   const handleSelectAnswer = (answer) => {
     setSelectedAnswer(answer);
   };
@@ -95,44 +104,45 @@ export default function PengerjaanTest({
   };
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchQuizData = async () => {
       setIsLoading(true);
       try {
-        const questionResponse = await axios.post(
+        const questionResponse = await UseFetch(
           API_LINK + "Quiz/GetDataQuestion",
           {
             idQuiz: AppContext_test.IdQuiz,
-          }
+          },
+          "POST"
         );
-   
-        const answerResponse = await axios.post(
+
+        const answerResponse = await UseFetch(
           API_LINK + "Quiz/GetDataAnswer",
           {
             IdTrq: idTrq,
-          }
+          },
+          "POST"
         );
-    
 
-        const penggunaJawaban = answerResponse.data.map(item => ({
+        if (questionResponse === "ERROR" || answerResponse === "ERROR") {
+          throw new Error("Failed to fetch data");
+        }
+
+        const penggunaJawaban = answerResponse.map((item) => ({
           ans_id: item.ans_id,
           que_id: item.que_id,
-          que_soal: item.que_soal,
-          ans_jawaban_pengguna: item.ans_jawaban_pengguna,
+          que_soal: removeHtmlTags(item.que_soal),
+          ans_jawaban_pengguna: removeHtmlTags(item.ans_jawaban_pengguna || ""),
           ans_nilai: item.ans_nilai,
           ans_urutan: item.ans_urutan,
-          ans_tipe : item.que_tipe
+          ans_tipe: item.que_tipe,
         }));
-
 
         setAnswerUser(penggunaJawaban);
 
-        if (
-          questionResponse.data &&
-          Array.isArray(questionResponse.data)
-        ) {
+        if (questionResponse && Array.isArray(questionResponse)) {
           const questionMap = new Map();
 
-          const transformedData = questionResponse.data
+          const transformedData = questionResponse
             .map((item) => {
               const {
                 Soal,
@@ -145,61 +155,76 @@ export default function PengerjaanTest({
                 Key,
                 JawabanPengguna,
                 TipePilihan,
-                Gambar
+                Gambar,
               } = item;
+
               if (!questionMap.has(Soal)) {
                 questionMap.set(Soal, true);
+
                 if (TipeSoal === "Essay") {
                   return {
                     type: "Essay",
-                    question: Soal,
-                    correctAnswer: Jawaban,
+                    question: removeHtmlTags(Soal),
+                    correctAnswer: removeHtmlTags(Jawaban || ""),
                     answerStatus: "none",
                     point: NilaiJawaban,
                     id: Key,
                     jawabanPengguna_soal: penggunaJawaban.find(
-                      (jawaban) => jawaban.que_soal === Soal && jawaban.que_id === Key),
+                      (jawaban) =>
+                        jawaban.que_soal === removeHtmlTags(Soal) &&
+                        jawaban.que_id === Key
+                    ),
                     gambar: Gambar,
                   };
                 } else if (TipeSoal === "Praktikum") {
                   return {
                     type: "Praktikum",
-                    question: Soal,
-                    correctAnswer: Jawaban,
+                    question: removeHtmlTags(Soal),
+                    correctAnswer: removeHtmlTags(Jawaban || ""),
                     answerStatus: "none",
                     point: NilaiJawaban,
                     id: Key,
                     jawabanPengguna_soal: penggunaJawaban.find(
-                      (jawaban) => jawaban.que_soal === Soal && jawaban.que_id === Key),
-                      gambar : Gambar,
+                      (jawaban) =>
+                        jawaban.que_soal === removeHtmlTags(Soal) &&
+                        jawaban.que_id === Key
+                    ),
+                    gambar: Gambar,
                   };
                 } else {
-                  const options = questionResponse.data
+                  const options = questionResponse
                     .filter((choice) => choice.Key === item.Key)
                     .map((choice) => ({
-                      value: choice.Jawaban,
+                      value: removeHtmlTags(choice.Jawaban || ""),
                       urutan: choice.UrutanJawaban,
                       nomorSoal: choice.Key,
                       nilai: choice.NilaiJawabanOpsi,
                       id: Key,
-                      opsi: TipePilihan
+                      opsi: TipePilihan,
                     }));
+
                   return {
                     type: "pilgan",
-                    question: Soal,
+                    question: removeHtmlTags(Soal),
                     options: options,
                     correctAnswer: options.find(
                       (option) =>
-                        option.value === Jawaban && 
-                      option.nilai !== "0"
+                        option.value === removeHtmlTags(Jawaban || "") &&
+                        option.nilai !== "0"
                     ),
                     urutan: UrutanJawaban,
                     nilaiJawaban: NilaiJawabanOpsi,
                     jawabanPengguna_value: penggunaJawaban
-                      .filter((jawaban) => jawaban.que_soal === Soal && jawaban.que_id === Key)
+                      .filter(
+                        (jawaban) =>
+                          jawaban.que_soal === removeHtmlTags(Soal) &&
+                          jawaban.que_id === Key
+                      )
                       .map((jawaban) => jawaban.value),
                     jawabanPengguna_soal: penggunaJawaban.filter(
-                      (jawaban) => jawaban.que_soal === Soal && jawaban.que_id === Key
+                      (jawaban) =>
+                        jawaban.que_soal === removeHtmlTags(Soal) &&
+                        jawaban.que_id === Key
                     ),
                     id: Key,
                   };
@@ -208,6 +233,7 @@ export default function PengerjaanTest({
               return null;
             })
             .filter((item) => item !== null);
+
           setTotalQuestion(transformedData.length);
           setQuestionNumbers(transformedData.length);
           setCurrentData(transformedData);
@@ -216,49 +242,61 @@ export default function PengerjaanTest({
           throw new Error("Data format is incorrect");
         }
       } catch (error) {
-        setIsError(true);
+        setIsError({ error: true, message: error.message });
         console.error("Fetch error:", error);
       } finally {
         setIsLoading(false);
       }
     };
 
-    fetchData();
-  }, []);
+    fetchQuizData();
+  }, [idTrq]);
 
   const updateAnswerStatus = (questions, jawabanPengguna) => {
     const statusArray = questions.map((question, index) => {
-      if (question.type === "essay") {
+      if (question.type === "Essay" || question.type === "Praktikum") {
         return "none";
-      } else {
-        const userAnswerIndex = jawabanPengguna.que_soal.indexOf(index + 1);
-        const userAnswer = jawabanPengguna.ans_jawaban_pengguna[userAnswerIndex];
-        const correctOption = question.options.find(
-          (option) => option.nilai != 0
-        );
+      } else if (question.type === "pilgan") {
+        const userAnswers = question.jawabanPengguna_soal || [];
 
-        if (userAnswer === correctOption.urutan) {
-          return "correct";
-        } else {
-          return "incorrect";
+        if (userAnswers.length === 0) {
+          return "unanswered";
         }
+
+        const hasCorrectAnswer = userAnswers.some((userAnswer) => {
+          const selectedOption = question.options.find(
+            (option) => option.urutan === userAnswer.ans_urutan
+          );
+          return (
+            selectedOption &&
+            selectedOption.nilai !== "0" &&
+            selectedOption.nilai !== 0
+          );
+        });
+
+        return hasCorrectAnswer ? "correct" : "incorrect";
       }
+      return "none";
     });
     setAnswerStatus(statusArray);
   };
 
   const downloadFile = async (namaFile) => {
     try {
-      const response = await axios.get(
+      const response = await fetch(
         `${API_LINK}Upload/GetFile/${encodeURIComponent(namaFile)}`,
         {
-          responseType: "arraybuffer",
+          headers: {
+            Authorization: "Bearer " + localStorage.getItem("jwtToken"),
+          },
         }
       );
 
-      const blob = new Blob([response.data], {
-        type: response.headers["content-type"],
-      });
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+
+      const blob = await response.blob();
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
@@ -266,11 +304,11 @@ export default function PengerjaanTest({
       document.body.appendChild(a);
       a.click();
       a.remove();
+      URL.revokeObjectURL(url);
     } catch (error) {
       console.error("Error downloading file:", error);
     }
   };
-
 
   const processOptions = (nomorSoal, jawabanPengguna_soal) => {
     let i = 0;
@@ -280,24 +318,49 @@ export default function PengerjaanTest({
       }
     }
     return i;
-    
   };
 
-  const removeHtmlTags = (str) => {
-    const decoded = he.decode(str); 
-    return decoded.replace(/<\/?[^>]+(>|$)/g, ''); 
-};
   AppContext_test.durasiTest = 10000;
-  
+
+  if (isLoading) {
+    return (
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "50vh",
+        }}
+      >
+        <div>Loading...</div>
+      </div>
+    );
+  }
+
+  if (isError.error) {
+    return (
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "50vh",
+        }}
+      >
+        <div style={{ color: "red" }}>Error: {isError.message}</div>
+      </div>
+    );
+  }
+
   return (
     <>
-     <Search
-            title="Hasil Kuis Materi"
-            description="Anda akan mendapatkan hasil kuis yang telah anda kerjakan selama anda mengerjakannya sesuai dengan jawaban yang benar atau salah."
-            placeholder="Cari Kelompok Keahlian"
-            showInput={false}
-          />
-      <div className="d-flex" style={{marginTop:"20px", height:"60vh"}}>
+      <Search
+        title="Hasil Kuis Materi"
+        description="Anda akan mendapatkan hasil kuis yang telah anda kerjakan selama anda mengerjakannya sesuai dengan jawaban yang benar atau salah."
+        placeholder="Cari Kelompok Keahlian"
+        showInput={false}
+      />
+      <div className="d-flex" style={{ marginTop: "20px", height: "60vh" }}>
         <div
           className="flex-fill p-3 d-flex flex-column"
           style={{ marginLeft: "4vw" }}
@@ -306,8 +369,11 @@ export default function PengerjaanTest({
             {currentData.map((item, index) => {
               if (index + 1 !== selectedQuestion) return null;
               const totalPoints = Array.isArray(item.jawabanPengguna_soal)
-              ? item.jawabanPengguna_soal.reduce((sum, answer) => sum + (parseFloat(answer.ans_nilai) || 0), 0)
-              : parseFloat(item.jawabanPengguna_soal?.ans_nilai || 0);
+                ? item.jawabanPengguna_soal.reduce(
+                    (sum, answer) => sum + (parseFloat(answer.ans_nilai) || 0),
+                    0
+                  )
+                : parseFloat(item.jawabanPengguna_soal?.ans_nilai || 0);
               return (
                 <div
                   key={index}
@@ -327,53 +393,52 @@ export default function PengerjaanTest({
                         textAlign: "justify",
                       }}
                     >
-                      <div className="">   
-                        
+                      <div className="">
                         <div className="">
-                          {removeHtmlTags(he.decode(item.question))}   
+                          {item.question}{" "}
+                          {/* Teks sudah dibersihkan dari tag HTML */}
                           {totalPoints > 0 ? (
-                <span
-                  style={{
-                    fontSize: "16px",
-                    color: "green",
-                    marginLeft: "8px",
-                  }}
-                >
-                  {totalPoints} Point
-                </span>
-              ) : (
-                <span
-                  style={{
-                    fontSize: "16px",
-                    color: "red",
-                    marginLeft: "8px",
-                  }}
-                >
-                  Salah
-                </span>
-              )}
+                            <span
+                              style={{
+                                fontSize: "16px",
+                                color: "green",
+                                marginLeft: "8px",
+                              }}
+                            >
+                              {totalPoints} Point
+                            </span>
+                          ) : (
+                            <span
+                              style={{
+                                fontSize: "16px",
+                                color: "red",
+                                marginLeft: "8px",
+                              }}
+                            >
+                              Salah
+                            </span>
+                          )}
                         </div>
-                    
                       </div>
                     </h4>
                   </div>
                   {(item.type === "Essay" || item.type === "Praktikum") &&
-                      item.gambar && (
-                        <div>
-                          <img
-                            id="image"
-                            src={API_LINK + `Upload/GetFile/${item.gambar}`}
-                            alt="gambar"
-                            className="img-fluid"
-                            style={{
-                              maxWidth: "500px",
-                              maxHeight: "500px",
-                              overflow: "hidden",
-                              borderRadius: "20px",
-                            }}
-                          />
-                        </div>
-                      )}
+                    item.gambar && (
+                      <div>
+                        <img
+                          id="image"
+                          src={API_LINK + `Upload/GetFile/${item.gambar}`}
+                          alt="gambar"
+                          className="img-fluid"
+                          style={{
+                            maxWidth: "500px",
+                            maxHeight: "500px",
+                            overflow: "hidden",
+                            borderRadius: "20px",
+                          }}
+                        />
+                      </div>
+                    )}
 
                   {item.type === "Praktikum" ? (
                     <button
@@ -385,7 +450,7 @@ export default function PengerjaanTest({
                             : "Tidak ada file"
                         )
                       }
-                      style={{marginTop:"25px"}}
+                      style={{ marginTop: "25px" }}
                     >
                       <i className="fi fi-rr-file-download me-2"></i>
                       {getSubmittedAnswer(item.id)
@@ -405,82 +470,90 @@ export default function PengerjaanTest({
                     />
                   ) : (
                     <div className="d-flex flex-column">
-                    {item.options.map((option, optionIndex) => {
-                      if(option.opsi === "Tunggal"){
-                        const isSelected = item.jawabanPengguna_soal.some(
-                          (jawaban) => jawaban.ans_urutan === option.urutan
-                        );
-                        const isCorrect = option.nilai !== 0;
-                        
-                        let borderColor1 = "lightgray";
-                        let backgroundColor1 = "white";
-                        
-                        if (isSelected) {
-                          borderColor1 = isCorrect ? "#28a745" : "#dc3545"; 
-                          backgroundColor1 = isCorrect ? "#e9f7eb" : "#f8d7da";
+                      {item.options.map((option, optionIndex) => {
+                        if (option.opsi === "Tunggal") {
+                          const isSelected = item.jawabanPengguna_soal.some(
+                            (jawaban) => jawaban.ans_urutan === option.urutan
+                          );
+                          const isCorrect = option.nilai !== 0;
+
+                          let borderColor1 = "lightgray";
+                          let backgroundColor1 = "white";
+
+                          if (isSelected) {
+                            borderColor1 = isCorrect ? "#28a745" : "#dc3545";
+                            backgroundColor1 = isCorrect
+                              ? "#e9f7eb"
+                              : "#f8d7da";
+                          }
+
+                          return (
+                            <div
+                              key={optionIndex}
+                              className="mt-4 mb-2"
+                              style={{ display: "flex", alignItems: "center" }}
+                            >
+                              <button
+                                className="btn btn-outline-primary"
+                                style={{
+                                  width: "40px",
+                                  height: "40px",
+                                  borderColor: borderColor1,
+                                  backgroundColor: backgroundColor1,
+                                  color: borderColor1,
+                                }}
+                              >
+                                {String.fromCharCode(65 + optionIndex)}
+                              </button>
+                              <span className="ms-2">{option.value}</span>{" "}
+                              {/* Teks sudah dibersihkan dari tag HTML */}
+                            </div>
+                          );
+                        } else {
+                          const isSelected = item.jawabanPengguna_soal.some(
+                            (jawaban) => jawaban.ans_urutan === option.urutan
+                          );
+                          const isCorrect = option.nilai !== 0;
+
+                          let borderColor1 = "lightgray";
+                          let backgroundColor1 = "white";
+
+                          if (isSelected) {
+                            borderColor1 = isCorrect ? "#28a745" : "#dc3545";
+                            backgroundColor1 = isCorrect
+                              ? "#e9f7eb"
+                              : "#f8d7da";
+                          }
+
+                          return (
+                            <div
+                              key={optionIndex}
+                              className="mt-4 mb-2"
+                              style={{ display: "flex", alignItems: "center" }}
+                            >
+                              <input
+                                type="checkbox"
+                                checked={isSelected}
+                                readOnly
+                                style={{
+                                  marginLeft: "6px",
+                                  marginRight: "10px",
+                                  transform: "scale(1.5)",
+                                  borderColor: borderColor1,
+                                  backgroundColor: backgroundColor1,
+                                  width: "20px",
+                                  height: "20px",
+                                  accentColor: isCorrect
+                                    ? "#28a745"
+                                    : "#dc3545",
+                                }}
+                              />
+                              <span className="ms-2">{option.value}</span>{" "}
+                              {/* Teks sudah dibersihkan dari tag HTML */}
+                            </div>
+                          );
                         }
-
-                    return (
-                      <div
-                        key={optionIndex}
-                        className="mt-4 mb-2"
-                        style={{ display: "flex", alignItems: "center" }}
-                      >
-                        <button
-                          className="btn btn-outline-primary"
-                          style={{
-                            width: "40px",
-                            height: "40px",
-                            borderColor: borderColor1,
-                            backgroundColor: backgroundColor1,
-                            color: borderColor1,
-                          }}
-                        >
-                          {String.fromCharCode(65 + optionIndex)}
-                        </button>
-                        <span className="ms-2">{option.value}</span>
-                      </div>
-                    );
-                  } else {
-                    const isSelected = item.jawabanPengguna_soal.some(
-                      (jawaban) => jawaban.ans_urutan === option.urutan
-                    );
-                    const isCorrect = option.nilai !== 0;
-                    
-                    let borderColor1 = "lightgray";
-                    let backgroundColor1 = "white";
-                    
-                    if (isSelected) {
-                      borderColor1 = isCorrect ? "#28a745" : "#dc3545";
-                      backgroundColor1 = isCorrect ? "#e9f7eb" : "#f8d7da";
-                    }
-                    
-                    return (
-                      <div
-                        key={optionIndex}
-                        className="mt-4 mb-2"
-                        style={{ display: "flex", alignItems: "center" }}
-                      >
-                        <input
-                          type="checkbox"
-                          checked={isSelected}
-                          style={{
-                            marginLeft: "6px",
-                            marginRight: "10px",
-                            transform: "scale(1.5)",
-                            borderColor: borderColor1,
-                            backgroundColor: backgroundColor1,
-                            width: "20px",
-                            height: "20px", 
-                            accentColor: isCorrect ? "#28a745" : "#dc3545",
-                          }}
-                        />
-                        <span className="ms-2">{option.value}</span>
-                      </div>
-                    );
-                  }
-                  })}
-
+                      })}
                     </div>
                   )}
                 </div>
@@ -506,11 +579,16 @@ export default function PengerjaanTest({
           </form>
         </div>
         <>
-   
-        <div style={{ height: '100%', width: '1px', backgroundColor: '#E4E4E4', margin: '0 auto' }} ></div>
-   
+          <div
+            style={{
+              height: "100%",
+              width: "1px",
+              backgroundColor: "#E4E4E4",
+              margin: "0 auto",
+            }}
+          ></div>
         </>
-        
+
         <KMS_Sidebar
           onChangePage={onChangePage}
           questionNumbers={questionNumbers}

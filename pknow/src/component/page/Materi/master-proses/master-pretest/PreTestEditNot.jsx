@@ -140,12 +140,10 @@ export default function MasterPreTestEditNot({ onChangePage, withID }) {
   const handlePointChange = (e, index) => {
     const { value } = e.target;
 
-    // Update point pada formContent
     const updatedFormContent = [...formContent];
     updatedFormContent[index].point = value;
     setFormContent(updatedFormContent);
 
-    // Update nilaiChoice pada formChoice
     setFormChoice((prevFormChoice) => ({
       ...prevFormChoice,
       nilaiChoice: value,
@@ -222,10 +220,8 @@ export default function MasterPreTestEditNot({ onChangePage, withID }) {
       const updatedFormContent = [...prevFormContent];
       updatedFormContent[questionIndex].jenis = value;
 
-      // Tambahkan nilai cho_tipe berdasarkan jenis pilihan
-      updatedFormContent[questionIndex].cho_tipe = value; // Tunggal atau Jamak
+      updatedFormContent[questionIndex].cho_tipe = value;
 
-      // Reset opsi jika tipe berubah
       updatedFormContent[questionIndex].options = [];
 
       setSelectedOptions((prevSelected) => {
@@ -285,19 +281,24 @@ export default function MasterPreTestEditNot({ onChangePage, withID }) {
     formData.append("file", file);
 
     try {
-      const responseData = await UseFetch(
-        `${API_LINK}Upload/UploadFile`,
-        formData
-      );
+      const response = await fetch(`${API_LINK}Upload/UploadFile`, {
+        method: "POST",
+        body: formData,
+      });
 
-      if (responseData === "ERROR") {
-        throw new Error("Upload file gagal, respons server error.");
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const responseData = await response.json();
+
+      if (!responseData || !responseData.Hasil) {
+        throw new Error("Upload file gagal, respons server tidak valid.");
       }
 
       return responseData;
     } catch (error) {
       console.error("Error in uploadFile function:", error);
-
       throw error;
     }
   };
@@ -319,7 +320,6 @@ export default function MasterPreTestEditNot({ onChangePage, withID }) {
       return;
     }
 
-    // Validasi ukuran file
     if (file.size / 1024 / 1024 > maxSizeInMB) {
       Swal.fire({
         icon: "warning",
@@ -330,23 +330,20 @@ export default function MasterPreTestEditNot({ onChangePage, withID }) {
     }
 
     try {
-      // Upload file ke server menggunakan fungsi uploadFile
-      const uploadResponse = await uploadFile(file);
-      if (!uploadResponse || !uploadResponse.Hasil) {
-        throw new Error("Respon server tidak valid.");
-      }
+      const previewUrl = URL.createObjectURL(file);
 
-      // Perbarui data pertanyaan dengan file gambar
-      const updatedFormContent = [...formContent];
-      updatedFormContent[index] = {
-        ...updatedFormContent[index],
-        selectedFile: file, // Menyimpan file untuk akses nanti
-        gambar: uploadResponse.Hasil, // Nama file yang dikembalikan server
-        previewUrl: URL.createObjectURL(file), // Untuk preview
-      };
-      setFormContent(updatedFormContent);
+      setFormContent((prevFormContent) => {
+        const updatedFormContent = [...prevFormContent];
+        updatedFormContent[index] = {
+          ...updatedFormContent[index],
+          selectedFile: file,
+          previewUrl: previewUrl,
+          gambar: null,
+        };
+        return updatedFormContent;
+      });
     } catch (error) {
-      console.error("Error uploading file:", error);
+      console.error("Error handling file:", error);
     }
   };
 
@@ -360,10 +357,25 @@ export default function MasterPreTestEditNot({ onChangePage, withID }) {
   const handleAdd = async (e) => {
     e.preventDefault();
 
-    formData.timer = convertTimeToSeconds(timer);
+    const totalSeconds = convertTimeToSeconds(hours, minutes);
+
+    if (totalSeconds === 0) {
+      Swal.fire({
+        title: "Error!",
+        text: "Durasi tidak boleh 0 jam 0 menit.",
+        icon: "error",
+        confirmButtonText: "OK",
+      });
+      return;
+    }
+
+    const updatedFormData = {
+      ...formData,
+      timer: totalSeconds.toString(),
+    };
 
     const validationErrors = await validateAllInputs(
-      formData,
+      updatedFormData,
       userSchema,
       setErrors
     );
@@ -376,13 +388,12 @@ export default function MasterPreTestEditNot({ onChangePage, withID }) {
         icon: "error",
         confirmButtonText: "OK",
       });
-
       return;
     }
 
     const totalQuestionPoint = formContent.reduce((total, question) => {
       if (question.type !== "Pilgan") {
-        total += parseInt(question.point);
+        total += parseInt(question.point || 0);
       }
       return total;
     }, 0);
@@ -400,23 +411,13 @@ export default function MasterPreTestEditNot({ onChangePage, withID }) {
       return total;
     }, 0);
 
-    if (totalQuestionPoint + totalOptionPoint !== 100) {
+    const totalPoints = totalQuestionPoint + totalOptionPoint;
+
+    if (totalPoints !== 100) {
       setResetStepper((prev) => !prev + 1);
       Swal.fire({
         title: "Gagal!",
-        text: `Total skor harus berjumlah 100. Saat ini skor berjumlah: ${
-          totalQuestionPoint + totalOptionPoint
-        }`,
-        icon: "error",
-        confirmButtonText: "OK",
-      });
-      return;
-    }
-
-    if (hours === "00" && minutes === "00") {
-      Swal.fire({
-        title: "Error!",
-        text: "Durasi tidak boleh 0 jam 0 menit.",
+        text: `Total skor harus berjumlah 100. Saat ini skor berjumlah: ${totalPoints}`,
         icon: "error",
         confirmButtonText: "OK",
       });
@@ -424,7 +425,6 @@ export default function MasterPreTestEditNot({ onChangePage, withID }) {
     }
 
     try {
-
       const sectionResponse = await UseFetch(
         API_LINK + "Section/CreateSection",
         dataSection
@@ -436,7 +436,7 @@ export default function MasterPreTestEditNot({ onChangePage, withID }) {
       }
       const sectionId = sectionResponse[0].newID;
 
-      AppContext_master.dataIdSectionPretest = sectionId; // Update context
+      AppContext_master.dataIdSectionPretest = sectionId;
       const quizPayload = {
         materiId: Materi.Key,
         sec_id: sectionId,
@@ -444,7 +444,7 @@ export default function MasterPreTestEditNot({ onChangePage, withID }) {
         quizTipe: "Pretest",
         tanggalAwal: "",
         tanggalAkhir: "",
-        timer: formData.timer,
+        timer: updatedFormData.timer,
         status: "Aktif",
         createdby: activeUser,
         type: "Pre-Test",
@@ -459,19 +459,18 @@ export default function MasterPreTestEditNot({ onChangePage, withID }) {
       const quizId = quizResponse[0].hasil;
 
       for (const question of formContent) {
-        let finalImageUrl = question.gambar ?? "";
+        let finalImageUrl = "";
 
-        if (
-          (question.type === "Essay" || question.type === "Praktikum") &&
-          question.selectedFile
-        ) {
-          const uploadResult = await uploadFile(question.selectedFile); // Asumsi 'uploadFile' sudah direfaktor
+        if (question.selectedFile) {
+          const uploadResult = await uploadFile(question.selectedFile);
           if (uploadResult === "ERROR" || !uploadResult.Hasil) {
             throw new Error(
               `Gagal mengunggah file untuk pertanyaan: ${question.text}`
             );
           }
           finalImageUrl = uploadResult.Hasil;
+        } else if (question.gambar) {
+          finalImageUrl = question.gambar;
         }
 
         const formQuestion = {
@@ -481,9 +480,8 @@ export default function MasterPreTestEditNot({ onChangePage, withID }) {
           gambar: finalImageUrl,
           status: "Aktif",
           quecreatedby: activeUser,
-          point: question.point,
+          point: question.point || 0,
         };
-
         const questionResponse = await UseFetch(
           API_LINK + "Question/SaveDataQuestion",
           formQuestion
@@ -498,7 +496,7 @@ export default function MasterPreTestEditNot({ onChangePage, withID }) {
             urutanChoice: "",
             answerText: question.correctAnswer || "0",
             questionId: questionId,
-            nilaiChoice: question.point,
+            nilaiChoice: question.point || 0,
             quecreatedby: activeUser,
           };
           const answerResponse = await UseFetch(
@@ -539,7 +537,8 @@ export default function MasterPreTestEditNot({ onChangePage, withID }) {
         setFormContent([]);
         setSelectedOptions([]);
         setErrors({});
-        setTimer("");
+        setHours("00");
+        setMinutes("00");
         setIsButtonDisabled(true);
         window.location.reload();
       });
@@ -569,18 +568,16 @@ export default function MasterPreTestEditNot({ onChangePage, withID }) {
     const updatedFormContent = [...formContent];
     const question = updatedFormContent[questionIndex];
 
-    // Perbarui opsi berdasarkan apakah "Tunggal" atau "Jamak"
     if (question.jenis === "Tunggal") {
-      // Reset semua opsi lain jika tipe Tunggal
       question.options.forEach((option, idx) => {
-        option.isChecked = idx === optionIndex; // Hanya aktifkan opsi yang dipilih
-        option.point = idx === optionIndex ? option.point : 0; // Reset poin selain yang dipilih
+        option.isChecked = idx === optionIndex;
+        option.point = idx === optionIndex ? option.point : 0;
       });
     } else if (question.jenis === "Jamak") {
       // Update opsi tanpa mereset yang lain
       question.options[optionIndex].isChecked = checked;
       if (!checked) {
-        question.options[optionIndex].point = 0; // Reset poin jika opsi tidak dipilih
+        question.options[optionIndex].point = 0;
       }
     }
     setFormContent(updatedFormContent);
@@ -591,7 +588,6 @@ export default function MasterPreTestEditNot({ onChangePage, withID }) {
     const question = updatedFormContent[index];
 
     if (question.type === "Essay") {
-      // Simpan jawaban benar untuk pertanyaan Essay ke state
       setCorrectAnswers((prevCorrectAnswers) => ({
         ...prevCorrectAnswers,
         [index]: question.correctAnswer,
@@ -645,16 +641,15 @@ export default function MasterPreTestEditNot({ onChangePage, withID }) {
   const parseExcelData = (data) => {
     const questions = data
       .map((row, index) => {
-        // Skip header row (index 0) and the row di bawahnya (index 1)
         if (index < 2) return null;
 
-        const options = row[3] ? row[3].split(",") : []; // Pilihan Jawaban
-        const bobotPilgan = row[4] ? row[4].split(",").map(Number) : []; // Bobot Pilgan
-        const jenis = row[2]?.toLowerCase(); // Jenis soal
+        const options = row[3] ? row[3].split(",") : [];
+        const bobotPilgan = row[4] ? row[4].split(",").map(Number) : [];
+        const jenis = row[2]?.toLowerCase();
         const totalNonZero = bobotPilgan.filter((bobot) => bobot !== 0).length;
 
         return {
-          text: row[1], // Soal
+          text: row[1],
           type:
             jenis === "pilgan"
               ? "Pilgan"
@@ -666,19 +661,19 @@ export default function MasterPreTestEditNot({ onChangePage, withID }) {
               ? totalNonZero > 1
                 ? "Jamak"
                 : "Tunggal"
-              : null, // Deteksi jamak/tunggal
+              : null,
           options:
             jenis === "pilgan"
               ? options.map((option, idx) => ({
                   label: option.trim(),
-                  point: bobotPilgan[idx] || 0, // Bobot masing-masing pilihan
-                  isChecked: bobotPilgan[idx] > 0, // Pilihan aktif jika bobotnya > 0
+                  point: bobotPilgan[idx] || 0,
+                  isChecked: bobotPilgan[idx] > 0,
                 }))
               : [],
           point:
             jenis === "essay" || jenis === "praktikum"
               ? parseInt(row[5] || 0, 10)
-              : null, // Total skor untuk Essay/Praktikum
+              : null,
         };
       })
       .filter(Boolean);
@@ -754,7 +749,6 @@ export default function MasterPreTestEditNot({ onChangePage, withID }) {
     const { value } = e.target;
     const updatedFormContent = [...formContent];
 
-    // Update poin hanya jika opsi dipilih
     if (updatedFormContent[questionIndex].options[optionIndex].isChecked) {
       updatedFormContent[questionIndex].options[optionIndex].point = parseInt(
         value,
@@ -778,9 +772,14 @@ export default function MasterPreTestEditNot({ onChangePage, withID }) {
       [validationError.name]: validationError.error,
     }));
   };
+
   const convertTimeToSeconds = () => {
-    const hoursInSeconds = parseInt(hours, 10) * 3600;
-    const minutesInSeconds = parseInt(minutes, 10) * 60;
+    const hoursValue = parseInt(hours, 10) || 0;
+    const minutesValue = parseInt(minutes, 10) || 0;
+
+    const hoursInSeconds = hoursValue * 3600;
+    const minutesInSeconds = minutesValue * 60;
+
     return hoursInSeconds + minutesInSeconds;
   };
 
@@ -788,11 +787,23 @@ export default function MasterPreTestEditNot({ onChangePage, withID }) {
   const [minutes, setMinutes] = useState("00");
 
   const handleHoursChange = (e) => {
-    setHours(e.target.value);
+    const value = e.target.value;
+    setHours(value);
+
+    setFormData((prev) => ({
+      ...prev,
+      timer: convertTimeToSeconds(value, minutes),
+    }));
   };
 
   const handleMinutesChange = (e) => {
-    setMinutes(e.target.value);
+    const value = e.target.value;
+    setMinutes(value);
+
+    setFormData((prev) => ({
+      ...prev,
+      timer: convertTimeToSeconds(hours, value),
+    }));
   };
 
   if (isLoading) return <Loading />;
@@ -819,6 +830,19 @@ export default function MasterPreTestEditNot({ onChangePage, withID }) {
 
     return totalPoints;
   };
+
+  useEffect(() => {
+    if (formData.timer) {
+      const totalSeconds = parseInt(formData.timer, 10);
+      if (!isNaN(totalSeconds)) {
+        const hrs = Math.floor(totalSeconds / 3600);
+        const mins = Math.floor((totalSeconds % 3600) / 60);
+
+        setHours(hrs.toString().padStart(2, "0"));
+        setMinutes(mins.toString().padStart(2, "0"));
+      }
+    }
+  }, [formData.timer]);
 
   return (
     <>
@@ -982,7 +1006,7 @@ export default function MasterPreTestEditNot({ onChangePage, withID }) {
                       classType="primary btn-sm mx-2 px-3 py-2 rounded-3 fw-semibold"
                       onClick={() =>
                         document.getElementById("fileInput").click()
-                      } // Memicu klik pada input file
+                      }
                     />
                   </div>
                 </div>
@@ -1067,7 +1091,6 @@ export default function MasterPreTestEditNot({ onChangePage, withID }) {
                                 id={`option_${index}_${optionIndex}`}
                                 name={`option_${index}`}
                                 value={option.value}
-                                // Checked hanya jika value di selectedOptions sama dengan value dari option
                                 checked={
                                   selectedOptions[index] === option.value
                                 }
@@ -1137,27 +1160,42 @@ export default function MasterPreTestEditNot({ onChangePage, withID }) {
                           />
 
                           {/* Tampilkan preview gambar jika ada gambar yang dipilih */}
-                          {question.previewUrl && (
+                          {(question.previewUrl || question.gambar) && (
                             <div
+                              className="mt-2"
                               style={{
                                 maxWidth: "300px",
                                 maxHeight: "300px",
                                 overflow: "hidden",
-                                borderRadius: "20px",
+                                borderRadius: "10px",
+                                border: "1px solid #ddd",
                               }}
                             >
                               <img
-                                src={question.previewUrl}
-                                alt=""
+                                src={
+                                  question.previewUrl ||
+                                  `${API_LINK}Upload/GetFile/${question.gambar}`
+                                }
+                                alt="Preview"
                                 style={{
                                   width: "100%",
                                   height: "auto",
                                   objectFit: "contain",
                                 }}
+                                onError={(e) => {
+                                  e.target.src = NoImage;
+                                }}
                               />
                             </div>
                           )}
 
+                          {question.gambar && !question.previewUrl && (
+                            <div className="mt-1">
+                              <small className="text-muted">
+                                File saat ini: {question.gambar}
+                              </small>
+                            </div>
+                          )}
                           <div className="mt-2">
                             <Input
                               type="number"

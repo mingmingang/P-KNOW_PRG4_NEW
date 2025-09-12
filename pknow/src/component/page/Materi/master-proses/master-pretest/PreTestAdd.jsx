@@ -55,20 +55,32 @@ export default function MasterPreTestAdd({ onChangePage }) {
   });
 
   const uploadFile = async (file) => {
-    const formData = new FormData();
-    formData.append("file", file);
+    // Cek apakah ini endpoint yang benar berdasarkan kode Anda
+    // Dari kode terlihat ada import: import uploadFile from "../../../../util/UploadImageQuiz";
+    // Mungkin gunakan fungsi tersebut instead
 
     try {
-      const response = await UseFetch(`${API_LINK}Upload/UploadFile`, formData);
+      // Gunakan fungsi yang sudah ada di util
+      const result = await uploadFile(file); // dari import
+      return result;
+    } catch (error) {
+      console.error("Error using util uploadFile:", error);
 
-      if (response === "ERROR" || !response) {
-        throw new Error("Upload file gagal. Respons server tidak valid.");
+      // Fallback ke fetch manual
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const response = await fetch(`${API_LINK}Upload/UploadFile`, {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
 
-      return response;
-    } catch (error) {
-      console.error("Error in uploadFile function:", error);
-      throw error;
+      const data = await response.json();
+      return data;
     }
   };
   const storedSteps = sessionStorage.getItem("steps");
@@ -423,8 +435,13 @@ export default function MasterPreTestAdd({ onChangePage }) {
               question.selectedFile
             ) {
               try {
-                const uploadResult = await uploadFile(question.selectedFile); // Asumsi 'uploadFile' sudah dikonversi
+                const uploadResult = await uploadFile(question.selectedFile);
                 formQuestion.gambar = uploadResult.Hasil;
+
+                // Hapus URL objek setelah upload berhasil
+                if (question.previewUrl) {
+                  URL.revokeObjectURL(question.previewUrl);
+                }
               } catch (uploadError) {
                 console.error("Gagal mengunggah gambar:", uploadError);
                 Swal.fire({
@@ -622,7 +639,6 @@ export default function MasterPreTestAdd({ onChangePage }) {
       };
 
       try {
-
         const quizResponse = await UseFetch(
           API_LINK + "Quiz/UpdateDataQuiz",
           quizPayload
@@ -1010,27 +1026,17 @@ export default function MasterPreTestAdd({ onChangePage }) {
       return;
     }
 
-    try {
-      // Upload file ke server menggunakan fungsi uploadFile
-      const uploadResponse = await uploadFile(file);
+    // Buat URL untuk preview gambar
+    const previewUrl = URL.createObjectURL(file);
 
-      // Pastikan menggunakan nama properti yang benar dari respons server
-      if (!uploadResponse || !uploadResponse.Hasil) {
-        throw new Error("Respon server tidak valid.");
-      }
-
-      // Perbarui data pertanyaan dengan file gambar
-      const updatedFormContent = [...formContent];
-      updatedFormContent[index] = {
-        ...updatedFormContent[index],
-        selectedFile: file, // Menyimpan file untuk akses nanti
-        gambar: uploadResponse.Hasil, // Nama file yang dikembalikan server
-        previewUrl: URL.createObjectURL(file), // Untuk preview
-      };
-      setFormContent(updatedFormContent);
-    } catch (error) {
-      console.error("Error uploading file:", error);
-    }
+    // Perbarui state untuk menampilkan preview
+    const updatedFormContent = [...formContent];
+    updatedFormContent[index] = {
+      ...updatedFormContent[index],
+      selectedFile: file,
+      previewUrl: previewUrl, // Simpan URL preview
+    };
+    setFormContent(updatedFormContent);
   };
 
   const handleFileExcel = (event) => {
@@ -1600,11 +1606,12 @@ export default function MasterPreTestAdd({ onChangePage }) {
                                 maxHeight: "300px",
                                 overflow: "hidden",
                                 borderRadius: "20px",
+                                marginTop: "10px",
                               }}
                             >
                               <img
                                 src={question.previewUrl}
-                                alt=""
+                                alt="Preview Gambar"
                                 style={{
                                   width: "100%",
                                   height: "auto",

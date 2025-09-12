@@ -3,7 +3,7 @@ import Loading from "../../../../part/Loading";
 import Icon from "../../../../part/Icon";
 import { Card, ListGroup, Button, Badge, Form } from "react-bootstrap";
 import LocalButton from "../../../../part/Button copy";
-import axios from "axios";
+import UseFetch from "../../../../util/UseFetch";
 import AppContext_test from "../../master-test/TestContext";
 import { API_LINK } from "../../../../util/Constants";
 import Swal from "sweetalert2";
@@ -39,19 +39,16 @@ export default function MasterMateriReviewJawaban({
     setIsLoading(true);
     setIsError(false);
     try {
-      const response = await axios.post(
-        API_LINK + "Quiz/GetDataQuizByIdMateri",
-        {
-          materiId: AppContext_test.materiId,
-        }
-      );
+      const response = await UseFetch(API_LINK + "Quiz/GetDataQuizByIdMateri", {
+        materiId: AppContext_test.materiId,
+      });
 
-      if (response.data.length === 0) {
+      if (response === "ERROR" || response.length === 0) {
         setDataQuiz([]);
       } else {
-        setDataQuiz(response.data);
-        if (response.data.length === 1) {
-          setSelectedQuizType(response.data[0].quizTipe);
+        setDataQuiz(response);
+        if (response.length === 1) {
+          setSelectedQuizType(response[0].quizTipe);
         }
       }
     } catch (error) {
@@ -149,20 +146,21 @@ export default function MasterMateriReviewJawaban({
     for (let i = 0; i < retries; i++) {
       try {
         setIsLoading(true);
-        const response = await axios.post(
+        const response = await UseFetch(
           API_LINK + "Quiz/GetDataTransaksiReview",
           {
             materiId: AppContext_test.materiId,
             quiTipe: selectedQuizType,
           }
         );
-        if (response.data.length === 0) {
+        if (response === "ERROR" || response.length === 0) {
           setCurrentData([]);
+          return [];
         }
 
-        if (response.data.length !== 0) {
+        if (response.length !== 0) {
           setIsLoading(false);
-          const filteredTransaksi = response.data.filter(
+          const filteredTransaksi = response.filter(
             (transaksi) =>
               transaksi.trq_status === "Not Reviewed" &&
               (transaksi.que_tipe === "Essay" ||
@@ -179,21 +177,23 @@ export default function MasterMateriReviewJawaban({
         }
       }
     }
+    return [];
   };
 
   const fetchQuestions = async (questionType, retries = 10, delay = 1000) => {
     for (let i = 0; i < retries; i++) {
       try {
-        const response = await axios.post(API_LINK + "Quiz/GetDataQuestion", {
+        const response = await UseFetch(API_LINK + "Quiz/GetDataQuestion", {
           quizId: questionType,
         });
 
-        if (response.data.length !== 0) {
-          const filteredQuestions = response.data.filter(
+        if (response !== "ERROR" && response.length !== 0) {
+          const filteredQuestions = response.filter(
             (question) =>
               question.TipeSoal === "Essay" || question.TipeSoal === "Praktikum"
           );
           setCurrentQuestions(filteredQuestions);
+          return;
         }
       } catch (error) {
         console.error("Error fetching quiz data:", error);
@@ -215,19 +215,20 @@ export default function MasterMateriReviewJawaban({
     for (let i = 0; i < retries; i++) {
       try {
         setIsLoading(true);
-        const response = await axios.post(API_LINK + "Quiz/GetDataResultQuiz", {
+        const response = await UseFetch(API_LINK + "Quiz/GetDataResultQuiz", {
           quizId: AppContext_test.materiId,
           questionType: questionType,
           idKaryawan: karyawanId,
         });
 
-        if (response.data.length !== 0) {
-          const filteredAnswer = response.data.filter(
+        if (response !== "ERROR" && response.length !== 0) {
+          const filteredAnswer = response.filter(
             (answer) => answer.Status === "Not Reviewed"
           );
 
           setIsLoading(false);
           setCurrentAnswers(filteredAnswer);
+          return;
         }
       } catch (error) {
         console.error("Error fetching quiz data:", error);
@@ -293,7 +294,7 @@ export default function MasterMateriReviewJawaban({
           idTransaksi,
           value,
         } = review;
-        const response = await axios.post(API_LINK + "Quiz/SaveReviewQuiz", {
+        const response = await UseFetch(API_LINK + "Quiz/SaveReviewQuiz", {
           p1: idTransaksi,
           p2: idSoal,
           p3: isCorrect.toString(),
@@ -303,11 +304,14 @@ export default function MasterMateriReviewJawaban({
           p7: activeUser,
           p8: value,
         });
-        SweetAlert(
-          "Sukses",
-          "Review jawaban telah berhasil disimpan!",
-          "success"
-        );
+
+        if (response !== "ERROR") {
+          SweetAlert(
+            "Sukses",
+            "Review jawaban telah berhasil disimpan!",
+            "success"
+          );
+        }
       }
       setIsLoading(false);
       onChangePage("index");
@@ -536,13 +540,38 @@ export default function MasterMateriReviewJawaban({
 
   const currentRespondent = currentData[currentRespondentIndex];
 
+  // Fungsi untuk menghapus tag HTML dari string
+  const removeHtmlTags = (str) => {
+    if (!str) return "";
+    const decoded = he.decode(str);
+    return decoded.replace(/<\/?[^>]+(>|$)/g, "");
+  };
+
+  // Ganti bagian ini di dalam komponen Anda:
+
+  const decodeUserAnswer = (answer) => {
+    if (!answer) return "Belum ada jawaban";
+    try {
+      const decoded = he.decode(answer);
+      // Hapus tag HTML setelah decode
+      return decoded.replace(/<\/?[^>]+(>|$)/g, "");
+    } catch (error) {
+      console.error("Error decoding answer:", error);
+      // Jika decode gagal, tetap coba hapus tag HTML
+      return answer.replace(/<\/?[^>]+(>|$)/g, "");
+    }
+  };
+
+  const removeHtmlTagsFromQuestion = (str) => {
+    if (!str) return "";
+    const decoded = he.decode(str);
+    return decoded.replace(/<\/?[^>]+(>|$)/g, "");
+  };
+
   const downloadFile = async (namaFile) => {
     try {
-      const response = await axios.get(
-        `${API_LINK}Upload/GetFile/${encodeURIComponent(namaFile)}`,
-        {
-          responseType: "arraybuffer", // Untuk menangani file biner
-        }
+      const response = await fetch(
+        `${API_LINK}Upload/GetFile/${encodeURIComponent(namaFile)}`
       );
 
       const blob = new Blob([response.data], {
@@ -558,11 +587,6 @@ export default function MasterMateriReviewJawaban({
     } catch (error) {
       console.error("Error downloading file:", error);
     }
-  };
-
-  const removeHtmlTags = (str) => {
-    const decoded = he.decode(str);
-    return decoded.replace(/<\/?[^>]+(>|$)/g, "");
   };
 
   const scaleDescriptions = {
@@ -695,7 +719,7 @@ export default function MasterMateriReviewJawaban({
             {currentQuestions.map((question, questionIndex) => {
               const currentRespondent = currentData[currentRespondentIndex];
               const answer = matchedAnswer(question, currentRespondent);
-
+              const decodedAnswer = decodeUserAnswer(answer);
               return (
                 <Card key={question.Key} className="mb-4">
                   <Card.Header className="">
@@ -773,7 +797,7 @@ export default function MasterMateriReviewJawaban({
                           <Form.Control
                             as="textarea"
                             rows={3}
-                            value={answer || "Belum ada jawaban"}
+                            value={decodedAnswer || "Belum ada jawaban"}
                             onChange={(e) =>
                               handleAnswerChange(questionIndex, e.target.value)
                             }

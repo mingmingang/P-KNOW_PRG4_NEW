@@ -16,6 +16,7 @@ import he from "he";
 import Cookies from "js-cookie";
 import { decryptId } from "../../../util/Encryptor";
 import Search from "../../../part/Search";
+import Editor from "../../../part/CKEditor";
 
 const ButtonContainer = styled.div`
   bottom: 35px;
@@ -32,6 +33,8 @@ export default function PengerjaanTest({
 }) {
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const [isMobileView, setIsMobileView] = useState(false);
+  const [editorData, setEditorData] = useState({});
+
   useEffect(() => {
     const handleResize = () => {
       setIsMobileView(window.innerWidth < 992);
@@ -144,6 +147,17 @@ export default function PengerjaanTest({
   const handleTextareaChange = (event, index, itemId) => {
     const value = event.target.value;
     handleValueAnswer("0", "", "", "essay", index, value, itemId);
+  };
+
+  const handleEditorChange = (data, index, itemId) => {
+    // Simpan data editor ke state
+    setEditorData((prev) => ({
+      ...prev,
+      [`${index}-${itemId}`]: data,
+    }));
+
+    // Simpan jawaban ke state answers - parameter yang benar
+    handleValueAnswer("0", itemId, "", "essay", index, data, itemId);
   };
 
   const handleFileChange = (
@@ -379,165 +393,191 @@ export default function PengerjaanTest({
       (ans) => ans.idSoal === idSoal
     );
 
-    if (file != undefined || file != null) {
-      const uploadPromises = [];
+    // Handle file upload (Praktikum)
+    if (file !== undefined && file !== null && nilaiSelected === "Praktikum") {
       const existingAnswerNonPilgan = updatedAnswers.findIndex(
         (ans) => ans.id_question === id_question
       );
-      uploadPromises.push(
-        UploadFile(file.target).then((data) => {
-          if (nilaiSelected != "essay") {
-            if (existingAnswerNonPilgan !== -1) {
-              updatedAnswers[existingAnswerNonPilgan] = {
-                urutan,
-                id_question,
-                answer,
-                nilaiSelected,
-              };
-              submitAnswer[existingAnswerNonPilgan] = [
-                urutan,
-                id_question,
-                data.Hasil,
-                "0",
-                AppContext_test.dataIdTrQuiz,
-                activeUser,
-                "Praktikum",
-              ];
-            } else {
-              updatedAnswers.push({
-                urutan,
-                id_question,
-                answer,
-                nilaiSelected,
-              });
-              submitAnswer.push([
-                urutan,
-                id_question,
-                data.Hasil,
-                "0",
-                AppContext_test.dataIdTrQuiz,
-                activeUser,
-                "Praktikum",
-              ]);
-            }
-          } else {
-            if (existingAnswerNonPilgan !== -1) {
-              updatedAnswers[existingAnswerNonPilgan] = {
-                nilaiSelected,
-                id_question,
-                answer,
-              };
-              submitAnswer[existingAnswerNonPilgan] = [
-                urutan,
-                id_question,
-                file,
-                "0",
-                AppContext_test.dataIdTrQuiz,
-                activeUser,
-                "Essay",
-              ];
-            } else {
-              updatedAnswers.push({ nilaiSelected, id_question, answer });
-              submitAnswer.push([
-                urutan,
-                id_question,
-                answer,
-                "0",
-                AppContext_test.dataIdTrQuiz,
-                activeUser,
-                "Essay",
-              ]);
-            }
-          }
-        })
-      );
-    } else {
-      const selectedAnswersForCurrentQuestion = updatedAnswers.filter(
-        (ans) => ans.idSoal === idSoal
-      );
 
-      if (currentData[index - 1]?.options[0]?.cho_tipe === "Jamak") {
-        const maxSelectable = currentData[index - 1]?.options.filter(
-          (option) => parseFloat(option.nilai) !== 0
-        ).length;
-
-        if (selectedAnswersForCurrentQuestion.length >= maxSelectable) {
-          const isAlreadySelected = selectedAnswersForCurrentQuestion.some(
-            (ans) => ans.answer === answer
-          );
-          if (!isAlreadySelected) {
-            Swal.fire({
-              title: "Batas Tercapai",
-              text: `Anda hanya dapat memilih ${maxSelectable} opsi.`,
-              icon: "warning",
-              confirmButtonText: "OK",
-            });
-            return;
-          }
-        }
-        const existingAnswerIndex = updatedAnswers.findIndex(
-          (ans) => ans.idSoal === idSoal && ans.answer === answer
-        );
-        if (existingAnswerIndex !== -1) {
-          updatedAnswers.splice(existingAnswerIndex, 1);
-          submitAnswer[existingAnswerIndex] = [
+      UploadFile(file.target).then((data) => {
+        if (existingAnswerNonPilgan !== -1) {
+          updatedAnswers[existingAnswerNonPilgan] = {
             urutan,
             id_question,
             answer,
             nilaiSelected,
-            AppContext_test.dataIdTrQuiz,
-            activeUser,
-            "Pilgan",
-          ];
-        } else {
-          updatedAnswers.push({ urutan, idSoal, answer, nilaiSelected });
-          submitAnswer.push([
-            urutan,
-            idSoal,
-            answer,
-            nilaiSelected,
-            AppContext_test.dataIdTrQuiz,
-            activeUser,
-            "Pilgan",
-          ]);
-        }
-      } else {
-        const existingAnswerIndex = updatedAnswers.findIndex(
-          (ans) => ans.idSoal === idSoal
-        );
-        if (existingAnswerIndex !== -1) {
-          updatedAnswers[existingAnswerIndex] = {
-            urutan,
-            idSoal,
-            answer,
-            nilaiSelected,
           };
-
-          submitAnswer[existingAnswerIndex] = [
+          submitAnswer[existingAnswerNonPilgan] = [
             urutan,
-            idSoal,
-            answer,
-            nilaiSelected,
+            id_question,
+            data.Hasil,
+            "0",
             AppContext_test.dataIdTrQuiz,
             activeUser,
-            "Pilgan",
+            "Praktikum",
           ];
         } else {
-          updatedAnswers.push({ urutan, idSoal, answer, nilaiSelected });
-          submitAnswer.push([
+          updatedAnswers.push({
             urutan,
-            idSoal,
+            id_question,
             answer,
             nilaiSelected,
+          });
+          submitAnswer.push([
+            urutan,
+            id_question,
+            data.Hasil,
+            "0",
             AppContext_test.dataIdTrQuiz,
             activeUser,
-            "Pilgan",
+            "Praktikum",
           ]);
         }
-      }
+
+        setAnswers(updatedAnswers);
+        setSubmittedAnswers(submitAnswer);
+        AppContext_test.indexTest = index;
+      });
+      return;
     }
 
-    idSoal = index;
+    // Handle essay (CKEditor)
+    if (nilaiSelected === "essay") {
+      const existingAnswerNonPilgan = updatedAnswers.findIndex(
+        (ans) => ans.id_question === id_question
+      );
+
+      if (existingAnswerNonPilgan !== -1) {
+        updatedAnswers[existingAnswerNonPilgan] = {
+          nilaiSelected,
+          id_question,
+          answer: file, // file berisi HTML dari CKEditor
+        };
+        submitAnswer[existingAnswerNonPilgan] = [
+          urutan,
+          id_question,
+          file, // HTML dari CKEditor
+          "0",
+          AppContext_test.dataIdTrQuiz,
+          activeUser,
+          "Essay",
+        ];
+      } else {
+        updatedAnswers.push({
+          nilaiSelected,
+          id_question,
+          answer: file,
+        });
+        submitAnswer.push([
+          urutan,
+          id_question,
+          file, // HTML dari CKEditor
+          "0",
+          AppContext_test.dataIdTrQuiz,
+          activeUser,
+          "Essay",
+        ]);
+      }
+
+      setAnswers(updatedAnswers);
+      setSubmittedAnswers(submitAnswer);
+      AppContext_test.indexTest = index;
+      return;
+    }
+
+    // Handle pilihan ganda (Pilgan)
+    const selectedAnswersForCurrentQuestion = updatedAnswers.filter(
+      (ans) => ans.idSoal === idSoal
+    );
+
+    if (currentData[index - 1]?.options[0]?.cho_tipe === "Jamak") {
+      const maxSelectable = currentData[index - 1]?.options.filter(
+        (option) => parseFloat(option.nilai) !== 0
+      ).length;
+
+      if (selectedAnswersForCurrentQuestion.length >= maxSelectable) {
+        const isAlreadySelected = selectedAnswersForCurrentQuestion.some(
+          (ans) => ans.answer === answer
+        );
+        if (!isAlreadySelected) {
+          Swal.fire({
+            title: "Batas Tercapai",
+            text: `Anda hanya dapat memilih ${maxSelectable} opsi.`,
+            icon: "warning",
+            confirmButtonText: "OK",
+          });
+          return;
+        }
+      }
+
+      const existingAnswerIndex = updatedAnswers.findIndex(
+        (ans) => ans.idSoal === idSoal && ans.answer === answer
+      );
+
+      if (existingAnswerIndex !== -1) {
+        updatedAnswers.splice(existingAnswerIndex, 1);
+
+        // Hapus juga dari submitAnswer
+        const submitIndex = submitAnswer.findIndex(
+          (ans) => ans[1] === idSoal && ans[2] === answer
+        );
+        if (submitIndex !== -1) {
+          submitAnswer.splice(submitIndex, 1);
+        }
+      } else {
+        updatedAnswers.push({ urutan, idSoal, answer, nilaiSelected });
+        submitAnswer.push([
+          urutan,
+          idSoal,
+          answer,
+          nilaiSelected,
+          AppContext_test.dataIdTrQuiz,
+          activeUser,
+          "Pilgan",
+        ]);
+      }
+    } else {
+      // Untuk pilihan tunggal, hapus jawaban sebelumnya untuk soal yang sama
+      const answersToRemove = updatedAnswers.filter(
+        (ans) => ans.idSoal === idSoal
+      );
+
+      answersToRemove.forEach((ansToRemove) => {
+        const indexToRemove = updatedAnswers.findIndex(
+          (ans) =>
+            ans.idSoal === ansToRemove.idSoal &&
+            ans.answer === ansToRemove.answer
+        );
+        if (indexToRemove !== -1) {
+          updatedAnswers.splice(indexToRemove, 1);
+        }
+      });
+
+      // Hapus juga dari submitAnswer
+      const submitsToRemove = submitAnswer.filter((ans) => ans[1] === idSoal);
+
+      submitsToRemove.forEach((submitToRemove) => {
+        const indexToRemove = submitAnswer.findIndex(
+          (ans) => ans[1] === submitToRemove[1]
+        );
+        if (indexToRemove !== -1) {
+          submitAnswer.splice(indexToRemove, 1);
+        }
+      });
+
+      // Tambahkan jawaban baru
+      updatedAnswers.push({ urutan, idSoal, answer, nilaiSelected });
+      submitAnswer.push([
+        urutan,
+        idSoal,
+        answer,
+        nilaiSelected,
+        AppContext_test.dataIdTrQuiz,
+        activeUser,
+        "Pilgan",
+      ]);
+    }
+
     setAnswers(updatedAnswers);
     setSubmittedAnswers(submitAnswer);
     AppContext_test.indexTest = index;
@@ -657,7 +697,7 @@ export default function PengerjaanTest({
 
   const getSubmittedAnswer = (itemId) => {
     const answer = submittedAnswers.find((answer) => answer[1] === itemId);
-    return answer ? answer[2] : "";
+    return answer ? he.decode(answer[2]) : ""; // Decode HTML entities
   };
 
   const removeHtmlTags = (str) => {
@@ -795,16 +835,27 @@ export default function PengerjaanTest({
                       style={{ width: "105vh" }}
                     />
                   ) : item.type === "Essay" ? (
-                    <Input
-                      name="essay_answer"
-                      type="textarea"
-                      label="Jawaban Anda:"
-                      value={getSubmittedAnswer(item.id)}
-                      onChange={(event) =>
-                        handleTextareaChange(event, index + 1, item.id)
-                      }
-                      style={{ width: "105vh" }}
-                    />
+                    <div>
+                      <label className="form-label">Jawaban Anda:</label>
+                      <div style={{ width: "100%", maxWidth: "800px" }}>
+                        <Editor
+                          id={`editor-${index}-${item.id}`}
+                          value={
+                            editorData[`${index + 1}-${item.id}`] ||
+                            getSubmittedAnswer(item.id)
+                          }
+                          onEditorChange={(data) =>
+                            handleEditorChange(data, index + 1, item.id)
+                          }
+                          style={{
+                            width: "100%",
+                            minHeight: "250px",
+                            border: "1px solid #ccc",
+                            borderRadius: "4px",
+                          }}
+                        />
+                      </div>
+                    </div>
                   ) : (
                     <div className="d-flex flex-column">
                       {item.options[0].cho_tipe === "Jamak" && (
