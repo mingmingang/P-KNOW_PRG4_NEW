@@ -395,7 +395,7 @@ export default function MasterPostTestAdd({ onChangePage }) {
                 return;
               }
 
-              const questionId = questionResponse.data[0].hasil;
+              const questionId = questionResponse[0].hasil;
 
               if (question.type === "Essay" || question.type === "Praktikum") {
                 const answerData = {
@@ -413,7 +413,6 @@ export default function MasterPostTestAdd({ onChangePage }) {
                   answerData
                 );
                 if (answerResponse === "ERROR") {
-                  // Cukup cek error, tidak perlu try/catch
                   console.error(
                     "Gagal menyimpan jawaban Essay:",
                     "Respons tidak valid"
@@ -445,7 +444,6 @@ export default function MasterPostTestAdd({ onChangePage }) {
                     answerData
                   );
                   if (answerResponse === "ERROR") {
-                    // Cukup cek error, tidak perlu try/catch
                     console.error(
                       "Gagal menyimpan jawaban multiple choice:",
                       "Respons tidak valid"
@@ -661,7 +659,6 @@ export default function MasterPostTestAdd({ onChangePage }) {
                 answerData
               );
               if (answerResponse === "ERROR") {
-                // Cukup cek error, tidak perlu try/catch
                 console.error(
                   "Gagal menyimpan jawaban Essay:",
                   "Respons tidak valid"
@@ -689,7 +686,6 @@ export default function MasterPostTestAdd({ onChangePage }) {
                   answerData
                 );
                 if (answerResponse === "ERROR") {
-                  // Cukup cek error, tidak perlu try/catch
                   console.error(
                     "Gagal menyimpan jawaban multiple choice:",
                     "Respons tidak valid"
@@ -951,20 +947,26 @@ export default function MasterPostTestAdd({ onChangePage }) {
   };
 
   const uploadFile = async (file) => {
-    const formData = new FormData();
-    formData.append("file", file);
-
     try {
-      const response = await UseFetch(`${API_LINK}Upload/UploadFile`, formData);
-
-      if (response === "ERROR" || !response) {
-        throw new Error("Upload file gagal. Respons server tidak valid.");
-      }
-
-      return response;
+      const result = await uploadFile(file); 
+      return result;
     } catch (error) {
-      console.error("Error in uploadFile function:", error);
-      throw error;
+      console.error('Error using util uploadFile:', error);
+      
+      const formData = new FormData();
+      formData.append("file", file);
+      
+      const response = await fetch(`${API_LINK}Upload/UploadFile`, {
+        method: 'POST',
+        body: formData
+      });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+      
+      const data = await response.json();
+      return data;
     }
   };
 
@@ -1453,7 +1455,7 @@ export default function MasterPostTestAdd({ onChangePage }) {
                       classType="primary btn-sm mx-2 px-3 py-2 rounded-3 fw-semibold"
                       onClick={() =>
                         document.getElementById("fileInput").click()
-                      } // Memicu klik pada input file
+                      } 
                     />
                   </div>
                 </div>
