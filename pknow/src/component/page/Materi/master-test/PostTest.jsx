@@ -35,50 +35,49 @@ export default function MasterTestPreTest({
     }
   }
 
-  function onStartTest() {
+  async function onStartTest() {
     try {
-      axios
-        .post(API_LINK + "Quiz/SaveTransaksiQuiz", {
+      const response = await fetch(API_LINK + "Quiz/SaveTransaksiQuiz", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
           karyawanId: activeUser,
           status: "",
           createdBy: activeUser,
           jumlahBenar: "",
-        })
-        .then((response) => {
-          const data = response.data;
-          if (data[0].hasil === "OK") {
-            AppContext_test.dataIdTrQuiz = data[0].tempIDAlt;
-            onChangePage(
-              "pengerjaantest",
-              "Posttest",
-              currentData.materiId,
-              currentData.quizId,
-              currentData.timer,
-              AppContext_test.dataIdTrQuiz,
-              currentData.timer
-            );
-          } else {
-            setIsError((prevError) => ({
-              ...prevError,
-              error: true,
-              message: "Terjadi kesalahan: Gagal menyimpan data Materi.",
-            }));
-          }
-        })
-        .catch((error) => {
-          console.error("Terjadi kesalahan:", error);
-          setIsError((prevError) => ({
-            ...prevError,
-            error: true,
-            message: "Terjadi kesalahan: " + error.message,
-          }));
-        })
-        .finally(() => setIsLoading(false));
-    } catch (error) {
-      setIsError({
-        error: true,
-        message: "Failed to save forum data: " + error.message,
+        }),
       });
+
+      const data = await response.json();
+
+      if (data[0].hasil === "OK") {
+        AppContext_test.dataIdTrQuiz = data[0].tempIDAlt;
+        onChangePage(
+          "pengerjaantest",
+          "Posttest",
+          currentData.materiId,
+          currentData.quizId,
+          currentData.timer,
+          AppContext_test.dataIdTrQuiz,
+          currentData.timer
+        );
+      } else {
+        setIsError((prevError) => ({
+          ...prevError,
+          error: true,
+          message: "Terjadi kesalahan: Gagal menyimpan data Materi.",
+        }));
+      }
+    } catch (error) {
+      console.error("Terjadi kesalahan:", error);
+      setIsError((prevError) => ({
+        ...prevError,
+        error: true,
+        message: "Terjadi kesalahan: " + error.message,
+      }));
+    } finally {
       setIsLoading(false);
     }
   }
@@ -178,17 +177,23 @@ export default function MasterTestPreTest({
     const fetchDataWithRetry_posttest = async (retries = 15, delay = 500) => {
       for (let i = 0; i < retries; i++) {
         try {
-          const response = await axios.post(
-            API_LINK + "Quiz/GetDataResultQuiz",
-            {
+          const response = await fetch(API_LINK + "Quiz/GetDataResultQuiz", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
               matId: AppContext_test.materiId,
               quiTipe: "Posttest",
               karyawanId: activeUser,
-            }
-          );
-          if (response.data.length !== 0) {
-            setDataDetailQuiz(response.data);
-            return response.data;
+            }),
+          });
+
+          const data = await response.json();
+
+          if (data.length !== 0) {
+            setDataDetailQuiz(data);
+            return data;
           }
         } catch (error) {
           if (i < retries - 1) {
@@ -203,20 +208,25 @@ export default function MasterTestPreTest({
     const getListSection = async (retries = 10, delay = 2000) => {
       for (let i = 0; i < retries; i++) {
         try {
-          const response = await axios.post(
-            API_LINK + "Section/GetDataSectionByMateri",
-            {
+          const response = await fetch(API_LINK + "Section/GetDataSectionByMateri", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
               mat_id: AppContext_test.materiId,
               sec_type: "Post-Test",
               sec_status: "Aktif",
-            }
-          );
+            }),
+          });
 
-          if (response.data.length !== 0) {
-            idSection = response.data[0].SectionId;
-            return response.data;
+          const data = await response.json();
+
+          if (data.length !== 0) {
+            idSection = data[0].SectionId;
+            return data;
           }
-        } catch (e) {
+        } catch (error) {
           console.error("Error fetching materi data: ", error);
           if (i < retries - 1) {
             await new Promise((resolve) => setTimeout(resolve, delay));
@@ -230,16 +240,22 @@ export default function MasterTestPreTest({
     const getQuiz_posttest = async (retries = 10, delay = 500) => {
       for (let i = 0; i < retries; i++) {
         try {
-          const quizResponse = await axios.post(
-            API_LINK + "Quiz/GetDataQuizByIdSection",
-            {
+          const response = await fetch(API_LINK + "Quiz/GetDataQuizByIdSection", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
               section: idSection,
-            }
-          );
-          if (quizResponse.data && quizResponse.data.length > 0) {
-            AppContext_test.IdQuiz = quizResponse.data[0].quizId;
-            setCurrentData(quizResponse.data[0]); // Hanya set data pertama
-            return quizResponse.data[0];
+            }),
+          });
+
+          const data = await response.json();
+
+          if (data && data.length > 0) {
+            AppContext_test.IdQuiz = data[0].quizId;
+            setCurrentData(data[0]); // Hanya set data pertama
+            return data[0];
           }
         } catch (error) {
           console.error("Error fetching quiz data:", error);
