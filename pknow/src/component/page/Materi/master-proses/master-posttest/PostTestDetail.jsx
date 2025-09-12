@@ -72,29 +72,32 @@ export default function MasterPostTestDetail({ onChangePage, withID }) {
 
     try {
       while (true) {
-        const data = await axios.post(API_LINK + "Quiz/GetQuizByID", {
-          id: AppContext_test.DetailMateri?.Key,
-          tipe: "Posttest",
+        const response = await fetch(API_LINK + "Quiz/GetQuizByID", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            id: AppContext_test.DetailMateri?.Key,
+            tipe: "Posttest",
+          }),
         });
+        const data = await response.json();
 
         if (data === "ERROR") {
           throw new Error("Terjadi kesalahan: Gagal mengambil data quiz.");
-        } else if (data.length === 0) {
+        } else if (!data || data.length === 0) {
           await new Promise((resolve) => setTimeout(resolve, 2000));
         } else {
           const convertedData = {
-            ...data.data[0],
-            tanggalAwal: data.data[0]?.tanggalAwal
-              ? new Date(data.data[0].tanggalAwal).toISOString().split("T")[0]
+            ...data[0],
+            tanggalAwal: data[0]?.tanggalAwal
+              ? new Date(data[0].tanggalAwal).toISOString().split("T")[0]
               : "",
-            tanggalAkhir: data.data[0]?.tanggalAkhir
-              ? new Date(data.data[0].tanggalAkhir).toISOString().split("T")[0]
+            tanggalAkhir: data[0]?.tanggalAkhir
+              ? new Date(data[0].tanggalAkhir).toISOString().split("T")[0]
               : "",
           };
           setTimer(
-            data.data[0].timer
-              ? convertSecondsToTimeFormat(data.data[0].timer)
-              : ""
+            data[0].timer ? convertSecondsToTimeFormat(data[0].timer) : ""
           );
           setFormData(convertedData);
           setIsLoading(false);
@@ -121,14 +124,20 @@ export default function MasterPostTestDetail({ onChangePage, withID }) {
 
     try {
       while (true) {
-        const { data } = await axios.post(API_LINK + "Quiz/GetDataQuestion", {
-          id: AppContext_test.DetailMateri?.Key,
-          status: "Aktif",
-          Tipe: "Posttest",
+        const response = await fetch(API_LINK + "Quiz/GetDataQuestion", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            id: AppContext_test.DetailMateri?.Key,
+            status: "Aktif",
+            Tipe: "Posttest",
+          }),
         });
+        const data = await response.json();
+
         if (data === "ERROR") {
           throw new Error("Terjadi kesalahan: Gagal mengambil data quiz.");
-        } else if (data.length === 0) {
+        } else if (!data || data.length === 0) {
           await new Promise((resolve) => setTimeout(resolve, 2000));
         } else {
           const formattedQuestions = {};
