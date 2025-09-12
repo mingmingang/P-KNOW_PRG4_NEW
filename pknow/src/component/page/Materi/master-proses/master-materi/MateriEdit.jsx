@@ -332,7 +332,7 @@ export default function MastermateriEdit({ onChangePage }) {
                 AppContext_master.dataTimerPostTest
               );
             }
-                }) // <--- TAMBAHKAN KURUNG TUTUP DI SINI
+                })
       .catch((error) => {
         console.error("Terjadi kesalahan:", error);
         setIsError((prevError) => ({
@@ -342,7 +342,7 @@ export default function MastermateriEdit({ onChangePage }) {
         }));
       })
       .finally(() => setIsLoading(false));
-    }); // <<< Perhatikan juga, .then dari Promise.all butuh catch-nya sendiri atau ditangani dengan cara lain
+    }); 
   }
 };
 
